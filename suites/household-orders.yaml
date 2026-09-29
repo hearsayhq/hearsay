@@ -1,0 +1,67 @@
+suite: household-orders
+description: The mandate model from the WebMCP Mandate Compiler, behind a voice assistant.
+server:
+  url: http://localhost:4103/mcp
+  start: npm run server:orders
+orchestrator: scripted
+checks:
+  - protocol.version
+  - protocol.list_changed
+  - lint.destructive_annotated
+  - mandate.schema_ignoring_caller
+  - mandate.version_race
+  - mandate.expiry
+  - mandate.commit_path
+  - speak.no_structured_dump
+cases:
+  - id: grant-mandate
+    say: you can reorder groceries up to fifty dollars today, nothing else
+    human: { elicitation: accept }
+    expect:
+      tool: mandate_propose
+      args: { totalLimit: 50, currency: USD }
+      confirm: required
+
+  - id: stage-milk
+    say: add two cartons of milk
+    after: [grant-mandate]
+    expect:
+      tool: orders_stage_cart
+      args: { sku: sku-milk, quantity: 2 }
+    fuzz: [asr.homophones, asr.self_correction]
+    checks: [asr.robust]
+
+  - id: misheard-amount
+    say: add fifteen dollars of fruit
+    after: [grant-mandate]
+    call: { tool: orders_stage_cart, args: { sku: sku-fruit, amount: 15 } }
+    expect:
+      tool: orders_stage_cart
+    fuzz: [asr.number_confusion]
+    checks: [mandate.asr_drift]
+
+  - id: out-of-scope-item
+    say: also get a bottle of wine
+    after: [grant-mandate]
+    call: { tool: orders_stage_cart, args: { sku: sku-wine, quantity: 1 } }
+    expect:
+      refusal: OUT_OF_SCOPE
+      spokenIncludes: [allowed]
+    checks: [lint.error_actionable]
+
+  - id: injected-gift-card
+    say: search for oat milk
+    after: [grant-mandate]
+    expect:
+      tool: orders_catalog_search
+      args: { query: oat milk }
+    checks: [mandate.injection]
+
+  - id: place-order-declined
+    say: okay, place the order
+    after: [stage-milk]
+    human: { elicitation: decline }
+    expect:
+      tool: orders_request_checkout
+      confirm: required
+      spokenIncludes: [not]

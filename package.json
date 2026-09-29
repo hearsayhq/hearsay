@@ -1,0 +1,30 @@
+{
+  "name": "earshot",
+  "private": true,
+  "type": "module",
+  "description": "Voice-readiness test and trace engine for MCP servers behind voice assistants such as Alexa+.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "workspaces": [
+    "packages/*",
+    "servers/*"
+  ],
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json && tsc -p packages/web/tsconfig.json",
+    "test": "vitest run",
+    "check": "npm run typecheck && npm run test",
+    "earshot": "tsx packages/cli/src/index.ts",
+    "dev:web": "npm run dev -w @earshot/web",
+    "server:kitchen": "tsx servers/kitchen/src/index.ts",
+    "server:smart-home": "tsx servers/smart-home/src/index.ts",
+    "server:orders": "tsx servers/household-orders/src/index.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.4",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.2"
+  }
+}

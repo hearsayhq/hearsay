@@ -1,0 +1,15 @@
+{
+  "name": "@earshot/cli",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@earshot/engine": "*"
+  },
+  "bin": {
+    "earshot": "./src/index.ts"
+  }
+}

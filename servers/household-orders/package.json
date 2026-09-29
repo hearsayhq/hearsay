@@ -1,0 +1,8 @@
+{
+  "name": "@earshot/server-household-orders",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "dependencies": { "@earshot/mandate": "*", "@modelcontextprotocol/sdk": "^1.31.0", "zod": "^4.1.0" }
+}

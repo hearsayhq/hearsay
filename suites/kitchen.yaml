@@ -1,0 +1,42 @@
+suite: kitchen
+description: The reference server that should pass everything.
+server:
+  url: http://localhost:4101/mcp
+  start: npm run server:kitchen
+orchestrator: scripted
+budget:
+  firstAudioMs: 1500
+  toolMs: 800
+checks:
+  - protocol.version
+  - lint.tool_names
+  - lint.descriptions
+  - lint.schema_constraints
+  - lint.destructive_annotated
+  - latency.first_audio
+  - latency.tool
+  - speak.length
+  - speak.no_structured_dump
+cases:
+  - id: start-pasta-timer
+    say: set a pasta timer for twelve minutes
+    expect:
+      tool: timer_start
+      args: { minutes: 12, label: pasta }
+      spokenIncludes: [pasta]
+    fuzz: [asr.number_confusion, asr.filler]
+
+  - id: list-timers
+    say: how long is left on my timers
+    after: [start-pasta-timer]
+    expect:
+      tool: timer_list
+    checks: [speak.lists, speak.numbers_dates]
+
+  - id: cancel-ambiguous
+    say: cancel the timer
+    call: { tool: timer_cancel, args: {} }
+    expect:
+      tool: timer_cancel
+      spokenIncludes: [which]
+    checks: [lint.error_actionable]

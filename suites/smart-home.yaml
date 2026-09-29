@@ -1,0 +1,38 @@
+suite: smart-home
+description: Ships flawed by default (EARSHOT_FIXED=0). The demo runs it red, then green.
+server:
+  url: http://localhost:4102/mcp
+  start: npm run server:smart-home
+orchestrator: scripted
+checks:
+  - lint.tool_names
+  - lint.destructive_annotated
+  - latency.first_audio
+  - latency.tool
+  - speak.length
+  - speak.no_structured_dump
+cases:
+  - id: living-room-off
+    say: turn off everything in the living room
+    expect:
+      tool: set_scene
+      args: { room: living_room, state: "off" }
+    fuzz: [asr.compound_split, asr.dropped_word]
+    checks: [asr.robust, speak.no_structured_dump]
+
+  - id: whole-home-off-needs-confirmation
+    say: turn off the whole house
+    human: { elicitation: decline }
+    expect:
+      tool: set_scene
+      args: { room: all, state: "off" }
+      confirm: required
+      spokenIncludes: [okay]
+
+  - id: dim-bedroom
+    say: dim the bedroom to thirty percent
+    expect:
+      tool: set_scene
+      args: { room: bedroom, brightness: 30 }
+    fuzz: [asr.number_confusion, asr.self_correction]
+    checks: [asr.robust]
