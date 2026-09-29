@@ -37,9 +37,9 @@ decides. `catalog.test.ts` fails if an id exists in code but not here.
   server cannot negotiate it: **error** (MCP Toolkit quickstart; hackathon rules). A second
   session offers `2025-03-26`, as Amazon's example handshake does (friction log #2); if initialize
   or `tools/list` then fails: **warn**.
-- `protocol.list_changed` — If the tool list differs between two turns of one session, the
-  server declared `tools.listChanged` and a notification arrived before the second list; else
-  **warn**. Alexa+ refreshes tool information only on deployment (friction log #3), so servers
+- `protocol.list_changed` — At the end of every case's session the engine lists the tools again;
+  if they differ from the last list the server announced (no `notifications/tools/list_changed`
+  arrived): **warn**, with the added and removed tools. Alexa+ refreshes tool information only on deployment (friction log #3), so servers
   should not rely on dynamic tool lists; enforcement never does (docs/06).
 
 ## Did it hear me right?
@@ -102,7 +102,12 @@ decides. `catalog.test.ts` fails if an id exists in code but not here.
 A **consequential action** is one the suite marks `confirm: required`, or one of the mandate
 profile's commit paths. `write-hearsay-suite` proposes these cases for every destructive tool.
 
-- `consent.path` — How a consequential action committed:
+How the engine sees consent: a **confirmation** is an elicitation the server sent during a tool
+call (recorded on that call), or a result carrying the verbal convention below. **Committed
+state** is what the server's read-only tools without required arguments return; the engine reads
+them before and after a case's own turns when a check needs it.
+
+- `consent.path` — For the clean run of a case marked `confirm: required`, how the action went:
   - after an accepted elicitation → pass (the reference path);
   - through the verbal path on a client without elicitation → **warn** (a model can
     hallucinate a yes; docs/06);
@@ -115,19 +120,23 @@ profile's commit paths. `write-hearsay-suite` proposes these cases for every des
   never said yes to a verbal question); committed state changed anyway: **error**. Committed
   state is read through the server's read-only tools (for the mandate profile:
   `mandate_status.spentUsd` and the order count).
-- `consent.states_details` — The confirmation (elicitation message or verbal question) does not
-  state the amount and the items: **error** (Amazon: confirmation with key details).
+- `consent.states_details` — Every confirmation (elicitation message or verbal question) must
+  state an amount (a number, in digits or words) and what it is about (a word of four letters or
+  more from what was said or from the call's arguments). Otherwise: **error** (Amazon:
+  confirmation with key details). "Are you sure?" fails; "Place the order: two cartons of milk,
+  seven dollars and forty cents?" passes.
 - `consent.verbal_token` — Active probe, only when the verbal path was observed: confirm with
   the token after changing the cart; confirm twice; confirm after `expiresInSeconds`; confirm
   with a token for other items or another amount. Any commit: **error**. A declared
   `expiresInSeconds` over 60: **error**. Expiry is waited out only when it is ≤ 5 s (reference
   servers use 3 s in test mode); otherwise the report says it was checked as declared only.
-- `consent.misheard_amount` — For every variant that changes an amount: nothing commits unless
-  the person could hear the misheard amount and decline. Pass: refused (e.g. `LIMIT_EXCEEDED`),
-  or the confirmation states the heard amount and the simulated person, who knows the intended
-  amount from the clean case, declines. A perturbed amount that commits: **error**.
-- `consent.over_confirmation` — A confirmation (elicitation or verbal question) during a call to a
-  tool declaring `readOnlyHint: true`: **warn** (Amazon: confirmation is for high-consequence
+- `consent.misheard_amount` — For every variant that changes a number: pass if the call was
+  refused (e.g. `LIMIT_EXCEEDED`); pass if a confirmation stated the heard amount (the simulated
+  person, who knows what they meant, declines it); pass if nothing was paid and the reply read
+  the heard amount back. Otherwise — accepted silently, or paid without the person hearing the
+  amount: **error**.
+- `consent.over_confirmation` — Judged on cases not marked `confirm: required`. A confirmation
+  (elicitation or verbal question) during a call to a tool declaring `readOnlyHint: true`: **warn** (Amazon: confirmation is for high-consequence
   actions such as payment, cancellation, deletion). A confirmation during a call that commits
   nothing (for the mandate profile: `mandate_status.spentUsd` and the order count unchanged) while
   an active mandate covers it: **warn** (grant once, act freely within the limit; docs/06).
@@ -152,7 +161,10 @@ When the client has no elicitation, a server may confirm by voice. Convention:
 ### Mandate profile
 
 A server exposes the profile by listing these tools (names fixed, schemas as in
-servers/household-orders/README.md):
+servers/household-orders/README.md). The probes find the rest by shape: the **staging tool** is
+the scoped tool (named in `mandate_status.tools`) with an enum-advertised resource parameter,
+optional `quantity` and optional `mandateVersion`; the **commit tool** is the scoped tool with no
+required parameters.
 
 | Tool | Role |
 |---|---|
