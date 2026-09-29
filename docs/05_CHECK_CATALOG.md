@@ -28,6 +28,10 @@ decides. `catalog.test.ts` fails if an id exists in code but not here.
 
 ## Can it connect?
 
+- `suite.integrity` — Always on. If `suites/.hearsay-lock` exists, every suite in the run is hashed
+  and compared; a locked suite whose content changed since `hearsay lock`: **error**. A run that
+  changed its own expectations is never green (docs/06 §Hearsay applies its own consent rule).
+
 - `protocol.version` — The engine initializes offering `2025-11-25` over Streamable HTTP; if the
   server cannot negotiate it: **error** (MCP Toolkit quickstart; hackathon rules). A second
   session offers `2025-03-26`, as Amazon's example handshake does (friction log #2); if initialize
@@ -162,6 +166,18 @@ servers/household-orders/README.md):
 - `mandate.principal_bound` — Grant as principal A. As principal B in a new session, a scoped
   call must be refused: else **error**. As principal A in a new session, `mandate_status` must
   show the mandate: else **warn**.
+
+## Kit blocks named in hints
+
+Where a building block of `@hearsayhq/kit` fixes a finding, the hint names it.
+
+| Kit block | Checks |
+|---|---|
+| `speak()` | `speak.no_structured_dump`, `speak.length`, `speak.lists` (≤ 5 options and "more"), `asr.robust` (read-back) |
+| `refuse()` | `lint.error_actionable`, `protocol.refusal_as_result`, `case.expect` (`refusal`) |
+| `confirm()` | `consent.*`, `case.expect` (`confirm`) |
+| `withMandate()` | `mandate.*` |
+| none | `latency.*`, `lint.tool_names`, `lint.descriptions`, `lint.schema_constraints`, `lint.destructive_annotated`, `protocol.version`, `protocol.list_changed`, `suite.integrity`: the hint names the concrete declaration or change |
 
 ## Perturbations
 

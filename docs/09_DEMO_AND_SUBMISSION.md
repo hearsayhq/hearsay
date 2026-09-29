@@ -14,12 +14,12 @@ Judges may stop at 3:00. Best material first. M7 only cuts: every shot comes fro
 | 1:25 | "place the order" → elicitation modal → decline → nothing committed | "No tool can buy anything. Only the person's yes, asked by the host, can." |
 | 1:50 | Same with a client without elicitation: spoken question, token, warn | "Without elicitation, a model could hallucinate that yes. Hearsay says so." |
 | 2:15 | `gen-variants`: Polly → phone line → Transcribe, the heard text in the suite | "Real mishearings, recorded once, replayed forever." |
-| 2:35 | A coding agent calls `hearsay_run` through the Hearsay MCP server and fixes a finding; catalog, repo, license | "Hearsay itself is an MCP server and an Agent Skill: your coding agent runs it and fixes what it finds. Open source, for Alexa+, unofficial." |
+| 2:35 | The agent loop (clip `m2b-agent-loop`), then the experiment's one sentence; catalog, repo, license | "Hearsay itself is an MCP server and Agent Skills: your coding agent runs it, fixes what it finds, and can't cheat by editing the tests. Open source, for Alexa+, unofficial." |
 
 ## Clips per gate
 
-Record right after each gate, while it is green. Terminal clips with `asciinema rec` (or `script`
-if asciinema is missing); browser clips as a screen recording at 1080p. Keep each under
+Record right after each gate, while it is green. Terminal clips with `asciinema rec --headless`
+(asciinema 3; works without a terminal, so the agent can record them); browser clips as a screen recording at 1080p. Keep each under
 60 seconds, English, no personal data, no API keys on screen. Save to `clips/` (gitignored) as
 `m<N>-<slug>.cast` or `.mp4`, and add one line to `clips/INDEX.md`: file, gate, what it shows,
 which video line it serves.
@@ -28,11 +28,12 @@ which video line it serves.
 |---|---|---|
 | M1 | `m1-kitchen-green` | `npm run server:kitchen` in one pane, `hearsay run suites/kitchen.yaml` in the other: green, skipped checks listed, report path |
 | M2 | `m2-smart-home-red-green` | flawed run red with findings by question → `HEARSAY_FIXED=1` → green, exit codes shown |
+| M2b | `m2b-agent-loop` | a fresh Claude Code session with the Hearsay MCP server and `fix-hearsay-findings`: `hearsay_run` on Smart Home flawed, fixes in server code only, reruns `only: "failed"`, full run green; `git diff suites/` empty |
 | M3 | `m3-hearing` | "livingroom" `asr.robust` red → fixed green; replay run twice with the network off; `gen-variants` writing the variants file |
 | M4 | `m4-consent` | fifteen → fifty refused; decline → nothing committed; verbal path graded warn |
 | M5 | `m5-console` | browser: Kitchen timer spoken, Household Orders elicitation modal, timeline and findings updating |
 | M6 | `m6-fresh-clone` | fresh clone → `npm ci` → first green run, sped up, clock visible |
-| M6 | `m6-agent-loop` | Claude Code with `@hearsayhq/mcp` configured: `hearsay_run` on Smart Home flawed, the agent fixes one finding, reruns green |
+| M6 | `m6-experiment` | the experiment table from docs/15 |
 
 ## Devpost fields
 

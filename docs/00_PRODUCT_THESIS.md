@@ -37,10 +37,15 @@ pull request goes red.
 
 1 and 2 are the product. The console and the reference servers are packaging.
 
-Hearsay itself is an MCP server and an Agent Skill. A coding agent (Claude Code, Kiro) that is
-building an add-on can lint and run it against its own server through `@hearsayhq/mcp`, draft a
-suite with the `write-hearsay-suite` skill, and fix the findings in a loop — the same form as
-Amazon's own developer tools.
+## Built for coding agents too
+
+Hearsay itself is an MCP server and a set of Agent Skills — the same form as Amazon's own
+developer tools. A coding agent building an add-on (Claude Code, Kiro) calls `hearsay_run` on
+its server, reads findings that name the rule and the `@hearsayhq/kit` building block that fixes
+them, changes only server code, and reruns until green. It cannot make itself green by editing
+the tests: suites are locked (`suite.integrity`), a suite change needs a person's yes through
+elicitation (`hearsay_propose_suite_change`), and holdout cases the agent never sees decide
+whether the fix is real.
 
 ## Four questions
 

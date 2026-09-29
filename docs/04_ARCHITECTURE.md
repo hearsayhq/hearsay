@@ -38,10 +38,11 @@ gen-variants (offline, AWS): utterance ─► Polly ─► noise + telephone ban
 | `packages/kit` (`@hearsayhq/kit`) | MCP SDK | Building blocks for voice-ready servers: `speak()`, `refuse()`, `serveMcp()` (principal per session) from M1; `confirm()`, `withMandate()` in M2b. Reference servers use it. |
 | `packages/engine` (`@hearsayhq/engine`) | mandate, MCP SDK, zod, yaml | Session, runner, orchestrators (D-002), perturbations, checks, report. |
 | `packages/cli` (`@hearsayhq/cli`, binary `hearsay`) | engine | Argument parsing, printing, exit codes. No logic. |
-| `packages/mcp` (`@hearsayhq/mcp`) | engine, MCP SDK | Hearsay as an MCP server (Streamable HTTP and stdio) for coding agents (FR-034). No logic. |
+| `packages/mcp` (`@hearsayhq/mcp`) | engine, MCP SDK | Hearsay as an MCP server (stdio and Streamable HTTP) for coding agents: lint, run, explain, propose a suite change (FR-034, FR-037). No logic of its own. |
 | `packages/web` | engine (types only) | Console UI. Renders traces and findings; decides nothing. |
 | `servers/*` | MCP SDK, zod, mandate | Reference servers, one per demo story. |
 | `suites/` | — | YAML suites; `suites/cassettes/` for replay; `suites/variants/` for recorded mishearings. |
+| `skills/fix-hearsay-findings` | — | Agent Skill: the fix loop for coding agents (FR-038). |
 | `skills/write-hearsay-suite` | — | Agent Skill that drafts a suite from `tools/list` (FR-033). |
 
 The npm name `hearsay` belongs to an unrelated library. Docs always say `npx @hearsayhq/cli`.
@@ -108,7 +109,8 @@ No hosting and no VM are needed. Judges run the repo locally (hackathon FAQ).
 |---|---|---|---|
 | `validate <suite...>` | all valid | any invalid | usage |
 | `checks` | always | — | — |
-| `run <suite...> [--only id] [--orchestrator m] [--record] [--verbose]` | no error findings | error findings | usage / cannot connect |
+| `run <suite...> [--only id] [--failed] [--holdout] [--orchestrator m] [--record] [--verbose]` | no error findings | error findings | usage / cannot connect |
+| `lock [suite...]` | lock written | — | usage |
 | `lint <url>` | no error findings | error findings | usage / cannot connect |
 | `gen-variants <suite...>` | variants written | provider error | usage / no AWS credentials |
 | `serve [--port 4100]` | — | — | usage |

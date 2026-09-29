@@ -79,6 +79,22 @@ settled, the reference server implements both tiers and Hearsay grades them hone
   input validation answers first, the person hears "MCP error -32602: Input validation error…",
   and the refusal code is lost (`protocol.refusal_as_result`, `mandate.schema_ignoring_caller`).
 
+## Hearsay applies its own consent rule to its tests
+
+A coding agent fixing a server has one cheap way to turn red into green: change the test. Hearsay
+treats that like any consequential action.
+
+- **Locked suites.** `hearsay lock` records a hash per suite; `suite.integrity` fails any run
+  whose suites changed since. The lock is committed, so changing it shows in review.
+- **Consent for suite changes.** On the MCP server, `hearsay_propose_suite_change(path, diff,
+  reason)` changes nothing itself. It asks the person by elicitation, showing the diff in plain
+  text; only an accept writes the suite and the lock. A client without elicitation gets a refusal
+  (fail closed). No other tool writes suites.
+- **Holdouts.** Cases the agent never sees (`--holdout`) decide whether a fix generalises.
+- **Honest limit.** The lock detects, it does not prevent: an agent with a shell can edit a suite
+  and run `hearsay lock` itself. That is visible in the diff of the committed lock, and the
+  experiment (docs/15) counts such attempts with hashes kept outside the agent's workspace.
+
 ## What voice changes compared to WebMCP
 
 | WebMCP finding | Behind a voice host |

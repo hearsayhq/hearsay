@@ -25,6 +25,7 @@ new ideas go to docs/ROADMAP.md.
 | FR-014 | — | *Cut:* Anthropic and OpenAI-compatible adapters. Only built if Bedrock access fails (R-06). | — |
 | FR-015 | M | Seeded ASR perturbations on the utterance and on argument values, producing named variants (`asr.number_confusion#1`). Scripted mode runs only perturbations that change argument values. | M3 |
 | FR-016 | M | Trace capture: spans for asr, plan, tool, elicitation, speak. Tool and plan measured; asr and speak modeled in scripted and replay mode and marked as modeled (D-004). | M1 |
+| FR-018 | S | Holdout suites: `suites/<name>.holdout.yaml` (gitignored; in CI from a secret) add cases that run only with `hearsay run --holdout`. The report shows visible and holdout results apart. The MCP server and the skills never load or mention holdouts. | M3 |
 | FR-017 | S | `hearsay gen-variants`: Polly → noise and telephone band → Transcribe Streaming. Heard texts are committed with the suite and replayed as `asr.roundtrip` variants; CI never calls AWS. | M3 |
 
 ## Checks and reporting
@@ -40,7 +41,11 @@ new ideas go to docs/ROADMAP.md.
 | FR-031 | M | `hearsay lint <url>`: server-scope checks only, no suite needed. | M2 |
 | FR-032 | — | *Cut:* composite GitHub Action. The README carries a workflow snippet instead. | — |
 | FR-033 | S | Agent Skill `write-hearsay-suite`: from `tools/list`, draft a suite with a case per tool, consent cases for destructive tools and fuzz entries. | M6 |
-| FR-034 | S | Hearsay as an MCP server (`@hearsayhq/mcp`, Streamable HTTP and stdio): tools `hearsay_lint(url)`, `hearsay_run(suitePath, only?)`, `hearsay_explain(checkId)`. A thin wrapper around the engine with no logic of its own; the same findings as the CLI, including sources. It passes its own `protocol.*` and `lint.*` checks. README carries config snippets for Claude Code and Kiro. | M6 |
+| FR-034 | M | Hearsay as an MCP server (`@hearsayhq/mcp`, stdio and Streamable HTTP): `hearsay_lint(url)`, `hearsay_run(suitePath, only?: string[] \| "failed")`, `hearsay_explain(checkId)` (rule, source, short before/after). A thin wrapper around the engine with no logic of its own; compact output (checkId, severity, message, hint, source, caseId, variant), traces only with `verbose`. It passes its own `protocol.*` and `lint.*` checks. README carries config snippets for Claude Code and Kiro. | M2b |
+| FR-035 | M | `@hearsayhq/kit`: `speak()` (speakable text, ≤ 5 options, numbers and money in words), `refuse()` (isError + one spoken sentence + code), `confirm()` (elicitation, with the verbal-token fallback of `consent.path`), `withMandate()` (`authorize()`), `serveMcp()` (principal per session). Every finding's hint names the kit block that fixes it, where one exists. Reference servers use the kit; Smart Home fixed is the kit applied. | M1–M2b |
+| FR-036 | M | `hearsay lock` writes content hashes of the suites to `suites/.hearsay-lock`; every run reports `suite.integrity` (error) for a locked suite changed since. Green only counts with intact suites. | M2b |
+| FR-037 | M | `hearsay_propose_suite_change(path, diff, reason)` on the MCP server: changes nothing itself, asks the person by elicitation with the diff in plain text; only an accept writes the suite and the lock. Without client elicitation it refuses (fail closed). No other tool writes suites. | M2b |
+| FR-038 | M | Agent Skill `fix-hearsay-findings`: run → read findings → change only server code → `hearsay_run` with `only: "failed"` → until green → one full run. Never changes suites or the lock; stops and asks a person when a finding looks wrong. | M2b |
 
 ## Console
 
@@ -65,9 +70,10 @@ new ideas go to docs/ROADMAP.md.
 |---|---|---|---|
 | FR-060 | M | Fresh clone to first green run in under 5 minutes, with no API keys (scripted + replay). | M6 |
 | FR-061 | M | Submission package per docs/09: video < 3 min, feedback, friction log, disclosures. | M7 |
-| FR-062 | C | Scan of public MCP servers: `tools/list` plus calls to `readOnlyHint` tools only, no auth, terms of use respected, results published in aggregate only. | M6 |
+| FR-062 | — | *Replaced by FR-065 (ROADMAP):* scan of public MCP servers: `tools/list` plus calls to `readOnlyHint` tools only, no auth, terms of use respected, results published in aggregate only. | M6 |
 | FR-063 | S | Open Source contribution: issue, then PR to AlSayedGamal/mcp-voice-simulator (form elicitation as a spoken confirmation, fail closed). Plan B: MCP transport for sujitnoronha/voicecheck. At most half a day. | M6 |
 | FR-064 | M | A short demo clip after every gate (docs/09 §Clips per gate). | M1–M6 |
+| FR-065 | S | Agent-loop experiment: 3 flawed servers × {Hearsay MCP + skill, task description only} × 3 runs, judged against holdouts; measures holdout pass rate, iterations and suite-manipulation attempts; reproducible script; results in docs/15, one sentence in README and video. Cost estimated and approved by the owner before running. | M6 |
 
 ## Non-functional
 

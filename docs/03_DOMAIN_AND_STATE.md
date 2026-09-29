@@ -67,6 +67,18 @@ engine declare no elicitation capability.
   variant; in scripted mode it cannot, because the literal planner passes the misheard value by
   construction.
 
+## Holdouts and the lock (D-017, D-018)
+
+- **Holdout suites.** `suites/<name>.holdout.yaml` holds extra cases for the same server in the
+  suite format, with only a `cases` list. They are gitignored and come from a secret in CI. Only
+  `hearsay run --holdout` loads them; their results carry `holdout: true` and are counted apart in
+  the report. The MCP server and the skills never load or mention them, so an agent fixing a
+  server cannot fit the fix to them.
+- **Lock.** `hearsay lock` writes `suites/.hearsay-lock`: one SHA-256 per suite file. Every run
+  compares; a locked suite whose content changed is a `suite.integrity` error, so a run that
+  changed its own expectations cannot be green. The lock is committed, so a changed lock shows in
+  the pull request.
+
 ## Money
 
 Tool arguments carry money in major units with the unit in the name (`amountUsd: 15`,

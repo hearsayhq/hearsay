@@ -22,3 +22,4 @@ Checked 29–30 Sep 2026. Amazon pages are cited by `catalog.ts` as `amazon-fr` 
 | Hamming, Coval, Cekura voice-agent testing guides | Positioning against end-to-end voice testing |
 | github.com/HarzerHeribert/webMCP | Mandate model, policy ordering, field notes on consent |
 | USPTO TSDR, npm registry, GitHub | Name checks (R-07, D-014) |
+| Anthropic model pricing (claude-api reference, cached 25 Sep 2026) | Cost estimate for the agent-loop experiment (docs/15) |

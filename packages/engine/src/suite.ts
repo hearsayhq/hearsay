@@ -130,14 +130,16 @@ export type SuiteCase = Suite['cases'][number];
 /** Turn-scope checks for one case: always-on checks, the suite's, plus the case's own (they add, never replace). */
 export function turnChecksFor(suite: Suite, c: SuiteCase): string[] {
   const turn = new Set(CHECKS.filter((x) => x.scope === 'turn').map((x) => x.id));
-  const always = CHECKS.filter((x) => x.alwaysOn).map((x) => x.id);
+  const always = CHECKS.filter((x) => x.alwaysOn && x.scope === 'turn').map((x) => x.id);
   return [...new Set([...always, ...suite.checks.filter((id) => turn.has(id)), ...(c.checks ?? [])])];
 }
 
-/** Server-scope checks: run once per suite. */
+/** Server-scope checks: always-on ones plus the suite's; run once per suite. */
 export function serverChecksFor(suite: Suite): string[] {
-  const server = new Set(CHECKS.filter((x) => x.scope === 'server').map((x) => x.id));
-  return suite.checks.filter((id) => server.has(id));
+  const server = CHECKS.filter((x) => x.scope === 'server');
+  const always = server.filter((x) => x.alwaysOn).map((x) => x.id);
+  const ids = new Set(server.map((x) => x.id));
+  return [...new Set([...always, ...suite.checks.filter((id) => ids.has(id))])];
 }
 
 export async function loadSuite(path: string): Promise<Suite> {

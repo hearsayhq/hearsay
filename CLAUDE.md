@@ -10,7 +10,8 @@ target Sun 18 Oct.** Repo `hearsayhq/hearsay`, private until submission.
 2. `docs/07_IMPLEMENTATION_PLAN.md` — current milestone, its gate, the cut order
 3. `docs/01_REQUIREMENTS.md` — FR ids you are implementing
 4. `docs/05_CHECK_CATALOG.md` — exact semantics, thresholds and sources of every check
-5. `docs/06_SECURITY_MODEL.md` — before touching anything consent- or mandate-related
+5. `docs/06_SECURITY_MODEL.md` — before touching anything consent- or mandate-related, and for
+   how Hearsay protects its own suites (lock, consent for suite changes, holdouts)
 
 ## Commands
 
@@ -49,6 +50,8 @@ npm run dev:web                            # console on :5180 (needs `hearsay se
   names; errors say what the person can do; amounts and misheard values are read back.
 - **Code:** TypeScript strict, ESM, zod 4 for runtime validation, English for code, docs and
   utterances (en-US). Small files, one concern each.
+- **Suites are the owner's.** Change a suite only as spec work with the owner's OK; run
+  `npm run hearsay -- lock` in the same commit. Holdout suites are never committed.
 - **Friction:** anything confusing in Alexa+/MCP/AWS/Devpost tooling goes into
   `docs/FRICTION_LOG.md` immediately, with steps and a suggestion.
 - **No Amazon branding or implied endorsement.** "for Alexa+", "unofficial".
@@ -66,8 +69,8 @@ npm run dev:web                            # console on :5180 (needs `hearsay se
 - Hosting is not required; judges run the repo locally. Judging 9–20 Nov 2026.
 - Prizes: max one track prize + one mini challenge (AWS Builder or Open Source). Open Source =
   PR to AlSayedGamal/mcp-voice-simulator (docs/09).
-- Hearsay itself becomes an MCP server (`@hearsayhq/mcp`, M6) and an Agent Skill, the form of
-  Amazon's own developer tools. Do not install Amazon Devices Builder Tools (Fire TV/Vega focus,
+- Hearsay itself becomes an MCP server (`@hearsayhq/mcp`) and Agent Skills in M2b (core, D-017),
+  the form of Amazon's own developer tools. Do not install Amazon Devices Builder Tools (Fire TV/Vega focus,
   installs skills globally); do not add Strands, AgentCore or Kiro (freeze, D-016).
 - npm: scope `@hearsayhq`; the unscoped `hearsay` is someone else's library, so always
   `npx @hearsayhq/cli`.

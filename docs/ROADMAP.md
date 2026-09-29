@@ -12,6 +12,11 @@ new idea is recorded; moving one into docs/07 needs the owner.
 - Composite GitHub Action (the README has a workflow snippet).
 - Anthropic and OpenAI-compatible model adapters (kept only as an R-06 fallback).
 
+## Replaced or declined
+
+- Scan of public MCP servers (FR-062), replaced by the agent-loop experiment (D-017).
+- Watch mode, PR comments, a `hearsay fix` command (declined by the owner).
+
 ## Not adopted from voicecheck
 
 - Personas, load and soak testing, barge-in, a results dashboard.

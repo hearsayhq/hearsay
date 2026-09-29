@@ -63,6 +63,7 @@ docs/              spec pack
 [Decisions](docs/12_DECISIONS.md) ·
 [Risks](docs/13_RISK_REGISTER.md) ·
 [Sources](docs/14_SOURCE_REGISTER.md) ·
+[Experiment](docs/15_EXPERIMENT.md) ·
 [Roadmap](docs/ROADMAP.md) ·
 [Friction log](docs/FRICTION_LOG.md)
 

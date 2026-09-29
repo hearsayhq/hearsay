@@ -10,7 +10,9 @@ else in the repo. The rule: **a check without a failing fixture is not implement
 | Unit | `*.test.ts` next to code | every commit | none |
 | Engine ↔ server | `packages/engine/test/` with servers started in-process | every commit | localhost only |
 | Suite self-test | `hearsay run` on all bundled suites, scripted + replay | CI | localhost only |
-| Dogfood | `hearsay lint` against Hearsay's own MCP server (`@hearsayhq/mcp`): `protocol.*` and `lint.*` pass (FR-034) | CI, from M6 | localhost only |
+| Dogfood | `hearsay lint` against Hearsay's own MCP server (`@hearsayhq/mcp`): `protocol.*` and `lint.*` pass (FR-034) | CI, from M2b | localhost only |
+| Holdout | `hearsay run --holdout` with holdout suites from a CI secret | CI, from M3 | localhost only |
+| Agent loop | docs/15: coding agents with and without Hearsay, judged against holdouts | manually, M6, owner-approved cost | model provider |
 | Live model | llm mode against reference servers | manually, before recording cassettes | AWS |
 | Recorded hearing | `hearsay gen-variants` | manually, when utterances change | AWS |
 
@@ -33,6 +35,8 @@ finding asserted by id and severity.
 | `asr.robust` | Kitchen (read-back), Smart Home fixed | Smart Home flawed (free-string room, "Done." without effect) |
 | `case.expect` | all bundled suites | unit traces with wrong tool, wrong args, forbidden args, missing confirmation |
 | `consent.*` | Household Orders with and without client elicitation | Smart Home flawed (no confirmation); unit fixtures: server that commits on decline, confirmation without amount, token that is replayable / unbound / 5-minute / survives a cart change, verbal path on an eliciting client |
+| `suite.integrity` | intact locked suites | a suite edited after `hearsay lock` |
+| `hearsay_propose_suite_change` | client that accepts the elicitation (suite and lock written) | client without elicitation (refused, nothing written); declined elicitation (nothing written) |
 | `mandate.*` | Household Orders | unit fixtures: server without version check, server that commits stale lines, server whose scope grows after an injected result, server keyed by session instead of principal, enum enforced only by schema |
 
 ## Determinism

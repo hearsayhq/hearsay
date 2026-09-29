@@ -1,7 +1,7 @@
 # Implementation plan
 
 Deadline: **Fri 23 Oct 2026, 21:00 CEST.** Target: submit by **Sun 18 Oct**; the rest is buffer.
-Thirteen build days (0–12). Each milestone ends with a gate and a demo clip (docs/09 §Clips per
+Sixteen build days (0–15). Each milestone ends with a gate and a demo clip (docs/09 §Clips per
 gate); do not start the next milestone with a red gate. `npm run check` is green at every commit.
 
 ## Scope freeze
@@ -9,8 +9,13 @@ gate); do not start the next milestone with a red gate. `npm run check` is green
 Scope is frozen as of 30 Sep 2026. New ideas go to docs/ROADMAP.md, not into this plan. Only the
 project owner lifts the freeze.
 
-Exception approved by the owner on 30 Sep (D-016), a swap rather than an addition: the Hearsay MCP
-server (FR-034) joins M6 as a should; the scan of public servers (FR-062) drops to could.
+Exceptions approved by the owner on 30 Sep:
+
+- D-016 (superseded in part by D-017): the Hearsay MCP server replaces the public-server scan.
+- D-017: the agent loop is core. M2b (must) adds the Hearsay MCP server, `@hearsayhq/kit`, suite
+  integrity and consent for suite changes, and the `fix-hearsay-findings` skill. Holdout cases
+  (should, M3) and an agent-loop experiment (should, M6, replacing the scan) prove the loop.
+  Not taken: watch mode, PR comments, `hearsay fix`.
 
 ## Milestones
 
@@ -19,14 +24,22 @@ server (FR-034) joins M6 as a should; the scan of public servers (FR-062) drops 
 | 0 | **M0 Foundation** ✅ | Repo, contracts, mandate policy ported with tests, suites validate, spec pack, CI. | `npm run check` green; `validate suites/*.yaml` ok. |
 | 0 | **M0b Spec v2 + rename** ✅ | Docs 00–14 per review; catalog with questions, thresholds and sources; suites; invariant in CLAUDE.md, D-005 and the Household Orders README; rename to Hearsay (`@hearsayhq/*`, binary `hearsay`); CI on ubuntu-24.04. | `npm run check` green; `hearsay validate` ok; `hearsay checks` grouped by question with sources; CI green. |
 | 1–2 | **M1 Runner + Kitchen** ✅ | FR-001–004, 011, 016, 020, 024, 030, 050. `session.ts` with bearer principal; runner (fresh session and principal per case × variant, `after` chains, case checks add to suite checks, planned checks skipped); scripted orchestrator; latency model; report with sources, grouped by question; `hearsay run`; Kitchen server. Checks: `protocol.version`, `case.expect` (incl. `argsMustNotContain`), `latency.*`, `speak.length`, `speak.no_structured_dump` (incl. tool names). Issue text for mcp-voice-simulator to the owner. | `hearsay run suites/kitchen.yaml` exits 0 against the running server, skipped checks listed; every finding has a source; unit tests: a slow fake tool fails `latency.tool` as error, a wrong tool fails `case.expect`. |
-| 3 | **M2 Lint + Smart Home** | FR-031, 051. `lint.*`, `protocol.refusal_as_result`, `speak.lists`; `hearsay lint <url>`; Smart Home flawed/fixed. | Flawed: exactly the (check, severity) pairs in servers/smart-home/README.md except `asr.robust`; fixed: exit 0; a fake server with both -32602 forms fails `protocol.refusal_as_result`. |
-| 4–6 | **M3 Hearing + model** | FR-012, 013, 015, 017. Curated perturbations on utterance and argument level; `asr.robust` in scripted mode; llm orchestrator, Bedrock Converse, `--record`, replay; `hearsay gen-variants` (Polly → noise and telephone band → Transcribe Streaming, no S3) writing a committed variants file; tool-description fragments in `speak.no_structured_dump`. | Smart Home flawed fails `asr.robust` in scripted mode, fixed passes; a recorded kitchen llm run replays with identical findings twice, network off; a variants file for Kitchen is committed and replayed offline. |
-| 7–8 | **M4 Consent + mandate** | FR-005, 021–022, 052. Household Orders: principal, static tool list, enums enforced only by `authorize()`, optional version, version stamped on cart lines and re-authorized at commit, strong and verbal paths. All `consent.*` and `mandate.*`; injection through the scripted compromised model; `protocol.list_changed`. R-03 through the KayLerch bridge, time-boxed to 2 h. | Every `consent.*` and `mandate.*` check passes on Household Orders with and without client elicitation, and fails on a fixture built to violate it; "fifteen" → "fifty" never commits. |
-| 9 | **M5 Console** | FR-040–042. `hearsay serve` (Hono, SSE); text input, browser speech synthesis; timeline with the 500 ms line; findings by question with sources; elicitation as a host modal. | Talk to Kitchen and Household Orders in the browser; timeline and findings update live. |
-| 10–11 | **M6 Ship** | FR-033, 034, 060, 062, 063. README (`npx @hearsayhq/cli`, workflow snippet, MCP config for Claude Code and Kiro), tsup bundle; catalog lists only implemented checks, the rest under Roadmap; Open Source PR (≤ ½ day); Agent Skill `write-hearsay-suite`; Hearsay MCP server `@hearsayhq/mcp`; scan of public servers (could); feedback and friction log final. | Fresh clone → first green run in < 5 min, no keys; PR URL exists; the skill drafts a valid suite from Kitchen's `tools/list`; the Hearsay MCP server passes its own `protocol.*` and `lint.*` checks and `hearsay_run` returns the same findings as the CLI; scan results aggregated in the docs if the scan ran. |
-| 12 | **M7 Submit** | Video cut from the gate clips, Devpost form, disclosures, repo public or reviewers added (docs/09). | Submission checklist fully ticked. |
+| 3 | **M2 Lint + Smart Home** | FR-031, 051. `lint.*`, `protocol.refusal_as_result`, `speak.lists`; `hearsay lint <url>`; Smart Home flawed/fixed, where fixed means the kit applied (`speak`, `refuse`, `confirm`). | Flawed: exactly the (check, severity) pairs in servers/smart-home/README.md except `asr.robust`; fixed: exit 0; a fake server with both -32602 forms fails `protocol.refusal_as_result`. |
+| 4–5 | **M2b Agent loop** (must) | FR-034–038. `@hearsayhq/mcp` (stdio and Streamable HTTP): `hearsay_lint(url)`, `hearsay_run(suitePath, only?: string[] \| "failed")`, `hearsay_explain(checkId)` (rule, source, short before/after), `hearsay_propose_suite_change(path, diff, reason)` (asks the person by elicitation; fail closed); compact findings, traces only with `verbose`. Kit complete: `confirm()` with the verbal fallback of `consent.path`, `withMandate()`; every hint names its kit block. `hearsay lock` and `suite.integrity`. Skill `fix-hearsay-findings`. | A fresh Claude Code session with the Hearsay MCP server and the skill turns Smart Home flawed green without touching `suites/` or the lock; the Hearsay MCP server passes its own `protocol.*` and `lint.*`; `hearsay_propose_suite_change` without client elicitation is refused; clip `m2b-agent-loop`. |
+| 6–8 | **M3 Hearing + model** | FR-012, 013, 015, 017, 018. Curated perturbations on utterance and argument level; `asr.robust` in scripted mode; holdout suites (`--holdout`); llm orchestrator, Bedrock Converse, `--record`, replay; `hearsay gen-variants` (Polly → noise and telephone band → Transcribe Streaming, no S3) writing a committed variants file. | Smart Home flawed fails `asr.robust` in scripted mode, fixed passes; a holdout case runs only with `--holdout` and is reported apart, and `hearsay_run` never loads holdouts; a recorded kitchen llm run replays with identical findings twice, network off; a variants file for Kitchen is committed and replayed offline. |
+| 9–10 | **M4 Consent + mandate** | FR-005, 021–022, 052. Household Orders on `withMandate()` and `confirm()`: principal, static tool list, enums enforced only by `authorize()`, optional version, version stamped on cart lines and re-authorized at commit, strong and verbal paths. All `consent.*` and `mandate.*`; injection through the scripted compromised model; `protocol.list_changed`. R-03 through the KayLerch bridge, time-boxed to 2 h. | Every `consent.*` and `mandate.*` check passes on Household Orders with and without client elicitation, and fails on a fixture built to violate it; "fifteen" → "fifty" never commits. |
+| 11 | **M5 Console** | FR-040–042. `hearsay serve` (Hono, SSE); text input, browser speech synthesis; timeline with the 500 ms line; findings by question with sources; elicitation as a host modal. | Talk to Kitchen and Household Orders in the browser; timeline and findings update live. |
+| 12–14 | **M6 Ship + experiment** | FR-033, 060, 063, 065. README (`npx @hearsayhq/cli`, workflow snippet, MCP config for Claude Code and Kiro), tsup bundle; catalog lists only implemented checks, the rest under Roadmap; Open Source PR (≤ ½ day); skill `write-hearsay-suite`; agent-loop experiment: flawed modes (`HEARSAY_FIXED=0`) for Kitchen and Household Orders, 3 flawed servers × {Hearsay MCP + skill, task description only} × 3 runs, judged against holdouts, cost approved by the owner before the runs; feedback and friction log final. | Fresh clone → first green run in < 5 min, no keys; PR URL exists; the skill drafts a valid suite from Kitchen's `tools/list`; docs/15 holds a reproducible script and the results. |
+| 15 | **M7 Submit** | Video cut from the gate clips, Devpost form, disclosures, repo public or reviewers added (docs/09). | Submission checklist fully ticked. |
 
-At about five build days a week this lands on Sun 18 Oct; at four, by Fri 23 Oct.
+At about five and a half build days a week this lands on Sun 18 Oct; at four and a half, by Fri 23 Oct.
+
+## Blocked by access
+
+If a gate item depends only on external access that has not arrived (AWS credits and Bedrock,
+Polly or Transcribe access), the milestone's other gate items may close and the next milestone may
+start. The blocked items stay listed as open in this table and are finished as soon as access
+arrives (D-020).
 
 ## Automatic cut rule
 
@@ -40,18 +53,18 @@ Already cut: Polly as the console voice, microphone input, the GitHub Action, `c
 `speak.numbers_dates`, `asr.dropped_word`, `asr.filler`, FR-014.
 
 1. R-03 through the KayLerch bridge
-2. Scan of public servers
-3. Trace export in the Open Source PR
-4. Agent Skill `write-hearsay-suite`
-5. Hearsay MCP server `@hearsayhq/mcp`
-6. Live console → report view only, no SSE
-7. Live llm in the video (replay of a recording stays)
-8. `gen-variants` (curated tables stay; AWS Builder then rests on Bedrock)
-9. Open Source PR, including plan B
-10. llm orchestrator and Bedrock (`asr.robust` stays through scripted mode; AWS Builder is lost)
+2. Trace export in the Open Source PR
+3. Skill `write-hearsay-suite`
+4. Live console → report view only, no SSE
+5. Live llm in the video (replay of a recording stays)
+6. `gen-variants` (curated tables stay; AWS Builder then rests on Bedrock)
+7. Holdouts and the agent-loop experiment, as a pair
+8. Open Source PR, including plan B
+9. llm orchestrator and Bedrock (`asr.robust` stays through scripted mode; AWS Builder is lost)
 
 Never cut: `consent.*` and "fifteen" → "fifty", the Smart Home red → green, determinism without
-keys, a source on every finding, the friction log.
+keys, a source on every finding, the friction log, and M2b (MCP server, kit, suite integrity and
+consent for suite changes, the fix skill).
 
 ## Working agreement
 
