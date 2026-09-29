@@ -21,7 +21,7 @@ export interface SpendLimits {
 
 export interface Mandate {
   id: string;
-  /** Bumped on every narrowing or widening. Calls must name the version they read. */
+  /** Bumped on every narrowing or widening. Stamped on every staged cart line (D-009). */
   version: number;
   status: MandateStatus;
   /** Tool names this mandate makes callable. Anything else is refused. */
@@ -37,10 +37,14 @@ export interface Mandate {
   endedReason?: 'REVOKED' | 'EXPIRED';
 }
 
-/** What an incoming tool call claims about itself. None of it is trusted. */
+/**
+ * What an incoming tool call claims about itself. None of it is trusted.
+ * The mandate is looked up by principal on the server (D-009); the caller never names it.
+ */
 export interface MandateCall {
   tool: string;
-  mandateVersion: number;
+  /** Optional: if the caller names a version it read, it must be the current one. */
+  mandateVersion?: number;
   resourceId?: string;
   amountMinor?: number;
 }

@@ -2,7 +2,7 @@ export * from './trace';
 export * from './orchestrator';
 export * from './catalog';
 export * from './report';
-export { SuiteSchema, loadSuite, type Suite, type SuiteCase } from './suite';
+export { SuiteSchema, loadSuite, turnChecksFor, serverChecksFor, type Suite, type SuiteCase } from './suite';
 
 import type { Report } from './report';
 import type { Suite } from './suite';

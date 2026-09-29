@@ -18,6 +18,8 @@ export interface Span {
   name: string;
   startMs: number;
   endMs: number;
+  /** true for asr and speak in scripted and replay runs: a constant from the latency model, not a measurement. */
+  modeled?: boolean;
   attrs?: Record<string, unknown>;
 }
 
@@ -40,7 +42,7 @@ export interface ToolCallRecord {
 export interface ElicitationRecord {
   message: string;
   requestedSchema?: unknown;
-  /** How the simulated human answered (docs/06 §Commit path). */
+  /** How the simulated human answered (docs/06 §Consent tiers). */
   action: 'accept' | 'decline' | 'cancel';
   content?: Record<string, unknown>;
 }
@@ -74,6 +76,10 @@ export interface Trace {
   /** "clean" or a perturbation id such as "asr.number_confusion#2". */
   variant: string;
   orchestrator: OrchestratorMode;
+  /** Who the server should think is speaking: a fresh bearer token per case × variant (D-009). */
+  principal: string;
+  /** Capabilities the engine declared at initialize for this session. */
+  client: { elicitation: boolean };
   server: ServerInfo;
   turns: Turn[];
   startedAt: string;

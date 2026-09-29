@@ -2,11 +2,18 @@
 
 | Id | Decision | Why | Revisit if |
 |---|---|---|---|
-| D-001 | TypeScript for everything; npm workspaces; tsx for dev, tsc for typecheck. | Reference MCP SDK, shared trace types between engine and browser, npx/Action distribution. | A dependency only exists in Python. |
+| D-001 | TypeScript for everything; npm workspaces; tsx for dev, tsc for typecheck. | Reference MCP SDK, shared trace types between engine and browser, npx distribution. | A dependency only exists in Python. |
 | D-002 | Scripted and replay are the default orchestrators; llm is opt-in. | CI and judges need determinism and no keys (NFR-1, FR-060). | — |
-| D-003 | Fresh MCP session per case × variant; `after` chains replayed as setup. | Variants must not contaminate each other; mandate state is per session. | Suites get slow (> 60 s); then share sessions for read-only cases. |
-| D-004 | Modeled ASR and TTS latency in CI; measured in the console. | No speech pipeline in CI; the server's share is what developers can fix. | We add a real Polly → Transcribe round trip. |
-| D-005 | Consequential actions commit only through an accepted elicitation, never a tool. | The WebMCP finding: agents press buttons; only host-rendered consent is a boundary. | MCP adds a stronger consent primitive. |
-| D-006 | Utterances and spoken replies in en-US. | Alexa+ add-ons and the judges are US English; ASR perturbation tables are language-specific. | — |
-| D-007 | Earshot is not a simulator and does not imitate Alexa branding. | Community simulators exist; trademark and endorsement risk. | — |
-| D-008 | Model provider interface shaped like Bedrock Converse. | Bedrock is the default and counts for AWS Builder; other adapters map onto it. | — |
+| D-003 | Fresh MCP session per case × variant; `after` chains replayed as setup. | Variants must not contaminate each other. | Suites get slow (> 60 s); then share sessions for read-only cases. |
+| D-004 | Modeled ASR and TTS latency; `latency.first_audio` is a lower bound in scripted mode. | No speech pipeline in CI; the server's share is what developers can fix. | We add a real Polly → Transcribe round trip to runs. |
+| D-005 | No tool commits on its own. A commit happens through an accepted elicitation, or, only when the client lacks elicitation, through a single-use token the server issued after speaking items and amount (graded warn). Never add a tool that edits limits or answers elicitations. | The WebMCP finding: agents press buttons; host-rendered consent is the only real boundary. Amazon's example client declares no elicitation, so a graded fallback is needed. | MCP adds a stronger consent primitive, or Alexa+ confirms elicitation support. |
+| D-006 | Utterances and spoken replies in en-US. | Alexa+ add-ons and the judges are US English; perturbation tables are language-specific. | — |
+| D-007 | Hearsay is not a simulator and does not imitate Alexa branding. "for Alexa+", "unofficial". | Community simulators exist; trademark and endorsement risk. | — |
+| D-008 | Model provider interface shaped like Bedrock Converse; Bedrock only. | Bedrock is the default and counts for AWS Builder; other adapters only as fallback (R-06). | Bedrock access fails. |
+| D-009 | Mandates are bound to the principal (bearer token), not the MCP session. The version is optional per call; if named, it must match. Every staged line carries its version and is re-authorized at commit. | Alexa+ sessions have no explicit id; a model will not reliably carry a version, so safety must not depend on it. The real race in voice is stage → narrow → checkout. | Alexa+ documents stable session ids. |
+| D-010 | Consent tiers: strong (elicitation) pass, verbal (token) warn, fail closed info, none error. | Honest grading when the host may lack elicitation (friction log #2). | Same as D-005. |
+| D-011 | Amazon and MCP thresholds are fixed; suites only tune Hearsay's own (`firstAudioMs`, `spokenChars`, `listItems`). | The catalog makes Amazon's requirements executable; a suite must not be able to loosen them. | Amazon changes a number; then the catalog changes, with the source. |
+| D-012 | Reference servers keep a static tool list; `tools/list_changed` is sent but never relied on. | Alexa+ refreshes tools only on deployment (friction log #3). | Alexa+ honours runtime list changes. |
+| D-013 | Scope freeze from 30 Sep 2026; new ideas go to docs/ROADMAP.md; only the owner lifts it. | Thirteen build days, one deadline. | The owner lifts it. |
+| D-014 | Name: Hearsay. npm scope `@hearsayhq`, binary `hearsay`, repo `hearsayhq/hearsay`. The unscoped npm name belongs to another library, so docs say `npx @hearsayhq/cli`. | "Earshot" collided with near-identical voice tools and the `@earshot` scope was taken. | After the hackathon (R-07). |
+| D-015 | Case `checks` add to suite checks. `case.expect` judges the clean variant; variants are judged by `asr.robust`, `consent.misheard_amount` and turn checks; in scripted mode perturbations reach the server through argument values. | A literal planner makes the server-side effect of a mishearing testable without a model. | — |

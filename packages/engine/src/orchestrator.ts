@@ -1,10 +1,11 @@
 /**
  * The orchestrator stands in for Alexa+'s own planner, which is not available
  * outside Amazon's partner program (hackathon FAQ). Three modes, one interface
- * (docs/04_ARCHITECTURE.md §Orchestrators):
+ * (docs/04_ARCHITECTURE.md §Packages, D-002):
  *
  *   scripted  the suite names the tool call; no model, no cost, fully deterministic.
- *             Tests what the SERVER does: latency, speakability, mandate, protocol.
+ *             Tests what the SERVER does: latency, speakability, consent, protocol.
+ *             Perturbations reach the server through argument values (docs/03).
  *   llm       a real model picks tools from the live tool list.
  *             Tests whether the tool SURFACE is understandable.
  *   replay    llm runs recorded as cassettes and replayed byte-for-byte.
@@ -50,7 +51,7 @@ export interface ModelResponse {
   usage?: { inputTokens: number; outputTokens: number };
 }
 
-/** Adapters: bedrock (default, AWS Builder), anthropic, openai-compatible (e.g. DeepSeek). */
+/** Adapters: bedrock (default, AWS Builder). anthropic and openai-compatible only as fallback (R-06). */
 export interface ModelProvider {
   readonly id: string;
   converse(req: ModelRequest): Promise<ModelResponse>;

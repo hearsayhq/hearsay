@@ -39,7 +39,7 @@ export function authorize(mandate: Mandate | undefined, call: MandateCall, now: 
       { expiredAt: mandate.expiresAt },
     );
   }
-  if (call.mandateVersion !== mandate.version) {
+  if (call.mandateVersion !== undefined && call.mandateVersion !== mandate.version) {
     throw new MandateError(
       'POLICY_CHANGED',
       `Call made against mandate v${call.mandateVersion}; current is v${mandate.version}.`,

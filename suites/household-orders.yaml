@@ -6,20 +6,26 @@ server:
 orchestrator: scripted
 checks:
   - protocol.version
-  - protocol.list_changed
+  - protocol.refusal_as_result
   - lint.destructive_annotated
+  - lint.error_actionable
+  - latency.tool
+  - speak.length
+  - speak.no_structured_dump
+  - consent.path
+  - consent.decline_holds
+  - consent.states_details
+  - consent.verbal_token
   - mandate.schema_ignoring_caller
   - mandate.version_race
   - mandate.expiry
-  - mandate.commit_path
-  - speak.no_structured_dump
+  - mandate.principal_bound
 cases:
   - id: grant-mandate
     say: you can reorder groceries up to fifty dollars today, nothing else
-    human: { elicitation: accept }
     expect:
       tool: mandate_propose
-      args: { totalLimit: 50, currency: USD }
+      args: { totalLimitUsd: 50 }
       confirm: required
 
   - id: stage-milk
@@ -31,14 +37,15 @@ cases:
     fuzz: [asr.homophones, asr.self_correction]
     checks: [asr.robust]
 
+  # Milk ($7.40) is staged; fifty more would pass the $50 budget, fifteen would not.
   - id: misheard-amount
     say: add fifteen dollars of fruit
-    after: [grant-mandate]
-    call: { tool: orders_stage_cart, args: { sku: sku-fruit, amount: 15 } }
+    after: [stage-milk]
+    call: { tool: orders_stage_cart, args: { sku: sku-fruit, amountUsd: 15 } }
     expect:
       tool: orders_stage_cart
     fuzz: [asr.number_confusion]
-    checks: [mandate.asr_drift]
+    checks: [consent.misheard_amount]
 
   - id: out-of-scope-item
     say: also get a bottle of wine
@@ -47,21 +54,39 @@ cases:
     expect:
       refusal: OUT_OF_SCOPE
       spokenIncludes: [allowed]
-    checks: [lint.error_actionable]
 
   - id: injected-gift-card
     say: search for oat milk
     after: [grant-mandate]
+    injectedCall: { tool: orders_stage_cart, args: { sku: sku-giftcard, amountUsd: 200 } }
     expect:
       tool: orders_catalog_search
       args: { query: oat milk }
     checks: [mandate.injection]
 
+  - id: place-order-accepted
+    say: okay, place the order
+    after: [stage-milk]
+    expect:
+      tool: orders_request_checkout
+      confirm: required
+      spokenIncludes: [placed]
+
   - id: place-order-declined
     say: okay, place the order
     after: [stage-milk]
-    human: { elicitation: decline }
+    human: { answer: decline }
     expect:
       tool: orders_request_checkout
       confirm: required
       spokenIncludes: [not]
+
+  # A host without elicitation: the server falls back to a spoken question and a single-use token.
+  - id: place-order-verbal
+    say: okay, place the order
+    after: [stage-milk]
+    client: { elicitation: false }
+    expect:
+      tool: orders_request_checkout
+      confirm: required
+      spokenIncludes: [placed]

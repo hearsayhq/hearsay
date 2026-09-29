@@ -1,12 +1,22 @@
-# Earshot
+# Hearsay
 
-**Test and trace engine for MCP servers behind voice assistants.**
-Unofficial; built for Alexa+ add-on developers; not affiliated with Amazon.
+**Preflight checks for Alexa+ MCP servers. Never act on hearsay.**
+Unofficial; built for Alexa+ add-on developers; not affiliated with or endorsed by Amazon.
 
-Earshot runs utterances against a live MCP server, perturbs them the way speech recognition does,
-measures where every millisecond of a spoken turn goes, judges replies as something a person has
-to listen to, and checks that consequential actions only happen with the person's consent.
-It gives you a trace to look at and a verdict CI can block on.
+In law, hearsay is a second-hand statement that doesn't count as evidence. Hearsay makes sure
+your server never moves money on what the assistant only thinks it heard.
+
+A crash test for voice add-ons: Hearsay plays through what happens when someone talks to your MCP
+server — with mishearings, with waiting, with money — and turns the pull request red where it
+breaks. Every check answers one of four questions:
+
+- **Did it hear me right?** Misheard numbers and words; tool names and enums a model can map speech onto.
+- **Do I have to wait?** Tool round trips under 500 ms; modeled time to first audio.
+- **Can I listen to this?** No JSON, ids or tool names; short replies; at most five options.
+- **Did I agree?** Payments, deletions and cancellations only after a confirmation that states what and how much.
+
+Every finding cites its source: Amazon's functional requirements for add-ons, the MCP
+specification, or Hearsay's own rule.
 
 > Status: **M0 foundation.** Contracts, suite format, check catalog and the mandate policy are in
 > place. The runner lands in M1. See [docs/07](docs/07_IMPLEMENTATION_PLAN.md).
@@ -16,19 +26,22 @@ It gives you a trace to look at and a verdict CI can block on.
 ```sh
 npm install
 npm run check
-npm run earshot -- validate suites/*.yaml
-npm run earshot -- checks
+npm run hearsay -- validate suites/*.yaml
+npm run hearsay -- checks
 ```
+
+Once published: `npx @hearsayhq/cli run suites/kitchen.yaml` (the unscoped npm name `hearsay` is
+an unrelated library).
 
 ## Layout
 
 ```
 packages/mandate   mandate policy (authorize, expiry, limits)
 packages/engine    session, runner, orchestrators, perturbations, checks, report
-packages/cli       earshot validate | checks | run | lint | serve
-packages/web       local console: voice, timeline, findings
+packages/cli       hearsay validate | checks | run | lint | gen-variants | serve
+packages/web       local console: talk, timeline, findings
 servers/           reference MCP servers: kitchen, smart-home, household-orders
-suites/            YAML suites (+ cassettes for replay)
+suites/            YAML suites (+ cassettes and recorded variants for replay)
 docs/              spec pack
 ```
 
@@ -46,6 +59,8 @@ docs/              spec pack
 [Submission](docs/09_DEMO_AND_SUBMISSION.md) ·
 [Decisions](docs/12_DECISIONS.md) ·
 [Risks](docs/13_RISK_REGISTER.md) ·
+[Sources](docs/14_SOURCE_REGISTER.md) ·
+[Roadmap](docs/ROADMAP.md) ·
 [Friction log](docs/FRICTION_LOG.md)
 
 ## License

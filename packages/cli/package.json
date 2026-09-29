@@ -1,5 +1,5 @@
 {
-  "name": "@earshot/cli",
+  "name": "@hearsayhq/cli",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -7,9 +7,9 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@earshot/engine": "*"
+    "@hearsayhq/engine": "*"
   },
   "bin": {
-    "earshot": "./src/index.ts"
+    "hearsay": "./src/index.ts"
   }
 }

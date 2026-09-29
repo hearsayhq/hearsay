@@ -32,6 +32,11 @@ describe('authorize (ordering carried over from webMCP policy.ts)', () => {
   it('expires by the clock', () => expect(code(() => authorize(base(), call, T0 + 60_000))).toBe('MANDATE_EXPIRED'));
   it('reports a version race before scope', () =>
     expect(code(() => authorize(base({ version: 2 }), { ...call, tool: 'other' }, T0))).toBe('POLICY_CHANGED'));
+  it('checks the current mandate when the caller names no version (D-009)', () => {
+    const { mandateVersion: _, ...unversioned } = call;
+    expect(code(() => authorize(base({ version: 2 }), unversioned, T0))).toBe('OK');
+    expect(code(() => authorize(base({ version: 2 }), { ...unversioned, resourceId: 'sku-wine' }, T0))).toBe('OUT_OF_SCOPE');
+  });
   it('refuses tools the mandate never named', () =>
     expect(code(() => authorize(base(), { ...call, tool: 'orders_place' }, T0))).toBe('OUT_OF_SCOPE'));
   it('refuses resources the mandate never named', () =>
