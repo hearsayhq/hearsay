@@ -13,11 +13,14 @@ import { runSuite } from '../runner';
 import { writeReport } from '../report-file';
 import { loadSuite } from '../suite';
 import { ConsoleSession, type ConsoleEvent } from './session-hub';
+import { staticFiles } from './static';
 
 export interface ServeOptions {
   port?: number;
   /** Project root: suites/ and reports/ live here. */
   cwd?: string;
+  /** The built console to serve at `/` (the published CLI ships it; in the repo, Vite serves it). */
+  consoleDir?: string;
 }
 
 export function createConsoleApp(opts: ServeOptions = {}) {
@@ -107,8 +110,11 @@ export function createConsoleApp(opts: ServeOptions = {}) {
     }
   });
 
+  const site = new Hono().route('/', app);
+  if (opts.consoleDir) site.get('*', staticFiles(opts.consoleDir));
+
   return {
-    app,
+    app: site,
     async closeAll() {
       // Kill servers first and all at once: on shutdown there may be no time for a second step.
       await Promise.all(started.map((s) => s.stop()));
@@ -122,7 +128,7 @@ export function serveConsole(opts: ServeOptions = {}): Promise<{ url: string; cl
   return new Promise((resolveUrl) => {
     const server = serveNode({ fetch: app.fetch, port: opts.port ?? 4100, hostname: '127.0.0.1' }, (info) =>
       resolveUrl({
-        url: `http://localhost:${info.port}/api`,
+        url: `http://localhost:${info.port}`,
         close: async () => {
           await closeAll();
           await new Promise<void>((r) => server.close(() => r()));

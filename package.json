@@ -20,10 +20,12 @@
     "server:kitchen": "tsx servers/kitchen/src/index.ts",
     "server:smart-home": "tsx servers/smart-home/src/index.ts",
     "server:orders": "tsx servers/household-orders/src/index.ts",
-    "mcp": "tsx packages/mcp/src/index.ts"
+    "mcp": "tsx packages/mcp/src/index.ts",
+    "pack": "node scripts/pack.mjs"
   },
   "devDependencies": {
     "@types/node": "^22.20.4",
+    "tsup": "^8.5.1",
     "tsx": "^4.23.15",
     "typescript": "^5.9.3",
     "vitest": "^5.0.2"
