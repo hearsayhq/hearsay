@@ -14,8 +14,8 @@
 | R-10 | Implying Amazon endorsement. | L | M | "for Alexa+", "unofficial"; no Echo imagery. | M5, M7 |
 | R-11 | Judges see Hearsay as duplicating Amazon's Local Inspector. | M | M | Positioning line and table in docs/00; show a finding the Inspector cannot produce (a misheard amount) in the first 20 seconds of the video. | M7 |
 | R-12 | Sixteen build days do not fit before Sun 18 Oct. | M | H | Automatic cut rule after M3 (docs/07); blocked-by-access rule (D-020); five days of buffer to the deadline. | M3 |
-| R-13 | A coding agent makes itself green by editing the tests. | H | H | Lock and `suite.integrity`, consent for suite changes, holdouts (docs/06); honest that the lock detects rather than prevents. | M2b |
-| R-14 | Claude Code or Kiro do not support MCP elicitation, so `hearsay_propose_suite_change` can never be accepted there. | M | L | Fail closed is safe; the person edits suites by hand. Verify in M2b; friction log if missing. | M2b |
+| R-13 | A coding agent makes itself green by editing the tests. | H | H | Lock and `suite.integrity`, holdouts, normal PR review with optional CODEOWNERS (docs/03); honest that the lock detects rather than prevents. | M2b |
+| R-14 | *Closed (D-021):* no suite-change tool, so client elicitation support in coding agents does not matter. | — | — | — | — |
 | R-15 | The agent-loop experiment costs more than planned. | M | L | Estimate first (docs/15), owner approves before any run; the pair can be cut (docs/07). | M6 |
 
 L = likelihood, I = impact.

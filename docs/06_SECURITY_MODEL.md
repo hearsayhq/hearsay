@@ -1,12 +1,15 @@
 # Security model
 
-Carried over from the WebMCP Mandate Compiler and adapted to a voice host. The principle does not
-change:
+> **Consent is for your customers, not for you.** Grant once, act freely within the limit, confirm
+> only when money moves.
 
-> **A schema communicates authority. It never confers it.**
+This is about the add-on's customers. Nothing in the developer's workflow asks the developer for
+consent (D-021).
 
-Tool lists and enums narrowed to a mandate are a courtesy to a well-behaved model. The boundary
-is `authorize()` in `@hearsayhq/mandate`, called by the server on every mandate-scoped call.
+Carried over from the WebMCP Mandate Compiler and adapted to a voice host, the enforcement
+principle does not change: a schema communicates authority, it never confers it. Tool lists and
+enums narrowed to a mandate are a courtesy to a well-behaved model. The boundary is `authorize()`
+in `@hearsayhq/mandate`, called by the server on every mandate-scoped call.
 
 ## Actors
 
@@ -41,6 +44,12 @@ without an OAuth server of their own; in tests each case × variant is a new pri
 | None | — | anything commits without either | error |
 
 Using the verbal path although the client can elicit is a warn: the server chose the weaker path.
+
+Asking too often is a fault too. Inside an active mandate the person has already said yes to the
+limit: staging items, reading the cart and other actions that commit nothing run without asking,
+and read-only tools never ask. A confirmation belongs to the commit (money moves) or to an action
+outside the mandate. `consent.over_confirmation` warns otherwise, and `confirm()` in
+`@hearsayhq/kit` only asks in those two cases.
 
 Why verbal is only a warn: in the strong tier the *host* asks the person and the model never sees
 the answer. In the verbal tier the model hears "yes" and calls `confirmTool` — and a model can
@@ -78,22 +87,6 @@ settled, the reference server implements both tiers and Hearsay grades them hone
   as an enum, but the server validates loosely and lets `authorize()` refuse. Otherwise the SDK's
   input validation answers first, the person hears "MCP error -32602: Input validation error…",
   and the refusal code is lost (`protocol.refusal_as_result`, `mandate.schema_ignoring_caller`).
-
-## Hearsay applies its own consent rule to its tests
-
-A coding agent fixing a server has one cheap way to turn red into green: change the test. Hearsay
-treats that like any consequential action.
-
-- **Locked suites.** `hearsay lock` records a hash per suite; `suite.integrity` fails any run
-  whose suites changed since. The lock is committed, so changing it shows in review.
-- **Consent for suite changes.** On the MCP server, `hearsay_propose_suite_change(path, diff,
-  reason)` changes nothing itself. It asks the person by elicitation, showing the diff in plain
-  text; only an accept writes the suite and the lock. A client without elicitation gets a refusal
-  (fail closed). No other tool writes suites.
-- **Holdouts.** Cases the agent never sees (`--holdout`) decide whether a fix generalises.
-- **Honest limit.** The lock detects, it does not prevent: an agent with a shell can edit a suite
-  and run `hearsay lock` itself. That is visible in the diff of the committed lock, and the
-  experiment (docs/15) counts such attempts with hashes kept outside the agent's workspace.
 
 ## What voice changes compared to WebMCP
 

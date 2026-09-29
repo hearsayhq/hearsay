@@ -9,9 +9,9 @@ Judges may stop at 3:00. Best material first. M7 only cuts: every shot comes fro
 |---|---|---|
 | 0:00 | Console, Household Orders: "add fifteen dollars of fruit" heard as "fifty" → `LIMIT_EXCEEDED`, spoken | "Speech recognition changes numbers. Hearsay makes sure that never turns into a payment nobody agreed to." |
 | 0:20 | Four questions on screen; Local Inspector comparison line | "Amazon's Local Inspector checks what your server declares. Hearsay tests what happens when a person talks to it." |
-| 0:35 | Smart Home flawed: JSON read aloud, "livingroom" misheard, whole house off without asking, 1.1 s tool | "This one works fine in a chat client. Spoken, it's broken. Every finding cites the rule it breaks." |
-| 1:05 | Fix flag, rerun, green; CLI exit code; the PR check turns green | "Same suite in CI, deterministic, no API keys." |
-| 1:25 | "place the order" → elicitation modal → decline → nothing committed | "No tool can buy anything. Only the person's yes, asked by the host, can." |
+| 0:35 | Smart Home flawed: JSON read aloud, "livingroom" misheard, whole house off without asking, 1.1 s tool → kit applied, green, exit code 0 | "This one works fine in a chat client. Spoken, it's broken. Every finding cites the rule it breaks, and the fix." |
+| 1:05 | An agent edits an expectation in the suite → `suite.integrity` red | "And it can't cheat. Hearsay locks your suite and keeps test cases your agent never sees." |
+| 1:25 | Household Orders: grant once, stage without being asked, "place the order" → elicitation modal → decline → nothing committed | "Consent is for your customers, not for you. Grant once, act freely within the limit, confirm only when money moves." |
 | 1:50 | Same with a client without elicitation: spoken question, token, warn | "Without elicitation, a model could hallucinate that yes. Hearsay says so." |
 | 2:15 | `gen-variants`: Polly → phone line → Transcribe, the heard text in the suite | "Real mishearings, recorded once, replayed forever." |
 | 2:35 | The agent loop (clip `m2b-agent-loop`), then the experiment's one sentence; catalog, repo, license | "Hearsay itself is an MCP server and Agent Skills: your coding agent runs it, fixes what it finds, and can't cheat by editing the tests. Open source, for Alexa+, unofficial." |
@@ -28,6 +28,7 @@ which video line it serves.
 |---|---|---|
 | M1 | `m1-kitchen-green` | `npm run server:kitchen` in one pane, `hearsay run suites/kitchen.yaml` in the other: green, skipped checks listed, report path |
 | M2 | `m2-smart-home-red-green` | flawed run red with findings by question → `HEARSAY_FIXED=1` → green, exit codes shown |
+| M2b | `m2b-cheat` | an edit to an expectation in `suites/smart-home.yaml` after `hearsay lock` → `suite.integrity` error, run red |
 | M2b | `m2b-agent-loop` | a fresh Claude Code session with the Hearsay MCP server and `fix-hearsay-findings`: `hearsay_run` on Smart Home flawed, fixes in server code only, reruns `only: "failed"`, full run green; `git diff suites/` empty |
 | M3 | `m3-hearing` | "livingroom" `asr.robust` red → fixed green; replay run twice with the network off; `gen-variants` writing the variants file |
 | M4 | `m4-consent` | fifteen → fifty refused; decline → nothing committed; verbal path graded warn |

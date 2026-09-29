@@ -31,8 +31,7 @@ pull request goes red.
    it against the live server, clean and misheard, prints red or green, and runs in CI without
    API keys.
 2. Rule catalog. Amazon's functional requirements as executable checks, plus consent rules from
-   the WebMCP Mandate Compiler: money moves only on a yes, also when a word was misheard. Every
-   finding names its source.
+   the WebMCP Mandate Compiler. Every finding names its source.
 3. Console. Talk to a server and watch the timeline and findings. For debugging and the demo.
 
 1 and 2 are the product. The console and the reference servers are packaging.
@@ -43,9 +42,9 @@ Hearsay itself is an MCP server and a set of Agent Skills — the same form as A
 developer tools. A coding agent building an add-on (Claude Code, Kiro) calls `hearsay_run` on
 its server, reads findings that name the rule and the `@hearsayhq/kit` building block that fixes
 them, changes only server code, and reruns until green. It cannot make itself green by editing
-the tests: suites are locked (`suite.integrity`), a suite change needs a person's yes through
-elicitation (`hearsay_propose_suite_change`), and holdout cases the agent never sees decide
-whether the fix is real.
+the tests: suites are locked (`suite.integrity` turns the run red), legitimate suite changes go
+through normal pull requests, and holdout cases the agent never sees decide whether the fix is
+real. No step of this asks the developer for anything.
 
 ## Four questions
 
@@ -63,6 +62,9 @@ Precondition, not a fifth question: Can it connect? (protocol version, transport
 
 The first and the last question together are what nobody else tests: a misheard word must never
 lead to a payment nobody agreed to.
+
+> **Consent is for your customers, not for you.** Grant once, act freely within the limit, confirm
+> only when money moves.
 
 ## Positioning
 

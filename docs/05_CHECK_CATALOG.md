@@ -30,7 +30,8 @@ decides. `catalog.test.ts` fails if an id exists in code but not here.
 
 - `suite.integrity` — Always on. If `suites/.hearsay-lock` exists, every suite in the run is hashed
   and compared; a locked suite whose content changed since `hearsay lock`: **error**. A run that
-  changed its own expectations is never green (docs/06 §Hearsay applies its own consent rule).
+  changed its own expectations is never green; legitimate changes go through normal pull requests
+  (docs/03 §Holdouts and the lock).
 
 - `protocol.version` — The engine initializes offering `2025-11-25` over Streamable HTTP; if the
   server cannot negotiate it: **error** (MCP Toolkit quickstart; hackathon rules). A second
@@ -125,6 +126,11 @@ profile's commit paths. `write-hearsay-suite` proposes these cases for every des
   the person could hear the misheard amount and decline. Pass: refused (e.g. `LIMIT_EXCEEDED`),
   or the confirmation states the heard amount and the simulated person, who knows the intended
   amount from the clean case, declines. A perturbed amount that commits: **error**.
+- `consent.over_confirmation` — A confirmation (elicitation or verbal question) during a call to a
+  tool declaring `readOnlyHint: true`: **warn** (Amazon: confirmation is for high-consequence
+  actions such as payment, cancellation, deletion). A confirmation during a call that commits
+  nothing (for the mandate profile: `mandate_status.spentUsd` and the order count unchanged) while
+  an active mandate covers it: **warn** (grant once, act freely within the limit; docs/06).
 - `lint.destructive_annotated` — Active probe: each tool declaring `readOnlyHint: true` with no
   required arguments is called twice in a fresh session; if the two reads differ: **error**. A
   tool named with a mutating verb (set, apply, update, delete, cancel, start, add, place, order,
