@@ -20,6 +20,9 @@ npm install
 npm run check                              # typecheck + tests; must be green at every commit
 npm run hearsay -- validate suites/*.yaml
 npm run hearsay -- checks                  # catalog by question, with thresholds and sources
+npm run hearsay -- run suites/kitchen.yaml # starts the server from the suite, exit 1 on errors
+npm run hearsay -- lock                    # re-lock suites after an approved suite change
+npm run mcp                                # Hearsay as an MCP server on stdio (--http for HTTP)
 npm run server:kitchen                     # reference servers on :4101 / :4102 / :4103
 npm run dev:web                            # console on :5180 (needs `hearsay serve` from M5)
 ```

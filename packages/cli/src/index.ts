@@ -6,10 +6,13 @@
  *   run <suite.yaml...>        run suites, print findings, exit 1 on error      (M1)
  *   lint <url>                 server-scope checks only, no utterances          (M2)
  *   gen-variants <suite.yaml>  record real mishearings via TTS → noise → STT    (M3)
+ *   lock [suite.yaml...]       hash suites into suites/.hearsay-lock            (works now)
  *   serve                      engine API + live traces for the console         (M5)
  */
 import { parseArgs } from 'node:util';
-import { CHECKS, ConnectError, IMPLEMENTED, PERTURBATIONS, QUESTIONS, QUESTION_ORDER, ensureServer, exitCodeFor, lintServer, loadSuite, runSuite, writeReport } from '@hearsayhq/engine';
+import { readdir } from 'node:fs/promises';
+import { join } from 'node:path';
+import { CHECKS, ConnectError, IMPLEMENTED, PERTURBATIONS, QUESTIONS, QUESTION_ORDER, ensureServer, exitCodeFor, lintServer, loadSuite, lockSuites, runSuite, writeReport } from '@hearsayhq/engine';
 import { printReport } from './print';
 
 const [cmd, ...args] = process.argv.slice(2);
@@ -48,6 +51,8 @@ async function main(): Promise<number> {
       return run(args);
     case 'lint':
       return lint(args);
+    case 'lock':
+      return lock(args);
     case 'gen-variants':
     case 'serve':
       console.error(`"hearsay ${cmd}" is planned; see docs/07_IMPLEMENTATION_PLAN.md.`);
@@ -89,7 +94,7 @@ async function run(argv: string[]): Promise<number> {
       return 2;
     }
     try {
-      const report = await runSuite(suite, { only: values.only, orchestrator });
+      const report = await runSuite(suite, { only: values.only, orchestrator, suitePath: file });
       const path = await writeReport(report);
       printReport(report, path, values.verbose);
       if (exitCodeFor(report)) exit = 1;
@@ -101,6 +106,14 @@ async function run(argv: string[]): Promise<number> {
     }
   }
   return exit;
+}
+
+async function lock(argv: string[]): Promise<number> {
+  const files = argv.length ? argv : (await readdir('suites')).filter((f) => f.endsWith('.yaml') && !f.endsWith('.holdout.yaml')).map((f) => join('suites', f));
+  for (const f of files) await loadSuite(f); // never lock an invalid suite
+  const path = await lockSuites(files);
+  console.log(`locked ${files.length} suite${files.length === 1 ? '' : 's'} in ${path}`);
+  return 0;
 }
 
 async function lint(argv: string[]): Promise<number> {
@@ -119,7 +132,7 @@ async function lint(argv: string[]): Promise<number> {
 }
 
 function usage(): number {
-  console.error('usage: hearsay <validate|checks|run|lint|gen-variants|serve> [...]');
+  console.error('usage: hearsay <validate|checks|run|lint|lock|gen-variants|serve> [...]');
   return 2;
 }
 

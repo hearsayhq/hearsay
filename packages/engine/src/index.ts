@@ -10,3 +10,4 @@ export { writeReport } from './report-file';
 export { firstAudio } from './latency';
 export { IMPLEMENTED, LINT_CHECKS } from './checks/index';
 export { lintServer } from './lint-server';
+export { lockSuites, checkSuiteIntegrity, lockPathFor, LOCK_FILE, type SuiteLock, type IntegrityResult } from './lock';
