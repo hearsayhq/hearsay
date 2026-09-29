@@ -79,6 +79,8 @@ export interface Trace {
   caseId: string;
   /** "clean" or a perturbation id such as "asr.number_confusion#2". */
   variant: string;
+  /** What the perturbation changed, word for word (empty for clean). */
+  edits?: Array<{ from: string; to: string }>;
   orchestrator: OrchestratorMode;
   /** Who the server should think is speaking: a fresh bearer token per case × variant (D-009). */
   principal: string;

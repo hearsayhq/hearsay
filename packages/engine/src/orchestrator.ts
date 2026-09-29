@@ -24,6 +24,8 @@ export interface TurnContext {
   history: Turn[];
   /** Instrumented: records a span and a ToolCallRecord on the current turn. */
   callTool(name: string, args: Record<string, unknown>): Promise<ToolResult>;
+  /** Records a planning span (one model call) of `ms` on the current turn. */
+  recordPlan?(ms: number, name?: string): void;
 }
 
 export interface Orchestrator {
@@ -54,13 +56,21 @@ export interface ModelResponse {
 /** Adapters: bedrock (default, AWS Builder). anthropic and openai-compatible only as fallback (R-06). */
 export interface ModelProvider {
   readonly id: string;
-  converse(req: ModelRequest): Promise<ModelResponse>;
+  /** `durationMs` is set by replay (the recorded time) and recording providers. */
+  converse(req: ModelRequest): Promise<ModelResponse & { durationMs?: number }>;
 }
 
-/** Replay cassette: request hash → recorded response. Checked into suites/cassettes/. */
+/** Replay cassette: request hash → recorded response and its duration. Checked into suites/cassettes/. */
+export interface CassetteEntry {
+  request: ModelRequest;
+  response: ModelResponse;
+  /** Wall clock of the recorded call; replayed as the plan span (docs/03 §Latency model). */
+  durationMs: number;
+}
+
 export interface Cassette {
   provider: string;
   model: string;
   recordedAt: string;
-  entries: Record<string, ModelResponse>;
+  entries: Record<string, CassetteEntry>;
 }

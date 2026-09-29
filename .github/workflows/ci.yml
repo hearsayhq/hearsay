@@ -16,6 +16,9 @@ jobs:
   check:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
+    env:
+      # Holdout cases (FR-018) live only in secrets; absent on forks, where the step is skipped.
+      HOLDOUT_SMART_HOME: ${{ secrets.HOLDOUT_SMART_HOME }}
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -26,5 +29,12 @@ jobs:
       - run: npm run check
       - run: npm run hearsay -- run suites/kitchen.yaml
       - run: npm run hearsay -- run suites/smart-home.yaml
+        env:
+          HEARSAY_FIXED: '1'
+      - name: Holdout cases
+        if: env.HOLDOUT_SMART_HOME != ''
+        run: |
+          printf '%s\n' "$HOLDOUT_SMART_HOME" > suites/smart-home.holdout.yaml
+          npm run hearsay -- run suites/smart-home.yaml --holdout
         env:
           HEARSAY_FIXED: '1'

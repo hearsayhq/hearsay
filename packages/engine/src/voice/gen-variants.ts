@@ -1,0 +1,43 @@
+/**
+ * `hearsay gen-variants` (FR-017): speak each asr.roundtrip case through TTS, a noisy
+ * phone line and STT, and keep what was heard differently. The file is committed; runs
+ * replay it (asr.roundtrip) and never call AWS.
+ */
+import { mkdir, writeFile } from 'node:fs/promises';
+import { dirname } from 'node:path';
+import { recordedPathFor, type RecordedVariants } from '../perturb/recorded';
+import type { Suite } from '../suite';
+import { phoneChannel } from './channel';
+import type { Stt, Tts } from './aws';
+
+export const DEFAULT_TRIALS = [
+  { snrDb: 20, seed: 1 },
+  { snrDb: 10, seed: 2 },
+  { snrDb: 5, seed: 3 },
+];
+
+const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9' ]+/g, ' ').replace(/\s+/g, ' ').trim();
+
+export async function genVariants(suite: Suite, suitePath: string, tts: Tts, stt: Stt, trials = DEFAULT_TRIALS): Promise<{ path: string; file: RecordedVariants } | undefined> {
+  const roundtrip = suite.cases.filter((x) => x.fuzz.includes('asr.roundtrip'));
+  if (!roundtrip.length) return undefined;
+  const file: RecordedVariants = {
+    suite: suite.suite,
+    provenance: { voice: tts.id, provider: stt.id, recordedAt: new Date().toISOString(), channel: `white noise at ${trials.map((t) => t.snrDb).join('/')} dB SNR, 300–3400 Hz, 8 kHz` },
+    cases: {},
+  };
+  for (const c of roundtrip) {
+    const said = Array.isArray(c.say) ? c.say.at(-1)! : c.say;
+    const speech = await tts.synthesize(said);
+    const heard: RecordedVariants['cases'][string] = [];
+    for (const t of trials) {
+      const text = await stt.transcribe(phoneChannel(speech, t));
+      if (text && norm(text) !== norm(said) && !heard.some((h) => norm(h.heard) === norm(text))) heard.push({ heard: text, snrDb: t.snrDb, seed: t.seed });
+    }
+    file.cases[c.id] = heard;
+  }
+  const path = recordedPathFor(suitePath, suite.suite);
+  await mkdir(dirname(path), { recursive: true });
+  await writeFile(path, JSON.stringify(file, null, 2) + '\n');
+  return { path, file };
+}

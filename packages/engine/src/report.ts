@@ -24,6 +24,8 @@ export interface CaseResult {
   trace: Trace;
   findings: Finding[];
   verdict: 'pass' | 'fail';
+  /** A holdout case (FR-018): never shown to agents, counted apart. */
+  holdout?: true;
 }
 
 export interface Report {
@@ -38,8 +40,11 @@ export interface Report {
   cases: CaseResult[];
   /** Checks the suite asked for that are not implemented yet (FR-024). Never counted as passed. */
   skippedChecks: string[];
+  /** Visible cases and server findings. */
   summary: { cases: number; failed: number; errors: number; warnings: number; infos: number; skipped: number };
+  /** Holdout cases, counted apart; present only for `--holdout` runs. */
+  holdout?: { cases: number; failed: number; errors: number; warnings: number; infos: number };
 }
 
-/** CI gate (FR-030): any error-severity finding fails the run. */
-export const exitCodeFor = (r: Report): 0 | 1 => (r.summary.errors > 0 ? 1 : 0);
+/** CI gate (FR-030): any error-severity finding, visible or holdout, fails the run. */
+export const exitCodeFor = (r: Report): 0 | 1 => (r.summary.errors > 0 || (r.holdout?.errors ?? 0) > 0 ? 1 : 0);

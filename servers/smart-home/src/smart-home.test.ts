@@ -1,6 +1,6 @@
 /**
  * FR-051 gate: flawed mode produces exactly the (check, severity) pairs documented in
- * servers/smart-home/README.md (asr.robust joins in M3, consent.path in M4); fixed has none.
+ * servers/smart-home/README.md (consent.path joins in M4); fixed has none.
  */
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
@@ -21,6 +21,7 @@ describe('smart home', () => {
     served = await startSmartHome(0, false);
     const r = await runSuite(await loadSuite(suitePath), { url: served.url });
     expect(pairs(r)).toEqual([
+      'asr.robust:error',
       'case.expect:error',
       'latency.first_audio:warn',
       'latency.tool:error',

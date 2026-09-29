@@ -1,4 +1,5 @@
 /** Registry of implemented checks. A check is here only together with its failing fixture (docs/08). */
+import { asrRobust } from './asr';
 import { caseExpect } from './case';
 import { suiteIntegrity } from './integrity';
 import { lintErrorActionable, protocolRefusalAsResult } from './errors';
@@ -9,7 +10,7 @@ import { speakLength, speakLists, speakNoStructuredDump } from './speak';
 import type { ServerCheck, TurnCheck } from './types';
 
 export const TURN_CHECKS: ReadonlyMap<string, TurnCheck> = new Map(
-  [caseExpect, latencyTool, latencyFirstAudio, speakLength, speakNoStructuredDump, speakLists, lintErrorActionable, protocolRefusalAsResult].map((c) => [c.id, c]),
+  [caseExpect, asrRobust, latencyTool, latencyFirstAudio, speakLength, speakNoStructuredDump, speakLists, lintErrorActionable, protocolRefusalAsResult].map((c) => [c.id, c]),
 );
 
 export const SERVER_CHECKS: ReadonlyMap<string, ServerCheck> = new Map([suiteIntegrity, protocolVersion, lintToolNames, lintDescriptions, lintSchemaConstraints, lintDestructiveAnnotated].map((c) => [c.id, c]));

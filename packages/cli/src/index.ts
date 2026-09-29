@@ -12,7 +12,7 @@
 import { parseArgs } from 'node:util';
 import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
-import { CHECKS, ConnectError, IMPLEMENTED, PERTURBATIONS, QUESTIONS, QUESTION_ORDER, ensureServer, exitCodeFor, lintServer, loadSuite, lockSuites, runSuite, writeReport } from '@hearsayhq/engine';
+import { CHECKS, ConnectError, IMPLEMENTED, PollyTts, TranscribeStt, genVariants, loadHoldout, PERTURBATIONS, QUESTIONS, QUESTION_ORDER, RecordingProvider, ReplayProvider, cassettePathFor, ensureServer, exitCodeFor, lintServer, loadCassette, loadSuite, lockSuites, providerFromEnv, runSuite, saveCassette, writeReport, type Cassette, type ModelProvider } from '@hearsayhq/engine';
 import { printReport } from './print';
 
 const [cmd, ...args] = process.argv.slice(2);
@@ -24,6 +24,12 @@ async function main(): Promise<number> {
       let bad = 0;
       for (const f of args) {
         try {
+          if (f.endsWith('.holdout.yaml')) {
+            const suitePath = f.replace(/\.holdout\.yaml$/, '.yaml');
+            const cases = await loadHoldout(suitePath, await loadSuite(suitePath));
+            console.log(`ok   ${f}  (holdout: ${cases.length} cases)`);
+            continue;
+          }
           const s = await loadSuite(f);
           console.log(`ok   ${f}  (${s.suite}: ${s.cases.length} cases, ${s.orchestrator})`);
         } catch (e) {
@@ -54,6 +60,7 @@ async function main(): Promise<number> {
     case 'lock':
       return lock(args);
     case 'gen-variants':
+      return genVariantsCmd(args);
     case 'serve':
       console.error(`"hearsay ${cmd}" is planned; see docs/07_IMPLEMENTATION_PLAN.md.`);
       return 2;
@@ -71,12 +78,16 @@ async function run(argv: string[]): Promise<number> {
       orchestrator: { type: 'string' },
       verbose: { type: 'boolean', short: 'v' },
       'no-start': { type: 'boolean' },
+      holdout: { type: 'boolean' },
+      seed: { type: 'string' },
+      record: { type: 'boolean' },
     },
   });
   if (!positionals.length) return usage();
   const orchestrator = values.orchestrator as 'scripted' | 'llm' | 'replay' | undefined;
-  if (orchestrator && orchestrator !== 'scripted') {
-    console.error(`orchestrator "${orchestrator}" is planned for M3; see docs/07.`);
+  if (orchestrator && !['scripted', 'llm', 'replay'].includes(orchestrator)) return usage();
+  if (values.record && orchestrator !== 'llm') {
+    console.error('--record needs --orchestrator llm.');
     return 2;
   }
   let exit: 0 | 1 = 0;
@@ -93,8 +104,27 @@ async function run(argv: string[]): Promise<number> {
       console.error(server.message);
       return 2;
     }
+    const mode = orchestrator ?? suite.orchestrator;
+    let provider: ModelProvider | undefined;
+    let cassette: Cassette | undefined;
     try {
-      const report = await runSuite(suite, { only: values.only, orchestrator, suitePath: file });
+      if (mode === 'replay') provider = new ReplayProvider(await loadCassette(cassettePathFor(file, suite.suite)));
+      if (mode === 'llm') {
+        provider = providerFromEnv();
+        if (values.record) provider = new RecordingProvider(provider, (cassette = { provider: provider.id, model: provider.id, recordedAt: new Date().toISOString(), entries: {} }));
+      }
+    } catch (e) {
+      await server.stop();
+      console.error((e as Error).message);
+      return 2;
+    }
+    try {
+      const report = await runSuite(suite, { only: values.only, orchestrator, suitePath: file, holdout: values.holdout, ...(provider ? { provider } : {}), ...(values.seed ? { seed: Number(values.seed) } : {}) });
+      if (cassette) {
+        const path = cassettePathFor(file, suite.suite);
+        await saveCassette(path, cassette);
+        console.error(`recorded ${Object.keys(cassette.entries).length} model calls to ${path}`);
+      }
       const path = await writeReport(report);
       printReport(report, path, values.verbose);
       if (exitCodeFor(report)) exit = 1;
@@ -113,6 +143,29 @@ async function lock(argv: string[]): Promise<number> {
   for (const f of files) await loadSuite(f); // never lock an invalid suite
   const path = await lockSuites(files);
   console.log(`locked ${files.length} suite${files.length === 1 ? '' : 's'} in ${path}`);
+  return 0;
+}
+
+async function genVariantsCmd(files: string[]): Promise<number> {
+  if (!files.length) return usage();
+  const tts = new PollyTts();
+  const stt = new TranscribeStt();
+  for (const f of files) {
+    const suite = await loadSuite(f);
+    try {
+      const out = await genVariants(suite, f, tts, stt);
+      if (!out) {
+        console.log(`${suite.suite}: no case lists asr.roundtrip in fuzz; nothing to record`);
+        continue;
+      }
+      const { path, file } = out;
+      const n = Object.values(file.cases).reduce((s, v) => s + v.length, 0);
+      console.log(`${suite.suite}: ${n} mishearings for ${Object.keys(file.cases).length} cases → ${path}`);
+    } catch (e) {
+      console.error(`gen-variants needs AWS credentials with Polly and Transcribe access (docs/04): ${(e as Error).message}`);
+      return 2;
+    }
+  }
   return 0;
 }
 

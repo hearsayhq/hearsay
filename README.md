@@ -18,8 +18,10 @@ breaks. Every check answers one of four questions:
 Every finding cites its source: Amazon's functional requirements for add-ons, the MCP
 specification, or Hearsay's own rule.
 
-> Status: **M2b agent loop.** `hearsay run` and `hearsay lint` work, fourteen checks are
-> implemented (the rest are listed as skipped), and coding agents can use Hearsay over MCP. See [docs/07](docs/07_IMPLEMENTATION_PLAN.md).
+> Status: **M3 hearing.** `hearsay run` (scripted, llm, replay, `--holdout`), `hearsay lint`,
+> `hearsay lock` and `hearsay gen-variants` work; fifteen checks are implemented (the rest are listed
+> as skipped); coding agents can use Hearsay over MCP. Mishearings reach the server through its
+> arguments, so `asr.robust` runs without a model. See [docs/07](docs/07_IMPLEMENTATION_PLAN.md).
 
 ## Quickstart (current)
 

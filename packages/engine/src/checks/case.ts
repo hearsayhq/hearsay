@@ -7,8 +7,9 @@ const ID = 'case.expect';
 export const caseExpect: TurnCheck = {
   id: ID,
   run({ case: c, trace, turns }) {
+    // Variants: scripted passes the mishearing on by construction; llm/replay judge only forbidden args (docs/03 §Variants).
     if (trace.variant !== 'clean' && trace.orchestrator === 'scripted') return [];
-    const e = c.expect;
+    const e: typeof c.expect = trace.variant === 'clean' ? c.expect : { ...(c.expect.argsMustNotContain ? { argsMustNotContain: c.expect.argsMustNotContain } : {}) };
     const calls = turns.flatMap((t) => t.toolCalls);
     const names = calls.map((x) => x.tool);
     const spoken = turns.map((t) => t.spoken).join(' ');
