@@ -40,3 +40,16 @@ describe('looseEnum', () => {
     expect(room.normalize(raw)).toBe(want));
   it('accepts any string at the schema level', () => expect(room.schema.safeParse('garage').success).toBe(true));
 });
+
+import { z } from 'zod';
+import { looseInt } from './index';
+
+describe('looseInt', () => {
+  const step = looseInt(1, 7, 'Step number, 1 to 7.');
+  it.each([[3, 3], ['3', 3], [' 7 ', 7], [40, undefined], [0, undefined], [2.5, undefined], ['ate', undefined], [undefined, undefined]])('%s → %s', (raw, want) =>
+    expect(step.parse(raw)).toBe(want));
+  it('lets everything through the schema, so the handler can ask in words', () =>
+    expect(z.object({ n: step.schema }).safeParse({}).success && step.schema.safeParse('forty').success).toBe(true));
+  it('advertises the bounds (lint.schema_constraints)', () =>
+    expect(z.toJSONSchema(z.object({ n: step.schema })).properties!.n).toMatchObject({ type: 'integer', minimum: 1, maximum: 7 }));
+});

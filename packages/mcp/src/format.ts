@@ -3,6 +3,7 @@
  * fix. Traces only on request. Display only: verdicts come from the engine.
  */
 import type { Finding, Report } from '@hearsayhq/engine';
+import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 
 export interface CompactFinding {
   checkId: string;
@@ -23,6 +24,29 @@ export function compactFindings(r: Report): CompactFinding[] {
   // A changed suite invalidates everything else in the run, so it comes first.
   const first = (f: CompactFinding) => (f.checkId === 'suite.integrity' ? 0 : 1);
   return out.sort((a, b) => first(a) - first(b) || rank[a.severity] - rank[b.severity] || a.checkId.localeCompare(b.checkId));
+}
+
+export interface CompactTool {
+  name: string;
+  description: string;
+  /** name: type, with enum values and "?" for optional. */
+  params: string[];
+  annotations?: Tool['annotations'];
+}
+
+/** The server's tools/list, short enough for a coding agent to draft a suite from (FR-033). */
+export function compactTools(tools: Tool[]): CompactTool[] {
+  return tools.map((t) => {
+    const props = (t.inputSchema.properties ?? {}) as Record<string, { type?: string; enum?: unknown[]; description?: string }>;
+    const required = new Set(t.inputSchema.required ?? []);
+    const params = Object.entries(props).map(([k, p]) => `${k}${required.has(k) ? '' : '?'}: ${p.enum ? p.enum.map((v) => JSON.stringify(v)).join(' | ') : (p.type ?? 'any')}`);
+    return { name: t.name, description: t.description ?? '', params, ...(t.annotations ? { annotations: t.annotations } : {}) };
+  });
+}
+
+export function toolLines(tools: CompactTool[]): string[] {
+  const hints = (a: CompactTool['annotations']) => (a ? Object.entries(a).filter(([k, v]) => k.endsWith('Hint') && v === true).map(([k]) => k.replace('Hint', '')) : []);
+  return ['tools:', ...tools.map((t) => `  ${t.name}(${t.params.join(', ')})${hints(t.annotations).length ? ` [${hints(t.annotations).join(', ')}]` : ''} — ${t.description}`)];
 }
 
 export function summarize(r: Report, reportPath: string, opts: { verbose?: boolean; rerun?: string[] } = {}) {

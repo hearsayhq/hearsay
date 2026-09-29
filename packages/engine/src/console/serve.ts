@@ -110,8 +110,9 @@ export function createConsoleApp(opts: ServeOptions = {}) {
   return {
     app,
     async closeAll() {
-      for (const cs of sessions.values()) await cs.close();
-      for (const running of started) await running.stop();
+      // Kill servers first and all at once: on shutdown there may be no time for a second step.
+      await Promise.all(started.map((s) => s.stop()));
+      await Promise.all([...sessions.values()].map((cs) => cs.close()));
     },
   };
 }

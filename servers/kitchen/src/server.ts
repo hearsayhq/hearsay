@@ -4,11 +4,13 @@
  */
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
-import { count, list, refuse, speak, words, type SessionContext } from '@hearsayhq/kit';
+import { count, list, looseInt, refuse, speak, words, type SessionContext } from '@hearsayhq/kit';
 import { RECIPE } from './recipe';
 import type { TimerStore } from './timers';
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+const MINUTES = looseInt(1, 240, 'Duration in whole minutes, 1 to 240.');
+const STEP = looseInt(1, RECIPE.steps.length, `Step number, 1 to ${RECIPE.steps.length}.`);
 
 export function createKitchenServer(store: TimerStore, { principal }: SessionContext): McpServer {
   const server = new McpServer({ name: 'hearsay-kitchen', version: '0.1.0' });
@@ -19,12 +21,14 @@ export function createKitchenServer(store: TimerStore, { principal }: SessionCon
       title: 'Start a kitchen timer',
       description: 'Use when the person asks to set or start a timer, for example "set a pasta timer for fifteen minutes". Starting a timer with an existing label restarts it.',
       inputSchema: {
-        minutes: z.number().int().min(1).max(240).describe('Duration in whole minutes, 1 to 240.'),
+        minutes: MINUTES.schema,
         label: z.string().min(1).max(40).optional().describe('What the timer is for, such as pasta or egg. Defaults to "timer".'),
       },
       annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     },
-    async ({ minutes, label }) => {
+    async ({ minutes: raw, label }) => {
+      const minutes = MINUTES.parse(raw);
+      if (minutes === undefined) return refuse('How many minutes should the timer run? Say a number from one to two hundred forty.', 'INVALID_MINUTES');
       const name = (label ?? 'timer').trim().toLowerCase();
       const { restarted } = store.start(principal, name, minutes);
       const what = name === 'timer' ? 'Timer' : `${cap(name)} timer`;
@@ -78,12 +82,15 @@ export function createKitchenServer(store: TimerStore, { principal }: SessionCon
       title: 'Read a recipe step',
       description: `Use when the person asks for a step of the current recipe (${RECIPE.name}). Reading a step changes nothing.`,
       inputSchema: {
-        number: z.number().int().min(1).max(RECIPE.steps.length).describe(`Step number, 1 to ${RECIPE.steps.length}.`),
+        number: STEP.schema,
       },
       annotations: { readOnlyHint: true, openWorldHint: false },
     },
-    async ({ number }) =>
-      speak(`Step ${words(number)} of ${words(RECIPE.steps.length)}: ${RECIPE.steps[number - 1]}`, { step: number }),
+    async ({ number: raw }) => {
+      const number = STEP.parse(raw);
+      if (number === undefined) return refuse(`The recipe has ${count(RECIPE.steps.length, 'step')}. Which one would you like?`, 'NO_SUCH_STEP', { steps: RECIPE.steps.length });
+      return speak(`Step ${words(number)} of ${words(RECIPE.steps.length)}: ${RECIPE.steps[number - 1]}`, { step: number });
+    },
   );
 
   return server;

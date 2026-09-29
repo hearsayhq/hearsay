@@ -67,6 +67,15 @@ describe('hearsay_run', () => {
   }, 30_000);
 });
 
+describe('hearsay_lint', () => {
+  it('returns the tool list to draft a suite from (FR-033)', async () => {
+    const r = await call('hearsay_lint', { url: home.url });
+    expect(r.structured.tools.map((t: any) => t.name)).toEqual(['set_scene', 'apply_scene']);
+    expect(r.structured.tools[0].params).toEqual(['room: string', 'state?: string', 'brightness?: number']);
+    expect(r.text).toMatch(/tools:\n  set_scene\(/);
+  }, 30_000);
+});
+
 describe('hearsay_explain', () => {
   it('explains a check with source, kit block and before/after', async () => {
     const r = await call('hearsay_explain', { checkId: 'speak.no_structured_dump' });

@@ -67,7 +67,7 @@ export const lintSchemaConstraints: ServerCheck = {
       for (const [k, p] of Object.entries(props)) {
         const type = p.type;
         if ((type === 'number' || type === 'integer') && (p.minimum === undefined || p.maximum === undefined) && p.exclusiveMinimum === undefined && p.exclusiveMaximum === undefined)
-          out.push(fire('lint.schema_constraints', 1, `${t.name}.${k} is a number without bounds`, { evidence: { tool: t.name, parameter: k }, hint: 'Add minimum and maximum; a misheard "fifty" should hit a bound, not a surprise.' }));
+          out.push(fire('lint.schema_constraints', 1, `${t.name}.${k} is a number without bounds`, { evidence: { tool: t.name, parameter: k }, hint: 'Add minimum and maximum; a misheard "fifty" should hit a bound, not a surprise. looseInt() from @hearsayhq/kit advertises the bounds and refuses out-of-range values in words.' }));
         if (type === 'string' && !p.enum && CLOSED.has(k.toLowerCase()))
           out.push(fire('lint.schema_constraints', 1, `${t.name}.${k} looks like a closed set but has no enum`, { evidence: { tool: t.name, parameter: k }, hint: 'Advertise the values as an enum; looseEnum() from @hearsayhq/kit keeps validation forgiving.' }));
       }

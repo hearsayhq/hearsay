@@ -36,6 +36,15 @@ Exceptions approved by the owner on 30 Sep:
 
 At about five and a half build days a week this lands on Sun 18 Oct; at four and a half, by Fri 23 Oct.
 
+## M6 progress
+
+- `write-hearsay-suite` (FR-033): `scripts/skill-draft.sh` gives a fresh Claude Code session
+  (no shell) the Kitchen add-on without a suite. The first draft (9 cases, $0.22) was valid and
+  found two real Kitchen bugs: "step forty" and a number heard as "ate" reached the person as
+  "MCP error -32602". Fixed with `looseInt()` in the kit; both cases joined `suites/kitchen.yaml`.
+  It also asked for confirmation to cancel a timer, against D-022; the skill's rule was
+  sharpened. Second draft: valid, green on Kitchen, 9 cases, $0.23.
+
 ## Blocked by access
 
 If a gate item depends only on external access that has not arrived (AWS credits and Bedrock,

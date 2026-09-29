@@ -55,7 +55,7 @@ fix what it finds, and rerun, without anyone in the loop.
 ```sh
 claude mcp add hearsay -- npx -y @hearsayhq/mcp          # once published
 claude mcp add hearsay -- npx tsx /path/to/hearsay/packages/mcp/src/index.ts   # from a clone
-mkdir -p .claude/skills && cp -r /path/to/hearsay/skills/fix-hearsay-findings .claude/skills/
+mkdir -p .claude/skills && cp -r /path/to/hearsay/skills/{write-hearsay-suite,fix-hearsay-findings} .claude/skills/
 ```
 
 **Kiro** (`.kiro/settings/mcp.json`)
@@ -64,8 +64,12 @@ mkdir -p .claude/skills && cp -r /path/to/hearsay/skills/fix-hearsay-findings .c
 { "mcpServers": { "hearsay": { "command": "npx", "args": ["-y", "@hearsayhq/mcp"] } } }
 ```
 
-Tools: `hearsay_run(suitePath, only?)` (`only: "failed"` reruns what failed), `hearsay_lint(url)`,
-`hearsay_explain(checkId)`. No tool writes suites.
+Tools: `hearsay_run(suitePath, only?)` (`only: "failed"` reruns what failed), `hearsay_lint(url)`
+(findings and the server's tool list), `hearsay_explain(checkId)`. No tool writes suites.
+
+Skills: `write-hearsay-suite` drafts a new suite from the tool list, with expectations a customer
+would have, never what the server happens to do; the owner reviews and locks it.
+`fix-hearsay-findings` changes server code until the suite is green and never touches suites.
 
 **Protect your suites.** `npm run hearsay -- lock` hashes them into `suites/.hearsay-lock`; commit
 it. A run whose suites changed since is red (`suite.integrity`), so an agent cannot make itself
@@ -82,11 +86,12 @@ need review:
 ```
 packages/mandate   mandate policy (authorize, expiry, limits)
 packages/engine    session, runner, orchestrators, perturbations, checks, report
-packages/kit       building blocks for voice-ready servers: speak, refuse, serveMcp
+packages/kit       building blocks for voice-ready servers: speak, refuse, looseEnum, looseInt,
+                   confirm, VerbalTokens, withMandate, serveMcp
 packages/cli       hearsay validate | checks | run | lint | gen-variants | serve
 packages/web       local console: talk, timeline, findings
 packages/mcp       Hearsay as an MCP server for coding agents: run, lint, explain
-skills/            Agent Skills: fix-hearsay-findings
+skills/            Agent Skills: write-hearsay-suite, fix-hearsay-findings
 servers/           reference MCP servers: kitchen, smart-home, household-orders
 suites/            YAML suites (+ cassettes and recorded variants for replay)
 docs/              spec pack

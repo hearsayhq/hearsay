@@ -10,7 +10,7 @@ import { z } from 'zod';
 import { CHECKS, QUESTIONS, ensureServer, lintServer, loadSuite, runSuite, writeReport, type Report } from '@hearsayhq/engine';
 import { refuse } from '@hearsayhq/kit';
 import { EXAMPLES } from './examples';
-import { summarize } from './format';
+import { compactTools, summarize, toolLines } from './format';
 
 export interface HearsayServerOptions {
   /** Project root: suite paths and reports/ resolve against it. Default: process.cwd(). */
@@ -92,7 +92,7 @@ export function createHearsayServer(opts: HearsayServerOptions = {}): McpServer 
     'hearsay_lint',
     {
       title: 'Lint an MCP server for voice',
-      description: 'Use when you want a quick check of an MCP server without a suite: protocol version, tool names, descriptions, schemas and annotations. Needs the server to be running at the URL.',
+      description: 'Use when you want a quick check of an MCP server without a suite (protocol version, tool names, descriptions, schemas and annotations), or its tool list to draft a suite from. Needs the server to be running at the URL.',
       inputSchema: { url: z.string().url().describe('Streamable HTTP URL of the MCP server, such as http://localhost:4102/mcp.') },
       annotations: { readOnlyHint: true, openWorldHint: true },
     },
@@ -101,7 +101,8 @@ export function createHearsayServer(opts: HearsayServerOptions = {}): McpServer 
         const report = await lintServer(url);
         const path = await writeReport(report, reportsDir);
         const { text: t, structured } = summarize(report, relative(cwd, path));
-        return text(t, structured);
+        const tools = compactTools(report.tools);
+        return text([t, ...toolLines(tools)].join('\n'), { ...structured, tools });
       } catch (e) {
         return text(`Cannot lint ${url}: ${(e as Error).message}`, { verdict: 'error', error: (e as Error).message });
       }
