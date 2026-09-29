@@ -17,10 +17,14 @@ afterAll(() => served.close());
 
 describe('kitchen suite', () => {
   it('has no findings', () => expect([...report.serverFindings, ...report.cases.flatMap((c) => c.findings)]).toEqual([]));
-  it('runs every case', () => expect(report.cases.map((c) => c.caseId)).toEqual(['start-pasta-timer', 'start-egg-timer', 'list-timers', 'cancel-ambiguous']));
-  it('reads the duration back', () => expect(report.cases[0]!.trace.turns[0]!.spoken).toBe('Pasta timer set for fifteen minutes.'));
+  const run = (caseId: string, variant = 'clean') => report.cases.find((c) => c.caseId === caseId && c.variant === variant)!;
+  it('runs every case and variant', () =>
+    expect(report.cases.map((c) => `${c.caseId}/${c.variant}`)).toEqual(['start-pasta-timer/clean', 'start-pasta-timer/asr.number_confusion#1', 'start-egg-timer/clean', 'list-timers/clean', 'cancel-ambiguous/clean']));
+  it('reads the duration back', () => expect(run('start-pasta-timer').trace.turns[0]!.spoken).toBe('Pasta timer set for fifteen minutes.'));
+  it('reads a misheard duration back, so the person can correct it (asr.robust passes)', () =>
+    expect(run('start-pasta-timer', 'asr.number_confusion#1').trace.turns[0]).toMatchObject({ heard: 'set a pasta timer for fifty minutes', spoken: 'Pasta timer set for fifty minutes.' }));
   it('asks which timer when two are running', () =>
-    expect(report.cases[3]!.trace.turns.at(-1)).toMatchObject({ toolCalls: [{ result: { isError: true, errorCode: 'AMBIGUOUS' } }] }));
+    expect(run('cancel-ambiguous').trace.turns.at(-1)).toMatchObject({ toolCalls: [{ result: { isError: true, errorCode: 'AMBIGUOUS' } }] }));
   it('keys timers by principal, so cases do not see each other', () =>
-    expect(report.cases[2]!.trace.turns.at(-1)!.spoken).toBe('Two timers: egg with seven minutes left and pasta with fifteen minutes left.'));
+    expect(run('list-timers').trace.turns.at(-1)!.spoken).toBe('Two timers: egg with seven minutes left and pasta with fifteen minutes left.'));
 });

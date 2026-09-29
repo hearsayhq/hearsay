@@ -11,6 +11,8 @@ export interface TurnCheckContext {
   /** The case's own turns; setup turns from `after` chains are excluded. */
   turns: Turn[];
   tools: Tool[];
+  /** For a perturbed variant: the clean run of the same case, to compare against. */
+  clean?: Trace;
 }
 
 export interface ServerCheckContext {

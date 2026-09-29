@@ -52,7 +52,7 @@ const Client = z
   })
   .strict();
 
-const Case = z
+export const CaseSchema = z
   .object({
     id: z.string().regex(/^[a-z0-9-]+$/, 'kebab-case'),
     /** One utterance, or several for a multi-turn case. */
@@ -102,7 +102,7 @@ export const SuiteSchema = z
       .prefault({}),
     /** Checks for every case (turn scope) and once per suite (server scope). */
     checks: z.array(checkId).default([]),
-    cases: z.array(Case).min(1),
+    cases: z.array(CaseSchema).min(1),
   })
   .strict()
   .superRefine((s, ctx) => {
@@ -140,6 +140,29 @@ export function serverChecksFor(suite: Suite): string[] {
   const always = server.filter((x) => x.alwaysOn).map((x) => x.id);
   const ids = new Set(server.map((x) => x.id));
   return [...new Set([...always, ...suite.checks.filter((id) => ids.has(id))])];
+}
+
+/** Holdout cases (FR-018): `<suite>.holdout.yaml` next to the suite, gitignored, only for `--holdout`. */
+export const holdoutPathFor = (suitePath: string) => suitePath.replace(/\.ya?ml$/, '.holdout.yaml');
+
+const HoldoutSchema = z.object({ cases: z.array(CaseSchema).min(1) }).strict();
+
+export async function loadHoldout(suitePath: string, suite: Suite): Promise<SuiteCase[]> {
+  let raw: unknown;
+  try {
+    raw = parse(await readFile(holdoutPathFor(suitePath), 'utf8'));
+  } catch {
+    return [];
+  }
+  const res = HoldoutSchema.safeParse(raw);
+  if (!res.success) throw new Error(`${holdoutPathFor(suitePath)} is not a valid holdout file:\n${res.error.issues.map((i) => `  ${i.path.join('.')}: ${i.message}`).join('\n')}`);
+  const ids = new Set(suite.cases.map((c) => c.id));
+  for (const c of res.data.cases) {
+    if (ids.has(c.id)) throw new Error(`holdout case "${c.id}" reuses a visible case id`);
+    for (const dep of c.after ?? []) if (!ids.has(dep)) throw new Error(`holdout case "${c.id}" runs after unknown or later case "${dep}"`);
+    ids.add(c.id);
+  }
+  return res.data.cases;
 }
 
 export async function loadSuite(path: string): Promise<Suite> {

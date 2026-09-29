@@ -6,7 +6,7 @@ import { loadSuite } from './suite';
 const dir = join(import.meta.dirname, '../../../suites');
 
 describe('bundled suites', async () => {
-  const files = (await readdir(dir)).filter((f) => f.endsWith('.yaml'));
+  const files = (await readdir(dir)).filter((f) => f.endsWith('.yaml') && !f.endsWith('.holdout.yaml'));
 
   it('exist', () => expect(files.length).toBeGreaterThanOrEqual(3));
 

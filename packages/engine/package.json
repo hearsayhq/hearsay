@@ -7,12 +7,16 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.1143.0",
+    "@aws-sdk/client-polly": "^3.1143.0",
+    "@aws-sdk/client-transcribe-streaming": "^3.1143.0",
     "@hearsayhq/mandate": "*",
     "@modelcontextprotocol/sdk": "^1.31.0",
     "yaml": "^2.8.0",
     "zod": "^4.1.0"
   },
   "devDependencies": {
-    "@hearsayhq/kit": "*"
+    "@hearsayhq/kit": "*",
+    "@hearsayhq/server-smart-home": "*"
   }
 }

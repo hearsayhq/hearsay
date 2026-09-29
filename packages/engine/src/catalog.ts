@@ -95,7 +95,7 @@ export const CHECKS: readonly CheckSpec[] = [
 
   // ── Did it hear me right? ──────────────────────────────────────────────────
   c({
-    id: 'asr.robust', question: 'hear', scope: 'turn', priority: 'must', kit: 'speak',
+    id: 'asr.robust', status: 'implemented', question: 'hear', scope: 'turn', priority: 'must', kit: 'speak',
     summary: 'A misheard variant leads to the same effect, a question back, or a reply that says what was heard.',
     thresholds: [
       t('error', 'a variant silently causes a different effect, or claims success without any effect', amazonFr('synonyms and alternate spellings in parameter descriptions and enums')),
@@ -275,7 +275,7 @@ export interface PerturbationSpec {
   example: string;
 }
 
-const p = (id: string, priority: Priority, scripted: boolean, example: string): PerturbationSpec => ({ id, priority, status: 'planned', scripted, example });
+const p = (id: string, priority: Priority, scripted: boolean, example: string, status: PerturbationSpec['status'] = 'implemented'): PerturbationSpec => ({ id, priority, status, scripted, example });
 
 export const PERTURBATIONS: readonly PerturbationSpec[] = [
   p('asr.number_confusion', 'must', true, '"fifteen" → "fifty", "thirteen" → "thirty"'),

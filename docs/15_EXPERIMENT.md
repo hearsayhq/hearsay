@@ -50,3 +50,7 @@ draw on the AWS credits at Bedrock's prices.
 ## Results
 
 Not run yet.
+
+**Pilot observation (not the experiment).** The two Smart Home servers fixed by the M2b gate runs
+(arm A, n = 2) passed 4 of 5 holdout case runs each; both failed `holdout-unknown-room`, whose
+reply did not read back the room it did not know. Holdouts find what the visible suite does not.

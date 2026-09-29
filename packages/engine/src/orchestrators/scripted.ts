@@ -4,10 +4,16 @@
  * the server directly. `injectedCall` plays a compromised model (mandate.injection).
  */
 import type { Orchestrator, TurnContext } from '../orchestrator';
+import { applyEdits, type Edit } from '../perturb/index';
 import type { SuiteCase } from '../suite';
 
-export function scriptedOrchestrator(c: SuiteCase): Orchestrator {
-  const call = c.call ?? (c.expect.tool ? { tool: c.expect.tool, args: c.expect.args ?? {} } : undefined);
+/** The call the stand-in planner makes for a case, before any mishearing. */
+export const scriptedCall = (c: SuiteCase) => c.call ?? (c.expect.tool ? { tool: c.expect.tool, args: c.expect.args ?? {} } : undefined);
+
+/** `edits` carry what was misheard into the arguments: the literal planner (docs/03 §Variants). */
+export function scriptedOrchestrator(c: SuiteCase, edits: Edit[] = []): Orchestrator {
+  const base = scriptedCall(c);
+  const call = base && { tool: base.tool, args: applyEdits(base.args, edits).args };
   return {
     mode: 'scripted',
     async respond(ctx: TurnContext) {
