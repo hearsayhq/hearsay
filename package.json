@@ -19,7 +19,8 @@
     "dev:web": "npm run dev -w @hearsayhq/web",
     "server:kitchen": "tsx servers/kitchen/src/index.ts",
     "server:smart-home": "tsx servers/smart-home/src/index.ts",
-    "server:orders": "tsx servers/household-orders/src/index.ts"
+    "server:orders": "tsx servers/household-orders/src/index.ts",
+    "mcp": "tsx packages/mcp/src/index.ts"
   },
   "devDependencies": {
     "@types/node": "^22.20.4",

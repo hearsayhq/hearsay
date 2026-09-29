@@ -18,8 +18,8 @@ breaks. Every check answers one of four questions:
 Every finding cites its source: Amazon's functional requirements for add-ons, the MCP
 specification, or Hearsay's own rule.
 
-> Status: **M1 runner.** `hearsay run` plays suites against a live server (Kitchen passes); six
-> checks are implemented, the rest are listed as skipped. See [docs/07](docs/07_IMPLEMENTATION_PLAN.md).
+> Status: **M2b agent loop.** `hearsay run` and `hearsay lint` work, fourteen checks are
+> implemented (the rest are listed as skipped), and coding agents can use Hearsay over MCP. See [docs/07](docs/07_IMPLEMENTATION_PLAN.md).
 
 ## Quickstart (current)
 
@@ -29,10 +29,44 @@ npm run check
 npm run hearsay -- validate suites/*.yaml
 npm run hearsay -- checks
 npm run hearsay -- run suites/kitchen.yaml   # starts the Kitchen server itself
+npm run hearsay -- run suites/smart-home.yaml                    # flawed: red
+HEARSAY_FIXED=1 npm run hearsay -- run suites/smart-home.yaml    # kit applied: green
 ```
 
 Once published: `npx @hearsayhq/cli run suites/kitchen.yaml` (the unscoped npm name `hearsay` is
 an unrelated library).
+
+## For coding agents
+
+Hearsay itself is an MCP server and Agent Skills, so the agent building your add-on can run it,
+fix what it finds, and rerun, without anyone in the loop.
+
+**Claude Code**
+
+```sh
+claude mcp add hearsay -- npx -y @hearsayhq/mcp          # once published
+claude mcp add hearsay -- npx tsx /path/to/hearsay/packages/mcp/src/index.ts   # from a clone
+mkdir -p .claude/skills && cp -r /path/to/hearsay/skills/fix-hearsay-findings .claude/skills/
+```
+
+**Kiro** (`.kiro/settings/mcp.json`)
+
+```json
+{ "mcpServers": { "hearsay": { "command": "npx", "args": ["-y", "@hearsayhq/mcp"] } } }
+```
+
+Tools: `hearsay_run(suitePath, only?)` (`only: "failed"` reruns what failed), `hearsay_lint(url)`,
+`hearsay_explain(checkId)`. No tool writes suites.
+
+**Protect your suites.** `npm run hearsay -- lock` hashes them into `suites/.hearsay-lock`; commit
+it. A run whose suites changed since is red (`suite.integrity`), so an agent cannot make itself
+green by editing expectations. Suite changes go through normal pull requests; optionally make them
+need review:
+
+```
+# .github/CODEOWNERS
+/suites/ @your-team
+```
 
 ## Layout
 
@@ -42,7 +76,8 @@ packages/engine    session, runner, orchestrators, perturbations, checks, report
 packages/kit       building blocks for voice-ready servers: speak, refuse, serveMcp
 packages/cli       hearsay validate | checks | run | lint | gen-variants | serve
 packages/web       local console: talk, timeline, findings
-packages/mcp       Hearsay as an MCP server for coding agents (M6)
+packages/mcp       Hearsay as an MCP server for coding agents: run, lint, explain
+skills/            Agent Skills: fix-hearsay-findings
 servers/           reference MCP servers: kitchen, smart-home, household-orders
 suites/            YAML suites (+ cassettes and recorded variants for replay)
 docs/              spec pack

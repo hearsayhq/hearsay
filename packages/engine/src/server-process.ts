@@ -20,11 +20,12 @@ export interface RunningServer {
   stop(): Promise<void>;
 }
 
-export async function ensureServer(server: { url: string; start?: string }, timeoutMs = 30_000): Promise<RunningServer> {
+export async function ensureServer(server: { url: string; start?: string }, opts: { cwd?: string; timeoutMs?: number } = {}): Promise<RunningServer> {
+  const timeoutMs = opts.timeoutMs ?? 30_000;
   if (await answers(server.url)) return { started: false, stop: async () => undefined };
   if (!server.start) throw new ConnectError(`Nothing answers at ${server.url} and the suite has no server.start command.`);
 
-  const child = spawn('sh', ['-c', server.start], { detached: true, stdio: ['ignore', 'ignore', 'pipe'] });
+  const child = spawn('sh', ['-c', server.start], { detached: true, stdio: ['ignore', 'ignore', 'pipe'], ...(opts.cwd ? { cwd: opts.cwd } : {}) });
   let stderr = '';
   child.stderr?.on('data', (d: Buffer) => void (stderr = (stderr + d.toString()).slice(-2000)));
   const stop = async () => {

@@ -21,6 +21,8 @@ export interface RunOptions {
   orchestrator?: OrchestratorMode;
   /** Override the suite's server URL (tests, ephemeral ports). */
   url?: string;
+  /** The file the suite came from; enables suite.integrity. */
+  suitePath?: string;
   onResult?: (r: CaseResult) => void;
 }
 
@@ -139,7 +141,7 @@ export async function runSuite(suite: Suite, opts: RunOptions = {}): Promise<Rep
   if (firstServer && tools)
     for (const id of serverChecksFor(suite)) {
       const check = SERVER_CHECKS.get(id);
-      if (check) serverFindings.push(...(await check.run({ suite, url, tools, server: firstServer, newPrincipal })));
+      if (check) serverFindings.push(...(await check.run({ suite, url, tools, server: firstServer, newPrincipal, ...(opts.suitePath ? { suitePath: opts.suitePath } : {}) })));
     }
 
   const asked = new Set([...suite.checks, ...selected.flatMap((c) => c.checks ?? []), ...CHECKS.filter((x) => x.alwaysOn).map((x) => x.id)]);

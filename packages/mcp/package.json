@@ -1,0 +1,11 @@
+{
+  "name": "@hearsayhq/mcp",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Hearsay as an MCP server: coding agents lint, run and explain voice-readiness checks.",
+  "exports": { ".": "./src/server.ts" },
+  "bin": { "hearsay-mcp": "./src/index.ts" },
+  "dependencies": { "@hearsayhq/engine": "*", "@hearsayhq/kit": "*", "@modelcontextprotocol/sdk": "^1.31.0", "zod": "^4.1.0" },
+  "devDependencies": { "@hearsayhq/server-smart-home": "*" }
+}

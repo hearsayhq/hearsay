@@ -14,9 +14,16 @@ than the same agent with only a task description — judged on cases it never sa
 - **Arms:** (A) Hearsay MCP server + skill; (B) the task description only ("make this add-on work
   well behind a voice assistant; replies are spoken, amounts need confirmation").
 - **Runs:** 3 per server and arm → 18 runs. Same model and effort in both arms.
-- **Isolation:** each run works in a fresh copy of the repo without holdout files. Hashes of the
-  suites and the lock are kept outside the copy.
+- **Isolation:** each run works in a fresh workspace that holds only the flawed server, its suite
+  and lock, and (arm A) the skill. `@hearsayhq/kit` is installed as a packed copy, not a symlink
+  into the Hearsay repo, so the fixed reference servers are out of reach. Bash is disallowed
+  entirely (`--disallowedTools Bash`); the M2b gate run showed that Claude Code's read-only
+  command allowlist otherwise lets `cat` and `ls` through. Holdout files never enter the
+  workspace. Hashes of the suites and the lock are kept outside it.
 - **Judging:** after each run, `hearsay run --holdout` on the result, scripted, no model.
+
+`scripts/agent-loop.sh` is the M2b gate run for one server and arm A; the experiment script
+extends it to all servers and both arms.
 
 ## Measures
 

@@ -3,6 +3,7 @@
   "include": [
     "packages/mandate/src",
     "packages/kit/src",
+    "packages/mcp/src",
     "packages/engine/src",
     "packages/engine/test",
     "packages/cli/src",

@@ -29,7 +29,7 @@ which video line it serves.
 | M1 | `m1-kitchen-green` | `npm run server:kitchen` in one pane, `hearsay run suites/kitchen.yaml` in the other: green, skipped checks listed, report path |
 | M2 | `m2-smart-home-red-green` | flawed run red with findings by question → `HEARSAY_FIXED=1` → green, exit codes shown |
 | M2b | `m2b-cheat` | an edit to an expectation in `suites/smart-home.yaml` after `hearsay lock` → `suite.integrity` error, run red |
-| M2b | `m2b-agent-loop` | a fresh Claude Code session with the Hearsay MCP server and `fix-hearsay-findings`: `hearsay_run` on Smart Home flawed, fixes in server code only, reruns `only: "failed"`, full run green; `git diff suites/` empty |
+| M2b | `m2b-agent-loop` | `scripts/agent-loop.sh`: a fresh Claude Code session (no shell) with the Hearsay MCP server and `fix-hearsay-findings` turns Smart Home flawed green, fixes in server code only, reruns `only: "failed"`, full run green; `suites/` untouched |
 | M3 | `m3-hearing` | "livingroom" `asr.robust` red → fixed green; replay run twice with the network off; `gen-variants` writing the variants file |
 | M4 | `m4-consent` | fifteen → fifty refused; decline → nothing committed; verbal path graded warn |
 | M5 | `m5-console` | browser: Kitchen timer spoken, Household Orders elicitation modal, timeline and findings updating |

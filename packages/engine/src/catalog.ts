@@ -83,7 +83,7 @@ export const CHECKS: readonly CheckSpec[] = [
     ],
   }),
   c({
-    id: 'suite.integrity', question: 'connect', scope: 'server', priority: 'must', alwaysOn: true,
+    id: 'suite.integrity', status: 'implemented', question: 'connect', scope: 'server', priority: 'must', alwaysOn: true,
     summary: 'The suites a run judges by are the ones that were locked.',
     thresholds: [t('error', 'a locked suite changed since `hearsay lock`', hearsay('docs/03 §Holdouts and the lock'))],
   }),

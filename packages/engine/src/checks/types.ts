@@ -16,6 +16,8 @@ export interface TurnCheckContext {
 export interface ServerCheckContext {
   /** Absent for `hearsay lint`, which has no suite. */
   suite?: Suite;
+  /** The suite file, when the run was started from one (suite.integrity). */
+  suitePath?: string;
   url: string;
   tools: Tool[];
   /** What the first session negotiated. */

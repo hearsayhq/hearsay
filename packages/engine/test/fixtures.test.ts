@@ -92,7 +92,7 @@ describe('skipped checks (FR-024)', () => {
   it('lists planned checks instead of passing them', async () => {
     served = await fakeServer(twoTools);
     const r = await runSuite(suiteFor(served.url, { checks: ['mandate.expiry', 'latency.tool'], cases: [{ id: 'c', say: 'lights off', expect: { tool: 'lights_off', args: { room: 'kitchen' } }, checks: ['asr.robust'] }] }));
-    expect(r.skippedChecks).toEqual(['asr.robust', 'mandate.expiry', 'suite.integrity']);
-    expect(r.summary.skipped).toBe(3);
+    expect(r.skippedChecks).toEqual(['asr.robust', 'mandate.expiry']);
+    expect(r.summary.skipped).toBe(2);
   });
 });

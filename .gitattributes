@@ -1,0 +1,3 @@
+# Suites are hashed by `hearsay lock`; keep their bytes identical on every OS.
+suites/*.yaml text eol=lf
+suites/.hearsay-lock text eol=lf

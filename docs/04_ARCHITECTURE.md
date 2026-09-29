@@ -111,6 +111,8 @@ No hosting and no VM are needed. Judges run the repo locally (hackathon FAQ).
 | `checks` | always | — | — |
 | `run <suite...> [--only id] [--failed] [--holdout] [--orchestrator m] [--record] [--verbose]` | no error findings | error findings | usage / cannot connect |
 | `lock [suite...]` | lock written | — | usage |
+
+`hearsay-mcp` (`npm run mcp`): stdio by default, `--http --port 4199` for Streamable HTTP, `--cwd` for the project root.
 | `lint <url>` | no error findings | error findings | usage / cannot connect |
 | `gen-variants <suite...>` | variants written | provider error | usage / no AWS credentials |
 | `serve [--port 4100]` | — | — | usage |
