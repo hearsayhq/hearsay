@@ -37,6 +37,11 @@ describe('authorize (ordering carried over from webMCP policy.ts)', () => {
     expect(code(() => authorize(base({ version: 2 }), unversioned, T0))).toBe('OK');
     expect(code(() => authorize(base({ version: 2 }), { ...unversioned, resourceId: 'sku-wine' }, T0))).toBe('OUT_OF_SCOPE');
   });
+  it('counts the staged cart toward the total ("fifteen" heard as "fifty" with $7.40 already staged)', () => {
+    const m = base({ limits: { currency: 'USD', totalMinor: 5000 } });
+    expect(code(() => authorize(m, { ...call, amountMinor: 1500, pendingMinor: 740 }, T0))).toBe('OK');
+    expect(code(() => authorize(m, { ...call, amountMinor: 5000, pendingMinor: 740 }, T0))).toBe('LIMIT_EXCEEDED');
+  });
   it('refuses tools the mandate never named', () =>
     expect(code(() => authorize(base(), { ...call, tool: 'orders_place' }, T0))).toBe('OUT_OF_SCOPE'));
   it('refuses resources the mandate never named', () =>

@@ -16,6 +16,7 @@ checks:
   - consent.decline_holds
   - consent.states_details
   - consent.verbal_token
+  - consent.over_confirmation
   - mandate.schema_ignoring_caller
   - mandate.version_race
   - mandate.expiry

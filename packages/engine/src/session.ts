@@ -11,6 +11,17 @@ import type { ElicitationRecord, ServerInfo, ToolResult } from './trace';
 export interface Human {
   answer: 'accept' | 'decline' | 'cancel';
   content?: Record<string, unknown>;
+  /**
+   * The person knows what they meant: a confirmation that states one of these misheard values
+   * is declined, whatever `answer` says (consent.misheard_amount).
+   */
+  rejectIfMentions?: string[];
+}
+
+/** Does a question state one of these values (as a word or in digits)? */
+export function mentions(question: string, values: string[]): boolean {
+  const q = question.toLowerCase();
+  return values.some((v) => new RegExp(`\\b${v.toLowerCase()}\\b`).test(q));
 }
 
 export interface SessionOptions {
@@ -67,7 +78,8 @@ export class McpSession {
 
   private elicit(params: { message: string; requestedSchema?: unknown }) {
     const startMs = performance.now() - this.callStart;
-    const { answer, content } = this.human;
+    const { content } = this.human;
+    const answer = this.human.rejectIfMentions && mentions(params.message, this.human.rejectIfMentions) ? 'decline' : this.human.answer;
     const reply = answer === 'accept' ? { action: answer, content: content ?? {} } : { action: answer };
     this.pending.push({ message: params.message, requestedSchema: params.requestedSchema, action: answer, content: answer === 'accept' ? (content ?? {}) : undefined, startMs, endMs: performance.now() - this.callStart });
     return reply;
@@ -82,6 +94,18 @@ export class McpSession {
       cursor = page.nextCursor;
     } while (cursor);
     this.tools = tools;
+    return tools;
+  }
+
+  /** The tool list as the server has it now, without adopting it. */
+  async peekTools(): Promise<Tool[]> {
+    const tools: Tool[] = [];
+    let cursor: string | undefined;
+    do {
+      const page = await this.client.listTools(cursor ? { cursor } : undefined);
+      tools.push(...page.tools);
+      cursor = page.nextCursor;
+    } while (cursor);
     return tools;
   }
 

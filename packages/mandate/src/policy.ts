@@ -69,16 +69,17 @@ export function authorize(mandate: Mandate | undefined, call: MandateCall, now: 
       throw new MandateError(
         'LIMIT_EXCEEDED',
         `Amount ${call.amountMinor} exceeds per-call limit ${limits.perCallMinor}.`,
-        'That costs more than the limit you set for a single order.',
+        'That costs more than the limit you set for a single item. You can choose a smaller amount.',
         { amountMinor: call.amountMinor, perCallMinor: limits.perCallMinor, currency: limits.currency },
       );
     }
-    if (limits.totalMinor !== undefined && mandate.spentMinor + call.amountMinor > limits.totalMinor) {
+    const pending = call.pendingMinor ?? 0;
+    if (limits.totalMinor !== undefined && mandate.spentMinor + pending + call.amountMinor > limits.totalMinor) {
       throw new MandateError(
         'LIMIT_EXCEEDED',
-        `Amount ${call.amountMinor} would exceed total limit ${limits.totalMinor} (spent ${mandate.spentMinor}).`,
-        "That would go over the total budget you gave me.",
-        { amountMinor: call.amountMinor, spentMinor: mandate.spentMinor, totalMinor: limits.totalMinor, currency: limits.currency },
+        `Amount ${call.amountMinor} would exceed total limit ${limits.totalMinor} (spent ${mandate.spentMinor}, pending ${pending}).`,
+        'That would go over the total budget you gave me. You can add less, or give me a bigger budget.',
+        { amountMinor: call.amountMinor, spentMinor: mandate.spentMinor, pendingMinor: pending, totalMinor: limits.totalMinor, currency: limits.currency },
       );
     }
   }

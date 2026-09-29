@@ -89,10 +89,11 @@ describe('protocol.version', () => {
 });
 
 describe('skipped checks (FR-024)', () => {
-  it('lists planned checks instead of passing them', async () => {
+  // Every catalog check is implemented as of M4; the listing logic stays tested through the runner.
+  it('lists no planned checks once everything asked for is implemented', async () => {
     served = await fakeServer(twoTools);
-    const r = await runSuite(suiteFor(served.url, { checks: ['mandate.expiry', 'latency.tool'], cases: [{ id: 'c', say: 'lights off', expect: { tool: 'lights_off', args: { room: 'kitchen' } }, checks: ['asr.robust'] }] }));
-    expect(r.skippedChecks).toEqual(['mandate.expiry']);
-    expect(r.summary.skipped).toBe(1);
+    const r = await runSuite(suiteFor(served.url, { checks: ['latency.tool'], cases: [{ id: 'c', say: 'lights off', expect: { tool: 'lights_off', args: { room: 'kitchen' } }, checks: ['asr.robust'] }] }));
+    expect(r.skippedChecks).toEqual([]);
+    expect(r.summary.skipped).toBe(0);
   });
 });

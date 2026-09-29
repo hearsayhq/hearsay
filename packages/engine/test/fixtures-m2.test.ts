@@ -2,7 +2,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import type { Served } from '@hearsayhq/kit';
 import { lintServer, runSuite, type Report } from '../src/index';
-import { badErrors, fakeServer, lyingReader, rawServer, strictEnum, suiteFor } from './fakes';
+import { badErrors, fakeServer, growingToolsServer, lyingReader, rawServer, strictEnum, suiteFor } from './fakes';
 
 let served: Served | undefined;
 afterEach(async () => {
@@ -41,5 +41,14 @@ describe('lint.destructive_annotated probe', () => {
     served = await fakeServer(lyingReader);
     const r = await lintServer(served.url);
     expect(r.serverFindings.filter((f) => f.checkId === 'lint.destructive_annotated').map((f) => f.severity)).toEqual(['error']);
+  });
+});
+
+describe('protocol.list_changed', () => {
+  it('warns when tools appear mid-session without a notification', async () => {
+    served = await growingToolsServer();
+    const r = await runSuite(suiteFor(served.url, { checks: ['protocol.list_changed'], cases: [{ id: 'grant', say: 'grant access', expect: { tool: 'grant_access' } }] }));
+    expect(r.cases[0]!.findings).toEqual([expect.objectContaining({ checkId: 'protocol.list_changed', severity: 'warn' })]);
+    expect(r.cases[0]!.trace.toolListDrift).toMatchObject({ notified: false, added: ['buy_now'] });
   });
 });

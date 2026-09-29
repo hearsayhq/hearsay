@@ -47,4 +47,6 @@ export interface MandateCall {
   mandateVersion?: number;
   resourceId?: string;
   amountMinor?: number;
+  /** Staged but not yet committed spend (the rest of the cart); counts toward the total limit. */
+  pendingMinor?: number;
 }

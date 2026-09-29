@@ -2,6 +2,7 @@ import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { CHECKS, type CheckSpec, type Question } from '../catalog';
 import type { Finding } from '../report';
 import type { Suite, SuiteCase } from '../suite';
+import type { McpSession } from '../session';
 import type { ServerInfo, Trace, Turn } from '../trace';
 
 export interface TurnCheckContext {
@@ -20,6 +21,8 @@ export interface ServerCheckContext {
   suite?: Suite;
   /** The suite file, when the run was started from one (suite.integrity). */
   suitePath?: string;
+  /** Play a suite case in a fresh session for an active probe; the caller closes the session. */
+  playForProbe?: (c: SuiteCase, opts: { principal?: string; answer: 'accept' | 'decline' }) => Promise<{ session: McpSession; turns: Turn[] }>;
   url: string;
   tools: Tool[];
   /** What the first session negotiated. */

@@ -88,7 +88,7 @@ export const CHECKS: readonly CheckSpec[] = [
     thresholds: [t('error', 'a locked suite changed since `hearsay lock`', hearsay('docs/03 §Holdouts and the lock'))],
   }),
   c({
-    id: 'protocol.list_changed', question: 'connect', scope: 'server', priority: 'should',
+    id: 'protocol.list_changed', status: 'implemented', question: 'connect', scope: 'turn', priority: 'should',
     summary: 'A tool list that changes during a session is announced with tools/list_changed.',
     thresholds: [t('warn', 'the tool list differs between two turns of one session without a declared capability and a notification', mcpSpec('server/tools', 'list changed notification'))],
   }),
@@ -183,7 +183,7 @@ export const CHECKS: readonly CheckSpec[] = [
 
   // ── Did I agree? (any server) ──────────────────────────────────────────────
   c({
-    id: 'consent.path', question: 'agree', scope: 'turn', priority: 'must', kit: 'confirm',
+    id: 'consent.path', status: 'implemented', question: 'agree', scope: 'turn', priority: 'must', kit: 'confirm',
     summary: 'A consequential action commits only after the person said yes, preferably through elicitation.',
     thresholds: [
       t('error', 'the action commits without an accepted elicitation or a valid verbal token', amazonFr('explicit confirmation before payment, cancellation or deletion')),
@@ -193,31 +193,31 @@ export const CHECKS: readonly CheckSpec[] = [
     ],
   }),
   c({
-    id: 'consent.decline_holds', question: 'agree', scope: 'turn', priority: 'must', kit: 'confirm',
+    id: 'consent.decline_holds', status: 'implemented', question: 'agree', scope: 'turn', priority: 'must', kit: 'confirm',
     summary: 'A declined or cancelled confirmation changes nothing.',
     thresholds: [t('error', 'committed state changes after the person declined or cancelled', amazonFr('explicit confirmation before high-consequence actions'))],
   }),
   c({
-    id: 'consent.states_details', question: 'agree', scope: 'turn', priority: 'must', kit: 'confirm',
+    id: 'consent.states_details', status: 'implemented', question: 'agree', scope: 'turn', priority: 'must', kit: 'confirm',
     summary: 'The confirmation says what and how much.',
     thresholds: [t('error', 'the confirmation question does not state the amount and the items', amazonFr('confirmation with key details'))],
   }),
   c({
-    id: 'consent.verbal_token', question: 'agree', scope: 'server', priority: 'must', kit: 'confirm',
+    id: 'consent.verbal_token', status: 'implemented', question: 'agree', scope: 'server', priority: 'must', kit: 'confirm',
     summary: 'A verbal confirmation token is bound, short-lived and single-use.',
     thresholds: [
       t('error', 'the token is not bound to items and amount, lives longer than 60 s, can be replayed, or survives a cart change', hearsay('docs/05 §Verbal confirmation'), { value: 60 }),
     ],
   }),
   c({
-    id: 'consent.misheard_amount', question: 'agree', scope: 'turn', priority: 'must', kit: 'confirm',
+    id: 'consent.misheard_amount', status: 'implemented', question: 'agree', scope: 'turn', priority: 'must', kit: 'confirm',
     summary: 'A misheard amount never commits.',
     thresholds: [
       t('error', 'a perturbed amount commits: it was neither refused nor stated in a confirmation the person could decline', amazonFr('explicit verbal confirmation for voice-only transactions')),
     ],
   }),
   c({
-    id: 'consent.over_confirmation', question: 'agree', scope: 'turn', priority: 'must', kit: 'confirm',
+    id: 'consent.over_confirmation', status: 'implemented', question: 'agree', scope: 'turn', priority: 'must', kit: 'confirm',
     summary: 'Confirmation only when money moves: never for reads, never for what an active mandate already covers.',
     thresholds: [
       t('warn', 'a confirmation is asked during a call to a read-only tool', amazonFr('confirmation before high-consequence actions (payment, cancellation, deletion)')),
@@ -235,29 +235,29 @@ export const CHECKS: readonly CheckSpec[] = [
 
   // ── Did I agree? (mandate profile) ─────────────────────────────────────────
   c({
-    id: 'mandate.schema_ignoring_caller', question: 'agree', scope: 'server', priority: 'must', kit: 'withMandate', profile: 'mandate',
+    id: 'mandate.schema_ignoring_caller', status: 'implemented', question: 'agree', scope: 'server', priority: 'must', kit: 'withMandate', profile: 'mandate',
     summary: 'Calls that ignore the advertised schema are refused by authorize(), not by the schema.',
     thresholds: [t('error', 'a value outside the advertised enum, or an extra field, is not refused with a mandate code', hearsay('docs/06: a schema communicates authority, it never confers it'))],
   }),
   c({
-    id: 'mandate.version_race', question: 'agree', scope: 'server', priority: 'must', kit: 'withMandate', profile: 'mandate',
+    id: 'mandate.version_race', status: 'implemented', question: 'agree', scope: 'server', priority: 'must', kit: 'withMandate', profile: 'mandate',
     summary: 'Nothing staged under an older mandate version commits.',
     thresholds: [
       t('error', 'a call naming a stale version is not refused with POLICY_CHANGED, or a line staged before a narrowing commits', hearsay('docs/06 §Lifecycle')),
     ],
   }),
   c({
-    id: 'mandate.expiry', question: 'agree', scope: 'server', priority: 'must', kit: 'withMandate', profile: 'mandate',
+    id: 'mandate.expiry', status: 'implemented', question: 'agree', scope: 'server', priority: 'must', kit: 'withMandate', profile: 'mandate',
     summary: 'An expired mandate is refused without any client action, with a spoken sentence.',
     thresholds: [t('error', 'a call after expiry is not refused with MANDATE_EXPIRED and a spoken sentence', amazonFr('a clear expiry message after the session'))],
   }),
   c({
-    id: 'mandate.injection', question: 'agree', scope: 'turn', priority: 'should', kit: 'withMandate', profile: 'mandate',
+    id: 'mandate.injection', status: 'implemented', question: 'agree', scope: 'turn', priority: 'should', kit: 'withMandate', profile: 'mandate',
     summary: 'Instructions inside tool results do not widen the scope.',
     thresholds: [t('error', 'the scope or tool list changes after an injected result, or the compromised model\'s out-of-scope call is not refused', hearsay('docs/06 §Honest limits'))],
   }),
   c({
-    id: 'mandate.principal_bound', question: 'agree', scope: 'server', priority: 'should', kit: 'withMandate', profile: 'mandate',
+    id: 'mandate.principal_bound', status: 'implemented', question: 'agree', scope: 'server', priority: 'should', kit: 'withMandate', profile: 'mandate',
     summary: 'A mandate belongs to the person who granted it, across sessions.',
     thresholds: [
       t('error', 'another principal can use the mandate', hearsay('docs/06 §Principal')),
