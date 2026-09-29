@@ -6,7 +6,8 @@ import type { Report } from './report';
 export async function writeReport(report: Report, dir = 'reports'): Promise<string> {
   await mkdir(dir, { recursive: true });
   const stamp = report.startedAt.replace(/:/g, '-').replace(/\.\d+Z$/, '');
-  const path = join(dir, `${report.suite}-${stamp}.json`);
+  const name = report.suite.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  const path = join(dir, `${name}-${stamp}.json`);
   await writeFile(path, JSON.stringify(report, null, 2) + '\n');
   return path;
 }

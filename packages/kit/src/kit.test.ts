@@ -31,3 +31,12 @@ describe('refuse', () => {
     expect(refuse("That item isn't on the list you allowed.", 'OUT_OF_SCOPE')).toMatchObject({ isError: true, structuredContent: { code: 'OUT_OF_SCOPE' } }));
   it('stays one short sentence', () => expect(() => refuse('word '.repeat(45))).toThrow(/too long/));
 });
+
+import { looseEnum } from './index';
+
+describe('looseEnum', () => {
+  const room = looseEnum(['living_room', 'bedroom', 'all'] as const, { living_room: ['lounge'], all: ['whole house', 'everything'] });
+  it.each([['livingroom', 'living_room'], ['Living Room', 'living_room'], ['lounge', 'living_room'], ['bed room', 'bedroom'], ['the whole house', undefined], ['whole house', 'all']])('%s → %s', (raw, want) =>
+    expect(room.normalize(raw)).toBe(want));
+  it('accepts any string at the schema level', () => expect(room.schema.safeParse('garage').success).toBe(true));
+});

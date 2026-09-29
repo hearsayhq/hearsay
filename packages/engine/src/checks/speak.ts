@@ -63,3 +63,32 @@ export const speakNoStructuredDump: TurnCheck = {
     });
   },
 };
+
+/** Count list items: "a, b, and c" / "a, b or c" / numbered or bulleted lines. */
+export function listItems(text: string): number {
+  const bullets = text.split('\n').filter((l) => /^\s*(?:[-*•]|\d+[.)])\s+/.test(l)).length;
+  let best = bullets;
+  for (const sentence of text.split(/(?<=[.?!:;])\s+/)) {
+    const parts = sentence.split(/,\s*/);
+    const last = parts.at(-1) ?? '';
+    const tail = last.match(/^(.*?)\s+(?:and|or)\s+(.+)$/);
+    if (parts.length >= 2 && (tail || /^(?:and|or)\s/.test(last))) best = Math.max(best, parts.length + (tail && !/^(?:and|or)\s/.test(last) ? 1 : 0));
+  }
+  return best;
+}
+
+const OFFER = /\b(more|want to hear|shall i (?:go on|continue)|next ones?|the rest)\b/i;
+
+export const speakLists: TurnCheck = {
+  id: 'speak.lists',
+  run({ suite, turns }) {
+    const hard = limit('speak.lists', 0, suite);
+    const soft = limit('speak.lists', 1, suite);
+    return turns.flatMap((t) => {
+      const n = listItems(t.spoken);
+      if (n > hard) return [fire('speak.lists', 0, `reads out ${n} options (at most ${hard})`, { turnId: t.id, evidence: { items: n, spoken: t.spoken.slice(0, 200) }, hint: 'Use list() from @hearsayhq/kit: three items, then offer more.' })];
+      if (n > soft && !OFFER.test(t.spoken)) return [fire('speak.lists', 1, `reads out ${n} options without offering more`, { turnId: t.id, evidence: { items: n }, hint: 'Use list() from @hearsayhq/kit: three items, then offer more.' })];
+      return [];
+    });
+  },
+};

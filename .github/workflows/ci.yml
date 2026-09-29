@@ -25,3 +25,6 @@ jobs:
       - run: npm ci
       - run: npm run check
       - run: npm run hearsay -- run suites/kitchen.yaml
+      - run: npm run hearsay -- run suites/smart-home.yaml
+        env:
+          HEARSAY_FIXED: '1'

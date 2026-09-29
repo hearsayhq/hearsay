@@ -8,4 +8,5 @@ export { McpSession, ConnectError } from './session';
 export { ensureServer, type RunningServer } from './server-process';
 export { writeReport } from './report-file';
 export { firstAudio } from './latency';
-export { IMPLEMENTED } from './checks/index';
+export { IMPLEMENTED, LINT_CHECKS } from './checks/index';
+export { lintServer } from './lint-server';

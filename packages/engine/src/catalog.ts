@@ -102,20 +102,20 @@ export const CHECKS: readonly CheckSpec[] = [
     ],
   }),
   c({
-    id: 'lint.tool_names', question: 'hear', scope: 'server', priority: 'must',
+    id: 'lint.tool_names', status: 'implemented', question: 'hear', scope: 'server', priority: 'must',
     summary: 'Tool names are valid and not confusable with each other.',
     thresholds: [
       t('warn', 'a name falls outside [A-Za-z0-9_.-]{1,128}', mcpSpec('server/tools', 'tool names')),
-      t('warn', 'two tools are within edit distance 2, or share verb and noun after synonym folding', amazonFr('each tool maps to a distinct customer intent')),
+      t('warn', 'two tools name the same words after synonym folding (set/apply/update, get/list/show, start/create/add, stop/cancel/delete) and plurals', amazonFr('each tool maps to a distinct customer intent')),
     ],
   }),
   c({
-    id: 'lint.descriptions', question: 'hear', scope: 'server', priority: 'must',
+    id: 'lint.descriptions', status: 'implemented', question: 'hear', scope: 'server', priority: 'must',
     summary: 'Every tool and parameter has a description a model can map speech onto.',
     thresholds: [t('warn', 'a tool description is missing or under 20 characters, or a parameter has none', amazonFr('clear, unambiguous tool descriptions'))],
   }),
   c({
-    id: 'lint.schema_constraints', question: 'hear', scope: 'server', priority: 'should',
+    id: 'lint.schema_constraints', status: 'implemented', question: 'hear', scope: 'server', priority: 'should',
     summary: 'Input schemas are valid, declare required parameters, and use enums and bounds.',
     thresholds: [
       t('error', 'an inputSchema is not valid JSON Schema, or a required parameter is not declared', amazonFr('valid JSON Schema inputSchema with all required parameters')),
@@ -158,7 +158,7 @@ export const CHECKS: readonly CheckSpec[] = [
     ],
   }),
   c({
-    id: 'speak.lists', question: 'listen', scope: 'turn', priority: 'should', kit: 'speak',
+    id: 'speak.lists', status: 'implemented', question: 'listen', scope: 'turn', priority: 'should', kit: 'speak',
     summary: 'Lists are short and offer more.',
     thresholds: [
       t('error', 'more than 5 options are read out', amazonFr('at most 5 options, with pagination'), { value: 5 }),
@@ -166,7 +166,7 @@ export const CHECKS: readonly CheckSpec[] = [
     ],
   }),
   c({
-    id: 'lint.error_actionable', question: 'listen', scope: 'turn', priority: 'must', kit: 'refuse',
+    id: 'lint.error_actionable', status: 'implemented', question: 'listen', scope: 'turn', priority: 'must', kit: 'refuse',
     summary: 'Error results are one sentence that says what the person can do.',
     thresholds: [
       t('error', 'the error text contains a stack trace, an error code or an internal id', amazonFr('no API codes or technical jargon in customer-facing responses')),
@@ -174,7 +174,7 @@ export const CHECKS: readonly CheckSpec[] = [
     ],
   }),
   c({
-    id: 'protocol.refusal_as_result', question: 'listen', scope: 'turn', priority: 'must', kit: 'refuse',
+    id: 'protocol.refusal_as_result', status: 'implemented', question: 'listen', scope: 'turn', priority: 'must', kit: 'refuse',
     summary: 'Refusals are ordinary tool results with isError and a spoken sentence, never protocol errors.',
     thresholds: [
       t('error', 'a tools/call is answered with a JSON-RPC error, or with isError text starting "MCP error -32602"', amazonFr('every tool in tools/list must be invocable')),
@@ -217,10 +217,10 @@ export const CHECKS: readonly CheckSpec[] = [
     ],
   }),
   c({
-    id: 'lint.destructive_annotated', question: 'agree', scope: 'server', priority: 'must',
+    id: 'lint.destructive_annotated', status: 'implemented', question: 'agree', scope: 'server', priority: 'must',
     summary: 'Annotations tell the truth about side effects.',
     thresholds: [
-      t('error', 'a tool declares readOnlyHint: true but a state change is observed', mcpSpec('server/tools', 'tool annotations')),
+      t('error', 'a tool declares readOnlyHint: true but two identical reads differ', mcpSpec('server/tools', 'tool annotations')),
       t('warn', 'a tool changes state without explicit annotations', hearsay('docs/05 lint.destructive_annotated')),
     ],
   }),

@@ -4,6 +4,11 @@
   "private": true,
   "type": "module",
   "description": "Building blocks for voice-ready MCP servers: speak, refuse, confirm, withMandate.",
-  "exports": { ".": "./src/index.ts" },
-  "dependencies": { "@modelcontextprotocol/sdk": "^1.31.0" }
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.31.0",
+    "zod": "^4.1.0"
+  }
 }
