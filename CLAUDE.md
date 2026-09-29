@@ -10,8 +10,8 @@ target Sun 18 Oct.** Repo `hearsayhq/hearsay`, private until submission.
 2. `docs/07_IMPLEMENTATION_PLAN.md` — current milestone, its gate, the cut order
 3. `docs/01_REQUIREMENTS.md` — FR ids you are implementing
 4. `docs/05_CHECK_CATALOG.md` — exact semantics, thresholds and sources of every check
-5. `docs/06_SECURITY_MODEL.md` — before touching anything consent- or mandate-related, and for
-   how Hearsay protects its own suites (lock, consent for suite changes, holdouts)
+5. `docs/06_SECURITY_MODEL.md` — before touching anything consent- or mandate-related
+   (docs/03 §Holdouts and the lock for how suites are protected)
 
 ## Commands
 
@@ -47,7 +47,10 @@ npm run dev:web                            # console on :5180 (needs `hearsay se
   every scoped call goes through `authorize()`; mandates are bound to the principal, not the
   session; enums are advertised, and enforced only by `authorize()`.
 - **Voice rules for reference servers:** replies are one or two sentences, no JSON, no ids, no tool
-  names; errors say what the person can do; amounts and misheard values are read back.
+  names; errors say what the person can do; amounts and misheard values are read back; confirm
+  only when money moves or outside the mandate (D-022).
+- **No human in the developer loop (D-021):** no tool changes suites or asks the developer for
+  consent; mandate and elicitation are for the add-on's customers.
 - **Code:** TypeScript strict, ESM, zod 4 for runtime validation, English for code, docs and
   utterances (en-US). Small files, one concern each.
 - **Suites are the owner's.** Change a suite only as spec work with the owner's OK; run

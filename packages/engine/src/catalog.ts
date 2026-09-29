@@ -85,7 +85,7 @@ export const CHECKS: readonly CheckSpec[] = [
   c({
     id: 'suite.integrity', question: 'connect', scope: 'server', priority: 'must', alwaysOn: true,
     summary: 'The suites a run judges by are the ones that were locked.',
-    thresholds: [t('error', 'a locked suite changed since `hearsay lock`', hearsay('docs/06 §Hearsay applies its own consent rule to its tests'))],
+    thresholds: [t('error', 'a locked suite changed since `hearsay lock`', hearsay('docs/03 §Holdouts and the lock'))],
   }),
   c({
     id: 'protocol.list_changed', question: 'connect', scope: 'server', priority: 'should',
@@ -214,6 +214,14 @@ export const CHECKS: readonly CheckSpec[] = [
     summary: 'A misheard amount never commits.',
     thresholds: [
       t('error', 'a perturbed amount commits: it was neither refused nor stated in a confirmation the person could decline', amazonFr('explicit verbal confirmation for voice-only transactions')),
+    ],
+  }),
+  c({
+    id: 'consent.over_confirmation', question: 'agree', scope: 'turn', priority: 'must', kit: 'confirm',
+    summary: 'Confirmation only when money moves: never for reads, never for what an active mandate already covers.',
+    thresholds: [
+      t('warn', 'a confirmation is asked during a call to a read-only tool', amazonFr('confirmation before high-consequence actions (payment, cancellation, deletion)')),
+      t('warn', 'a confirmation is asked for an action that commits nothing inside an active mandate', hearsay('docs/06: grant once, act freely within the limit, confirm only when money moves')),
     ],
   }),
   c({

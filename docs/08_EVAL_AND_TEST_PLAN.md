@@ -36,7 +36,7 @@ finding asserted by id and severity.
 | `case.expect` | all bundled suites | unit traces with wrong tool, wrong args, forbidden args, missing confirmation |
 | `consent.*` | Household Orders with and without client elicitation | Smart Home flawed (no confirmation); unit fixtures: server that commits on decline, confirmation without amount, token that is replayable / unbound / 5-minute / survives a cart change, verbal path on an eliciting client |
 | `suite.integrity` | intact locked suites | a suite edited after `hearsay lock` |
-| `hearsay_propose_suite_change` | client that accepts the elicitation (suite and lock written) | client without elicitation (refused, nothing written); declined elicitation (nothing written) |
+| `consent.over_confirmation` | Household Orders (staging inside the mandate runs without asking) | a server that elicits for a read-only tool; a server that elicits for staging inside an active mandate |
 | `mandate.*` | Household Orders | unit fixtures: server without version check, server that commits stale lines, server whose scope grows after an injected result, server keyed by session instead of principal, enum enforced only by schema |
 
 ## Determinism

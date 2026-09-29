@@ -78,6 +78,12 @@ engine declare no elicitation capability.
   compares; a locked suite whose content changed is a `suite.integrity` error, so a run that
   changed its own expectations cannot be green. The lock is committed, so a changed lock shows in
   the pull request.
+- **Legitimate changes** to suites go through normal pull requests. A CODEOWNERS entry on
+  `suites/` and `suites/.hearsay-lock` makes them need an owner's review. No tool changes suites,
+  and nothing asks the developer for consent (D-021).
+- **Honest limit.** The lock detects, it does not prevent: an agent with a shell can edit a suite
+  and run `hearsay lock` itself. The committed lock shows that in review, and the experiment
+  (docs/15) counts such attempts with hashes kept outside the agent's workspace.
 
 ## Money
 

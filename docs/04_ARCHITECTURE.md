@@ -38,7 +38,7 @@ gen-variants (offline, AWS): utterance ─► Polly ─► noise + telephone ban
 | `packages/kit` (`@hearsayhq/kit`) | MCP SDK | Building blocks for voice-ready servers: `speak()`, `refuse()`, `serveMcp()` (principal per session) from M1; `confirm()`, `withMandate()` in M2b. Reference servers use it. |
 | `packages/engine` (`@hearsayhq/engine`) | mandate, MCP SDK, zod, yaml | Session, runner, orchestrators (D-002), perturbations, checks, report. |
 | `packages/cli` (`@hearsayhq/cli`, binary `hearsay`) | engine | Argument parsing, printing, exit codes. No logic. |
-| `packages/mcp` (`@hearsayhq/mcp`) | engine, MCP SDK | Hearsay as an MCP server (stdio and Streamable HTTP) for coding agents: lint, run, explain, propose a suite change (FR-034, FR-037). No logic of its own. |
+| `packages/mcp` (`@hearsayhq/mcp`) | engine, MCP SDK | Hearsay as an MCP server (stdio and Streamable HTTP) for coding agents: lint, run, explain (FR-034). No logic of its own; no tool writes suites. |
 | `packages/web` | engine (types only) | Console UI. Renders traces and findings; decides nothing. |
 | `servers/*` | MCP SDK, zod, mandate | Reference servers, one per demo story. |
 | `suites/` | — | YAML suites; `suites/cassettes/` for replay; `suites/variants/` for recorded mishearings. |
