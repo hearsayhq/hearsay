@@ -35,6 +35,7 @@ gen-variants (offline, AWS): utterance ─► Polly ─► noise + telephone ban
 | Path | Depends on | Responsibility |
 |---|---|---|
 | `packages/mandate` (`@hearsayhq/mandate`) | nothing | Pure policy: `authorize`, `settleExpiry`, error codes. Ported from webMCP. |
+| `packages/kit` (`@hearsayhq/kit`) | MCP SDK | Building blocks for voice-ready servers: `speak()`, `refuse()`, `serveMcp()` (principal per session) from M1; `confirm()`, `withMandate()` in M2b. Reference servers use it. |
 | `packages/engine` (`@hearsayhq/engine`) | mandate, MCP SDK, zod, yaml | Session, runner, orchestrators (D-002), perturbations, checks, report. |
 | `packages/cli` (`@hearsayhq/cli`, binary `hearsay`) | engine | Argument parsing, printing, exit codes. No logic. |
 | `packages/mcp` (`@hearsayhq/mcp`) | engine, MCP SDK | Hearsay as an MCP server (Streamable HTTP and stdio) for coding agents (FR-034). No logic. |

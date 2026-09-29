@@ -18,8 +18,8 @@ breaks. Every check answers one of four questions:
 Every finding cites its source: Amazon's functional requirements for add-ons, the MCP
 specification, or Hearsay's own rule.
 
-> Status: **M0 foundation.** Contracts, suite format, check catalog and the mandate policy are in
-> place. The runner lands in M1. See [docs/07](docs/07_IMPLEMENTATION_PLAN.md).
+> Status: **M1 runner.** `hearsay run` plays suites against a live server (Kitchen passes); six
+> checks are implemented, the rest are listed as skipped. See [docs/07](docs/07_IMPLEMENTATION_PLAN.md).
 
 ## Quickstart (current)
 
@@ -28,6 +28,7 @@ npm install
 npm run check
 npm run hearsay -- validate suites/*.yaml
 npm run hearsay -- checks
+npm run hearsay -- run suites/kitchen.yaml   # starts the Kitchen server itself
 ```
 
 Once published: `npx @hearsayhq/cli run suites/kitchen.yaml` (the unscoped npm name `hearsay` is
@@ -38,6 +39,7 @@ an unrelated library).
 ```
 packages/mandate   mandate policy (authorize, expiry, limits)
 packages/engine    session, runner, orchestrators, perturbations, checks, report
+packages/kit       building blocks for voice-ready servers: speak, refuse, serveMcp
 packages/cli       hearsay validate | checks | run | lint | gen-variants | serve
 packages/web       local console: talk, timeline, findings
 packages/mcp       Hearsay as an MCP server for coding agents (M6)
