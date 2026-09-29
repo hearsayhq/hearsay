@@ -40,6 +40,7 @@ new ideas go to docs/ROADMAP.md.
 | FR-031 | M | `hearsay lint <url>`: server-scope checks only, no suite needed. | M2 |
 | FR-032 | — | *Cut:* composite GitHub Action. The README carries a workflow snippet instead. | — |
 | FR-033 | S | Agent Skill `write-hearsay-suite`: from `tools/list`, draft a suite with a case per tool, consent cases for destructive tools and fuzz entries. | M6 |
+| FR-034 | S | Hearsay as an MCP server (`@hearsayhq/mcp`, Streamable HTTP and stdio): tools `hearsay_lint(url)`, `hearsay_run(suitePath, only?)`, `hearsay_explain(checkId)`. A thin wrapper around the engine with no logic of its own; the same findings as the CLI, including sources. It passes its own `protocol.*` and `lint.*` checks. README carries config snippets for Claude Code and Kiro. | M6 |
 
 ## Console
 
@@ -64,7 +65,7 @@ new ideas go to docs/ROADMAP.md.
 |---|---|---|---|
 | FR-060 | M | Fresh clone to first green run in under 5 minutes, with no API keys (scripted + replay). | M6 |
 | FR-061 | M | Submission package per docs/09: video < 3 min, feedback, friction log, disclosures. | M7 |
-| FR-062 | S | Scan of public MCP servers: `tools/list` plus calls to `readOnlyHint` tools only, no auth, terms of use respected, results published in aggregate only. | M6 |
+| FR-062 | C | Scan of public MCP servers: `tools/list` plus calls to `readOnlyHint` tools only, no auth, terms of use respected, results published in aggregate only. | M6 |
 | FR-063 | S | Open Source contribution: issue, then PR to AlSayedGamal/mcp-voice-simulator (form elicitation as a spoken confirmation, fail closed). Plan B: MCP transport for sujitnoronha/voicecheck. At most half a day. | M6 |
 | FR-064 | M | A short demo clip after every gate (docs/09 §Clips per gate). | M1–M6 |
 

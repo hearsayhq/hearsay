@@ -7,6 +7,7 @@ Beside the server under test, never in front of it in production.
 | Where | How | Mode |
 |---|---|---|
 | Developer laptop | `hearsay serve` + web console; `hearsay lint <url>` | scripted, llm |
+| Coding agent (Claude Code, Kiro) | `@hearsayhq/mcp`: `hearsay_lint`, `hearsay_run`, `hearsay_explain`; the agent fixes findings in a loop | scripted, replay |
 | CI (pull requests) | CLI from a workflow step; starts the server from `server.start`, exit 1 on error findings, JSON report as artifact | scripted, replay |
 | Pre-release | llm mode against a staging URL: does a real model pick the right tools from these descriptions? `gen-variants` to record real mishearings. | llm (+ `--record`) |
 
@@ -24,7 +25,7 @@ suite.yaml ──► engine ─────────────────�
           ┌──────────┴───────────┐
        cli (run/lint/validate/     serve (Hono, HTTP + SSE) ──► web console (Vite + React)
             checks/gen-variants)   timeline, findings by question
-       exit code, JSON
+       exit code, JSON             mcp (@hearsayhq/mcp) ──► coding agents: lint, run, explain
 
 gen-variants (offline, AWS): utterance ─► Polly ─► noise + telephone band ─► Transcribe Streaming ─► variants file
 ```
@@ -36,6 +37,7 @@ gen-variants (offline, AWS): utterance ─► Polly ─► noise + telephone ban
 | `packages/mandate` (`@hearsayhq/mandate`) | nothing | Pure policy: `authorize`, `settleExpiry`, error codes. Ported from webMCP. |
 | `packages/engine` (`@hearsayhq/engine`) | mandate, MCP SDK, zod, yaml | Session, runner, orchestrators (D-002), perturbations, checks, report. |
 | `packages/cli` (`@hearsayhq/cli`, binary `hearsay`) | engine | Argument parsing, printing, exit codes. No logic. |
+| `packages/mcp` (`@hearsayhq/mcp`) | engine, MCP SDK | Hearsay as an MCP server (Streamable HTTP and stdio) for coding agents (FR-034). No logic. |
 | `packages/web` | engine (types only) | Console UI. Renders traces and findings; decides nothing. |
 | `servers/*` | MCP SDK, zod, mandate | Reference servers, one per demo story. |
 | `suites/` | — | YAML suites; `suites/cassettes/` for replay; `suites/variants/` for recorded mishearings. |

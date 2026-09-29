@@ -4,6 +4,8 @@ Checked 29–30 Sep 2026. Amazon pages are cited by `catalog.ts` as `amazon-fr` 
 
 | Source | Used for |
 |---|---|
+| Devpost resources page — amazonappdev2026.devpost.com/resources | Open Source guidance that partly contradicts the rules (R-02, friction log #5) |
+| Amazon Devices Builder Tools | Reference for the form only (developer tools shipped as MCP servers plus Agent Skills). Not installed: Fire TV / Vega focus, installs skills globally. |
 | Hackathon overview, rules, FAQ — amazonappdev2026.devpost.com | Track rules (2025-11-25, Streamable HTTP, simulated path), Open Source mini challenge, friction-log bonus, existing-work rule, reviewer handles, hosting not required |
 | Alexa+ add-on functional requirements — developer.amazon.com/docs/alexaplus/add-ons/functional-requirements.html | 3 s search with interim message; responses under 30 s; at most 5 options; explicit confirmation before payment, cancellation, deletion; no API codes, tool names, JSON or ids; actionable errors; every listed tool invocable; clear descriptions, synonyms in enums; context and expiry |
 | MCP Toolkit quickstart — …/add-ons/mcp-toolkit-quickstart.html | 500 ms round trip; 2025-11-25 over Streamable HTTP; tools refreshed only on deployment |

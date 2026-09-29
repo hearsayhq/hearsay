@@ -14,7 +14,7 @@ Judges may stop at 3:00. Best material first. M7 only cuts: every shot comes fro
 | 1:25 | "place the order" → elicitation modal → decline → nothing committed | "No tool can buy anything. Only the person's yes, asked by the host, can." |
 | 1:50 | Same with a client without elicitation: spoken question, token, warn | "Without elicitation, a model could hallucinate that yes. Hearsay says so." |
 | 2:15 | `gen-variants`: Polly → phone line → Transcribe, the heard text in the suite | "Real mishearings, recorded once, replayed forever." |
-| 2:35 | Catalog grouped by question, repo, license | "Open source, for Alexa+, unofficial. Point it at your server." |
+| 2:35 | A coding agent calls `hearsay_run` through the Hearsay MCP server and fixes a finding; catalog, repo, license | "Hearsay itself is an MCP server and an Agent Skill: your coding agent runs it and fixes what it finds. Open source, for Alexa+, unofficial." |
 
 ## Clips per gate
 
@@ -31,7 +31,8 @@ which video line it serves.
 | M3 | `m3-hearing` | "livingroom" `asr.robust` red → fixed green; replay run twice with the network off; `gen-variants` writing the variants file |
 | M4 | `m4-consent` | fifteen → fifty refused; decline → nothing committed; verbal path graded warn |
 | M5 | `m5-console` | browser: Kitchen timer spoken, Household Orders elicitation modal, timeline and findings updating |
-| M6 | `m6-fresh-clone` | fresh clone → `npm ci` → first green run, sped up, clock visible; scan summary |
+| M6 | `m6-fresh-clone` | fresh clone → `npm ci` → first green run, sped up, clock visible |
+| M6 | `m6-agent-loop` | Claude Code with `@hearsayhq/mcp` configured: `hearsay_run` on Smart Home flawed, the agent fixes one finding, reruns green |
 
 ## Devpost fields
 
@@ -40,12 +41,15 @@ which video line it serves.
 - **Mini challenges:** enter both; only one can be won.
   - *AWS Builder:* Bedrock Converse powers the llm orchestrator; Polly and Transcribe power
     `gen-variants`. Describe both in the feedback answer.
-  - *Open Source:* a contribution to an existing public repository, made in the window: a PR to
+  - *Open Source* (definition pending clarification, R-02): a contribution to an existing public
+    repository, made in the window: a PR to
     AlSayedGamal/mcp-voice-simulator adding form elicitation as a spoken confirmation that fails
     closed (issue first; trace export optional). Plan B: an MCP transport for
     sujitnoronha/voicecheck so `tool_called` sees MCP calls. Fields: contribution URL, repo URL,
     GitHub username, what it does, how it works, why it matters.
 - **Description:** what it does, how it works, the four questions, the catalog, the consent tiers.
+  Hearsay itself is an MCP server and an Agent Skill, the same form as Amazon's own developer
+  tools, so a coding agent can check the add-on it is building.
 - **Existing work:** the mandate model and `authorize()` are adapted from the author's WebMCP
   Mandate Compiler (winner, OpenAI WebMCP Challenge 2026). The rules require pre-existing work to
   be significantly updated in the window with a before/after: show records × fields → tools ×

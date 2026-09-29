@@ -66,6 +66,9 @@ npm run dev:web                            # console on :5180 (needs `hearsay se
 - Hosting is not required; judges run the repo locally. Judging 9–20 Nov 2026.
 - Prizes: max one track prize + one mini challenge (AWS Builder or Open Source). Open Source =
   PR to AlSayedGamal/mcp-voice-simulator (docs/09).
+- Hearsay itself becomes an MCP server (`@hearsayhq/mcp`, M6) and an Agent Skill, the form of
+  Amazon's own developer tools. Do not install Amazon Devices Builder Tools (Fire TV/Vega focus,
+  installs skills globally); do not add Strands, AgentCore or Kiro (freeze, D-016).
 - npm: scope `@hearsayhq`; the unscoped `hearsay` is someone else's library, so always
   `npx @hearsayhq/cli`.
 - `packages/mandate` is ported from github.com/HarzerHeribert/webMCP (`server/core/policy.ts`);

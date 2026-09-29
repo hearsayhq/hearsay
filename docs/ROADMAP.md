@@ -18,6 +18,9 @@ new idea is recorded; moving one into docs/07 needs the owner.
 
 ## Later
 
+- llm orchestrator via a Strands agent (as the KayLerch bridge does). Not built during the freeze;
+  Bedrock Converse stays the AWS Builder story.
+
 - Host profiles beyond Alexa+ (budgets and confirmation rules per assistant).
 - Real Polly → Transcribe round trip inside runs, measuring asr and speak instead of modeling them.
 - Interim-message check for tools slower than 3 s (Amazon's search requirement) once the MCP

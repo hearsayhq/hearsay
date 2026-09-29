@@ -37,6 +37,11 @@ pull request goes red.
 
 1 and 2 are the product. The console and the reference servers are packaging.
 
+Hearsay itself is an MCP server and an Agent Skill. A coding agent (Claude Code, Kiro) that is
+building an add-on can lint and run it against its own server through `@hearsayhq/mcp`, draft a
+suite with the `write-hearsay-suite` skill, and fix the findings in a loop — the same form as
+Amazon's own developer tools.
+
 ## Four questions
 
 Every check answers one question a listener would ask. Catalog, report, console, README and video

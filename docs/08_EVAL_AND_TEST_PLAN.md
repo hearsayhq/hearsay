@@ -10,6 +10,7 @@ else in the repo. The rule: **a check without a failing fixture is not implement
 | Unit | `*.test.ts` next to code | every commit | none |
 | Engine ↔ server | `packages/engine/test/` with servers started in-process | every commit | localhost only |
 | Suite self-test | `hearsay run` on all bundled suites, scripted + replay | CI | localhost only |
+| Dogfood | `hearsay lint` against Hearsay's own MCP server (`@hearsayhq/mcp`): `protocol.*` and `lint.*` pass (FR-034) | CI, from M6 | localhost only |
 | Live model | llm mode against reference servers | manually, before recording cassettes | AWS |
 | Recorded hearing | `hearsay gen-variants` | manually, when utterances change | AWS |
 

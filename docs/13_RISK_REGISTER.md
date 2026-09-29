@@ -3,7 +3,7 @@
 | Id | Risk | L | I | Mitigation | Owner/when |
 |---|---|---|---|---|---|
 | R-01 | Judges read it as "not an Alexa+ experience". | M | H | Video opens with a spoken interaction against a reference server; checks cite Amazon's own requirements; track rules allow the simulated path. | M7 |
-| R-02 | Open Source mini challenge requires an *additional* project or contribution. | H | M | Decided: PR to AlSayedGamal/mcp-voice-simulator, issue first; plan B voicecheck (docs/09). | M1 issue, M6 PR |
+| R-02 | Open Source mini challenge: the rules ask for a new, additional project or a contribution to an existing public repo; the Devpost resources page says public repos and popular package directories work and speaks of adding something to the project you already built (friction log #5). | H | M | Owner clarifies in office hours or on Discord. Until then the PR to AlSayedGamal/mcp-voice-simulator stays in the plan (issue first); plan B voicecheck (docs/09). | M1 issue, M6 PR |
 | R-03 | Elicitation behaves differently in the real Alexa+ orchestrator; Amazon's example handshake declares none (friction log #2). | H | M | Consent tiers with a graded verbal fallback (D-010). Test once through KayLerch/alexa-skill-mcp-bridge if the AWS setup stays under 2 h. | M4 |
 | R-04 | Scope creep. | H | H | Scope freeze (D-013), ROADMAP, cut order and the automatic cut rule in docs/07. | always |
 | R-05 | Flaky latency verdicts on CI runners. | M | M | Fixtures far from thresholds; modeled asr/tts; tolerance in replay; runner pinned to ubuntu-24.04. | M1 |
@@ -21,5 +21,6 @@ L = likelihood, I = impact.
 
 - Does the Alexa+ client declare elicitation today, and in which modes? (friction log #2)
 - Minimum mandate duration for `mandate.expiry` that keeps suites fast (target ≤ 3 s).
-- Does an opened PR count as a contribution for the Open Source mini challenge, or must it be
-  merged? Ask in the Devpost discussion if the issue gets no answer.
+- What counts for the Open Source mini challenge: a separate project or contribution only, or also
+  something added to the submission and published to a package directory (R-02)? Does an opened
+  PR count, or must it be merged? Owner asks in office hours or on Discord.

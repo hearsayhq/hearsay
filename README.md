@@ -40,6 +40,7 @@ packages/mandate   mandate policy (authorize, expiry, limits)
 packages/engine    session, runner, orchestrators, perturbations, checks, report
 packages/cli       hearsay validate | checks | run | lint | gen-variants | serve
 packages/web       local console: talk, timeline, findings
+packages/mcp       Hearsay as an MCP server for coding agents (M6)
 servers/           reference MCP servers: kitchen, smart-home, household-orders
 suites/            YAML suites (+ cassettes and recorded variants for replay)
 docs/              spec pack
