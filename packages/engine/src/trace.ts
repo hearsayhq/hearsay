@@ -38,6 +38,7 @@ export interface ToolCallRecord {
   tool: string;
   args: Record<string, unknown>;
   result: ToolResult;
+  /** Server time; excludes the time the person spent answering elicitations. */
   latencyMs: number;
   /** Elicitations the server sent while handling this call. */
   elicitations?: ElicitationRecord[];

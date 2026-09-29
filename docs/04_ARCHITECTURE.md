@@ -61,8 +61,31 @@ engine/src/
   voice/            polly.ts, channel.ts (noise, telephone band; pure TS), transcribe.ts (gen-variants only)
   checks/           one file per category; each binds to a CheckSpec from catalog.ts
   latency.ts        the model from docs/03
-  serve.ts          Hono app for the console (M5)
+  server-process.ts starts `server.start` with PORT set from the suite URL, stops it on exit
+  console/          planner.ts (nearest case, D-023), session-hub.ts (one MCP session per tab,
+                    the person answers elicitations), serve.ts (Hono app), wire.ts (event types)
+  types.ts          types only, for the browser: `@hearsayhq/engine/types`
 ```
+
+### Console API (`hearsay serve`, FR-040)
+
+Localhost only (127.0.0.1:4100). The console proxies `/api` to it; the engine decides, the
+console renders.
+
+| Endpoint | Does |
+|---|---|
+| `GET /api/catalog`, `GET /api/suites` | checks by question with sources; suites in `suites/` (holdouts never listed) |
+| `POST /api/connect {suitePath}` | starts the suite's server if nothing answers, opens an MCP session with elicitation and a fresh principal |
+| `GET /api/events/:sessionId` | SSE: `turn` (trace turn, planner, first-audio breakdown, findings), `elicitation`, `elicitation-answered`, `tools` |
+| `POST /api/say {sessionId, text}` | plays one turn; the result arrives as a `turn` event, after any elicitation is answered |
+| `POST /api/elicitation/:id {sessionId, action}` | the person's answer: accept, decline or cancel |
+| `POST /api/run {suitePath}` | runs the suite as `hearsay run` does and writes the report to `reports/` (FR-042) |
+| `POST /api/disconnect {sessionId}` | closes the session; servers the console started stop when `serve` stops |
+
+Live checks per console turn: of `latency.*`, `speak.*`, `lint.error_actionable`,
+`protocol.refusal_as_result`, `consent.path` and `consent.states_details`, those the suite
+selects, as in CI. Checks that need variants, state snapshots or exact arguments run with
+"Run suite".
 
 ## Stack and why
 
@@ -111,8 +134,8 @@ No hosting and no VM are needed. Judges run the repo locally (hackathon FAQ).
 | `checks` | always | — | — |
 | `run <suite...> [--only id] [--failed] [--holdout] [--orchestrator m] [--record] [--verbose]` | no error findings | error findings | usage / cannot connect |
 | `lock [suite...]` | lock written | — | usage |
-
-`hearsay-mcp` (`npm run mcp`): stdio by default, `--http --port 4199` for Streamable HTTP, `--cwd` for the project root.
 | `lint <url>` | no error findings | error findings | usage / cannot connect |
 | `gen-variants <suite...>` | variants written | provider error | usage / no AWS credentials |
-| `serve [--port 4100]` | — | — | usage |
+| `serve [--port 4100]` | runs until stopped | — | usage |
+
+`hearsay-mcp` (`npm run mcp`): stdio by default, `--http --port 4199` for Streamable HTTP, `--cwd` for the project root.

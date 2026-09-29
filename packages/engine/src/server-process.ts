@@ -25,10 +25,23 @@ export async function ensureServer(server: { url: string; start?: string }, opts
   if (await answers(server.url)) return { started: false, stop: async () => undefined };
   if (!server.start) throw new ConnectError(`Nothing answers at ${server.url} and the suite has no server.start command.`);
 
-  const child = spawn('sh', ['-c', server.start], { detached: true, stdio: ['ignore', 'ignore', 'pipe'], ...(opts.cwd ? { cwd: opts.cwd } : {}) });
+  // The URL decides the port. Without this, a PORT inherited from Hearsay's own host (hearsay serve) would win.
+  const port = new URL(server.url).port;
+  const env = { ...process.env, ...(port ? { PORT: port } : {}) };
+  const child = spawn('sh', ['-c', server.start], { detached: true, env, stdio: ['ignore', 'ignore', 'pipe'], ...(opts.cwd ? { cwd: opts.cwd } : {}) });
   let stderr = '';
   child.stderr?.on('data', (d: Buffer) => void (stderr = (stderr + d.toString()).slice(-2000)));
+  // Never leave a server behind when Hearsay exits, however it exits.
+  const killGroup = () => {
+    try {
+      if (child.pid && child.exitCode === null) process.kill(-child.pid, 'SIGTERM');
+    } catch {
+      /* already gone */
+    }
+  };
+  process.once('exit', killGroup);
   const stop = async () => {
+    process.off('exit', killGroup);
     if (child.exitCode !== null || !child.pid) return;
     try {
       process.kill(-child.pid, 'SIGTERM');

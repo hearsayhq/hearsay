@@ -70,7 +70,8 @@ decides. `catalog.test.ts` fails if an id exists in code but not here.
 ## Do I have to wait?
 
 - `latency.tool` — Any single `tools/call` round trip over 500 ms: **error** (MCP Toolkit
-  quickstart).
+  quickstart). Time the person spends answering an elicitation during the call is not server
+  time and is subtracted; the timeline still shows it as an elicitation span.
 - `latency.first_audio` — Modeled `asr + plan + Σ tool + speak_ttfb` (docs/03 §Latency model)
   over `budget.firstAudioMs` (default 1500): **warn**, with the span breakdown. In scripted mode
   `plan` is 0, so the number is a lower bound: a server that misses it misses it everywhere.

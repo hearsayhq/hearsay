@@ -96,7 +96,9 @@ boundary. Staging checks the cart total, not only the new line, against the rema
 
 `first_audio = asr + plan + Σ tool + elicitation(0 in budget) + speak_ttfb`.
 
-- **tool**: measured wall clock of `tools/call`.
+- **tool**: measured wall clock of `tools/call`, minus the time the person spent answering an
+  elicitation during the call. `ToolCallRecord.latencyMs` is this server time; the tool span on
+  the timeline keeps the wall clock, with the elicitation span inside it.
 - **plan**: measured in llm mode; replayed from the cassette's recorded duration in replay; 0 in
   scripted. So in scripted mode `latency.first_audio` is a lower bound.
 - **asr** and **speak_ttfb**: modeled constants from the suite's `latencyModel` (defaults 300 ms

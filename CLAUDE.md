@@ -24,7 +24,8 @@ npm run hearsay -- run suites/kitchen.yaml # starts the server from the suite, e
 npm run hearsay -- lock                    # re-lock suites after an approved suite change
 npm run mcp                                # Hearsay as an MCP server on stdio (--http for HTTP)
 npm run server:kitchen                     # reference servers on :4101 / :4102 / :4103
-npm run dev:web                            # console on :5180 (needs `hearsay serve` from M5)
+npm run hearsay -- serve                   # engine API for the console on :4100
+npm run dev:web                            # console on :5180
 ```
 
 ## Rules

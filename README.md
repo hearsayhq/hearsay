@@ -18,11 +18,12 @@ breaks. Every check answers one of four questions:
 Every finding cites its source: Amazon's functional requirements for add-ons, the MCP
 specification, or Hearsay's own rule.
 
-> Status: **M4 consent.** Every check in the catalog is implemented, each with a fixture built to
-> fail it. `hearsay run` (scripted, llm, replay, `--holdout`), `hearsay lint`,
-> `hearsay lock` and `hearsay gen-variants` work; fifteen checks are implemented (the rest are listed
-> as skipped); coding agents can use Hearsay over MCP. Mishearings reach the server through its
-> arguments, so `asr.robust` runs without a model. See [docs/07](docs/07_IMPLEMENTATION_PLAN.md).
+> Status: **M5 console.** Every check in the catalog is implemented, each with a fixture built to
+> fail it. `hearsay run` (scripted, llm, replay, `--holdout`), `hearsay lint`, `hearsay lock`,
+> `hearsay gen-variants` and `hearsay serve` work; coding agents can use Hearsay over MCP; the web
+> console plays turns live and a person answers the server's confirmations. Mishearings reach the
+> server through its arguments, so `asr.robust` runs without a model.
+> See [docs/07](docs/07_IMPLEMENTATION_PLAN.md).
 
 ## Quickstart (current)
 
@@ -35,6 +36,11 @@ npm run hearsay -- run suites/kitchen.yaml   # starts the Kitchen server itself
 npm run hearsay -- run suites/smart-home.yaml                    # flawed: red
 HEARSAY_FIXED=1 npm run hearsay -- run suites/smart-home.yaml    # kit applied: green
 ```
+
+Console: `npm run hearsay -- serve` in one terminal, `npm run dev:web` in another, then open
+http://localhost:5180. Pick a suite, connect (the server starts itself), and type what a customer
+would say. Replies are spoken by the browser; confirmations appear as a dialog you answer. Without
+a model the console plans from the nearest suite case and says so (D-023).
 
 Once published: `npx @hearsayhq/cli run suites/kitchen.yaml` (the unscoped npm name `hearsay` is
 an unrelated library).

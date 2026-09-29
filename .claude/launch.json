@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "hearsay-serve",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "hearsay", "--", "serve"],
+      "port": 4100
+    },
+    {
+      "name": "console",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev:web"],
+      "port": 5180
+    }
+  ]
+}

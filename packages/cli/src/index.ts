@@ -12,7 +12,7 @@
 import { parseArgs } from 'node:util';
 import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
-import { CHECKS, ConnectError, IMPLEMENTED, PollyTts, TranscribeStt, genVariants, loadHoldout, PERTURBATIONS, QUESTIONS, QUESTION_ORDER, RecordingProvider, ReplayProvider, cassettePathFor, ensureServer, exitCodeFor, lintServer, loadCassette, loadSuite, lockSuites, providerFromEnv, runSuite, saveCassette, writeReport, type Cassette, type ModelProvider } from '@hearsayhq/engine';
+import { CHECKS, ConnectError, IMPLEMENTED, PollyTts, serveConsole, TranscribeStt, genVariants, loadHoldout, PERTURBATIONS, QUESTIONS, QUESTION_ORDER, RecordingProvider, ReplayProvider, cassettePathFor, ensureServer, exitCodeFor, lintServer, loadCassette, loadSuite, lockSuites, providerFromEnv, runSuite, saveCassette, writeReport, type Cassette, type ModelProvider } from '@hearsayhq/engine';
 import { printReport } from './print';
 
 const [cmd, ...args] = process.argv.slice(2);
@@ -61,9 +61,15 @@ async function main(): Promise<number> {
       return lock(args);
     case 'gen-variants':
       return genVariantsCmd(args);
-    case 'serve':
-      console.error(`"hearsay ${cmd}" is planned; see docs/07_IMPLEMENTATION_PLAN.md.`);
-      return 2;
+    case 'serve': {
+      const { values } = parseArgs({ args, options: { port: { type: 'string' } } });
+      const served = await serveConsole({ port: Number(values.port ?? 4100) });
+      console.log(`hearsay serve: engine API on ${served.url} (console: npm run dev:web → http://localhost:5180)`);
+      const stop = () => void served.close().then(() => process.exit(0));
+      process.on('SIGINT', stop);
+      process.on('SIGTERM', stop);
+      return new Promise<number>(() => undefined);
+    }
     default:
       return usage();
   }
