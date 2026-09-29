@@ -59,6 +59,43 @@ function orchestratorFor(mode: OrchestratorMode, c: SuiteCase, variant: Variant,
   return { ...llmOrchestrator(provider), mode };
 }
 
+/** One spoken turn: asr → plan → tools → speak, instrumented (FR-016). Shared by the runner and the console. */
+export async function playTurn(
+  session: McpSession,
+  orchestrator: Orchestrator,
+  mode: OrchestratorMode,
+  latency: { asrMs: number; speakTtfbMs: number },
+  history: Turn[],
+  t: { id: string; utterance: string; heard: string; setupOf?: string },
+): Promise<Turn> {
+  if (session.revision !== (history.at(-1)?.toolListRevision ?? 0)) await session.refreshTools();
+  const spans: Span[] = [{ kind: 'asr', name: 'asr', startMs: 0, endMs: latency.asrMs, modeled: true }];
+  // scripted: no planning, a zero-length span (docs/03); llm/replay: one span per model call.
+  if (mode === 'scripted') spans.push({ kind: 'plan', name: 'scripted', startMs: latency.asrMs, endMs: latency.asrMs, modeled: true });
+  let clock = latency.asrMs;
+  const turn: Turn = { id: t.id, utterance: t.utterance, heard: t.heard, spans, toolCalls: [], elicitations: [], spoken: '', toolListRevision: session.revision, ...(t.setupOf ? { setupOf: t.setupOf } : {}) };
+  const callTool = async (name: string, args: Record<string, unknown>): Promise<ToolResult> => {
+    const call = await session.callTool(name, args);
+    spans.push({ kind: 'tool', name, startMs: clock, endMs: clock + call.wallMs });
+    const records = call.elicitations.map(({ startMs, endMs, ...record }) => {
+      spans.push({ kind: 'elicitation', name: 'elicitation', startMs: clock + startMs, endMs: clock + endMs });
+      return record;
+    });
+    turn.elicitations.push(...records);
+    clock += call.wallMs;
+    turn.toolCalls.push({ tool: name, args, result: call.result, latencyMs: call.latencyMs, ...(records.length ? { elicitations: records } : {}) });
+    return call.result;
+  };
+  const recordPlan = (ms: number, name: string = mode) => {
+    spans.push({ kind: 'plan', name, startMs: clock, endMs: clock + ms, ...(mode === 'replay' ? { attrs: { recorded: true } } : {}) });
+    clock += ms;
+  };
+  const { spoken } = await orchestrator.respond({ heard: t.heard, tools: session.tools, history, callTool, recordPlan });
+  turn.spoken = spoken;
+  spans.push({ kind: 'speak', name: 'speak', startMs: clock, endMs: clock + latency.speakTtfbMs, modeled: true });
+  return turn;
+}
+
 async function playCase(session: McpSession, suite: Suite, c: SuiteCase, mode: OrchestratorMode, history: Turn[], variant: Variant, provider: ModelProvider | undefined, setupOf?: string): Promise<Turn[]> {
   const said = Array.isArray(c.say) ? c.say : [c.say];
   // A variant rewrites what was heard in the case's last utterance.
@@ -66,48 +103,9 @@ async function playCase(session: McpSession, suite: Suite, c: SuiteCase, mode: O
   const misheard = misheardNumbers(variant.edits);
   session.human = { answer: c.human.answer, ...(c.human.content ? { content: c.human.content } : {}), ...(misheard.length ? { rejectIfMentions: misheard } : {}) };
   const orchestrator = orchestratorFor(mode, c, variant, provider);
-  const { asrMs, speakTtfbMs } = suite.latencyModel;
   const turns: Turn[] = [];
-
-  for (const [i, utterance] of said.entries()) {
-    const heard = heardAll[i]!;
-    if (session.revision !== (history.at(-1)?.toolListRevision ?? 0)) await session.refreshTools();
-    const spans: Span[] = [{ kind: 'asr', name: 'asr', startMs: 0, endMs: asrMs, modeled: true }];
-    // scripted: no planning, a zero-length span (docs/03); llm/replay: one span per model call.
-    if (mode === 'scripted') spans.push({ kind: 'plan', name: 'scripted', startMs: asrMs, endMs: asrMs, modeled: true });
-    let clock = asrMs;
-    const turn: Turn = {
-      id: `${c.id}#${i + 1}`,
-      utterance,
-      heard,
-      spans,
-      toolCalls: [],
-      elicitations: [],
-      spoken: '',
-      toolListRevision: session.revision,
-      ...(setupOf ? { setupOf } : {}),
-    };
-    const callTool = async (name: string, args: Record<string, unknown>): Promise<ToolResult> => {
-      const call = await session.callTool(name, args);
-      spans.push({ kind: 'tool', name, startMs: clock, endMs: clock + call.latencyMs });
-      const records = call.elicitations.map(({ startMs, endMs, ...record }) => {
-        spans.push({ kind: 'elicitation', name: 'elicitation', startMs: clock + startMs, endMs: clock + endMs });
-        return record;
-      });
-      turn.elicitations.push(...records);
-      clock += call.latencyMs;
-      turn.toolCalls.push({ tool: name, args, result: call.result, latencyMs: call.latencyMs, ...(records.length ? { elicitations: records } : {}) });
-      return call.result;
-    };
-    const recordPlan = (ms: number, name = mode) => {
-      spans.push({ kind: 'plan', name, startMs: clock, endMs: clock + ms, ...(mode === 'replay' ? { attrs: { recorded: true } } : {}) });
-      clock += ms;
-    };
-    const { spoken } = await orchestrator.respond({ heard, tools: session.tools, history: [...history, ...turns], callTool, recordPlan });
-    turn.spoken = spoken;
-    spans.push({ kind: 'speak', name: 'speak', startMs: clock, endMs: clock + speakTtfbMs, modeled: true });
-    turns.push(turn);
-  }
+  for (const [i, utterance] of said.entries())
+    turns.push(await playTurn(session, orchestrator, mode, suite.latencyModel, [...history, ...turns], { id: `${c.id}#${i + 1}`, utterance, heard: heardAll[i]!, ...(setupOf ? { setupOf } : {}) }));
   return turns;
 }
 

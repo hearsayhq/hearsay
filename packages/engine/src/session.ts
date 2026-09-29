@@ -16,6 +16,8 @@ export interface Human {
    * is declined, whatever `answer` says (consent.misheard_amount).
    */
   rejectIfMentions?: string[];
+  /** The console: a real person answers in the browser. Takes precedence over `answer`. */
+  ask?: (params: { message: string; requestedSchema?: unknown }) => Promise<{ action: 'accept' | 'decline' | 'cancel'; content?: Record<string, unknown> }>;
 }
 
 /** Does a question state one of these values (as a word or in digits)? */
@@ -32,7 +34,10 @@ export interface SessionOptions {
 
 export interface TimedCall {
   result: ToolResult;
+  /** Server time: the round trip minus the time the person spent answering elicitations. */
   latencyMs: number;
+  /** The whole round trip, including the person's answers. */
+  wallMs: number;
   /** Elicitations the server sent while handling this call, with their offsets in ms from call start. */
   elicitations: Array<ElicitationRecord & { startMs: number; endMs: number }>;
 }
@@ -76,12 +81,17 @@ export class McpSession {
     return session;
   }
 
-  private elicit(params: { message: string; requestedSchema?: unknown }) {
+  private async elicit(params: { message: string; requestedSchema?: unknown }) {
     const startMs = performance.now() - this.callStart;
-    const { content } = this.human;
-    const answer = this.human.rejectIfMentions && mentions(params.message, this.human.rejectIfMentions) ? 'decline' : this.human.answer;
+    let answer: Human['answer'];
+    let content: Record<string, unknown> | undefined;
+    if (this.human.ask) ({ action: answer, content } = await this.human.ask(params));
+    else {
+      content = this.human.content;
+      answer = this.human.rejectIfMentions && mentions(params.message, this.human.rejectIfMentions) ? 'decline' : this.human.answer;
+    }
     const reply = answer === 'accept' ? { action: answer, content: content ?? {} } : { action: answer };
-    this.pending.push({ message: params.message, requestedSchema: params.requestedSchema, action: answer, content: answer === 'accept' ? (content ?? {}) : undefined, startMs, endMs: performance.now() - this.callStart });
+    this.pending.push({ message: params.message, requestedSchema: params.requestedSchema, action: answer, ...(answer === 'accept' ? { content: content ?? {} } : {}), startMs, endMs: performance.now() - this.callStart });
     return reply;
   }
 
@@ -141,8 +151,9 @@ export class McpSession {
       const message = (e as Error).message;
       result = { isError: true, text: message, protocolError: { code, message } };
     }
-    const latencyMs = performance.now() - this.callStart;
-    return { result, latencyMs, elicitations: this.pending };
+    const wallMs = performance.now() - this.callStart;
+    const waitMs = this.pending.reduce((s, e) => s + (e.endMs - e.startMs), 0);
+    return { result, latencyMs: wallMs - waitMs, wallMs, elicitations: this.pending };
   }
 
   async close(): Promise<void> {
