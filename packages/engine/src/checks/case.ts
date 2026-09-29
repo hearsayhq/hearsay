@@ -1,5 +1,6 @@
 /** case.expect (docs/03 §Expectations, docs/05). Judges the case's own turns. */
 import { forbiddenHits, isSubset } from '../normalize';
+import { verbalConfirmation } from '../orchestrators/scripted';
 import { fire, type TurnCheck } from './types';
 
 const ID = 'case.expect';
@@ -13,7 +14,7 @@ export const caseExpect: TurnCheck = {
     const calls = turns.flatMap((t) => t.toolCalls);
     const names = calls.map((x) => x.tool);
     const spoken = turns.map((t) => t.spoken).join(' ');
-    const elicited = turns.some((t) => t.elicitations.length > 0);
+    const elicited = turns.some((t) => t.elicitations.length > 0 || t.toolCalls.some((x) => verbalConfirmation(x.result.structuredContent)));
     const turnId = turns.at(-1)?.id;
     const out = [];
 

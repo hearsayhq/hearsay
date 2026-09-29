@@ -39,6 +39,8 @@ export interface ToolCallRecord {
   args: Record<string, unknown>;
   result: ToolResult;
   latencyMs: number;
+  /** Elicitations the server sent while handling this call. */
+  elicitations?: ElicitationRecord[];
 }
 
 export interface ElicitationRecord {
@@ -88,5 +90,15 @@ export interface Trace {
   client: { elicitation: boolean };
   server: ServerInfo;
   turns: Turn[];
+  /**
+   * What the server's read-only tools (no required arguments) returned before and after the
+   * case's own turns; how consent checks see whether something committed (docs/05).
+   */
+  state?: { before: StateSnapshot; after: StateSnapshot };
+  /** Set when the tool list at the end of the session differs from the last one announced (protocol.list_changed). */
+  toolListDrift?: { notified: boolean; declared: boolean; added: string[]; removed: string[] };
   startedAt: string;
 }
+
+/** Tool name → its text and structuredContent, serialised. */
+export type StateSnapshot = Record<string, { text: string; structured?: unknown }>;

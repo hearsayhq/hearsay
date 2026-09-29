@@ -1,9 +1,21 @@
 /**
  * Household Orders reference server (port 4103). Spec: servers/household-orders/README.md.
- * Milestone M4 (docs/07). Transport: MCP Streamable HTTP at http://localhost:4103/mcp,
- * protocol 2025-11-25, via @modelcontextprotocol/sdk McpServer + StreamableHTTPServerTransport.
+ * Milestone M4 (docs/07). HEARSAY_FIXED=0 switches on the documented flaws (fixture only).
  */
-export const PORT = Number(process.env.PORT ?? 4103);
+import { serveMcp, VerbalTokens, type Served } from '@hearsayhq/kit';
+import { createHouseholdServer, tokenTtl, type Shared } from './server';
+import { Store } from './store';
 
-console.error('[household-orders] not implemented yet — see servers/household-orders/README.md');
-process.exitCode = 2;
+export async function startHousehold(port = Number(process.env.PORT ?? 4103), flawed = process.env.HEARSAY_FIXED === '0', ttlSeconds = tokenTtl()): Promise<Served> {
+  const shared: Shared = { store: new Store(), tokens: new VerbalTokens({ ttlSeconds }), pending: new Map(), now: Date.now };
+  return serveMcp({ port, create: (ctx) => createHouseholdServer(shared, ctx, flawed) });
+}
+
+if (import.meta.url === `file://${process.argv[1]}`) {
+  const flawed = process.env.HEARSAY_FIXED === '0';
+  const served = await startHousehold(undefined, flawed);
+  console.error(`[household-orders] ${flawed ? 'flawed' : 'fixed'} on ${served.url}`);
+  const stop = () => void served.close().then(() => process.exit(0));
+  process.on('SIGTERM', stop);
+  process.on('SIGINT', stop);
+}

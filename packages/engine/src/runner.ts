@@ -9,13 +9,13 @@ import { CHECKS } from './catalog';
 import { IMPLEMENTED, SERVER_CHECKS, TURN_CHECKS } from './checks/index';
 import type { Cassette, ModelProvider, Orchestrator, OrchestratorMode } from './orchestrator';
 import { llmOrchestrator } from './orchestrators/llm';
-import { scriptedCall, scriptedOrchestrator } from './orchestrators/scripted';
+import { misheardNumbers, scriptedCall, scriptedOrchestrator } from './orchestrators/scripted';
 import { CLEAN, variantsFor, type Variant } from './perturb/index';
 import { loadRecorded } from './perturb/recorded';
 import type { CaseResult, Finding, Report } from './report';
 import { McpSession } from './session';
 import { loadHoldout, serverChecksFor, turnChecksFor, type Suite, type SuiteCase } from './suite';
-import type { Span, ToolResult, Trace, Turn } from './trace';
+import type { Span, StateSnapshot, ToolResult, Trace, Turn } from './trace';
 
 export interface RunOptions {
   /** Only run these case ids (their `after` chains still run as setup). */
@@ -63,7 +63,8 @@ async function playCase(session: McpSession, suite: Suite, c: SuiteCase, mode: O
   const said = Array.isArray(c.say) ? c.say : [c.say];
   // A variant rewrites what was heard in the case's last utterance.
   const heardAll = said.map((u, i) => (i === said.length - 1 ? variant.heard : u));
-  session.human = { answer: c.human.answer, ...(c.human.content ? { content: c.human.content } : {}) };
+  const misheard = misheardNumbers(variant.edits);
+  session.human = { answer: c.human.answer, ...(c.human.content ? { content: c.human.content } : {}), ...(misheard.length ? { rejectIfMentions: misheard } : {}) };
   const orchestrator = orchestratorFor(mode, c, variant, provider);
   const { asrMs, speakTtfbMs } = suite.latencyModel;
   const turns: Turn[] = [];
@@ -89,13 +90,13 @@ async function playCase(session: McpSession, suite: Suite, c: SuiteCase, mode: O
     const callTool = async (name: string, args: Record<string, unknown>): Promise<ToolResult> => {
       const call = await session.callTool(name, args);
       spans.push({ kind: 'tool', name, startMs: clock, endMs: clock + call.latencyMs });
-      for (const e of call.elicitations) {
-        spans.push({ kind: 'elicitation', name: 'elicitation', startMs: clock + e.startMs, endMs: clock + e.endMs });
-        const { startMs: _s, endMs: _e, ...record } = e;
-        turn.elicitations.push(record);
-      }
+      const records = call.elicitations.map(({ startMs, endMs, ...record }) => {
+        spans.push({ kind: 'elicitation', name: 'elicitation', startMs: clock + startMs, endMs: clock + endMs });
+        return record;
+      });
+      turn.elicitations.push(...records);
       clock += call.latencyMs;
-      turn.toolCalls.push({ tool: name, args, result: call.result, latencyMs: call.latencyMs });
+      turn.toolCalls.push({ tool: name, args, result: call.result, latencyMs: call.latencyMs, ...(records.length ? { elicitations: records } : {}) });
       return call.result;
     };
     const recordPlan = (ms: number, name = mode) => {
@@ -108,6 +109,49 @@ async function playCase(session: McpSession, suite: Suite, c: SuiteCase, mode: O
     turns.push(turn);
   }
   return turns;
+}
+
+/** Did the tools change during the session without the change being announced? */
+async function toolListDrift(session: McpSession): Promise<Trace['toolListDrift']> {
+  const key = (t: { name: string; inputSchema: unknown }) => `${t.name}:${JSON.stringify(t.inputSchema)}`;
+  const now = await session.peekTools();
+  const known = new Set(session.tools.map(key));
+  const current = new Set(now.map(key));
+  if (known.size === current.size && [...known].every((k) => current.has(k))) return undefined;
+  const names = (s: typeof now) => new Set(s.map((t) => t.name));
+  const before = names(session.tools);
+  const after = names(now);
+  const declared = (session.serverInfo().capabilities as { tools?: { listChanged?: boolean } } | undefined)?.tools?.listChanged === true;
+  return { notified: false, declared, added: [...after].filter((n) => !before.has(n)), removed: [...before].filter((n) => !after.has(n)) };
+}
+
+/** Checks that judge what committed, and so need the server's state before and after. */
+const STATEFUL_CHECKS = new Set(['consent.decline_holds', 'consent.misheard_amount', 'consent.over_confirmation', 'mandate.injection']);
+
+/** Read every read-only tool that needs no arguments (docs/05: committed state is read through them). */
+export async function snapshot(session: McpSession): Promise<StateSnapshot> {
+  const out: StateSnapshot = {};
+  for (const t of session.tools.filter((x) => x.annotations?.readOnlyHint === true && !((x.inputSchema.required as string[] | undefined)?.length))) {
+    const r = await session.callTool(t.name, {});
+    out[t.name] = { text: r.result.text, ...(r.result.structuredContent !== undefined ? { structured: r.result.structuredContent } : {}) };
+  }
+  return out;
+}
+
+/**
+ * For active probes (consent.verbal_token): play a case's setup chain and its own call in a
+ * fresh session, answering confirmations with `answer`, and hand back the open session.
+ */
+export async function playForProbe(suite: Suite, url: string, c: SuiteCase, opts: { principal?: string; answer: 'accept' | 'decline' }): Promise<{ session: McpSession; turns: Turn[] }> {
+  const session = await McpSession.open({ url, principal: opts.principal ?? newPrincipal(), elicitation: c.client.elicitation });
+  const turns: Turn[] = [];
+  for (const dep of setupChain(suite, c)) {
+    const said = Array.isArray(dep.say) ? dep.say : [dep.say];
+    turns.push(...(await playCase(session, suite, dep, 'scripted', turns, CLEAN(said.at(-1)!), undefined, dep.id)));
+  }
+  const said = Array.isArray(c.say) ? c.say : [c.say];
+  turns.push(...(await playCase(session, suite, { ...c, human: { ...c.human, answer: opts.answer } }, 'scripted', turns, CLEAN(said.at(-1)!), undefined)));
+  return { session, turns };
 }
 
 const sortFindings = (f: Finding[]) => [...f].sort((a, b) => a.checkId.localeCompare(b.checkId) || (a.turnId ?? '').localeCompare(b.turnId ?? ''));
@@ -156,8 +200,13 @@ export async function runSuite(suiteIn: Suite, opts: RunOptions = {}): Promise<R
           const depSaid = Array.isArray(dep.say) ? dep.say : [dep.say];
           trace.turns.push(...(await playCase(session, suite, dep, mode, trace.turns, CLEAN(depSaid.at(-1)!), opts.provider, dep.id)));
         }
+        const observe = turnChecksFor(suite, c).some((id) => STATEFUL_CHECKS.has(id));
+        const before = observe ? await snapshot(session) : undefined;
         const own = await playCase(session, suite, c, mode, trace.turns, variant, opts.provider);
         trace.turns.push(...own);
+        if (before) trace.state = { before, after: await snapshot(session) };
+        const drift = await toolListDrift(session);
+        if (drift) trace.toolListDrift = drift;
         if (variant.id === 'clean') clean = trace;
 
         const findings = turnChecksFor(suite, c)
@@ -182,7 +231,7 @@ export async function runSuite(suiteIn: Suite, opts: RunOptions = {}): Promise<R
   if (firstServer && tools)
     for (const id of serverChecksFor(suite)) {
       const check = SERVER_CHECKS.get(id);
-      if (check) serverFindings.push(...(await check.run({ suite, url, tools, server: firstServer, newPrincipal, ...(opts.suitePath ? { suitePath: opts.suitePath } : {}) })));
+      if (check) serverFindings.push(...(await check.run({ suite, url, tools, server: firstServer, newPrincipal, playForProbe: (c, o) => playForProbe(suite, url, c, o), ...(opts.suitePath ? { suitePath: opts.suitePath } : {}) })));
     }
 
   const asked = new Set([...suite.checks, ...selected.flatMap((c) => c.checks ?? []), ...CHECKS.filter((x) => x.alwaysOn).map((x) => x.id)]);

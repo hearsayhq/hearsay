@@ -1,6 +1,6 @@
 /**
  * FR-051 gate: flawed mode produces exactly the (check, severity) pairs documented in
- * servers/smart-home/README.md (consent.path joins in M4); fixed has none.
+ * servers/smart-home/README.md; fixed has none.
  */
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
@@ -23,6 +23,7 @@ describe('smart home', () => {
     expect(pairs(r)).toEqual([
       'asr.robust:error',
       'case.expect:error',
+      'consent.path:error',
       'latency.first_audio:warn',
       'latency.tool:error',
       'lint.destructive_annotated:warn',
@@ -36,6 +37,14 @@ describe('smart home', () => {
     served = await startSmartHome(0, true);
     const r = await runSuite(await loadSuite(suitePath), { url: served.url });
     expect(pairs(r)).toEqual([]);
+  });
+
+  it('fixed on a host without elicitation: fails closed, graded info', async () => {
+    served = await startSmartHome(0, true);
+    const { SuiteSchema } = await import('@hearsayhq/engine');
+    const suite = SuiteSchema.parse({ suite: 'no-elicitation', server: { url: served.url }, checks: ['consent.path'], cases: [{ id: 'all-off', say: 'turn off the whole house', client: { elicitation: false }, expect: { tool: 'set_scene', args: { room: 'all', state: 'off' }, confirm: 'required' } }] });
+    const r = await runSuite(suite, { url: served.url });
+    expect(r.cases[0]!.findings.map((f) => `${f.checkId}:${f.severity}`)).toEqual(['case.expect:error', 'consent.path:info']);
   });
 
   describe('fixed server behaviour', () => {
