@@ -69,8 +69,9 @@ settled, the reference server implements both tiers and Hearsay grades them hone
    cannot answer an elicitation; the host asks the person.
 3. Accept → mandate ACTIVE, version 1. Decline → nothing happens.
 4. Scoped calls pass `authorize()` in this order: exists → alive → same version (if the caller
-   named one) → tool → resource → per-call limit → total limit. Ordering gives the most useful
-   spoken error.
+   named one) → tool → resource → per-call limit → total limit, where the total counts what was
+   spent and what is staged in the cart (`pendingMinor`). Ordering gives the most useful spoken
+   error.
 5. Every staged cart line is stamped with the mandate version it was authorized under. At commit,
    every line is authorized again against the current mandate; a stale line never commits.
 6. Consequential actions (placing an order) are never a tool's effect. A tool may *request* them;

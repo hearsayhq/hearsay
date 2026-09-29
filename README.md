@@ -18,7 +18,8 @@ breaks. Every check answers one of four questions:
 Every finding cites its source: Amazon's functional requirements for add-ons, the MCP
 specification, or Hearsay's own rule.
 
-> Status: **M3 hearing.** `hearsay run` (scripted, llm, replay, `--holdout`), `hearsay lint`,
+> Status: **M4 consent.** Every check in the catalog is implemented, each with a fixture built to
+> fail it. `hearsay run` (scripted, llm, replay, `--holdout`), `hearsay lint`,
 > `hearsay lock` and `hearsay gen-variants` work; fifteen checks are implemented (the rest are listed
 > as skipped); coding agents can use Hearsay over MCP. Mishearings reach the server through its
 > arguments, so `asr.robust` runs without a model. See [docs/07](docs/07_IMPLEMENTATION_PLAN.md).
