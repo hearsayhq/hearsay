@@ -44,6 +44,11 @@ At about five and a half build days a week this lands on Sun 18 Oct; at four and
   "MCP error -32602". Fixed with `looseInt()` in the kit; both cases joined `suites/kitchen.yaml`.
   It also asked for confirmation to cancel a timer, against D-022; the skill's rule was
   sharpened. Second draft: valid, green on Kitchen, 9 cases, $0.23.
+- Fresh clone (FR-060): `git clone` → `npm ci` → `hearsay run suites/kitchen.yaml` green in 4 s
+  with an empty npm cache on the build machine, no keys (clip `m6-fresh-clone`).
+- Packages: `npm run pack` builds `@hearsayhq/cli` (with the console), `@hearsayhq/mcp` (with the
+  skills) and `@hearsayhq/kit`; installed from the tarballs in an empty project, `npx hearsay run`,
+  `serve`, `hearsay-mcp` over stdio and the kit's types work. Publishing waits for the owner.
 
 ## Blocked by access
 

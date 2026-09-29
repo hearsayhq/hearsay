@@ -25,7 +25,9 @@ specification, or Hearsay's own rule.
 > server through its arguments, so `asr.robust` runs without a model.
 > See [docs/07](docs/07_IMPLEMENTATION_PLAN.md).
 
-## Quickstart (current)
+## Quickstart
+
+From a clone (no API keys; about a minute on a fresh machine):
 
 ```sh
 npm install
@@ -42,8 +44,38 @@ http://localhost:5180. Pick a suite, connect (the server starts itself), and typ
 would say. Replies are spoken by the browser; confirmations appear as a dialog you answer. Without
 a model the console plans from the nearest suite case and says so (D-023).
 
-Once published: `npx @hearsayhq/cli run suites/kitchen.yaml` (the unscoped npm name `hearsay` is
-an unrelated library).
+## In your project
+
+Hearsay is packaged as `@hearsayhq/cli`, `@hearsayhq/mcp` and `@hearsayhq/kit` (not on npm yet;
+`npm run pack` builds the packages into `build/npm/`). The unscoped npm name `hearsay` belongs to
+an unrelated library.
+
+```sh
+npx @hearsayhq/cli run suites/*.yaml     # exit 1 on any error finding
+npx @hearsayhq/cli lint http://localhost:4101/mcp
+npx @hearsayhq/cli serve                 # the console on http://localhost:4100
+npx @hearsayhq/cli lock                  # protect your suites (below)
+```
+
+In CI (GitHub Actions), on every pull request:
+
+```yaml
+name: hearsay
+on: pull_request
+jobs:
+  voice:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm ci
+      - run: npx -y @hearsayhq/cli run suites/*.yaml      # starts your server from server.start
+      # Cases your coding agent never sees: keep them in a secret, not in the repo.
+      - if: env.HOLDOUT != ''
+        env: { HOLDOUT: '${{ secrets.HEARSAY_HOLDOUT }}' }
+        run: printf '%s' "$HOLDOUT" > suites/app.holdout.yaml && npx -y @hearsayhq/cli run suites/app.yaml --holdout
+```
 
 ## For coding agents
 

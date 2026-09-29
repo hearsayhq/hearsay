@@ -96,7 +96,7 @@ Chosen for the requirements, not by habit:
   runs in a browser and shares the trace types with the engine. The ported mandate code is
   TypeScript.
 - **npm workspaces, no build step for development.** `tsx` runs sources; `tsc --noEmit`
-  typechecks. A bundle step (tsup) is added only when the CLI is published (M6).
+  typechecks. Publishing bundles with tsup (§Distribution).
 - **zod 4 + YAML** for suites: one schema gives readable validation errors and the types.
 - **Hono** for `hearsay serve`: small, SSE built in, same as the webMCP service.
 - **Vite + React** for the console: a local tool with no SEO or SSR needs.
@@ -107,6 +107,21 @@ Chosen for the requirements, not by habit:
   directly, so no S3 bucket is needed. Noise and the telephone band (300–3400 Hz, 8 kHz) are
   pure TypeScript DSP, seeded.
 - **Browser speech synthesis** for the console's reply voice. No microphone input (cut, ROADMAP).
+
+## Distribution
+
+`npm run pack` (scripts/pack.mjs) builds three packages into `build/npm/`, each with the
+workspace code (engine, mandate, kit) bundled by tsup and third-party dependencies external at
+the workspace's versions:
+
+| Package | Contains |
+|---|---|
+| `@hearsayhq/cli` | binary `hearsay`; the built console in `dist/console`, served by `hearsay serve` at `/` |
+| `@hearsayhq/mcp` | binary `hearsay-mcp`; the Agent Skills in `skills/` |
+| `@hearsayhq/kit` | the kit as a library, with type declarations |
+
+The workspace itself runs from `src` (tsx) and never needs a build. Publishing
+(`npm publish build/npm/<file>.tgz --access public`) is the owner's step.
 
 ## Model providers and budget
 
