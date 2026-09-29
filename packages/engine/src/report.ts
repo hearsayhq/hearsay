@@ -1,3 +1,4 @@
+import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import type { Question, Severity, Source } from './catalog';
 import type { OrchestratorMode } from './orchestrator';
 import type { Trace } from './trace';
@@ -31,6 +32,8 @@ export interface Report {
   orchestrator: OrchestratorMode;
   /** PRNG seed for perturbations; recorded so a run can be repeated (NFR-1). */
   seed: number;
+  /** The server's tool list as first seen. */
+  tools: Tool[];
   serverFindings: Finding[];
   cases: CaseResult[];
   /** Checks the suite asked for that are not implemented yet (FR-024). Never counted as passed. */

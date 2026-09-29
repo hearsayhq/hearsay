@@ -3,6 +3,16 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "exports": { ".": "./src/index.ts" },
-  "dependencies": { "@hearsayhq/mandate": "*", "@modelcontextprotocol/sdk": "^1.31.0", "yaml": "^2.8.0", "zod": "^4.1.0" }
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@hearsayhq/mandate": "*",
+    "@modelcontextprotocol/sdk": "^1.31.0",
+    "yaml": "^2.8.0",
+    "zod": "^4.1.0"
+  },
+  "devDependencies": {
+    "@hearsayhq/kit": "*"
+  }
 }

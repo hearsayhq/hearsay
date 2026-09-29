@@ -28,8 +28,10 @@ export interface ToolResult {
   /** Text content blocks joined; what a model would read. */
   text: string;
   structuredContent?: unknown;
-  /** MCP error or mandate refusal code, when the server returned one. */
+  /** Refusal code from `structuredContent.code` on an isError result (docs/03 §Expectations). */
   errorCode?: string;
+  /** Set when tools/call was answered with a JSON-RPC error instead of a result. */
+  protocolError?: { code: number; message: string };
 }
 
 export interface ToolCallRecord {
@@ -60,6 +62,8 @@ export interface Turn {
   spoken: string;
   /** Tool list version seen at turn start; changes when the server sends tools/list_changed. */
   toolListRevision: number;
+  /** Set on turns replayed from an `after` chain: the setup case's id. Not judged for this case. */
+  setupOf?: string;
 }
 
 export interface ServerInfo {

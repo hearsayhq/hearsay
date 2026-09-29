@@ -67,13 +67,13 @@ const hearsay = (ref: string): Source => ({ kind: 'hearsay', ref });
 
 const t = (severity: Severity, when: string, source: Source, extra: Partial<Threshold> = {}): Threshold => ({ severity, when, source, ...extra });
 
-type Def = Omit<CheckSpec, 'category' | 'status'>;
-const c = (d: Def): CheckSpec => ({ ...d, category: d.id.split('.')[0] as CheckCategory, status: 'planned' });
+type Def = Omit<CheckSpec, 'category' | 'status'> & { status?: CheckSpec['status'] };
+const c = (d: Def): CheckSpec => ({ status: 'planned', ...d, category: d.id.split('.')[0] as CheckCategory });
 
 export const CHECKS: readonly CheckSpec[] = [
   // ── Can it connect? ────────────────────────────────────────────────────────
   c({
-    id: 'protocol.version', question: 'connect', scope: 'server', priority: 'must',
+    id: 'protocol.version', status: 'implemented', question: 'connect', scope: 'server', priority: 'must',
     summary: 'Speaks MCP 2025-11-25 over Streamable HTTP, and still works when a client offers 2025-03-26.',
     thresholds: [
       t('error', 'cannot negotiate 2025-11-25 over Streamable HTTP when the client offers it', amazonQuickstart('2025-11-25 over Streamable HTTP is required')),
@@ -116,26 +116,26 @@ export const CHECKS: readonly CheckSpec[] = [
     ],
   }),
   c({
-    id: 'case.expect', question: 'hear', scope: 'turn', priority: 'must', alwaysOn: true,
+    id: 'case.expect', status: 'implemented', question: 'hear', scope: 'turn', priority: 'must', alwaysOn: true,
     summary: 'What the suite says should happen, happens.',
     thresholds: [t('error', 'an expectation of the case is not met', hearsay('the suite author\'s expectation (docs/03 §Expectations)'))],
   }),
 
   // ── Do I have to wait? ─────────────────────────────────────────────────────
   c({
-    id: 'latency.tool', question: 'wait', scope: 'turn', priority: 'must',
+    id: 'latency.tool', status: 'implemented', question: 'wait', scope: 'turn', priority: 'must',
     summary: 'Each tool round trip stays under 500 ms.',
     thresholds: [t('error', 'a tools/call round trip exceeds 500 ms', amazonQuickstart('round-trip response latency under 500 ms'), { value: 500 })],
   }),
   c({
-    id: 'latency.first_audio', question: 'wait', scope: 'turn', priority: 'must',
+    id: 'latency.first_audio', status: 'implemented', question: 'wait', scope: 'turn', priority: 'must',
     summary: 'Modeled time to first audio stays within budget. In scripted mode this is a lower bound.',
     thresholds: [t('warn', 'modeled asr + plan + tools + speak exceeds the budget', hearsay('docs/03 §Latency model'), { value: 1500, budgetKey: 'firstAudioMs' })],
   }),
 
   // ── Can I listen to this? ──────────────────────────────────────────────────
   c({
-    id: 'speak.no_structured_dump', question: 'listen', scope: 'turn', priority: 'must',
+    id: 'speak.no_structured_dump', status: 'implemented', question: 'listen', scope: 'turn', priority: 'must',
     summary: 'No JSON, markup, ids, tool names or tool-description text reaches the spoken reply.',
     thresholds: [
       t('error', 'the reply contains JSON, a markdown table or heading, a URL, a UUID, an internal id, or a tool name', amazonFr('no API codes, tool names, JSON or internal ids in customer-facing responses')),
@@ -143,7 +143,7 @@ export const CHECKS: readonly CheckSpec[] = [
     ],
   }),
   c({
-    id: 'speak.length', question: 'listen', scope: 'turn', priority: 'must',
+    id: 'speak.length', status: 'implemented', question: 'listen', scope: 'turn', priority: 'must',
     summary: 'Spoken replies stay short enough to listen to.',
     thresholds: [
       t('error', 'the reply is longer than 400 characters (about 30 seconds at 150 words per minute)', amazonFr('voice responses under 30 seconds'), { value: 400 }),

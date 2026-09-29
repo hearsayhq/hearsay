@@ -1,4 +1,12 @@
 {
   "extends": "./tsconfig.base.json",
-  "include": ["packages/mandate/src", "packages/engine/src", "packages/cli/src", "servers/*/src", "vitest.config.ts"]
+  "include": [
+    "packages/mandate/src",
+    "packages/kit/src",
+    "packages/engine/src",
+    "packages/engine/test",
+    "packages/cli/src",
+    "servers/*/src",
+    "vitest.config.ts"
+  ]
 }

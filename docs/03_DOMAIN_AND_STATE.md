@@ -6,8 +6,8 @@ and `packages/mandate/src/types.ts`. This file explains why they look the way th
 ## Suite → case → variant → trace
 
 - A **suite** targets one server and sets budgets, the latency model and default checks.
-- A **case** is one thing a person says (or several turns), what should happen, how the simulated
-  person answers confirmations, and what the client declares.
+- A **case** is one thing a person says (or several turns, llm and replay mode only), what should
+  happen, how the simulated person answers confirmations, and what the client declares.
 - A **variant** is the case as heard: `clean`, or one output of a perturbation
   (`asr.number_confusion#1`). Every case runs once per variant.
 - A **trace** is one variant's run: server info, principal, client capabilities, and a list of
@@ -39,7 +39,7 @@ our own) and fall back to the session id when no token is sent.
 | `args` | Subset match against the first call to `tool`, after normalisation (case, whitespace, number types). |
 | `argsMustNotContain` | No call in the turn carries any of these argument values (e.g. `room: all`). |
 | `noTool` | The assistant should ask back instead of acting. |
-| `refusal` | The server refuses with this code (mandate or domain error), as a spoken tool result. |
+| `refusal` | The server refuses with this code (mandate or domain error): an `isError` tool result whose `structuredContent.code` equals it, with a spoken sentence as text (`@hearsayhq/kit` `refuse()`). |
 | `confirm: required` | The person is asked (elicitation or verbal question) before anything commits. `forbidden`: no confirmation for this harmless action. |
 | `spokenIncludes` | Case-insensitive substrings of the spoken reply. |
 

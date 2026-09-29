@@ -117,6 +117,8 @@ export const SuiteSchema = z
         if (serverScope.has(id)) ctx.addIssue({ code: 'custom', message: `case "${c.id}": "${id}" runs once per suite; list it in the suite's checks` });
       if (s.orchestrator === 'scripted' && !c.call && !c.expect.tool && !c.expect.noTool)
         ctx.addIssue({ code: 'custom', message: `case "${c.id}": scripted mode needs "call" or "expect.tool"` });
+      if (s.orchestrator === 'scripted' && Array.isArray(c.say) && c.say.length > 1)
+        ctx.addIssue({ code: 'custom', message: `case "${c.id}": scripted mode plays one utterance per case` });
       if (s.orchestrator !== 'scripted' && (c.call || c.injectedCall))
         ctx.addIssue({ code: 'custom', message: `case "${c.id}": "call" and "injectedCall" are scripted-mode only` });
     }
