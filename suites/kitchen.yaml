@@ -33,6 +33,15 @@ cases:
       tool: timer_start
       args: { minutes: 7, label: egg }
 
+  # "eight" can be heard as "ate". Kitchen asks for the minutes instead of reading out a schema error.
+  - id: start-sauce-timer
+    say: start a sauce timer for eight minutes
+    expect:
+      tool: timer_start
+      args: { minutes: 8, label: sauce }
+    fuzz: [asr.homophones]
+    checks: [asr.robust]
+
   - id: list-timers
     say: how long is left on my timers
     after: [start-pasta-timer, start-egg-timer]
@@ -48,3 +57,11 @@ cases:
     expect:
       tool: timer_cancel
       spokenIncludes: [which]
+
+  # The recipe has six steps; "forty" gets a question back, not "MCP error -32602".
+  - id: recipe-step-out-of-range
+    say: read me step forty of the recipe
+    call: { tool: recipe_step, args: { number: 40 } }
+    expect:
+      refusal: NO_SUCH_STEP
+      spokenIncludes: [steps]

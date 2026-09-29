@@ -88,6 +88,8 @@ settled, the reference server implements both tiers and Hearsay grades them hone
   as an enum, but the server validates loosely and lets `authorize()` refuse. Otherwise the SDK's
   input validation answers first, the person hears "MCP error -32602: Input validation error…",
   and the refusal code is lost (`protocol.refusal_as_result`, `mandate.schema_ignoring_caller`).
+  The same holds for number bounds and for a value the model left out: `looseInt()` advertises
+  `minimum` and `maximum` and lets the handler ask ("The recipe has seven steps. Which one?").
 
 ## What voice changes compared to WebMCP
 
