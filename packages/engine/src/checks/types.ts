@@ -14,7 +14,8 @@ export interface TurnCheckContext {
 }
 
 export interface ServerCheckContext {
-  suite: Suite;
+  /** Absent for `hearsay lint`, which has no suite. */
+  suite?: Suite;
   url: string;
   tools: Tool[];
   /** What the first session negotiated. */

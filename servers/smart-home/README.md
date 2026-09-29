@@ -14,4 +14,5 @@ Role in the demo: **red → fix → green** in under a minute. Ships in two stat
 
 **Gate (FR-051):** in flawed mode the set of distinct (check, severity) pairs in the report equals
 this table exactly; in fixed mode the run has no findings and exits 0. `asr.robust` joins the gate
-in M3, when perturbations land.
+in M3 (perturbations), `consent.path` in M4 (consent checks). Fixed mode is flawed mode with
+`@hearsayhq/kit` applied: `looseEnum`, `speak`, `refuse`, `confirm`.

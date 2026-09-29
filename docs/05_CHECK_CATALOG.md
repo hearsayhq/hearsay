@@ -50,15 +50,18 @@ decides. `catalog.test.ts` fails if an id exists in code but not here.
   is the heard text, the calls and the effect diff. In scripted mode the stand-in planner is
   literal: it passes what it heard as argument values (docs/03 §Variants). Money is judged by
   `consent.misheard_amount`, where read-back is not enough.
-- `lint.tool_names` — Name outside `[A-Za-z0-9_.-]{1,128}`: **warn** (MCP tools). Two tools
-  within edit distance 2, or sharing verb and noun after synonym folding (set/apply/update,
-  get/list/show): **warn** (Amazon: each tool maps to a distinct intent).
+- `lint.tool_names` — Name outside `[A-Za-z0-9_.-]{1,128}`: **warn** (MCP tools). Two tools whose
+  words are the same after synonym folding (set/apply/update/change, get/list/show/read/review,
+  start/create/add, stop/cancel/remove/delete, turn/switch/toggle) and plurals, in any order:
+  **warn** (Amazon: each tool maps to a distinct intent). `set_scene` and `apply_scene` collide;
+  `set_scene` and `get_scene` do not.
 - `lint.descriptions` — A tool description missing or under 20 characters, or a parameter
   without a description: **warn** (Amazon: clear, unambiguous descriptions; synonyms in
   parameter descriptions).
 - `lint.schema_constraints` — `inputSchema` not valid JSON Schema, or a required parameter not
-  in `required`: **error** (Amazon). Numeric parameters without min/max, closed sets without
-  `enum`: **warn**.
+  in `required`: **error** (Amazon). Numeric parameters without min/max: **warn**. A string
+  parameter whose name usually means a closed set (state, mode, room, unit, status, type, kind,
+  level, scene, color, direction, size, currency, day) without `enum`: **warn**.
 - `case.expect` — Always on. Judges the case's `expect` block (docs/03 §Expectations) on the
   clean variant; in llm and replay mode also `argsMustNotContain` on every variant. Any unmet
   field: **error**, with the field as evidence.
@@ -80,11 +83,13 @@ decides. `catalog.test.ts` fails if an id exists in code but not here.
   result text, so this judges the server directly.
 - `speak.length` — Over 400 characters (Amazon's 30 seconds at about 150 words per minute):
   **error**. Over `budget.spokenChars` (default 280): **warn**.
-- `speak.lists` — More than 5 enumerated options: **error** (Amazon). More than
-  `budget.listItems` (default 3) without an offer to continue: **warn**.
+- `speak.lists` — Items are counted from comma lists ending in "and"/"or" ("milk, eggs, and
+  bread") and from bulleted or numbered lines. More than 5: **error** (Amazon). More than
+  `budget.listItems` (default 3) without an offer to continue ("more", "want to hear", "shall I
+  continue"): **warn**.
 - `lint.error_actionable` — Tool results with `isError`: a stack trace, an error code or an
   internal id in the text: **error** (Amazon: no API codes). Over 200 characters, or no
-  actionable phrase (can, try, say, allowed, which, want): **warn** (Amazon: an actionable next
+  actionable phrase (can, could, try, say, allowed, which, want, please, ask, instead, should I): **warn** (Amazon: an actionable next
   step for every error).
 - `protocol.refusal_as_result` — A `tools/call` answered with a JSON-RPC error instead of a
   result, or a result whose text starts `MCP error -32602` (the TypeScript SDK 1.31 wraps input
@@ -120,10 +125,10 @@ profile's commit paths. `write-hearsay-suite` proposes these cases for every des
   the person could hear the misheard amount and decline. Pass: refused (e.g. `LIMIT_EXCEEDED`),
   or the confirmation states the heard amount and the simulated person, who knows the intended
   amount from the clean case, declines. A perturbed amount that commits: **error**.
-- `lint.destructive_annotated` — A tool declaring `readOnlyHint: true` whose call is followed by
-  a changed read (the engine snapshots zero-argument read-only tools around each call): **error**.
-  A tool observed to change state, or named with a mutating verb, without explicit
-  `readOnlyHint`/`destructiveHint`: **warn**. Per the MCP spec an unannotated tool already counts
+- `lint.destructive_annotated` — Active probe: each tool declaring `readOnlyHint: true` with no
+  required arguments is called twice in a fresh session; if the two reads differ: **error**. A
+  tool named with a mutating verb (set, apply, update, delete, cancel, start, add, place, order,
+  turn, send, pay, buy, stage, …) without explicit `readOnlyHint`/`destructiveHint`: **warn**. Per the MCP spec an unannotated tool already counts
   as destructive, so a missing annotation is advice; a lying one is a fault.
 
 ### Verbal confirmation

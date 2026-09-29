@@ -39,8 +39,11 @@ export const twoTools = (s: McpServer) => {
   s.registerTool('lights_off', { description: 'Use when the person asks to turn lights off.', inputSchema: { room: z.string() } }, async ({ room }) => speak(`The ${room} lights are off.`));
 };
 
-/** A JSON-RPC server that negotiates whatever `negotiate` returns, or fails initialize with an error. */
-export async function rawServer(negotiate: (requested: string) => string | Error): Promise<Served> {
+/**
+ * A JSON-RPC server that negotiates whatever `negotiate` returns (or fails initialize),
+ * lists `tools`, and answers every tools/call with a JSON-RPC error.
+ */
+export async function rawServer(negotiate: (requested: string) => string | Error, tools: object[] = []): Promise<Served> {
   const http = createServer(async (req, res) => {
     if (req.method !== 'POST') return void res.writeHead(405).end();
     let body = '';
@@ -53,7 +56,8 @@ export async function rawServer(negotiate: (requested: string) => string | Error
       if (v instanceof Error) return reply({ error: { code: -32602, message: v.message } });
       return reply({ result: { protocolVersion: v, capabilities: { tools: {} }, serverInfo: { name: 'raw', version: '0.0.0' } } });
     }
-    if (msg.method === 'tools/list') return reply({ result: { tools: [] } });
+    if (msg.method === 'tools/list') return reply({ result: { tools } });
+    if (msg.method === 'tools/call') return reply({ error: { code: -32602, message: 'Invalid params: sku must be one of sku-milk, sku-eggs' } });
     return reply({ error: { code: -32601, message: 'Method not found' } });
   });
   await new Promise<void>((r) => http.listen(0, '127.0.0.1', r));
@@ -66,3 +70,22 @@ export async function rawServer(negotiate: (requested: string) => string | Error
     }),
   };
 }
+
+/** A strict zod enum: the SDK answers out-of-set values with "MCP error -32602 …" as an isError result. */
+export const strictEnum = (s: McpServer) =>
+  s.registerTool('stage_item', { description: 'Use when the person asks to add an item to the cart.', inputSchema: { sku: z.enum(['sku-milk', 'sku-eggs']).describe('Item to add.') } }, async ({ sku }) => speak(`Added ${sku === 'sku-milk' ? 'milk' : 'eggs'}.`));
+
+/** Error results a person should never hear, and one that is merely unhelpful. */
+export const badErrors = (s: McpServer) => {
+  s.registerTool('fetch_weather', { description: 'Use when the person asks for the weather.', inputSchema: {} }, async () => ({
+    isError: true,
+    content: [{ type: 'text' as const, text: 'Error: connect ECONNREFUSED 10.0.0.2:443\n    at TCPConnectWrap.afterConnect (node:net:1555:16)' }],
+  }));
+  s.registerTool('fetch_news', { description: 'Use when the person asks for the news headlines.', inputSchema: {} }, async () => ({ isError: true, content: [{ type: 'text' as const, text: 'Something went wrong.' }] }));
+};
+
+/** A tool that claims to be read-only but counts every read. */
+export const lyingReader = (s: McpServer) => {
+  let reads = 0;
+  s.registerTool('peek_counter', { description: 'Use when the person asks how many visitors came today.', inputSchema: {}, annotations: { readOnlyHint: true } }, async () => speak(`${++reads} visitors.`));
+};

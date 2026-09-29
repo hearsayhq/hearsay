@@ -9,7 +9,7 @@
  *   serve                      engine API + live traces for the console         (M5)
  */
 import { parseArgs } from 'node:util';
-import { CHECKS, ConnectError, IMPLEMENTED, PERTURBATIONS, QUESTIONS, QUESTION_ORDER, ensureServer, exitCodeFor, loadSuite, runSuite, writeReport } from '@hearsayhq/engine';
+import { CHECKS, ConnectError, IMPLEMENTED, PERTURBATIONS, QUESTIONS, QUESTION_ORDER, ensureServer, exitCodeFor, lintServer, loadSuite, runSuite, writeReport } from '@hearsayhq/engine';
 import { printReport } from './print';
 
 const [cmd, ...args] = process.argv.slice(2);
@@ -47,6 +47,7 @@ async function main(): Promise<number> {
     case 'run':
       return run(args);
     case 'lint':
+      return lint(args);
     case 'gen-variants':
     case 'serve':
       console.error(`"hearsay ${cmd}" is planned; see docs/07_IMPLEMENTATION_PLAN.md.`);
@@ -100,6 +101,21 @@ async function run(argv: string[]): Promise<number> {
     }
   }
   return exit;
+}
+
+async function lint(argv: string[]): Promise<number> {
+  const { values, positionals } = parseArgs({ args: argv, allowPositionals: true, options: { verbose: { type: 'boolean', short: 'v' } } });
+  const [url] = positionals;
+  if (!url || positionals.length > 1) return usage();
+  try {
+    const report = await lintServer(url);
+    const path = await writeReport(report);
+    printReport(report, path, values.verbose);
+    return exitCodeFor(report);
+  } catch (e) {
+    console.error(e instanceof ConnectError ? e.message : (e as Error).stack);
+    return 2;
+  }
 }
 
 function usage(): number {
