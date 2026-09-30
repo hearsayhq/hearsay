@@ -18,11 +18,12 @@ breaks. Every check answers one of four questions:
 Every finding cites its source: Amazon's functional requirements for add-ons, the MCP
 specification, or Hearsay's own rule.
 
-> Status: **M5 console.** Every check in the catalog is implemented, each with a fixture built to
-> fail it. `hearsay run` (scripted, llm, replay, `--holdout`), `hearsay lint`, `hearsay lock`,
-> `hearsay gen-variants` and `hearsay serve` work; coding agents can use Hearsay over MCP; the web
-> console plays turns live and a person answers the server's confirmations. Mishearings reach the
-> server through its arguments, so `asr.robust` runs without a model.
+> Status: **M6 ship, in progress.** Every check in the catalog is implemented, each with a
+> fixture built to fail it. `hearsay run` (scripted, llm, replay, `--holdout`), `hearsay lint`,
+> `hearsay lock`, `hearsay gen-variants` and `hearsay serve` work; coding agents can use Hearsay
+> over MCP with two Agent Skills; the web console plays turns live and a person answers the
+> server's confirmations. Mishearings reach the server through its arguments, so `asr.robust`
+> runs without a model. Waiting on access: Bedrock and Polly/Transcribe recordings.
 > See [docs/07](docs/07_IMPLEMENTATION_PLAN.md).
 
 ## Quickstart
