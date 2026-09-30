@@ -1,0 +1,43 @@
+# FR-062 scan (D-024, R-17): runs code we did not write, so only the owner starts it, by hand.
+# The candidate list names other teams' repos: it lives in the secret HEARSAY_SCAN_CANDIDATES,
+# never in the repo. Results with names stay in a private artifact; docs/16 gets aggregates only.
+name: scan
+on:
+  workflow_dispatch:
+    inputs:
+      only:
+        description: One candidate id, e.g. a01 (empty runs all)
+        required: false
+        default: ''
+permissions:
+  contents: read
+jobs:
+  scan:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Candidate list from the secret
+        env:
+          LIST: ${{ secrets.HEARSAY_SCAN_CANDIDATES }}
+        run: |
+          test -n "$LIST" || { echo "Set the secret HEARSAY_SCAN_CANDIDATES first."; exit 1; }
+          printf '%s' "$LIST" > "$RUNNER_TEMP/candidates.json"
+      - name: Scan (containers without egress)
+        env:
+          ONLY: ${{ inputs.only }}
+        run: npx tsx scripts/scan/scan.ts --list "$RUNNER_TEMP/candidates.json" --out "$RUNNER_TEMP/scan" ${ONLY:+--only "$ONLY"}
+      - name: Aggregates for docs/16 (no names)
+        if: always()
+        run: npx tsx scripts/scan/aggregate.ts --out "$RUNNER_TEMP/scan" > "$RUNNER_TEMP/scan/docs16.md"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: scan-results
+          path: ${{ runner.temp }}/scan
+          retention-days: 7
