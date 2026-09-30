@@ -29,7 +29,7 @@ export async function probeProtocol(url: string, protocolVersion: string, princi
   const headers: Record<string, string> = {
     'content-type': 'application/json',
     accept: 'application/json, text/event-stream',
-    authorization: `Bearer ${principal}`,
+    ...(principal ? { authorization: `Bearer ${principal}` } : {}),
   };
   try {
     const init = await fetch(url, {

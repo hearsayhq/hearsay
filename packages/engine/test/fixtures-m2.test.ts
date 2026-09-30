@@ -61,3 +61,33 @@ describe('asr.robust: the same reply to different arguments', () => {
     expect(f).toMatchObject({ severity: 'error', evidence: { args: { minutes: 50 }, cleanArgs: { minutes: 15 } } });
   });
 });
+
+describe('lintServer options (FR-062 scan)', () => {
+  const ok = () => '2025-11-25';
+  const reader = [{ name: 'read_status', description: 'Use when the person asks for the status.', inputSchema: { type: 'object', properties: {} }, annotations: { readOnlyHint: true } }];
+
+  it('sends one bearer on every session, including the probes', async () => {
+    const seen: Array<string | undefined> = [];
+    served = await rawServer(ok, [], (r) => seen.push(r.authorization));
+    await lintServer(served.url, { principal: 'token-1' });
+    expect(seen.length).toBeGreaterThan(2);
+    expect(new Set(seen)).toEqual(new Set(['Bearer token-1']));
+  });
+
+  it('sends no Authorization header for an empty principal', async () => {
+    const seen: Array<string | undefined> = [];
+    served = await rawServer(ok, [], (r) => seen.push(r.authorization));
+    await lintServer(served.url, { principal: '' });
+    expect(new Set(seen)).toEqual(new Set([undefined]));
+  });
+
+  it('calls no tool when callTools is false; the annotation probe does by default', async () => {
+    const methods: string[] = [];
+    served = await rawServer(ok, reader, (r) => methods.push(r.method));
+    await lintServer(served.url, { callTools: false });
+    expect(methods).toContain('tools/list');
+    expect(methods).not.toContain('tools/call');
+    await lintServer(served.url).catch(() => undefined);
+    expect(methods).toContain('tools/call');
+  });
+});
