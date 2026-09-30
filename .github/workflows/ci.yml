@@ -31,6 +31,9 @@ jobs:
       - run: npm run hearsay -- run suites/smart-home.yaml
         env:
           HEARSAY_FIXED: '1'
+      - run: npm run hearsay -- run suites/household-orders.yaml
+      - name: Packages build (not published)
+        run: npm run pack
       - name: Holdout cases
         if: env.HOLDOUT_SMART_HOME != ''
         run: |
