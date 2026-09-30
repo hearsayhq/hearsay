@@ -1,0 +1,42 @@
+{
+ "voice": "Ruth",
+ "engine": "neural",
+ "text": "Add fifteen dollars of fruit.",
+ "words": [
+  {
+   "time": 187,
+   "type": "word",
+   "start": 0,
+   "end": 3,
+   "value": "Add"
+  },
+  {
+   "time": 312,
+   "type": "word",
+   "start": 4,
+   "end": 11,
+   "value": "fifteen"
+  },
+  {
+   "time": 812,
+   "type": "word",
+   "start": 12,
+   "end": 19,
+   "value": "dollars"
+  },
+  {
+   "time": 1250,
+   "type": "word",
+   "start": 20,
+   "end": 22,
+   "value": "of"
+  },
+  {
+   "time": 1375,
+   "type": "word",
+   "start": 23,
+   "end": 28,
+   "value": "fruit"
+  }
+ ]
+}
