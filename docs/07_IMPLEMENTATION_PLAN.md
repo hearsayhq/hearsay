@@ -28,7 +28,7 @@ Exceptions approved by the owner on 30 Sep:
 | 1–2 | **M1 Runner + Kitchen** ✅ | FR-001–004, 011, 016, 020, 024, 030, 050. `session.ts` with bearer principal; runner (fresh session and principal per case × variant, `after` chains, case checks add to suite checks, planned checks skipped); scripted orchestrator; latency model; report with sources, grouped by question; `hearsay run`; Kitchen server. Checks: `protocol.version`, `case.expect` (incl. `argsMustNotContain`), `latency.*`, `speak.length`, `speak.no_structured_dump` (incl. tool names). Issue text for mcp-voice-simulator to the owner. | `hearsay run suites/kitchen.yaml` exits 0 against the running server, skipped checks listed; every finding has a source; unit tests: a slow fake tool fails `latency.tool` as error, a wrong tool fails `case.expect`. |
 | 3 | **M2 Lint + Smart Home** ✅ | FR-031, 051. `lint.*`, `protocol.refusal_as_result`, `speak.lists`; `hearsay lint <url>`; Smart Home flawed/fixed, where fixed means the kit applied (`speak`, `refuse`, `confirm`). | Flawed: exactly the (check, severity) pairs in servers/smart-home/README.md except `asr.robust` (M3) and `consent.path` (M4); fixed: exit 0; a fake server with both -32602 forms fails `protocol.refusal_as_result`. |
 | 4–5 | **M2b Agent loop** (must) ✅ | FR-034–036, 038. `@hearsayhq/mcp` (stdio and Streamable HTTP): `hearsay_lint(url)`, `hearsay_run(suitePath, only?: string[] \| "failed")`, `hearsay_explain(checkId)` (rule, source, short before/after); compact findings, traces only with `verbose`; no tool writes suites. Kit complete: `confirm()` with the verbal fallback of `consent.path`, asking only at commit or outside the mandate; `withMandate()`; every hint names its kit block. `hearsay lock` and `suite.integrity`. Skill `fix-hearsay-findings`. | A fresh Claude Code session with the Hearsay MCP server and the skill turns Smart Home flawed green without touching `suites/` or the lock; the Hearsay MCP server passes its own `protocol.*` and `lint.*`; editing a locked suite turns the run red (`suite.integrity`); clips `m2b-agent-loop` and `m2b-cheat`. |
-| 6–8 | **M3 Hearing + model** ✅ offline · recordings blocked on AWS (D-020) | FR-012, 013, 015, 017, 018. Curated perturbations on utterance and argument level; `asr.robust` in scripted mode; holdout suites (`--holdout`); llm orchestrator, Bedrock Converse, `--record`, replay; `hearsay gen-variants` (Polly → noise and telephone band → Transcribe Streaming, no S3) writing a committed variants file. | Smart Home flawed fails `asr.robust` in scripted mode, fixed passes; a holdout case runs only with `--holdout` and is reported apart, and `hearsay_run` never loads holdouts. **Blocked on AWS** (last in M3, built and tested with fakes until then): a recorded kitchen llm run (Bedrock cassette) replays with identical findings twice, network off; a variants file for Kitchen (`gen-variants`) is committed and replayed offline. |
+| 6–8 | **M3 Hearing + model** ✅ offline · Bedrock recording ✅ 30 Sep · variants blocked on Transcribe (D-020) | FR-012, 013, 015, 017, 018. Curated perturbations on utterance and argument level; `asr.robust` in scripted mode; holdout suites (`--holdout`); llm orchestrator, Bedrock Converse, `--record`, replay; `hearsay gen-variants` (Polly → noise and telephone band → Transcribe Streaming, no S3) writing a committed variants file. | Smart Home flawed fails `asr.robust` in scripted mode, fixed passes; a holdout case runs only with `--holdout` and is reported apart, and `hearsay_run` never loads holdouts. **Blocked on AWS** (last in M3, built and tested with fakes until then): a recorded kitchen llm run (Bedrock cassette) replays with identical findings twice, network off; a variants file for Kitchen (`gen-variants`) is committed and replayed offline. |
 | 9–10 | **M4 Consent + mandate** ✅ | FR-005, 021–022, 052. Household Orders on `withMandate()` and `confirm()`: principal, static tool list, enums enforced only by `authorize()`, optional version, version stamped on cart lines and re-authorized at commit, strong and verbal paths. All `consent.*` (including `consent.over_confirmation`) and `mandate.*`; injection through the scripted compromised model; `protocol.list_changed`. R-03 through the KayLerch bridge, time-boxed to 2 h. | Every `consent.*` and `mandate.*` check passes on Household Orders with and without client elicitation, and fails on a fixture built to violate it; "fifteen" → "fifty" never commits. |
 | 11 | **M5 Console** ✅ | FR-040–042. `hearsay serve` (Hono, SSE); text input, browser speech synthesis; timeline with the 500 ms line; findings by question with sources; elicitation as a host modal. Without a model the console plans from the nearest suite case (D-023). | Talk to Kitchen and Household Orders in the browser; timeline and findings update live. |
 | 12–14 | **M6 Ship + experiment** | FR-033, 060, 063, 065. README (`npx @hearsayhq/cli`, workflow snippet, MCP config for Claude Code and Kiro), tsup bundle; catalog lists only implemented checks, the rest under Roadmap; Open Source PR (≤ ½ day); skill `write-hearsay-suite`; agent-loop experiment: flawed modes (`HEARSAY_FIXED=0`) for Kitchen and Household Orders, 3 flawed servers × {Hearsay MCP + skill, task description only} × 3 runs, judged against holdouts, cost approved by the owner before the runs; feedback and friction log final. | Fresh clone → first green run in < 5 min, no keys; PR URL exists; the skill drafts a valid suite from Kitchen's `tools/list`; docs/15 holds a reproducible script and the results. |
@@ -93,12 +93,18 @@ Polly or Transcribe access), the milestone's other gate items may close and the 
 start. The blocked items stay listed as open in this table and are finished as soon as access
 arrives (D-020).
 
-Open because of access (30 Sep): recording a real kitchen llm run with Bedrock (the replay path is
-built and tested with a fake model), and recording `suites/variants/kitchen.json` with Polly and
-Transcribe (the channel and the pipeline are built and tested with fakes). The AWS credits are
-expected within four days; until then everything is built against fakes. `gen-variants` records
-only cases with `asr.roundtrip` in `fuzz`, and no suite has one yet, so recording Kitchen needs a
-suite change (the three timer cases), which is the owner's.
+Done 30 Sep, on the owner's own AWS account: a real kitchen llm run with Amazon Nova 2 Lite
+(`us.amazon.nova-2-lite-v1:0`) recorded to `suites/cassettes/kitchen.json` (26 model calls, about
+32k input tokens, around a cent), replayed twice with fake credentials: the same checks, severities
+and spoken replies each time and as recorded; latency messages differ by a millisecond because the
+Kitchen server runs live. On the fixed Kitchen, 2 of 10 runs fail in llm mode, both where the model
+did the sensible thing without the call the scripted case forces: it asked "which timer?" itself,
+and it refused step forty from the schema's bounds. Nova Lite recorded first and planned worse
+(skipped a call, reasoning in the reply text, friction log #8). The owner added `asr.roundtrip`
+to the three kitchen timer cases (suite re-locked).
+
+Still open because of access: recording `suites/variants/kitchen.json`. Polly works; Transcribe
+Streaming answers `SubscriptionRequiredException` on the new account (friction log #9).
 
 AWS cost of all planned recordings (estimate, 30 Sep; list prices in us-east-1 as known, to be
 checked on the pricing pages before the first run):
@@ -111,7 +117,9 @@ checked on the pricing pages before the first run):
 | Bedrock as the console's planner for the video | about 100 turns: 500k input, 30k output tokens | as above | – | $0.04–0.65 |
 
 Any Bedrock model with tool use works through Converse (`HEARSAY_BEDROCK_MODEL_ID`). Nova Lite
-records first; if it plans badly on the fixed Kitchen, one recording with Haiku. In total about
+records first; if it plans badly on the fixed Kitchen, one recording with Haiku. (30 Sep: Nova
+Lite planned badly; Nova 2 Lite, also Amazon's and without a Marketplace subscription, was used
+instead of Haiku.) In total about
 $3–5, under $10 with retakes; a budget alarm at $20 covers it.
 
 R-03 comes back under D-024 once AWS is there, at most 2 h. Before that it was cut, first in the cut order: it needs AWS and an

@@ -1,0 +1,3039 @@
+{
+  "provider": "bedrock:us.amazon.nova-2-lite-v1:0",
+  "model": "bedrock:us.amazon.nova-2-lite-v1:0",
+  "recordedAt": "2026-09-30T18:40:01.141Z",
+  "entries": {
+    "13150eab3bea9ac87889bef91a8b7a5b2373e19ead529c01896738ad1ad31868": {
+      "request": {
+        "system": "You are the planner of a voice assistant (a stand-in for Alexa+, not Alexa+ itself). The user's words come from speech recognition and may be misheard. Use the tools to do what the user asks. If you are unsure what they meant, ask one short question instead of guessing. Reply in one or two short spoken sentences: no markdown, no ids, no JSON, at most three options. You never answer confirmation questions on the user's behalf; the host asks the user.",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "set a pasta timer for fifteen minutes"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "Got it, pasta timer set for fifteen minutes."
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "set an egg timer for seven minutes"
+              }
+            ]
+          }
+        ],
+        "tools": [
+          {
+            "name": "timer_start",
+            "description": "Use when the person asks to set or start a timer, for example \"set a pasta timer for fifteen minutes\". Starting a timer with an existing label restarts it.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "minutes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 240,
+                  "description": "Duration in whole minutes, 1 to 240."
+                },
+                "label": {
+                  "description": "What the timer is for, such as pasta or egg. Defaults to \"timer\".",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_list",
+            "description": "Use when the person asks which timers are running or how long is left.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_cancel",
+            "description": "Use when the person asks to stop or cancel a timer. Name the timer by its label; with several timers and no label, the person is asked which one.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "description": "Label of the timer to cancel, such as pasta.",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "recipe_step",
+            "description": "Use when the person asks for a step of the current recipe (spaghetti aglio e olio). Reading a step changes nothing.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 7,
+                  "description": "Step number, 1 to 7."
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        ],
+        "maxTokens": 1024
+      },
+      "response": {
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "tooluse_cfNTPZthsb08L8mh8NwTDR",
+            "name": "timer_start",
+            "input": {
+              "minutes": 7,
+              "label": "egg"
+            }
+          }
+        ],
+        "stopReason": "tool_use",
+        "usage": {
+          "inputTokens": 1320,
+          "outputTokens": 36
+        }
+      },
+      "durationMs": 934
+    },
+    "15eab2d082941985ee7a56d67eaf017ab1c24566c9c4d03b0b005e1903b4760c": {
+      "request": {
+        "system": "You are the planner of a voice assistant (a stand-in for Alexa+, not Alexa+ itself). The user's words come from speech recognition and may be misheard. Use the tools to do what the user asks. If you are unsure what they meant, ask one short question instead of guessing. Reply in one or two short spoken sentences: no markdown, no ids, no JSON, at most three options. You never answer confirmation questions on the user's behalf; the host asks the user.",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "start a sauce timer for eight minutes"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "tool_use",
+                "id": "tooluse_v6oGFWShUvWWamNyyL7330",
+                "name": "timer_start",
+                "input": {
+                  "minutes": 8,
+                  "label": "sauce"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "tool_result",
+                "toolUseId": "tooluse_v6oGFWShUvWWamNyyL7330",
+                "text": "Sauce timer set for eight minutes.",
+                "isError": false
+              }
+            ]
+          }
+        ],
+        "tools": [
+          {
+            "name": "timer_start",
+            "description": "Use when the person asks to set or start a timer, for example \"set a pasta timer for fifteen minutes\". Starting a timer with an existing label restarts it.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "minutes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 240,
+                  "description": "Duration in whole minutes, 1 to 240."
+                },
+                "label": {
+                  "description": "What the timer is for, such as pasta or egg. Defaults to \"timer\".",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_list",
+            "description": "Use when the person asks which timers are running or how long is left.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_cancel",
+            "description": "Use when the person asks to stop or cancel a timer. Name the timer by its label; with several timers and no label, the person is asked which one.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "description": "Label of the timer to cancel, such as pasta.",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "recipe_step",
+            "description": "Use when the person asks for a step of the current recipe (spaghetti aglio e olio). Reading a step changes nothing.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 7,
+                  "description": "Step number, 1 to 7."
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        ],
+        "maxTokens": 1024
+      },
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Your sauce timer is set for eight minutes."
+          }
+        ],
+        "stopReason": "end_turn",
+        "usage": {
+          "inputTokens": 1366,
+          "outputTokens": 10
+        }
+      },
+      "durationMs": 945
+    },
+    "2b7011d0aea5bf6740e98baf66ff4b17784c7917ab3e7f9ffc68c3dc239d5452": {
+      "request": {
+        "system": "You are the planner of a voice assistant (a stand-in for Alexa+, not Alexa+ itself). The user's words come from speech recognition and may be misheard. Use the tools to do what the user asks. If you are unsure what they meant, ask one short question instead of guessing. Reply in one or two short spoken sentences: no markdown, no ids, no JSON, at most three options. You never answer confirmation questions on the user's behalf; the host asks the user.",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "start a sauce timer for eight minutes"
+              }
+            ]
+          }
+        ],
+        "tools": [
+          {
+            "name": "timer_start",
+            "description": "Use when the person asks to set or start a timer, for example \"set a pasta timer for fifteen minutes\". Starting a timer with an existing label restarts it.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "minutes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 240,
+                  "description": "Duration in whole minutes, 1 to 240."
+                },
+                "label": {
+                  "description": "What the timer is for, such as pasta or egg. Defaults to \"timer\".",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_list",
+            "description": "Use when the person asks which timers are running or how long is left.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_cancel",
+            "description": "Use when the person asks to stop or cancel a timer. Name the timer by its label; with several timers and no label, the person is asked which one.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "description": "Label of the timer to cancel, such as pasta.",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "recipe_step",
+            "description": "Use when the person asks for a step of the current recipe (spaghetti aglio e olio). Reading a step changes nothing.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 7,
+                  "description": "Step number, 1 to 7."
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        ],
+        "maxTokens": 1024
+      },
+      "response": {
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "tooluse_v6oGFWShUvWWamNyyL7330",
+            "name": "timer_start",
+            "input": {
+              "minutes": 8,
+              "label": "sauce"
+            }
+          }
+        ],
+        "stopReason": "tool_use",
+        "usage": {
+          "inputTokens": 1298,
+          "outputTokens": 36
+        }
+      },
+      "durationMs": 1129
+    },
+    "3c2591e453d15c0bb7f9ceccaa39a8e90adfcdaeba462929239fab1d9bd64552": {
+      "request": {
+        "system": "You are the planner of a voice assistant (a stand-in for Alexa+, not Alexa+ itself). The user's words come from speech recognition and may be misheard. Use the tools to do what the user asks. If you are unsure what they meant, ask one short question instead of guessing. Reply in one or two short spoken sentences: no markdown, no ids, no JSON, at most three options. You never answer confirmation questions on the user's behalf; the host asks the user.",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "set a pasta timer for fifteen minutes"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "tool_use",
+                "id": "tooluse_xwhmb7XvzVS3HY04X3I5tj",
+                "name": "timer_start",
+                "input": {
+                  "minutes": 15,
+                  "label": "pasta"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "tool_result",
+                "toolUseId": "tooluse_xwhmb7XvzVS3HY04X3I5tj",
+                "text": "Pasta timer set for fifteen minutes.",
+                "isError": false
+              }
+            ]
+          }
+        ],
+        "tools": [
+          {
+            "name": "timer_start",
+            "description": "Use when the person asks to set or start a timer, for example \"set a pasta timer for fifteen minutes\". Starting a timer with an existing label restarts it.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "minutes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 240,
+                  "description": "Duration in whole minutes, 1 to 240."
+                },
+                "label": {
+                  "description": "What the timer is for, such as pasta or egg. Defaults to \"timer\".",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_list",
+            "description": "Use when the person asks which timers are running or how long is left.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_cancel",
+            "description": "Use when the person asks to stop or cancel a timer. Name the timer by its label; with several timers and no label, the person is asked which one.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "description": "Label of the timer to cancel, such as pasta.",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "recipe_step",
+            "description": "Use when the person asks for a step of the current recipe (spaghetti aglio e olio). Reading a step changes nothing.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 7,
+                  "description": "Step number, 1 to 7."
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        ],
+        "maxTokens": 1024
+      },
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Got it, pasta timer is set for fifteen minutes."
+          }
+        ],
+        "stopReason": "end_turn",
+        "usage": {
+          "inputTokens": 1366,
+          "outputTokens": 12
+        }
+      },
+      "durationMs": 910
+    },
+    "3e9ba04ec43957c5f2711d787ba2b0a247fd41c79c182f024d87470a8854934e": {
+      "request": {
+        "system": "You are the planner of a voice assistant (a stand-in for Alexa+, not Alexa+ itself). The user's words come from speech recognition and may be misheard. Use the tools to do what the user asks. If you are unsure what they meant, ask one short question instead of guessing. Reply in one or two short spoken sentences: no markdown, no ids, no JSON, at most three options. You never answer confirmation questions on the user's behalf; the host asks the user.",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "set a pasta timer four fifteen minutes"
+              }
+            ]
+          }
+        ],
+        "tools": [
+          {
+            "name": "timer_start",
+            "description": "Use when the person asks to set or start a timer, for example \"set a pasta timer for fifteen minutes\". Starting a timer with an existing label restarts it.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "minutes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 240,
+                  "description": "Duration in whole minutes, 1 to 240."
+                },
+                "label": {
+                  "description": "What the timer is for, such as pasta or egg. Defaults to \"timer\".",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_list",
+            "description": "Use when the person asks which timers are running or how long is left.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_cancel",
+            "description": "Use when the person asks to stop or cancel a timer. Name the timer by its label; with several timers and no label, the person is asked which one.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "description": "Label of the timer to cancel, such as pasta.",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "recipe_step",
+            "description": "Use when the person asks for a step of the current recipe (spaghetti aglio e olio). Reading a step changes nothing.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 7,
+                  "description": "Step number, 1 to 7."
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        ],
+        "maxTokens": 1024
+      },
+      "response": {
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "tooluse_m6Xgi7HK2MLmQHoxeePHUp",
+            "name": "timer_start",
+            "input": {
+              "minutes": 15,
+              "label": "pasta"
+            }
+          }
+        ],
+        "stopReason": "tool_use",
+        "usage": {
+          "inputTokens": 1298,
+          "outputTokens": 36
+        }
+      },
+      "durationMs": 867
+    },
+    "4afdcabfb305c51fddcc6ae91be3752a2af5d8f68f674dd553740694151b132d": {
+      "request": {
+        "system": "You are the planner of a voice assistant (a stand-in for Alexa+, not Alexa+ itself). The user's words come from speech recognition and may be misheard. Use the tools to do what the user asks. If you are unsure what they meant, ask one short question instead of guessing. Reply in one or two short spoken sentences: no markdown, no ids, no JSON, at most three options. You never answer confirmation questions on the user's behalf; the host asks the user.",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "set a pasta timer for fifteen minutes"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "Got it, pasta timer is set for fifteen minutes."
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "set an egg timer for seven minutes"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "Got it, egg timer is set for seven minutes."
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "cancel the timer"
+              }
+            ]
+          }
+        ],
+        "tools": [
+          {
+            "name": "timer_start",
+            "description": "Use when the person asks to set or start a timer, for example \"set a pasta timer for fifteen minutes\". Starting a timer with an existing label restarts it.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "minutes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 240,
+                  "description": "Duration in whole minutes, 1 to 240."
+                },
+                "label": {
+                  "description": "What the timer is for, such as pasta or egg. Defaults to \"timer\".",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_list",
+            "description": "Use when the person asks which timers are running or how long is left.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_cancel",
+            "description": "Use when the person asks to stop or cancel a timer. Name the timer by its label; with several timers and no label, the person is asked which one.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "description": "Label of the timer to cancel, such as pasta.",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "recipe_step",
+            "description": "Use when the person asks for a step of the current recipe (spaghetti aglio e olio). Reading a step changes nothing.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 7,
+                  "description": "Step number, 1 to 7."
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        ],
+        "maxTokens": 1024
+      },
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Which timer do you want to cancel: pasta or egg?"
+          }
+        ],
+        "stopReason": "end_turn",
+        "usage": {
+          "inputTokens": 1340,
+          "outputTokens": 13
+        }
+      },
+      "durationMs": 954
+    },
+    "4ec68505202f0598632e1b56d1d9e802e79011fe0691752146ef95c24348babd": {
+      "request": {
+        "system": "You are the planner of a voice assistant (a stand-in for Alexa+, not Alexa+ itself). The user's words come from speech recognition and may be misheard. Use the tools to do what the user asks. If you are unsure what they meant, ask one short question instead of guessing. Reply in one or two short spoken sentences: no markdown, no ids, no JSON, at most three options. You never answer confirmation questions on the user's behalf; the host asks the user.",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "set a pasta timer for fifteen minutes"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "Got it, pasta timer is set for fifteen minutes."
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "set an egg timer for seven minutes"
+              }
+            ]
+          }
+        ],
+        "tools": [
+          {
+            "name": "timer_start",
+            "description": "Use when the person asks to set or start a timer, for example \"set a pasta timer for fifteen minutes\". Starting a timer with an existing label restarts it.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "minutes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 240,
+                  "description": "Duration in whole minutes, 1 to 240."
+                },
+                "label": {
+                  "description": "What the timer is for, such as pasta or egg. Defaults to \"timer\".",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_list",
+            "description": "Use when the person asks which timers are running or how long is left.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_cancel",
+            "description": "Use when the person asks to stop or cancel a timer. Name the timer by its label; with several timers and no label, the person is asked which one.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "description": "Label of the timer to cancel, such as pasta.",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "recipe_step",
+            "description": "Use when the person asks for a step of the current recipe (spaghetti aglio e olio). Reading a step changes nothing.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 7,
+                  "description": "Step number, 1 to 7."
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        ],
+        "maxTokens": 1024
+      },
+      "response": {
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "tooluse_G26px2zQ1AY2pRm3JT3u5Q",
+            "name": "timer_start",
+            "input": {
+              "minutes": 7,
+              "label": "egg"
+            }
+          }
+        ],
+        "stopReason": "tool_use",
+        "usage": {
+          "inputTokens": 1321,
+          "outputTokens": 36
+        }
+      },
+      "durationMs": 1034
+    },
+    "5f7710e4c25d3b57df031626cffc885fbce1eb08f4e45c4620ea52c4339a5ea0": {
+      "request": {
+        "system": "You are the planner of a voice assistant (a stand-in for Alexa+, not Alexa+ itself). The user's words come from speech recognition and may be misheard. Use the tools to do what the user asks. If you are unsure what they meant, ask one short question instead of guessing. Reply in one or two short spoken sentences: no markdown, no ids, no JSON, at most three options. You never answer confirmation questions on the user's behalf; the host asks the user.",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "set a pasta timer for fifteen minutes"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "tool_use",
+                "id": "tooluse_0xemRW8EH95250ze6nHLK6",
+                "name": "timer_start",
+                "input": {
+                  "minutes": 15,
+                  "label": "pasta"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "tool_result",
+                "toolUseId": "tooluse_0xemRW8EH95250ze6nHLK6",
+                "text": "Pasta timer set for fifteen minutes.",
+                "isError": false
+              }
+            ]
+          }
+        ],
+        "tools": [
+          {
+            "name": "timer_start",
+            "description": "Use when the person asks to set or start a timer, for example \"set a pasta timer for fifteen minutes\". Starting a timer with an existing label restarts it.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "minutes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 240,
+                  "description": "Duration in whole minutes, 1 to 240."
+                },
+                "label": {
+                  "description": "What the timer is for, such as pasta or egg. Defaults to \"timer\".",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_list",
+            "description": "Use when the person asks which timers are running or how long is left.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_cancel",
+            "description": "Use when the person asks to stop or cancel a timer. Name the timer by its label; with several timers and no label, the person is asked which one.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "description": "Label of the timer to cancel, such as pasta.",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "recipe_step",
+            "description": "Use when the person asks for a step of the current recipe (spaghetti aglio e olio). Reading a step changes nothing.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 7,
+                  "description": "Step number, 1 to 7."
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        ],
+        "maxTokens": 1024
+      },
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Got it, pasta timer set for fifteen minutes."
+          }
+        ],
+        "stopReason": "end_turn",
+        "usage": {
+          "inputTokens": 1366,
+          "outputTokens": 11
+        }
+      },
+      "durationMs": 930
+    },
+    "7946dcf3c67ccf372d4af4aad71b6d99a2ec4d9951df42abd980cc73618367b8": {
+      "request": {
+        "system": "You are the planner of a voice assistant (a stand-in for Alexa+, not Alexa+ itself). The user's words come from speech recognition and may be misheard. Use the tools to do what the user asks. If you are unsure what they meant, ask one short question instead of guessing. Reply in one or two short spoken sentences: no markdown, no ids, no JSON, at most three options. You never answer confirmation questions on the user's behalf; the host asks the user.",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "set a pasta timer for fifteen minutes"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "Got it, pasta timer set for fifteen minutes."
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "set an egg timer for seven minutes"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "Done, egg timer set for seven minutes."
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "how long is left on my timers"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "tool_use",
+                "id": "tooluse_r6Llh52NPcNyeEtaH2ufxB",
+                "name": "timer_list",
+                "input": {}
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "tool_result",
+                "toolUseId": "tooluse_r6Llh52NPcNyeEtaH2ufxB",
+                "text": "Two timers: egg with seven minutes left and pasta with fifteen minutes left.",
+                "isError": false
+              }
+            ]
+          }
+        ],
+        "tools": [
+          {
+            "name": "timer_start",
+            "description": "Use when the person asks to set or start a timer, for example \"set a pasta timer for fifteen minutes\". Starting a timer with an existing label restarts it.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "minutes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 240,
+                  "description": "Duration in whole minutes, 1 to 240."
+                },
+                "label": {
+                  "description": "What the timer is for, such as pasta or egg. Defaults to \"timer\".",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_list",
+            "description": "Use when the person asks which timers are running or how long is left.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_cancel",
+            "description": "Use when the person asks to stop or cancel a timer. Name the timer by its label; with several timers and no label, the person is asked which one.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "description": "Label of the timer to cancel, such as pasta.",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "recipe_step",
+            "description": "Use when the person asks for a step of the current recipe (spaghetti aglio e olio). Reading a step changes nothing.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 7,
+                  "description": "Step number, 1 to 7."
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        ],
+        "maxTokens": 1024
+      },
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "You have two timers: egg with seven minutes left and pasta with fifteen minutes left."
+          }
+        ],
+        "stopReason": "end_turn",
+        "usage": {
+          "inputTokens": 1396,
+          "outputTokens": 20
+        }
+      },
+      "durationMs": 900
+    },
+    "8b50f0bdd5c838d540bb303e94493e656977c9b6b8ce1f2e5ee2ee3a3a38303a": {
+      "request": {
+        "system": "You are the planner of a voice assistant (a stand-in for Alexa+, not Alexa+ itself). The user's words come from speech recognition and may be misheard. Use the tools to do what the user asks. If you are unsure what they meant, ask one short question instead of guessing. Reply in one or two short spoken sentences: no markdown, no ids, no JSON, at most three options. You never answer confirmation questions on the user's behalf; the host asks the user.",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "set a pasta timer four fifteen minutes"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "tool_use",
+                "id": "tooluse_m6Xgi7HK2MLmQHoxeePHUp",
+                "name": "timer_start",
+                "input": {
+                  "minutes": 15,
+                  "label": "pasta"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "tool_result",
+                "toolUseId": "tooluse_m6Xgi7HK2MLmQHoxeePHUp",
+                "text": "Pasta timer set for fifteen minutes.",
+                "isError": false
+              }
+            ]
+          }
+        ],
+        "tools": [
+          {
+            "name": "timer_start",
+            "description": "Use when the person asks to set or start a timer, for example \"set a pasta timer for fifteen minutes\". Starting a timer with an existing label restarts it.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "minutes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 240,
+                  "description": "Duration in whole minutes, 1 to 240."
+                },
+                "label": {
+                  "description": "What the timer is for, such as pasta or egg. Defaults to \"timer\".",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_list",
+            "description": "Use when the person asks which timers are running or how long is left.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_cancel",
+            "description": "Use when the person asks to stop or cancel a timer. Name the timer by its label; with several timers and no label, the person is asked which one.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "description": "Label of the timer to cancel, such as pasta.",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "recipe_step",
+            "description": "Use when the person asks for a step of the current recipe (spaghetti aglio e olio). Reading a step changes nothing.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 7,
+                  "description": "Step number, 1 to 7."
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        ],
+        "maxTokens": 1024
+      },
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Got it, pasta timer is set for fifteen minutes."
+          }
+        ],
+        "stopReason": "end_turn",
+        "usage": {
+          "inputTokens": 1366,
+          "outputTokens": 12
+        }
+      },
+      "durationMs": 930
+    },
+    "96b6f4af89c206a69a1da289b2ca2e76f1ef3880d81dbf8bf0cfdbe8ae405532": {
+      "request": {
+        "system": "You are the planner of a voice assistant (a stand-in for Alexa+, not Alexa+ itself). The user's words come from speech recognition and may be misheard. Use the tools to do what the user asks. If you are unsure what they meant, ask one short question instead of guessing. Reply in one or two short spoken sentences: no markdown, no ids, no JSON, at most three options. You never answer confirmation questions on the user's behalf; the host asks the user.",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "set a pasta timer for fifty minutes"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "tool_use",
+                "id": "tooluse_EYZX7v14g1BLrnX7GbB8pg",
+                "name": "timer_start",
+                "input": {
+                  "minutes": 50,
+                  "label": "pasta"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "tool_result",
+                "toolUseId": "tooluse_EYZX7v14g1BLrnX7GbB8pg",
+                "text": "Pasta timer set for fifty minutes.",
+                "isError": false
+              }
+            ]
+          }
+        ],
+        "tools": [
+          {
+            "name": "timer_start",
+            "description": "Use when the person asks to set or start a timer, for example \"set a pasta timer for fifteen minutes\". Starting a timer with an existing label restarts it.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "minutes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 240,
+                  "description": "Duration in whole minutes, 1 to 240."
+                },
+                "label": {
+                  "description": "What the timer is for, such as pasta or egg. Defaults to \"timer\".",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_list",
+            "description": "Use when the person asks which timers are running or how long is left.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_cancel",
+            "description": "Use when the person asks to stop or cancel a timer. Name the timer by its label; with several timers and no label, the person is asked which one.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "description": "Label of the timer to cancel, such as pasta.",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "recipe_step",
+            "description": "Use when the person asks for a step of the current recipe (spaghetti aglio e olio). Reading a step changes nothing.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 7,
+                  "description": "Step number, 1 to 7."
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        ],
+        "maxTokens": 1024
+      },
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Pasta timer set for fifty minutes."
+          }
+        ],
+        "stopReason": "end_turn",
+        "usage": {
+          "inputTokens": 1366,
+          "outputTokens": 11
+        }
+      },
+      "durationMs": 943
+    },
+    "9bf5a63e54da72829524e3c05db18f6354bad54a9d594f3810ee5b94b01c1c36": {
+      "request": {
+        "system": "You are the planner of a voice assistant (a stand-in for Alexa+, not Alexa+ itself). The user's words come from speech recognition and may be misheard. Use the tools to do what the user asks. If you are unsure what they meant, ask one short question instead of guessing. Reply in one or two short spoken sentences: no markdown, no ids, no JSON, at most three options. You never answer confirmation questions on the user's behalf; the host asks the user.",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "start a sauce timer for ate minutes"
+              }
+            ]
+          }
+        ],
+        "tools": [
+          {
+            "name": "timer_start",
+            "description": "Use when the person asks to set or start a timer, for example \"set a pasta timer for fifteen minutes\". Starting a timer with an existing label restarts it.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "minutes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 240,
+                  "description": "Duration in whole minutes, 1 to 240."
+                },
+                "label": {
+                  "description": "What the timer is for, such as pasta or egg. Defaults to \"timer\".",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_list",
+            "description": "Use when the person asks which timers are running or how long is left.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_cancel",
+            "description": "Use when the person asks to stop or cancel a timer. Name the timer by its label; with several timers and no label, the person is asked which one.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "description": "Label of the timer to cancel, such as pasta.",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "recipe_step",
+            "description": "Use when the person asks for a step of the current recipe (spaghetti aglio e olio). Reading a step changes nothing.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 7,
+                  "description": "Step number, 1 to 7."
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        ],
+        "maxTokens": 1024
+      },
+      "response": {
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "tooluse_uFgBnhQogJPemadyDR9I1o",
+            "name": "timer_start",
+            "input": {
+              "minutes": 8,
+              "label": "sauce"
+            }
+          }
+        ],
+        "stopReason": "tool_use",
+        "usage": {
+          "inputTokens": 1298,
+          "outputTokens": 36
+        }
+      },
+      "durationMs": 1040
+    },
+    "9c531b748b4ec46460d7b37347afc62a57df612cf53281dde4f76f38436fb56b": {
+      "request": {
+        "system": "You are the planner of a voice assistant (a stand-in for Alexa+, not Alexa+ itself). The user's words come from speech recognition and may be misheard. Use the tools to do what the user asks. If you are unsure what they meant, ask one short question instead of guessing. Reply in one or two short spoken sentences: no markdown, no ids, no JSON, at most three options. You never answer confirmation questions on the user's behalf; the host asks the user.",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "start a sauce timer four eight minutes"
+              }
+            ]
+          }
+        ],
+        "tools": [
+          {
+            "name": "timer_start",
+            "description": "Use when the person asks to set or start a timer, for example \"set a pasta timer for fifteen minutes\". Starting a timer with an existing label restarts it.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "minutes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 240,
+                  "description": "Duration in whole minutes, 1 to 240."
+                },
+                "label": {
+                  "description": "What the timer is for, such as pasta or egg. Defaults to \"timer\".",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_list",
+            "description": "Use when the person asks which timers are running or how long is left.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_cancel",
+            "description": "Use when the person asks to stop or cancel a timer. Name the timer by its label; with several timers and no label, the person is asked which one.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "description": "Label of the timer to cancel, such as pasta.",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "recipe_step",
+            "description": "Use when the person asks for a step of the current recipe (spaghetti aglio e olio). Reading a step changes nothing.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 7,
+                  "description": "Step number, 1 to 7."
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        ],
+        "maxTokens": 1024
+      },
+      "response": {
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "tooluse_uumlbyfReXT5DEisJ5lupx",
+            "name": "timer_start",
+            "input": {
+              "minutes": 8,
+              "label": "sauce"
+            }
+          }
+        ],
+        "stopReason": "tool_use",
+        "usage": {
+          "inputTokens": 1298,
+          "outputTokens": 36
+        }
+      },
+      "durationMs": 967
+    },
+    "b4f74d87feda48d734a192ad654a408b496e81270e9fab29127bd033af06daca": {
+      "request": {
+        "system": "You are the planner of a voice assistant (a stand-in for Alexa+, not Alexa+ itself). The user's words come from speech recognition and may be misheard. Use the tools to do what the user asks. If you are unsure what they meant, ask one short question instead of guessing. Reply in one or two short spoken sentences: no markdown, no ids, no JSON, at most three options. You never answer confirmation questions on the user's behalf; the host asks the user.",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "read me step forty of the recipe"
+              }
+            ]
+          }
+        ],
+        "tools": [
+          {
+            "name": "timer_start",
+            "description": "Use when the person asks to set or start a timer, for example \"set a pasta timer for fifteen minutes\". Starting a timer with an existing label restarts it.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "minutes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 240,
+                  "description": "Duration in whole minutes, 1 to 240."
+                },
+                "label": {
+                  "description": "What the timer is for, such as pasta or egg. Defaults to \"timer\".",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_list",
+            "description": "Use when the person asks which timers are running or how long is left.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_cancel",
+            "description": "Use when the person asks to stop or cancel a timer. Name the timer by its label; with several timers and no label, the person is asked which one.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "description": "Label of the timer to cancel, such as pasta.",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "recipe_step",
+            "description": "Use when the person asks for a step of the current recipe (spaghetti aglio e olio). Reading a step changes nothing.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 7,
+                  "description": "Step number, 1 to 7."
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        ],
+        "maxTokens": 1024
+      },
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Sorry, I can only read steps one through seven of a recipe. Which step from one to seven would you like to hear?"
+          }
+        ],
+        "stopReason": "end_turn",
+        "usage": {
+          "inputTokens": 1298,
+          "outputTokens": 29
+        }
+      },
+      "durationMs": 855
+    },
+    "bec607961c9c60b9c387bcf5cf9c82b982fdcc514e9d25826a0107c5a7088205": {
+      "request": {
+        "system": "You are the planner of a voice assistant (a stand-in for Alexa+, not Alexa+ itself). The user's words come from speech recognition and may be misheard. Use the tools to do what the user asks. If you are unsure what they meant, ask one short question instead of guessing. Reply in one or two short spoken sentences: no markdown, no ids, no JSON, at most three options. You never answer confirmation questions on the user's behalf; the host asks the user.",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "set a pasta timer for fifteen minutes"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "Got it, pasta timer set for fifteen minutes."
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "set an egg timer for seven minutes"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "Done, egg timer set for seven minutes."
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "how long is left on my timers"
+              }
+            ]
+          }
+        ],
+        "tools": [
+          {
+            "name": "timer_start",
+            "description": "Use when the person asks to set or start a timer, for example \"set a pasta timer for fifteen minutes\". Starting a timer with an existing label restarts it.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "minutes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 240,
+                  "description": "Duration in whole minutes, 1 to 240."
+                },
+                "label": {
+                  "description": "What the timer is for, such as pasta or egg. Defaults to \"timer\".",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_list",
+            "description": "Use when the person asks which timers are running or how long is left.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_cancel",
+            "description": "Use when the person asks to stop or cancel a timer. Name the timer by its label; with several timers and no label, the person is asked which one.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "description": "Label of the timer to cancel, such as pasta.",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "recipe_step",
+            "description": "Use when the person asks for a step of the current recipe (spaghetti aglio e olio). Reading a step changes nothing.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 7,
+                  "description": "Step number, 1 to 7."
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        ],
+        "maxTokens": 1024
+      },
+      "response": {
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "tooluse_r6Llh52NPcNyeEtaH2ufxB",
+            "name": "timer_list",
+            "input": {}
+          }
+        ],
+        "stopReason": "tool_use",
+        "usage": {
+          "inputTokens": 1341,
+          "outputTokens": 15
+        }
+      },
+      "durationMs": 1154
+    },
+    "c1ca7f9ec3b815b9046544a8ffc53f65b8c4b0fb193197d52b219a293ce03cd8": {
+      "request": {
+        "system": "You are the planner of a voice assistant (a stand-in for Alexa+, not Alexa+ itself). The user's words come from speech recognition and may be misheard. Use the tools to do what the user asks. If you are unsure what they meant, ask one short question instead of guessing. Reply in one or two short spoken sentences: no markdown, no ids, no JSON, at most three options. You never answer confirmation questions on the user's behalf; the host asks the user.",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "set a pasta timer for fifteen minutes"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "tool_use",
+                "id": "tooluse_e2VWNbOg5SIOi8QQAWACLH",
+                "name": "timer_start",
+                "input": {
+                  "minutes": 15,
+                  "label": "pasta"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "tool_result",
+                "toolUseId": "tooluse_e2VWNbOg5SIOi8QQAWACLH",
+                "text": "Pasta timer set for fifteen minutes.",
+                "isError": false
+              }
+            ]
+          }
+        ],
+        "tools": [
+          {
+            "name": "timer_start",
+            "description": "Use when the person asks to set or start a timer, for example \"set a pasta timer for fifteen minutes\". Starting a timer with an existing label restarts it.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "minutes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 240,
+                  "description": "Duration in whole minutes, 1 to 240."
+                },
+                "label": {
+                  "description": "What the timer is for, such as pasta or egg. Defaults to \"timer\".",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_list",
+            "description": "Use when the person asks which timers are running or how long is left.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_cancel",
+            "description": "Use when the person asks to stop or cancel a timer. Name the timer by its label; with several timers and no label, the person is asked which one.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "description": "Label of the timer to cancel, such as pasta.",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "recipe_step",
+            "description": "Use when the person asks for a step of the current recipe (spaghetti aglio e olio). Reading a step changes nothing.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 7,
+                  "description": "Step number, 1 to 7."
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        ],
+        "maxTokens": 1024
+      },
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Got it, pasta timer is set for fifteen minutes."
+          }
+        ],
+        "stopReason": "end_turn",
+        "usage": {
+          "inputTokens": 1366,
+          "outputTokens": 12
+        }
+      },
+      "durationMs": 972
+    },
+    "c769b8f7dcf7776bcab4060da33a3e6f225fa41c028cc1ebbb72926e35c902b8": {
+      "request": {
+        "system": "You are the planner of a voice assistant (a stand-in for Alexa+, not Alexa+ itself). The user's words come from speech recognition and may be misheard. Use the tools to do what the user asks. If you are unsure what they meant, ask one short question instead of guessing. Reply in one or two short spoken sentences: no markdown, no ids, no JSON, at most three options. You never answer confirmation questions on the user's behalf; the host asks the user.",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "set a pasta timer for fifty minutes"
+              }
+            ]
+          }
+        ],
+        "tools": [
+          {
+            "name": "timer_start",
+            "description": "Use when the person asks to set or start a timer, for example \"set a pasta timer for fifteen minutes\". Starting a timer with an existing label restarts it.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "minutes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 240,
+                  "description": "Duration in whole minutes, 1 to 240."
+                },
+                "label": {
+                  "description": "What the timer is for, such as pasta or egg. Defaults to \"timer\".",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_list",
+            "description": "Use when the person asks which timers are running or how long is left.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_cancel",
+            "description": "Use when the person asks to stop or cancel a timer. Name the timer by its label; with several timers and no label, the person is asked which one.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "description": "Label of the timer to cancel, such as pasta.",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "recipe_step",
+            "description": "Use when the person asks for a step of the current recipe (spaghetti aglio e olio). Reading a step changes nothing.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 7,
+                  "description": "Step number, 1 to 7."
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        ],
+        "maxTokens": 1024
+      },
+      "response": {
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "tooluse_EYZX7v14g1BLrnX7GbB8pg",
+            "name": "timer_start",
+            "input": {
+              "minutes": 50,
+              "label": "pasta"
+            }
+          }
+        ],
+        "stopReason": "tool_use",
+        "usage": {
+          "inputTokens": 1298,
+          "outputTokens": 36
+        }
+      },
+      "durationMs": 840
+    },
+    "cba8a11a05eacc45a16fad40018f15f11c6debc4a6d221dc545a8558b6ad2220": [
+      {
+        "request": {
+          "system": "You are the planner of a voice assistant (a stand-in for Alexa+, not Alexa+ itself). The user's words come from speech recognition and may be misheard. Use the tools to do what the user asks. If you are unsure what they meant, ask one short question instead of guessing. Reply in one or two short spoken sentences: no markdown, no ids, no JSON, at most three options. You never answer confirmation questions on the user's behalf; the host asks the user.",
+          "messages": [
+            {
+              "role": "user",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "set a pasta timer for fifteen minutes"
+                }
+              ]
+            }
+          ],
+          "tools": [
+            {
+              "name": "timer_start",
+              "description": "Use when the person asks to set or start a timer, for example \"set a pasta timer for fifteen minutes\". Starting a timer with an existing label restarts it.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "minutes": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 240,
+                    "description": "Duration in whole minutes, 1 to 240."
+                  },
+                  "label": {
+                    "description": "What the timer is for, such as pasta or egg. Defaults to \"timer\".",
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40
+                  }
+                },
+                "$schema": "http://json-schema.org/draft-07/schema#"
+              }
+            },
+            {
+              "name": "timer_list",
+              "description": "Use when the person asks which timers are running or how long is left.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {},
+                "$schema": "http://json-schema.org/draft-07/schema#"
+              }
+            },
+            {
+              "name": "timer_cancel",
+              "description": "Use when the person asks to stop or cancel a timer. Name the timer by its label; with several timers and no label, the person is asked which one.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "label": {
+                    "description": "Label of the timer to cancel, such as pasta.",
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40
+                  }
+                },
+                "$schema": "http://json-schema.org/draft-07/schema#"
+              }
+            },
+            {
+              "name": "recipe_step",
+              "description": "Use when the person asks for a step of the current recipe (spaghetti aglio e olio). Reading a step changes nothing.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "number": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 7,
+                    "description": "Step number, 1 to 7."
+                  }
+                },
+                "$schema": "http://json-schema.org/draft-07/schema#"
+              }
+            }
+          ],
+          "maxTokens": 1024
+        },
+        "response": {
+          "content": [
+            {
+              "type": "tool_use",
+              "id": "tooluse_xwhmb7XvzVS3HY04X3I5tj",
+              "name": "timer_start",
+              "input": {
+                "minutes": 15,
+                "label": "pasta"
+              }
+            }
+          ],
+          "stopReason": "tool_use",
+          "usage": {
+            "inputTokens": 1298,
+            "outputTokens": 36
+          }
+        },
+        "durationMs": 908
+      },
+      {
+        "request": {
+          "system": "You are the planner of a voice assistant (a stand-in for Alexa+, not Alexa+ itself). The user's words come from speech recognition and may be misheard. Use the tools to do what the user asks. If you are unsure what they meant, ask one short question instead of guessing. Reply in one or two short spoken sentences: no markdown, no ids, no JSON, at most three options. You never answer confirmation questions on the user's behalf; the host asks the user.",
+          "messages": [
+            {
+              "role": "user",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "set a pasta timer for fifteen minutes"
+                }
+              ]
+            }
+          ],
+          "tools": [
+            {
+              "name": "timer_start",
+              "description": "Use when the person asks to set or start a timer, for example \"set a pasta timer for fifteen minutes\". Starting a timer with an existing label restarts it.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "minutes": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 240,
+                    "description": "Duration in whole minutes, 1 to 240."
+                  },
+                  "label": {
+                    "description": "What the timer is for, such as pasta or egg. Defaults to \"timer\".",
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40
+                  }
+                },
+                "$schema": "http://json-schema.org/draft-07/schema#"
+              }
+            },
+            {
+              "name": "timer_list",
+              "description": "Use when the person asks which timers are running or how long is left.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {},
+                "$schema": "http://json-schema.org/draft-07/schema#"
+              }
+            },
+            {
+              "name": "timer_cancel",
+              "description": "Use when the person asks to stop or cancel a timer. Name the timer by its label; with several timers and no label, the person is asked which one.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "label": {
+                    "description": "Label of the timer to cancel, such as pasta.",
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40
+                  }
+                },
+                "$schema": "http://json-schema.org/draft-07/schema#"
+              }
+            },
+            {
+              "name": "recipe_step",
+              "description": "Use when the person asks for a step of the current recipe (spaghetti aglio e olio). Reading a step changes nothing.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "number": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 7,
+                    "description": "Step number, 1 to 7."
+                  }
+                },
+                "$schema": "http://json-schema.org/draft-07/schema#"
+              }
+            }
+          ],
+          "maxTokens": 1024
+        },
+        "response": {
+          "content": [
+            {
+              "type": "tool_use",
+              "id": "tooluse_0xemRW8EH95250ze6nHLK6",
+              "name": "timer_start",
+              "input": {
+                "minutes": 15,
+                "label": "pasta"
+              }
+            }
+          ],
+          "stopReason": "tool_use",
+          "usage": {
+            "inputTokens": 1298,
+            "outputTokens": 36
+          }
+        },
+        "durationMs": 903
+      },
+      {
+        "request": {
+          "system": "You are the planner of a voice assistant (a stand-in for Alexa+, not Alexa+ itself). The user's words come from speech recognition and may be misheard. Use the tools to do what the user asks. If you are unsure what they meant, ask one short question instead of guessing. Reply in one or two short spoken sentences: no markdown, no ids, no JSON, at most three options. You never answer confirmation questions on the user's behalf; the host asks the user.",
+          "messages": [
+            {
+              "role": "user",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "set a pasta timer for fifteen minutes"
+                }
+              ]
+            }
+          ],
+          "tools": [
+            {
+              "name": "timer_start",
+              "description": "Use when the person asks to set or start a timer, for example \"set a pasta timer for fifteen minutes\". Starting a timer with an existing label restarts it.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "minutes": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 240,
+                    "description": "Duration in whole minutes, 1 to 240."
+                  },
+                  "label": {
+                    "description": "What the timer is for, such as pasta or egg. Defaults to \"timer\".",
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40
+                  }
+                },
+                "$schema": "http://json-schema.org/draft-07/schema#"
+              }
+            },
+            {
+              "name": "timer_list",
+              "description": "Use when the person asks which timers are running or how long is left.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {},
+                "$schema": "http://json-schema.org/draft-07/schema#"
+              }
+            },
+            {
+              "name": "timer_cancel",
+              "description": "Use when the person asks to stop or cancel a timer. Name the timer by its label; with several timers and no label, the person is asked which one.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "label": {
+                    "description": "Label of the timer to cancel, such as pasta.",
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40
+                  }
+                },
+                "$schema": "http://json-schema.org/draft-07/schema#"
+              }
+            },
+            {
+              "name": "recipe_step",
+              "description": "Use when the person asks for a step of the current recipe (spaghetti aglio e olio). Reading a step changes nothing.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "number": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 7,
+                    "description": "Step number, 1 to 7."
+                  }
+                },
+                "$schema": "http://json-schema.org/draft-07/schema#"
+              }
+            }
+          ],
+          "maxTokens": 1024
+        },
+        "response": {
+          "content": [
+            {
+              "type": "tool_use",
+              "id": "tooluse_e2VWNbOg5SIOi8QQAWACLH",
+              "name": "timer_start",
+              "input": {
+                "minutes": 15,
+                "label": "pasta"
+              }
+            }
+          ],
+          "stopReason": "tool_use",
+          "usage": {
+            "inputTokens": 1298,
+            "outputTokens": 36
+          }
+        },
+        "durationMs": 1105
+      }
+    ],
+    "d33ba637268749aa2399c1de8f4dfdca8f6aab66f3f1dc46e5272dc1f92e3779": {
+      "request": {
+        "system": "You are the planner of a voice assistant (a stand-in for Alexa+, not Alexa+ itself). The user's words come from speech recognition and may be misheard. Use the tools to do what the user asks. If you are unsure what they meant, ask one short question instead of guessing. Reply in one or two short spoken sentences: no markdown, no ids, no JSON, at most three options. You never answer confirmation questions on the user's behalf; the host asks the user.",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "set an egg timer for seven minutes"
+              }
+            ]
+          }
+        ],
+        "tools": [
+          {
+            "name": "timer_start",
+            "description": "Use when the person asks to set or start a timer, for example \"set a pasta timer for fifteen minutes\". Starting a timer with an existing label restarts it.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "minutes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 240,
+                  "description": "Duration in whole minutes, 1 to 240."
+                },
+                "label": {
+                  "description": "What the timer is for, such as pasta or egg. Defaults to \"timer\".",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_list",
+            "description": "Use when the person asks which timers are running or how long is left.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_cancel",
+            "description": "Use when the person asks to stop or cancel a timer. Name the timer by its label; with several timers and no label, the person is asked which one.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "description": "Label of the timer to cancel, such as pasta.",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "recipe_step",
+            "description": "Use when the person asks for a step of the current recipe (spaghetti aglio e olio). Reading a step changes nothing.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 7,
+                  "description": "Step number, 1 to 7."
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        ],
+        "maxTokens": 1024
+      },
+      "response": {
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "tooluse_gl17ETOTkbZdsHVi8hRM8P",
+            "name": "timer_start",
+            "input": {
+              "minutes": 7,
+              "label": "egg"
+            }
+          }
+        ],
+        "stopReason": "tool_use",
+        "usage": {
+          "inputTokens": 1298,
+          "outputTokens": 36
+        }
+      },
+      "durationMs": 870
+    },
+    "d6c933b983adcdfdb493619dae0f730d8d551caaccf79d5fddce8994983c68ae": {
+      "request": {
+        "system": "You are the planner of a voice assistant (a stand-in for Alexa+, not Alexa+ itself). The user's words come from speech recognition and may be misheard. Use the tools to do what the user asks. If you are unsure what they meant, ask one short question instead of guessing. Reply in one or two short spoken sentences: no markdown, no ids, no JSON, at most three options. You never answer confirmation questions on the user's behalf; the host asks the user.",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "start a sauce timer for ate minutes"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "tool_use",
+                "id": "tooluse_uFgBnhQogJPemadyDR9I1o",
+                "name": "timer_start",
+                "input": {
+                  "minutes": 8,
+                  "label": "sauce"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "tool_result",
+                "toolUseId": "tooluse_uFgBnhQogJPemadyDR9I1o",
+                "text": "Sauce timer set for eight minutes.",
+                "isError": false
+              }
+            ]
+          }
+        ],
+        "tools": [
+          {
+            "name": "timer_start",
+            "description": "Use when the person asks to set or start a timer, for example \"set a pasta timer for fifteen minutes\". Starting a timer with an existing label restarts it.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "minutes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 240,
+                  "description": "Duration in whole minutes, 1 to 240."
+                },
+                "label": {
+                  "description": "What the timer is for, such as pasta or egg. Defaults to \"timer\".",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_list",
+            "description": "Use when the person asks which timers are running or how long is left.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_cancel",
+            "description": "Use when the person asks to stop or cancel a timer. Name the timer by its label; with several timers and no label, the person is asked which one.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "description": "Label of the timer to cancel, such as pasta.",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "recipe_step",
+            "description": "Use when the person asks for a step of the current recipe (spaghetti aglio e olio). Reading a step changes nothing.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 7,
+                  "description": "Step number, 1 to 7."
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        ],
+        "maxTokens": 1024
+      },
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Your sauce timer is set for eight minutes."
+          }
+        ],
+        "stopReason": "end_turn",
+        "usage": {
+          "inputTokens": 1366,
+          "outputTokens": 12
+        }
+      },
+      "durationMs": 952
+    },
+    "dda9810ff1a4935559a2ad45fbf46418cd59b85f8fc2e76f4bc17674fcf38264": {
+      "request": {
+        "system": "You are the planner of a voice assistant (a stand-in for Alexa+, not Alexa+ itself). The user's words come from speech recognition and may be misheard. Use the tools to do what the user asks. If you are unsure what they meant, ask one short question instead of guessing. Reply in one or two short spoken sentences: no markdown, no ids, no JSON, at most three options. You never answer confirmation questions on the user's behalf; the host asks the user.",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "set a pasta timer for fifteen minutes"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "Got it, pasta timer set for fifteen minutes."
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "set an egg timer for seven minutes"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "tool_use",
+                "id": "tooluse_cfNTPZthsb08L8mh8NwTDR",
+                "name": "timer_start",
+                "input": {
+                  "minutes": 7,
+                  "label": "egg"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "tool_result",
+                "toolUseId": "tooluse_cfNTPZthsb08L8mh8NwTDR",
+                "text": "Egg timer set for seven minutes.",
+                "isError": false
+              }
+            ]
+          }
+        ],
+        "tools": [
+          {
+            "name": "timer_start",
+            "description": "Use when the person asks to set or start a timer, for example \"set a pasta timer for fifteen minutes\". Starting a timer with an existing label restarts it.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "minutes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 240,
+                  "description": "Duration in whole minutes, 1 to 240."
+                },
+                "label": {
+                  "description": "What the timer is for, such as pasta or egg. Defaults to \"timer\".",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_list",
+            "description": "Use when the person asks which timers are running or how long is left.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_cancel",
+            "description": "Use when the person asks to stop or cancel a timer. Name the timer by its label; with several timers and no label, the person is asked which one.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "description": "Label of the timer to cancel, such as pasta.",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "recipe_step",
+            "description": "Use when the person asks for a step of the current recipe (spaghetti aglio e olio). Reading a step changes nothing.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 7,
+                  "description": "Step number, 1 to 7."
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        ],
+        "maxTokens": 1024
+      },
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Done, egg timer set for seven minutes."
+          }
+        ],
+        "stopReason": "end_turn",
+        "usage": {
+          "inputTokens": 1388,
+          "outputTokens": 12
+        }
+      },
+      "durationMs": 845
+    },
+    "e832d767b2861e62321d88326e0e9c4061f30f9adee9ee9012fa75e9db03bf3c": {
+      "request": {
+        "system": "You are the planner of a voice assistant (a stand-in for Alexa+, not Alexa+ itself). The user's words come from speech recognition and may be misheard. Use the tools to do what the user asks. If you are unsure what they meant, ask one short question instead of guessing. Reply in one or two short spoken sentences: no markdown, no ids, no JSON, at most three options. You never answer confirmation questions on the user's behalf; the host asks the user.",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "set an egg timer for seven minutes"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "tool_use",
+                "id": "tooluse_gl17ETOTkbZdsHVi8hRM8P",
+                "name": "timer_start",
+                "input": {
+                  "minutes": 7,
+                  "label": "egg"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "tool_result",
+                "toolUseId": "tooluse_gl17ETOTkbZdsHVi8hRM8P",
+                "text": "Egg timer set for seven minutes.",
+                "isError": false
+              }
+            ]
+          }
+        ],
+        "tools": [
+          {
+            "name": "timer_start",
+            "description": "Use when the person asks to set or start a timer, for example \"set a pasta timer for fifteen minutes\". Starting a timer with an existing label restarts it.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "minutes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 240,
+                  "description": "Duration in whole minutes, 1 to 240."
+                },
+                "label": {
+                  "description": "What the timer is for, such as pasta or egg. Defaults to \"timer\".",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_list",
+            "description": "Use when the person asks which timers are running or how long is left.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_cancel",
+            "description": "Use when the person asks to stop or cancel a timer. Name the timer by its label; with several timers and no label, the person is asked which one.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "description": "Label of the timer to cancel, such as pasta.",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "recipe_step",
+            "description": "Use when the person asks for a step of the current recipe (spaghetti aglio e olio). Reading a step changes nothing.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 7,
+                  "description": "Step number, 1 to 7."
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        ],
+        "maxTokens": 1024
+      },
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Okay, your egg timer is set for seven minutes."
+          }
+        ],
+        "stopReason": "end_turn",
+        "usage": {
+          "inputTokens": 1366,
+          "outputTokens": 14
+        }
+      },
+      "durationMs": 1352
+    },
+    "e8d19bb23c12909548ba9d99d4d8a8bfa18e8046050290935442be18d6ff7360": {
+      "request": {
+        "system": "You are the planner of a voice assistant (a stand-in for Alexa+, not Alexa+ itself). The user's words come from speech recognition and may be misheard. Use the tools to do what the user asks. If you are unsure what they meant, ask one short question instead of guessing. Reply in one or two short spoken sentences: no markdown, no ids, no JSON, at most three options. You never answer confirmation questions on the user's behalf; the host asks the user.",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "start a sauce timer four eight minutes"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "tool_use",
+                "id": "tooluse_uumlbyfReXT5DEisJ5lupx",
+                "name": "timer_start",
+                "input": {
+                  "minutes": 8,
+                  "label": "sauce"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "tool_result",
+                "toolUseId": "tooluse_uumlbyfReXT5DEisJ5lupx",
+                "text": "Sauce timer set for eight minutes.",
+                "isError": false
+              }
+            ]
+          }
+        ],
+        "tools": [
+          {
+            "name": "timer_start",
+            "description": "Use when the person asks to set or start a timer, for example \"set a pasta timer for fifteen minutes\". Starting a timer with an existing label restarts it.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "minutes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 240,
+                  "description": "Duration in whole minutes, 1 to 240."
+                },
+                "label": {
+                  "description": "What the timer is for, such as pasta or egg. Defaults to \"timer\".",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_list",
+            "description": "Use when the person asks which timers are running or how long is left.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_cancel",
+            "description": "Use when the person asks to stop or cancel a timer. Name the timer by its label; with several timers and no label, the person is asked which one.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "description": "Label of the timer to cancel, such as pasta.",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "recipe_step",
+            "description": "Use when the person asks for a step of the current recipe (spaghetti aglio e olio). Reading a step changes nothing.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 7,
+                  "description": "Step number, 1 to 7."
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        ],
+        "maxTokens": 1024
+      },
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Got it. Your sauce timer is now set for eight minutes."
+          }
+        ],
+        "stopReason": "end_turn",
+        "usage": {
+          "inputTokens": 1366,
+          "outputTokens": 16
+        }
+      },
+      "durationMs": 1172
+    },
+    "ed400db475fe969593157268e5683f016ca1375118cb89c601e50d2dd1417137": {
+      "request": {
+        "system": "You are the planner of a voice assistant (a stand-in for Alexa+, not Alexa+ itself). The user's words come from speech recognition and may be misheard. Use the tools to do what the user asks. If you are unsure what they meant, ask one short question instead of guessing. Reply in one or two short spoken sentences: no markdown, no ids, no JSON, at most three options. You never answer confirmation questions on the user's behalf; the host asks the user.",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "set a pasta timer for fifteen minutes"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "Got it, pasta timer is set for fifteen minutes."
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "set an egg timer for seven minutes"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "tool_use",
+                "id": "tooluse_G26px2zQ1AY2pRm3JT3u5Q",
+                "name": "timer_start",
+                "input": {
+                  "minutes": 7,
+                  "label": "egg"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "tool_result",
+                "toolUseId": "tooluse_G26px2zQ1AY2pRm3JT3u5Q",
+                "text": "Egg timer set for seven minutes.",
+                "isError": false
+              }
+            ]
+          }
+        ],
+        "tools": [
+          {
+            "name": "timer_start",
+            "description": "Use when the person asks to set or start a timer, for example \"set a pasta timer for fifteen minutes\". Starting a timer with an existing label restarts it.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "minutes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 240,
+                  "description": "Duration in whole minutes, 1 to 240."
+                },
+                "label": {
+                  "description": "What the timer is for, such as pasta or egg. Defaults to \"timer\".",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_list",
+            "description": "Use when the person asks which timers are running or how long is left.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "timer_cancel",
+            "description": "Use when the person asks to stop or cancel a timer. Name the timer by its label; with several timers and no label, the person is asked which one.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "description": "Label of the timer to cancel, such as pasta.",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          },
+          {
+            "name": "recipe_step",
+            "description": "Use when the person asks for a step of the current recipe (spaghetti aglio e olio). Reading a step changes nothing.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 7,
+                  "description": "Step number, 1 to 7."
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        ],
+        "maxTokens": 1024
+      },
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Got it, egg timer is set for seven minutes."
+          }
+        ],
+        "stopReason": "end_turn",
+        "usage": {
+          "inputTokens": 1389,
+          "outputTokens": 14
+        }
+      },
+      "durationMs": 971
+    }
+  }
+}

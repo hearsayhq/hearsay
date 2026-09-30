@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { Served } from '@hearsayhq/kit';
 import { startSmartHome } from '@hearsayhq/server-smart-home';
-import { RecordingProvider, ReplayMismatch, ReplayProvider, SuiteSchema, hashRequest, loadSuite, runSuite, type Cassette, type Report } from '../src/index';
+import { RecordingProvider, ReplayMismatch, ReplayProvider, SuiteSchema, cassetteEntries, hashRequest, loadSuite, runSuite, type Cassette, type ModelProvider, type ModelRequest, type Report } from '../src/index';
 import { FakeHomeModel } from './fake-model';
 
 let served: Served;
@@ -25,7 +25,7 @@ describe('llm mode, record and replay', () => {
     expect(r.orchestrator).toBe('llm');
     expect(r.cases.find((c) => c.variant === 'asr.compound_split#1')!.trace.turns.at(-1)).toMatchObject({ heard: 'turn off everything in the livingroom', spoken: 'Living room is off. Six devices.' });
     expect(r.cases[0]!.trace.turns[0]!.spans.filter((s) => s.kind === 'plan')).toHaveLength(2);
-    expect(Object.keys(cassette.entries).length).toBe(model.calls);
+    expect(cassetteEntries(cassette).length).toBe(model.calls);
   });
 
   it('replays with identical findings twice, no model involved', async () => {
@@ -49,7 +49,7 @@ describe('llm mode, record and replay', () => {
   it('fails hard, naming the message, when the server answers differently than recorded', async () => {
     // A recording in which the server had said something else: the live reply no longer matches.
     const tampered: Cassette = { ...cassette, entries: {} };
-    for (const e of Object.values(cassette.entries)) {
+    for (const e of cassetteEntries(cassette)) {
       const request = structuredClone(e.request);
       for (const m of request.messages) for (const c of m.content) if (c.type === 'tool_result') c.text = `${c.text} (then)`;
       tampered.entries[hashRequest(request)] = { ...e, request };
@@ -57,5 +57,23 @@ describe('llm mode, record and replay', () => {
     const run = runSuite(await llmSuite(), { url: served.url, orchestrator: 'replay', provider: new ReplayProvider(tampered), only: ['living-room-off'] });
     await expect(run).rejects.toBeInstanceOf(ReplayMismatch);
     await expect(runSuite(await llmSuite(), { url: served.url, orchestrator: 'replay', provider: new ReplayProvider(tampered), only: ['living-room-off'] })).rejects.toThrow(/message 2 differs/);
+  });
+});
+
+describe('the same request asked twice', () => {
+  it('replays every recorded answer in recording order', async () => {
+    // Nova answered "set a pasta timer" differently in three cases that start alike; the last answer used to win.
+    let n = 0;
+    const model: ModelProvider = { id: 'fake:varying', converse: async () => ({ content: [{ type: 'text', text: `answer ${++n}` }], stopReason: 'end_turn' }) };
+    const req: ModelRequest = { system: 's', messages: [{ role: 'user', content: [{ type: 'text', text: 'set a pasta timer' }] }], tools: [], maxTokens: 10 };
+    const tape: Cassette = { provider: 'fake', model: 'fake', recordedAt: '2026-09-30T00:00:00Z', entries: {} };
+    const rec = new RecordingProvider(model, tape);
+    for (let i = 0; i < 3; i++) await rec.converse(req);
+    expect(cassetteEntries(tape)).toHaveLength(3);
+    const text = async (p: ReplayProvider) => { const c = (await p.converse(req)).content[0]; return c?.type === 'text' ? c.text : ''; };
+    for (let run = 0; run < 2; run++) {
+      const replay = new ReplayProvider(tape);
+      expect([await text(replay), await text(replay), await text(replay), await text(replay)]).toEqual(['answer 1', 'answer 2', 'answer 3', 'answer 3']);
+    }
   });
 });

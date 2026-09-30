@@ -24,7 +24,7 @@ cases:
       args: { minutes: 15, label: pasta }
       spokenIncludes: [pasta, fifteen]
     # "fifty minutes" is a different timer; Kitchen passes asr.robust by reading the duration back.
-    fuzz: [asr.number_confusion, asr.homophones]
+    fuzz: [asr.number_confusion, asr.homophones, asr.roundtrip]
     checks: [asr.robust]
 
   - id: start-egg-timer
@@ -32,6 +32,8 @@ cases:
     expect:
       tool: timer_start
       args: { minutes: 7, label: egg }
+    fuzz: [asr.roundtrip]
+    checks: [asr.robust]
 
   # "eight" can be heard as "ate". Kitchen asks for the minutes instead of reading out a schema error.
   - id: start-sauce-timer
@@ -39,7 +41,7 @@ cases:
     expect:
       tool: timer_start
       args: { minutes: 8, label: sauce }
-    fuzz: [asr.homophones]
+    fuzz: [asr.homophones, asr.roundtrip]
     checks: [asr.robust]
 
   - id: list-timers

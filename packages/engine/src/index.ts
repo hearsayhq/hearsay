@@ -16,7 +16,7 @@ export { nearestCase, nearestCasePlanner, similarity } from './console/planner';
 export { genVariants, DEFAULT_TRIALS } from './voice/gen-variants';
 export { PollyTts, TranscribeStt, type Tts, type Stt } from './voice/aws';
 export { phoneChannel } from './voice/channel';
-export { RecordingProvider, ReplayProvider, ReplayMismatch, hashRequest, loadCassette, saveCassette, cassettePathFor } from './providers/replay';
+export { RecordingProvider, ReplayProvider, ReplayMismatch, cassetteEntries, hashRequest, loadCassette, saveCassette, cassettePathFor } from './providers/replay';
 export { IMPLEMENTED, LINT_CHECKS } from './checks/index';
 export { lintServer, type LintOptions } from './lint-server';
 export { lockSuites, checkSuiteIntegrity, lockPathFor, LOCK_FILE, type SuiteLock, type IntegrityResult } from './lock';
