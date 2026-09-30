@@ -51,7 +51,9 @@ function section(title: string, rs: Row[]): string[] {
   const calls = ok.flatMap((r) => r.calls ?? []);
   if (calls.length) {
     const timed = calls.filter((c) => typeof c.ms === 'number').map((c) => c.ms!);
-    out.push('', `Read-only tools without arguments, judged as replies: ${calls.length} on ${ok.filter((r) => r.calls?.length).length} servers; median ${Math.round(median(timed))} ms; over 500 ms: ${pct(timed.filter((m) => m > 500).length, timed.length)}; timed out after 10 s: ${calls.filter((c) => c.timeout).length}.`);
+    const called = ok.filter((r) => r.calls?.length);
+    const failing = called.filter((r) => r.calls!.some((c) => c.findings?.some((f) => f.severity === 'error'))).length;
+    out.push('', `Read-only tools without arguments, judged as replies: ${calls.length} on ${called.length} servers; ${failing} of these ${called.length} servers returned at least one reply with an error. Median ${Math.round(median(timed))} ms; over 500 ms: ${pct(timed.filter((m) => m > 500).length, timed.length)}; timed out after 10 s: ${calls.filter((c) => c.timeout).length}. Measured locally, so the times say nothing about a hosted server.`);
   }
   const listOnly = rs.filter((r) => r.mode === 'list');
   if (listOnly.some((r) => r.outbound !== undefined)) out.push('', `Listed only (no calls): ${listOnly.length}; of these, ${listOnly.filter((r) => r.outbound).length} tried to reach the network at start (blocked).`);
@@ -64,6 +66,8 @@ console.log([
   '# Scan of public MCP servers',
   '',
   'Aggregates only (FR-062, D-024): no repository or team names, no issues or pull requests to anyone. Servers were pinned to a commit, built and run locally in containers with no network beyond Hearsay and no credentials. Servers listed only were read (handshake and `tools/list`) and never called. In calls mode, each tool the server marks read-only that needs no arguments was called three times: twice to see that it reads the same, once to judge the reply as spoken. The two groups below are never added together.',
+  '',
+  'What this covers: the declared surface (`hearsay lint`) and replies of read-only tools. Checks that need a suite (misheard values, consent, mandates, latency of real calls) did not run, so a server without findings here is not shown to be voice-ready.',
   '',
   ...section('Alexa+ add-on servers (hackathon entries)', alexa),
   ...section('General MCP servers, not built for voice', general),
