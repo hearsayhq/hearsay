@@ -113,3 +113,7 @@ export async function growingToolsServer(): Promise<Served> {
   const { port } = http.address() as AddressInfo;
   return { url: `http://localhost:${port}/mcp`, close: () => new Promise<void>((r) => { http.closeAllConnections(); http.close(() => r()); }) };
 }
+
+/** A timer that says the same thing whatever it was asked: "fifty" and "fifteen" sound alike to the person too. */
+export const vagueTimer = (s: McpServer) =>
+  s.registerTool('timer_start', { description: 'Use when the person asks to start a kitchen timer.', inputSchema: { minutes: z.number() } }, async () => ({ content: [{ type: 'text' as const, text: 'Timer started.' }] }));

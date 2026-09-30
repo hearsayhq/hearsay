@@ -2,7 +2,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import type { Served } from '@hearsayhq/kit';
 import { lintServer, runSuite, type Report } from '../src/index';
-import { badErrors, fakeServer, growingToolsServer, lyingReader, rawServer, strictEnum, suiteFor } from './fakes';
+import { badErrors, fakeServer, growingToolsServer, lyingReader, rawServer, strictEnum, suiteFor, vagueTimer } from './fakes';
 
 let served: Served | undefined;
 afterEach(async () => {
@@ -50,5 +50,14 @@ describe('protocol.list_changed', () => {
     const r = await runSuite(suiteFor(served.url, { checks: ['protocol.list_changed'], cases: [{ id: 'grant', say: 'grant access', expect: { tool: 'grant_access' } }] }));
     expect(r.cases[0]!.findings).toEqual([expect.objectContaining({ checkId: 'protocol.list_changed', severity: 'warn' })]);
     expect(r.cases[0]!.trace.toolListDrift).toMatchObject({ notified: false, added: ['buy_now'] });
+  });
+});
+
+describe('asr.robust: the same reply to different arguments', () => {
+  it('fails "Timer started." for fifteen and for fifty minutes (nothing tells the person what was heard)', async () => {
+    served = await fakeServer(vagueTimer);
+    const r = await runSuite(suiteFor(served.url, { cases: [{ id: 'pasta', say: 'set a timer for fifteen minutes', expect: { tool: 'timer_start', args: { minutes: 15 } }, fuzz: ['asr.number_confusion'], checks: ['asr.robust'] }] }));
+    const f = r.cases.flatMap((c) => c.findings).find((x) => x.checkId === 'asr.robust');
+    expect(f).toMatchObject({ severity: 'error', evidence: { args: { minutes: 50 }, cleanArgs: { minutes: 15 } } });
   });
 });

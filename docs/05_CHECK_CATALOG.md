@@ -45,7 +45,9 @@ decides. `catalog.test.ts` fails if an id exists in code but not here.
 ## Did it hear me right?
 
 - `asr.robust` — Per variant, compared with the clean run of the same case:
-  same effect → pass; a question back or an actionable refusal → pass; a different effect whose
+  same effect → pass (the same reply to the same arguments, or to arguments the server
+  normalised to the same `structuredContent`; the same reply to different arguments, such as
+  "Timer started." for fifteen and for fifty minutes, hides what was heard and does not count); a question back or an actionable refusal → pass; a different effect whose
   spoken reply states the heard value (read back: "Pasta timer set for fifty minutes") → pass.
   A different effect without read-back, or a success reply with no effect → **error**, evidence
   is the heard text, the calls and the effect diff. In scripted mode the stand-in planner is

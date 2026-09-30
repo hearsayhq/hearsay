@@ -1,7 +1,8 @@
 /**
  * asr.robust (docs/05 §Did it hear me right?): compared with the clean run, a misheard
  * variant must have the same effect, ask back, or say what it heard. Silently doing
- * something else, or claiming success without an effect, is an error.
+ * something else, or claiming success without an effect, is an error. The same reply to
+ * different arguments ("Timer started." for fifteen and for fifty) counts as silent.
  */
 import { parseNumber } from '../perturb/numbers';
 import { fire, type TurnCheck } from './types';
@@ -32,7 +33,11 @@ export const asrRobust: TurnCheck = {
     if (!main) return [fire('asr.robust', 0, `heard "${heard}": called ${calls.map((c) => c.tool).join(', ')} instead of ${expected!.tool}`, { turnId, evidence: { heard, calls: calls.map((c) => c.tool) }, hint })];
     const before = expected?.result.text ?? '';
 
-    if (main.result.text === before) return []; // same effect
+    // Same effect: the same reply for the same call, or for a call the server normalised to the
+    // same structured result. The same reply to different arguments hides what was heard.
+    const sameArgs = JSON.stringify(main.args) === JSON.stringify(expected?.args ?? main.args);
+    const sameStructured = main.result.structuredContent !== undefined && JSON.stringify(main.result.structuredContent) === JSON.stringify(expected?.result.structuredContent);
+    if (main.result.text === before && (sameArgs || sameStructured)) return [];
     if (main.result.isError && (main.result.errorCode || ASKS.test(main.result.text))) return []; // asked back or refused
     if ((trace.edits ?? []).some((e) => readsBack(spoken, e.to))) return []; // read back
     return [

@@ -49,6 +49,11 @@ At about five and a half build days a week this lands on Sun 18 Oct; at four and
 - Packages: `npm run pack` builds `@hearsayhq/cli` (with the console), `@hearsayhq/mcp` (with the
   skills) and `@hearsayhq/kit`; installed from the tarballs in an empty project, `npx hearsay run`,
   `serve`, `hearsay-mcp` over stdio and the kit's types work. Publishing waits for the owner.
+- Experiment (FR-065): Kitchen got a flawed build, Household Orders' flawed mode became a
+  standalone file; local holdouts for both; `scripts/experiment.mjs` builds sanitised workspaces
+  and judges them. Baseline judged (docs/15); the 18 agent runs wait for the owner's approval.
+  Building it tightened `asr.robust`: the same reply to different arguments ("Timer started." for
+  fifteen and for fifty) no longer counts as the same effect.
 
 ## Blocked by access
 
