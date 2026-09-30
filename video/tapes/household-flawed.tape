@@ -1,6 +1,7 @@
 # Real run, uncut (rule 2): the flawed grocery add-on under Hearsay, red, exit 1.
 #   HEARSAY_DIR=<a fresh clone> vhs tapes/household-flawed.tape
 Source tapes/common.tape
+Set FontSize 19
 Output out/tapes/household-flawed.mp4
 Hide
 Type `cd "$HEARSAY_DIR" && export PS1='hearsay ($(git branch --show-current) @ $(git rev-parse --short HEAD)) $ ' && clear`
