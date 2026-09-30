@@ -1,0 +1,311 @@
+{
+ "model": "gpt-4o-mini-tts",
+ "lengthSeconds": 141.898,
+ "lines": [
+  {
+   "id": "v3-k-c1",
+   "who": "customer",
+   "scene": "cold",
+   "text": "Add fifteen dollars of fruit.",
+   "start": 0.6,
+   "end": 2.752,
+   "src": "voice/v3-k-c1.mp3"
+  },
+  {
+   "id": "v3-k-a1",
+   "who": "addon",
+   "scene": "cold",
+   "text": "Are you sure?",
+   "start": 3.102,
+   "end": 4.148,
+   "src": "voice/v3-k-a1.mp3"
+  },
+  {
+   "id": "v3-k-c2",
+   "who": "customer",
+   "scene": "cold",
+   "text": "Yes.",
+   "start": 4.398,
+   "end": 4.964,
+   "src": "voice/v3-k-c2.mp3"
+  },
+  {
+   "id": "v3-k-a2",
+   "who": "addon",
+   "scene": "cold",
+   "text": "Added.",
+   "start": 5.214,
+   "end": 5.623,
+   "src": "voice/v3-k-a2.mp3"
+  },
+  {
+   "id": "v3-k-c3",
+   "who": "customer",
+   "scene": "cold",
+   "text": "Place the order.",
+   "start": 6.123,
+   "end": 7.626,
+   "src": "voice/v3-k-c3.mp3"
+  },
+  {
+   "id": "v3-k-a3",
+   "who": "addon",
+   "scene": "cold",
+   "text": "Are you sure?",
+   "start": 7.926,
+   "end": 8.994,
+   "src": "voice/v3-k-a3.mp3"
+  },
+  {
+   "id": "v3-k-c4",
+   "who": "customer",
+   "scene": "cold",
+   "text": "No!",
+   "start": 9.194,
+   "end": 9.732,
+   "src": "voice/v3-k-c4.mp3"
+  },
+  {
+   "id": "v3-k-a4",
+   "who": "addon",
+   "scene": "cold",
+   "text": "Order placed: fifty dollars of fruit, fifty dollars.",
+   "start": 9.982,
+   "end": 14.132,
+   "src": "voice/v3-k-a4.mp3"
+  },
+  {
+   "id": "v3-i0",
+   "who": "narrator",
+   "scene": "intro",
+   "text": "That add-on works perfectly in a chat window.",
+   "start": 14.832,
+   "end": 17.83,
+   "src": "voice/v3-i0.mp3"
+  },
+  {
+   "id": "v3-i1",
+   "who": "narrator",
+   "scene": "intro",
+   "text": "Over twenty thousand people signed up for this hackathon. Somebody has to check all of that. That's you.",
+   "start": 18.13,
+   "end": 24.36,
+   "src": "voice/v3-i1.mp3"
+  },
+  {
+   "id": "v3-i3",
+   "who": "narrator",
+   "scene": "intro",
+   "text": "So I built something for you.",
+   "start": 24.61,
+   "end": 26.488,
+   "src": "voice/v3-i3.mp3"
+  },
+  {
+   "id": "v3-w1",
+   "who": "narrator",
+   "scene": "what",
+   "text": "This is Hearsay. You write what your customers say. Hearsay plays it against your add-on, clean and misheard, and fails the build when it would go wrong out loud.",
+   "start": 26.938,
+   "end": 36.238,
+   "src": "voice/v3-w1.mp3"
+  },
+  {
+   "id": "v3-r1",
+   "who": "narrator",
+   "scene": "red",
+   "text": "Same add-on, now under Hearsay. Fifty instead of fifteen, and nobody asked. A no that placed the order anyway.",
+   "start": 36.738,
+   "end": 43.622,
+   "src": "voice/v3-r1.mp3"
+  },
+  {
+   "id": "v3-r2",
+   "who": "narrator",
+   "scene": "red",
+   "text": "Every finding cites the rule it breaks, and most are Amazon's own requirements for add-ons.",
+   "start": 43.922,
+   "end": 49.098,
+   "src": "voice/v3-r2.mp3"
+  },
+  {
+   "id": "v3-r3",
+   "who": "narrator",
+   "scene": "red",
+   "text": "Twenty errors. The pull request fails.",
+   "start": 49.398,
+   "end": 52.265,
+   "src": "voice/v3-r3.mp3"
+  },
+  {
+   "id": "v3-a1",
+   "who": "narrator",
+   "scene": "agent",
+   "text": "You don't even have to fix it yourself. Hearsay is also an MCP server. Your coding agent runs it, fixes what it finds, and checks again.",
+   "start": 52.765,
+   "end": 60.664,
+   "src": "voice/v3-a1.mp3"
+  },
+  {
+   "id": "v3-a2",
+   "who": "narrator",
+   "scene": "agent",
+   "text": "And it can't cheat. The suite is locked, and some cases it never gets to see.",
+   "start": 60.964,
+   "end": 65.585,
+   "src": "voice/v3-a2.mp3"
+  },
+  {
+   "id": "v3-g0",
+   "who": "narrator",
+   "scene": "green",
+   "text": "Same tests, fixed build.",
+   "start": 66.085,
+   "end": 68.211,
+   "src": "voice/v3-g0.mp3"
+  },
+  {
+   "id": "v3-g-c1",
+   "who": "customer",
+   "scene": "green",
+   "text": "You can reorder groceries up to forty dollars today.",
+   "start": 68.611,
+   "end": 71.396,
+   "src": "voice/v3-g-c1.mp3"
+  },
+  {
+   "id": "v3-g-c2",
+   "who": "customer",
+   "scene": "green",
+   "text": "Yes.",
+   "start": 71.696,
+   "end": 72.194,
+   "src": "voice/v3-g-c2.mp3"
+  },
+  {
+   "id": "v3-g-c3",
+   "who": "customer",
+   "scene": "green",
+   "text": "Add fifteen dollars of fruit.",
+   "start": 72.594,
+   "end": 74.852,
+   "src": "voice/v3-g-c3.mp3"
+  },
+  {
+   "id": "v3-g-a1",
+   "who": "addon",
+   "scene": "green",
+   "text": "That would go over the total budget you gave me. You can add less, or give me a bigger budget.",
+   "start": 75.152,
+   "end": 81.568,
+   "src": "voice/v3-g-a1.mp3"
+  },
+  {
+   "id": "v3-g-c4",
+   "who": "customer",
+   "scene": "green",
+   "text": "Add two cartons of milk.",
+   "start": 81.968,
+   "end": 83.684,
+   "src": "voice/v3-g-c4.mp3"
+  },
+  {
+   "id": "v3-g-a2",
+   "who": "addon",
+   "scene": "green",
+   "text": "Added two cartons of milk. Your cart is seven dollars and forty cents.",
+   "start": 83.984,
+   "end": 88.449,
+   "src": "voice/v3-g-a2.mp3"
+  },
+  {
+   "id": "v3-g-c5",
+   "who": "customer",
+   "scene": "green",
+   "text": "Place the order.",
+   "start": 88.849,
+   "end": 89.909,
+   "src": "voice/v3-g-c5.mp3"
+  },
+  {
+   "id": "v3-g-a3",
+   "who": "addon",
+   "scene": "green",
+   "text": "Place the order: two cartons of milk, seven dollars and forty cents?",
+   "start": 90.209,
+   "end": 95.33,
+   "src": "voice/v3-g-a3.mp3"
+  },
+  {
+   "id": "v3-g-c6",
+   "who": "customer",
+   "scene": "green",
+   "text": "Not yet.",
+   "start": 95.63,
+   "end": 96.705,
+   "src": "voice/v3-g-c6.mp3"
+  },
+  {
+   "id": "v3-g-a4",
+   "who": "addon",
+   "scene": "green",
+   "text": "Okay, I did not place the order. Your cart is still there.",
+   "start": 97.005,
+   "end": 101.281,
+   "src": "voice/v3-g-a4.mp3"
+  },
+  {
+   "id": "v3-g1",
+   "who": "narrator",
+   "scene": "green",
+   "text": "Grant once, act within the limit, and money only moves after a yes that names what and how much.",
+   "start": 101.681,
+   "end": 107.927,
+   "src": "voice/v3-g1.mp3"
+  },
+  {
+   "id": "v3-h1",
+   "who": "narrator",
+   "scene": "how",
+   "text": "Hearsay stands in for the parts Amazon runs, speech recognition and the model, straight from your test cases. No microphone, no API keys, the same result every time. So it runs on every pull request.",
+   "start": 108.427,
+   "end": 120.579,
+   "src": "voice/v3-h1.mp3",
+   "parts": [
+    {
+     "text": "Hearsay stands in for the parts Amazon runs, speech recognition and the model, straight from your test cases.",
+     "start": 108.427,
+     "end": 114.457
+    },
+    {
+     "text": "No microphone, no API keys, the same result every time.",
+     "start": 114.944,
+     "end": 118.479
+    },
+    {
+     "text": "So it runs on every pull request.",
+     "start": 118.845,
+     "end": 120.579
+    }
+   ]
+  },
+  {
+   "id": "v3-p1",
+   "who": "narrator",
+   "scene": "proof",
+   "text": "We measured it with coding agents. A suite alone made them stop at green, so Hearsay now shows what your suite doesn't cover. Now they leave zero defects behind, and do better on the rules nobody told them about.",
+   "start": 121.079,
+   "end": 133.173,
+   "src": "voice/v3-p1.mp3"
+  },
+  {
+   "id": "v3-z1",
+   "who": "narrator",
+   "scene": "close",
+   "text": "Everything you saw is a real run, and you can repeat every one of them. Hearsay is open source. Point it at your add-on, before your customers do.",
+   "start": 133.673,
+   "end": 141.898,
+   "src": "voice/v3-z1.mp3"
+  }
+ ]
+}
