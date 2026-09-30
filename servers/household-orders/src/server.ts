@@ -168,7 +168,7 @@ export function createHouseholdServer(shared: Shared, ctx: SessionContext): McpS
       const amountMinor = amountUsd !== undefined ? Math.round(amountUsd * 100) : quantity !== undefined && item ? quantity * item.priceMinor : undefined;
       const refusal = withMandate(
         a.mandate,
-        { tool: 'orders_stage_cart', ...(mandateVersion !== undefined ? { mandateVersion } : {}), resourceId: id, ...(quantity !== undefined ? { amountMinor } : {}), pendingMinor: cartTotal(a) },
+        { tool: 'orders_stage_cart', ...(mandateVersion !== undefined ? { mandateVersion } : {}), resourceId: id, ...(amountMinor !== undefined ? { amountMinor } : {}), pendingMinor: cartTotal(a) },
         now(),
       );
       if (refusal) return refusal;
