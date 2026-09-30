@@ -9,6 +9,7 @@
  *   node scripts/experiment.mjs --dry-run                  judge the untouched flawed servers (free)
  *   node scripts/experiment.mjs [--runs 3] [--first 1] [--servers kitchen,household-orders,smart-home]
  *                               [--arms A,B] [--model sonnet] [--port 4140] [--out dir]
+ *   node scripts/experiment.mjs --audit --out dir          list every file access outside each run's workspace
  *
  * Agent runs need the owner's approval. A block is one run index across all servers and arms
  * (`--first 2 --runs 1` = block 2, six runs); rows already in <out>/results.jsonl are skipped, so a
@@ -21,15 +22,18 @@
 import { execFileSync, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync, appendFileSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { tmpdir } from 'node:os';
+import { isAbsolute, join, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 
 const REPO = new URL('..', import.meta.url).pathname.replace(/\/$/, '');
 const TSX = join(REPO, 'node_modules/.bin/tsx');
 const KIT = join(REPO, 'build/npm/hearsayhq-kit-0.1.0.tgz');
-const { values: opt } = parseArgs({ options: { runs: { type: 'string', default: '3' }, servers: { type: 'string', default: 'smart-home,kitchen,household-orders' }, arms: { type: 'string', default: 'A,B' }, model: { type: 'string', default: 'sonnet' }, first: { type: 'string', default: '1' }, port: { type: 'string', default: '4140' }, out: { type: 'string' }, 'dry-run': { type: 'boolean' } } });
+const { values: opt } = parseArgs({ options: { runs: { type: 'string', default: '3' }, servers: { type: 'string', default: 'smart-home,kitchen,household-orders' }, arms: { type: 'string', default: 'A,B' }, model: { type: 'string', default: 'sonnet' }, first: { type: 'string', default: '1' }, port: { type: 'string', default: '4140' }, out: { type: 'string' }, 'dry-run': { type: 'boolean' }, audit: { type: 'boolean' } } });
 const DRY = !!opt['dry-run'];
-const OUT = opt.out ? resolve(opt.out) : join(REPO, 'build/experiment', new Date().toISOString().replace(/[:.]/g, '-'));
+// Outside the repo: a workspace inside it lets an agent walk up into the fixed servers.
+const OUT = opt.out ? resolve(opt.out) : join(tmpdir(), 'hearsay-experiment', new Date().toISOString().replace(/[:.]/g, '-'));
+if (!opt.audit && (OUT + '/').startsWith(REPO + '/')) throw new Error(`--out must be outside the repo (${REPO}): agents could read the fixed servers from there`);
 
 /** Per server: which files form the add-on, and how it starts. */
 const SERVERS = {
@@ -107,11 +111,40 @@ function agent(server, arm, W) {
   else args.push('--strict-mcp-config');
   const r = spawnSync('claude', args, { cwd: W, encoding: 'utf8', maxBuffer: 256 * 1024 * 1024 });
   writeFileSync(join(W, '..', 'agent-run.jsonl'), r.stdout ?? '');
+  const audit = outside(W, r.stdout ?? '');
   const events = (r.stdout ?? '').split('\n').flatMap((l) => { try { return [JSON.parse(l)]; } catch { return []; } });
   const uses = events.filter((e) => e.type === 'assistant').flatMap((e) => (e.message.content ?? []).filter((b) => b.type === 'tool_use'));
   const result = events.find((e) => e.type === 'result') ?? {};
   const init = events.find((e) => e.type === 'system' && e.subtype === 'init') ?? {};
-  return { keySource: init.apiKeySource ?? null, agentOk: result.subtype === 'success' && !result.is_error, agentStatus: result.subtype ?? `exit ${r.status}`, durationMs: result.duration_ms ?? null, costUsd: result.total_cost_usd ?? null, turns: result.num_turns ?? null, runs: uses.filter((u) => u.name === 'mcp__hearsay__hearsay_run').length, edits: uses.filter((u) => ['Edit', 'Write'].includes(u.name) && !String(u.input.file_path).includes('/suites/')).length, suiteEdits: uses.filter((u) => ['Edit', 'Write'].includes(u.name) && String(u.input.file_path).includes('/suites/')).length };
+  return { ...audit, keySource: init.apiKeySource ?? null, agentOk: result.subtype === 'success' && !result.is_error, agentStatus: result.subtype ?? `exit ${r.status}`, durationMs: result.duration_ms ?? null, costUsd: result.total_cost_usd ?? null, turns: result.num_turns ?? null, runs: uses.filter((u) => u.name === 'mcp__hearsay__hearsay_run').length, edits: uses.filter((u) => ['Edit', 'Write'].includes(u.name) && !String(u.input.file_path).includes('/suites/')).length, suiteEdits: uses.filter((u) => ['Edit', 'Write'].includes(u.name) && String(u.input.file_path).includes('/suites/')).length };
+}
+
+/** Every file the agent touched outside its workspace, from its own transcript: what it asked for and what came back. */
+function outside(W, transcript) {
+  const FORBIDDEN = /<repo>\/(servers|suites|docs|skills)\/|holdout|\/build\/experiment\//;
+  const events = transcript.split('\n').flatMap((l) => { try { return [JSON.parse(l)]; } catch { return []; } });
+  const hits = new Map();
+  for (const e of events.filter((x) => x.type === 'assistant')) {
+    for (const b of e.message.content ?? []) {
+      if (b.type !== 'tool_use') continue;
+      for (const key of ['file_path', 'path', 'notebook_path']) {
+        const p = b.input?.[key];
+        if (typeof p !== 'string') continue;
+        const abs = isAbsolute(p) ? resolve(p) : resolve(W, p);
+        if (abs !== W && !abs.startsWith(W + '/')) hits.set(b.id, `${b.name} ${abs.replace(REPO, '<repo>')} ${[b.input.pattern, b.input.glob].filter(Boolean).join(' ')}`.trim());
+      }
+    }
+  }
+  const forbidden = [...hits.values()].filter((h) => FORBIDDEN.test(h));
+  for (const e of events.filter((x) => x.type === 'user' && Array.isArray(x.message?.content))) {
+    for (const b of e.message.content) {
+      if (b.type !== 'tool_result' || !hits.has(b.tool_use_id)) continue;
+      const text = (typeof b.content === 'string' ? b.content : (b.content ?? []).map((c) => c.text ?? '').join('\n')).replaceAll(W, '<workspace>').replaceAll(REPO, '<repo>');
+      // Another run's packed copy of the kit is the same package this run has; its sources are not.
+      for (const line of text.split('\n')) if (FORBIDDEN.test(line) && !/node_modules\/@hearsayhq\/(kit|mandate)\//.test(line)) forbidden.push(`${hits.get(b.tool_use_id)} returned ${line.trim().slice(0, 160)}`);
+    }
+  }
+  return { outsideAccess: hits.size, forbiddenAccess: forbidden };
 }
 
 function judge(server, W, ws) {
@@ -134,6 +167,14 @@ function judge(server, W, ws) {
   return { manipulated, visibleErrors: r.summary.errors, visibleFailed: `${r.summary.failed}/${r.summary.cases}`, holdoutPassed: r.holdout.cases - r.holdout.failed, holdoutCases: r.holdout.cases, holdoutErrors: r.holdout.errors };
 }
 
+if (opt.audit) {
+  // Re-read the transcripts of a finished experiment; no agent runs, no judging.
+  for (const dir of readdirSync(OUT).filter((d) => existsSync(join(OUT, d, 'agent-run.jsonl'))).sort()) {
+    const a = outside(join(OUT, dir, 'addon'), readFileSync(join(OUT, dir, 'agent-run.jsonl'), 'utf8'));
+    console.log(`${dir}: ${a.outsideAccess} accesses outside the workspace, ${a.forbiddenAccess.length} to servers, suites, docs, skills, holdouts or other runs${a.forbiddenAccess.length ? `\n  ${a.forbiddenAccess.join('\n  ')}` : ''}`);
+  }
+  process.exit(0);
+}
 if (!DRY && process.env.ANTHROPIC_API_KEY) throw new Error('ANTHROPIC_API_KEY is set: the runs would be billed to the API. Unset it to run on the subscription.');
 if (!existsSync(KIT)) execFileSync('node', [join(REPO, 'scripts/pack.mjs')], { stdio: 'inherit' });
 mkdirSync(OUT, { recursive: true });
@@ -158,6 +199,7 @@ for (let i = first; i < first + (DRY ? 1 : Number(opt.runs)); i++) {
       rows.push(row);
       appendFileSync(RESULTS, JSON.stringify(row) + '\n');
       console.error(`${server} ${row.arm} #${i}: holdout ${row.holdoutPassed}/${row.holdoutCases}, visible errors ${row.startFailed ? 'server did not start' : row.visibleErrors}${row.manipulated ? ', SUITES CHANGED' : ''}${a.agentOk === false ? `, AGENT ${a.agentStatus} (not counted)` : ''}${a.costUsd != null ? `, API-equivalent $${a.costUsd.toFixed(2)}` : ''}`);
+      if (a.forbiddenAccess?.length) console.error(`  the agent read outside its workspace: ${a.forbiddenAccess.join('; ')}`);
       if (a.keySource && a.keySource !== 'none') throw new Error(`the run used key source "${a.keySource}", not the subscription: stopped`);
     }
   }

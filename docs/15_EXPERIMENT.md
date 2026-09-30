@@ -18,10 +18,14 @@ than the same agent with only a task description — judged on cases it never sa
 - **Runs:** 3 per server and arm → 18 runs. Same model and effort in both arms.
 - **Isolation:** each run works in a fresh workspace that holds only the flawed server, its suite
   and lock, and (arm A) the skill. `@hearsayhq/kit` is installed as a packed copy, not a symlink
-  into the Hearsay repo, so the fixed reference servers are out of reach. Bash is disallowed
-  entirely (`--disallowedTools Bash`); the M2b gate run showed that Claude Code's read-only
-  command allowlist otherwise lets `cat` and `ls` through. Holdout files enter the workspace only
-  after the agent has finished. Hashes of the suites and the lock are kept outside it.
+  into the Hearsay repo. Bash is disallowed entirely (`--disallowedTools Bash`); the M2b gate run
+  showed that Claude Code's read-only command allowlist otherwise lets `cat` and `ls` through.
+  Holdout files enter the workspace only after the agent has finished. Hashes of the suites and
+  the lock are kept outside it. File tools can still read absolute paths, so every run is audited
+  from its own transcript (`--audit`, below): each file access outside the workspace is listed,
+  both what the agent asked for and what came back, and any path into `servers/`, `suites/`,
+  `docs/`, `skills/`, a holdout or another run's sources counts as a breach. Workspaces live
+  outside the repo (the system temp directory); the script refuses an `--out` inside it.
 - **Sanitising:** file headers, comments that name a flaw, a check or a decision, and the
   `-flawed` version suffix are removed; the script refuses to build a workspace that still says
   "flaw" anywhere.
@@ -124,6 +128,15 @@ moves or when an action falls outside what the person already allowed" (D-022). 
 confirmed "whole house off", which the visible suite demands, and did not generalise it to "on".
 Whether switching everything on needs a confirmation is a judgement call under D-022; the
 holdout says yes. It is scored as written.
+
+**Isolation audit.** The 30 Sep runs worked in workspaces under the repo's `build/`, which the
+design did not intend: an agent could have walked up into the fixed servers. The transcripts show
+none did. `--audit` over all 18: no run asked for or got back a path into `servers/`, `suites/`,
+`docs/`, `skills/`, a holdout or another run's sources. Eight runs (seven in arm A, one in arm B)
+did reach outside, all for the same library they had installed: the sources and type files of
+`packages/kit` and `packages/mandate`, and searches from the repo root restricted to kit and
+mandate files, whose results also listed other runs' packed kit copies. The harness has since
+moved workspaces out of the repo and audits every run.
 
 **Limits.** Three runs per cell and one model. Thirteen holdout cases in all; Kitchen and
 Household Orders reach the ceiling in both arms, so only Smart Home separates them. Arm B's prompt
