@@ -1,0 +1,33 @@
+name: hearsay
+
+# The step from the README, on this repo's own reference add-ons: a real `hearsay / voice` check on
+# every pull request (docs/09 §Proof of function). Kitchen and Household Orders are fixed by default;
+# Smart Home needs HEARSAY_FIXED=1.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hearsay-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  voice:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run hearsay -- run suites/kitchen.yaml
+      - run: npm run hearsay -- run suites/smart-home.yaml
+        env:
+          HEARSAY_FIXED: '1'
+      - run: npm run hearsay -- run suites/household-orders.yaml
