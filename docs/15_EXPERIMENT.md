@@ -105,13 +105,25 @@ Agent runs (30 Sep 2026, `claude-sonnet-5-5`, blocks of six; clip `m6-experiment
 | A: Hearsay MCP + skill | 36/42 (86 %) | 0 of 9 | 0 of 9 | 23.6 | 50 s | $2.62 ($0.29 per run) |
 | B: task description only | 38/42 (90 %) | 4 of 9 | 0 of 9 | 15.6 | 40 s | $2.12 ($0.24 per run) |
 
-**In one sentence.** README, Devpost and the video use exactly this:
+**In one sentence (chosen by the owner, 30 Sep, after v1, v2, A″ and A‴).** README and Devpost use
+exactly this; the video uses the short form. It replaces the v1 sentence.
 
-> On unseen cases, agents did about the same with or without Hearsay. But without it, 4 of 9 runs stopped with defects they couldn't see, including a checkout race and a product allowlist enforced in the wrong place. With Hearsay: 0 of 9.
+> We measured it. Without Hearsay, 11 of 27 agent runs ended with defects the suite would have
+> caught; with it, 0 of 36. But a suite alone made agents stop at green: on unseen cases they did
+> worse than agents given a precise prompt (68–71 % vs 83 %). So Hearsay now reports what your
+> suite doesn't cover, and its skill reviews beyond green. Measured again: level with the precise
+> prompt on unseen cases (84 % vs 83 %), clearly ahead on rules the prompt never mentioned (37/45
+> vs 28/45), and still zero defects left behind. (Three runs per arm; the unseen cases were
+> written by the author of the flaws.)
 
-After v2 this sentence tells only half: in the harder second round the agents without Hearsay did
-better on unseen cases (§v2). README, Devpost and the video keep it until the owner picks the new
-wording; the proposal is at the end of §v2.
+Video:
+
+> A suite alone made agents stop at green. So Hearsay now shows what your suite doesn't cover.
+> Result: as good as a precise prompt on unseen cases, better on the rules nobody told the agent
+> about, and zero defects left behind.
+
+The v1 sentence it replaced said agents did about the same with or without Hearsay and that 4 of
+9 runs without it stopped with defects they couldn't see. Where its parts came from:
 
 Where each part comes from: "unseen cases" are the holdouts (12 cases, 36/42 and 38/42 runs
 passed); "without it" is arm B, which got a precise task description naming the three voice
@@ -324,7 +336,7 @@ are in.
 
 ## v2 follow-up: A″ and A‴ (pre-registered 30 Sep 2026, before any A″ run)
 
-Status: **done, 30 Sep 2026: A″ (H5 not supported) and A‴ (H6 supported, by one holdout run).**
+Status: **closed, 30 Sep 2026: A″ (H5 not supported) and A‴ (H6 supported, by one holdout run).**
 
 - **A″:** arm B's prompt word for word, with the Hearsay MCP server and `fix-hearsay-findings`
   available exactly as in arm A (no shell). Same servers, v2 builds, holdouts, model, cap, harness
@@ -416,15 +428,17 @@ untested branches of tested tools.
 flaws, who knew which defects were holdout-only. A‴ ran after the other arms (same model id); B was
 not run again.
 
-**Proposed wording for README, Devpost and the video** (the owner decides):
+**Wording.** The owner's final wording is at the top of the results (§In one sentence). It
+avoids "defects they could see": arm B never saw the suite, so it counts defects the suite would
+have caught, and it names the strongest point, rules the prompt never mentioned (37/45 against
+28/45), with the sample size.
 
-> We measured it. Agents with Hearsay never stopped on a defect they could see (0 of 36 runs, 11
-> of 27 without it), but on unseen cases they did worse than agents with a good prompt (68–71 %
-> against 83 %): they fixed what the suite covered and stopped at green. So Hearsay now reports
-> what the suite doesn't cover, and its skill reviews beyond green. Measured again: 84 % on unseen
-> cases, level with the prompt, and still no defects left behind. (Three runs per arm; the unseen
-> cases were written by the author of the flaws.)
+**Regression "kitchen lights to zero" (2 of 9 A‴ runs).** In A‴ runs 2 and 3 the agent's review
+after green rewrote the brightness reply to read back every value, including zero: "Kitchen lights
+set to zero percent." instead of "Kitchen lights are off."; the holdout expects "off". It comes
+from the reviewing skill (A, A″ and B kept the reply), but it breaks no catalog rule: the value is
+read back and nothing is hidden. The skill stays as it is; the case shows that a review beyond
+green also rewrites replies that were fine.
 
-Short form for the video: "With a suite alone, agents fixed what it covered and stopped. So Hearsay
-now shows what your suite doesn't cover. Next round: level with the best prompt on unseen cases,
-and zero defects left behind."
+**The experiment chapter is closed** (owner, 30 Sep). Open points are in the ROADMAP: coverage of
+untested branches of tested tools, and the `hearsay_explain` step no A‴ agent used.

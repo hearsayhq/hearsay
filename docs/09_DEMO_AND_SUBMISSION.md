@@ -14,7 +14,7 @@ Judges may stop at 3:00. Best material first. M7 only cuts: every shot comes fro
 | 1:25 | Household Orders: grant once, stage without being asked, "place the order" → elicitation modal → decline → nothing committed | "Consent is for your customers, not for you. Grant once, act freely within the limit, confirm only when money moves." |
 | 1:50 | Same with a client without elicitation: spoken question, token, warn | "Without elicitation, a model could hallucinate that yes. Hearsay says so." |
 | 2:15 | `gen-variants`: Polly → phone line → Transcribe, the heard text in the suite | "Real mishearings, recorded once, replayed forever." |
-| 2:35 | The agent loop (clip `m2b-agent-loop`), then the experiment's one sentence from docs/15, word for word, with "precise task description, three runs per server and arm" as a caption; catalog, repo, license | "Hearsay itself is an MCP server and Agent Skills: your coding agent runs it, fixes what it finds, and can't cheat by editing the tests. Open source, for Alexa+, unofficial." |
+| 2:35 | The agent loop (clip `m2b-agent-loop`), then the experiment in one line, word for word from docs/15: "A suite alone made agents stop at green. So Hearsay now shows what your suite doesn't cover. Result: as good as a precise prompt on unseen cases, better on the rules nobody told the agent about, and zero defects left behind." Caption: "Three runs per arm; the unseen cases were written by the author of the flaws."; catalog, repo, license | "Hearsay itself is an MCP server and Agent Skills: your coding agent runs it, fixes what it finds, and can't cheat by editing the tests. Open source, for Alexa+, unofficial." |
 
 ## Clips per gate
 

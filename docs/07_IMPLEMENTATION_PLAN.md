@@ -70,8 +70,9 @@ At about five and a half build days a week this lands on Sun 18 Oct; at four and
   other forms, URL mode and silence fail closed; 10 tests, upstream `npm run check` green,
   checked in the browser). Patch, issue and PR texts in `build/oss/` (local). The issue is
   neutral (the elicitation gap and the proposal, no mention of Hearsay) and is posted after the
-  owner has read it; the commit carries the owner's GitHub noreply address; the PR waits for a
-  second OK. R-02 stays open until the owner asks in office hours.
+  owner has read it; the commit carries the owner's GitHub noreply address. Issue posted on 30 Sep
+  with the owner's OK: AlSayedGamal/mcp-voice-simulator#8. The PR waits for a second OK. R-02 stays
+  open until the owner asks in office hours.
 
 ## Evidence (freeze loosened for evidence only, D-024)
 
@@ -82,7 +83,7 @@ Hearsay.
 |---|---|---|
 | Scan (FR-062) | Public MCP servers of hackathon entries and others on GitHub. Static triage first; only OSI-licensed repos that start without keys or accounts, pinned to a commit. `hearsay lint` plus calls to `readOnlyHint` tools without required arguments, in a container (R-17). The owner sees the candidate list and the procedure before any run and starts the step that executes third-party code. | docs/16: aggregate findings by question and check, no repo or team names; no issues or pull requests to anyone. |
 | Experiment v2 (FR-066) ✅ | Subtler flaws in new flawed builds, at least 10 holdout cases per server, a third arm B′ with a shell; design and hypotheses in docs/15 §v2, committed before the first run. | 27 runs judged and audited; results in docs/15 whatever they show. Done 30 Sep: H1 and H2 not supported (holdouts A 68 %, B 83 %, B′ 76 %), H3 and H4 supported (visible errors left: A 0 of 9, B 4, B′ 3). |
-| v2 follow-up (FR-066) | Arm A″ (B's prompt plus Hearsay), then the product change (FR-067, FR-068, D-025), then arm A‴ (B's prompt plus the changed Hearsay); H5 and H6 fixed in docs/15 before A″. | 18 runs judged and audited; the wording for README, Devpost and the video only after both. A″ done 30 Sep (H5 not supported); A‴ done 30 Sep (H6 supported: 83.7 % against B's 82.9 %, 0 of 9 with visible errors). Product change: `coverage.tools`, `coverage.values`, `coverage.decline`, `coverage.limits` (warn, always on, visible cases only) with fixtures; `fix-hearsay-findings` reviews beyond green and proposes cases; `write-hearsay-suite` drafts against coverage. |
+| v2 follow-up (FR-066) ✅ closed | Arm A″ (B's prompt plus Hearsay), then the product change (FR-067, FR-068, D-025), then arm A‴ (B's prompt plus the changed Hearsay); H5 and H6 fixed in docs/15 before A″. | 18 runs judged and audited; the wording for README, Devpost and the video only after both. A″ done 30 Sep (H5 not supported); A‴ done 30 Sep (H6 supported: 83.7 % against B's 82.9 %, 0 of 9 with visible errors). Product change: `coverage.tools`, `coverage.values`, `coverage.decline`, `coverage.limits` (warn, always on, visible cases only) with fixtures; `fix-hearsay-findings` reviews beyond green and proposes cases; `write-hearsay-suite` drafts against coverage. |
 | R-03 | Elicitation through the KayLerch bridge on a real device, once AWS is there. | At most 2 h; outcome in the friction log and R-03. |
 
 ## Blocked by access
