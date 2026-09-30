@@ -45,11 +45,13 @@ export function Skit() {
   const { fps } = useVideoConfig();
   const now = [...LINES].reverse().find((l) => f >= l.at && f < l.at + l.frames);
   const last = [...LINES].reverse().find((l) => f >= l.at);
-  const definitely = line('ear-definitely');
-  const landed = definitely.at + Math.round(definitely.frames * 0.45);
-  const slot = f < line('ear-fifteen').at ? 'fifteen' : f < line('ear-fifty').at ? 'fifteen?' : f < landed ? 'fifty?' : 'fifty';
+  const ear = line('ear');
+  const part = (i: number) => LEAD + Math.round((ear.parts?.[i]?.start ?? ear.start) * FPS);
+  const lastPart = ear.parts?.[3];
+  const landed = lastPart ? LEAD + Math.round((lastPart.start + (lastPart.end - lastPart.start) * 0.55) * FPS) : ear.at + ear.frames;
+  const slot = f < part(1) ? 'fifteen' : f < part(2) ? 'fifteen?' : f < landed ? 'fifty?' : 'fifty';
   const settled = spring({ frame: f - landed, fps, config: { damping: 9, stiffness: 180 } });
-  const jitter = f >= line('ear-whoops').at && f < landed ? Math.sin(f * 1.7) * 3 : 0;
+  const jitter = f >= ear.at && f < landed ? Math.sin(f * 1.7) * 3 : 0;
   const frozen = f >= FREEZE;
   const dim = interpolate(f, [FREEZE, FREEZE + 20], [0, 1], clamp);
   const card = spring({ frame: f - (FREEZE + 16), fps, config: { damping: 16 } });
@@ -58,7 +60,7 @@ export function Skit() {
   return (
     <Stage>
       {LINES.map((l) => (
-        <Sequence key={l.at} from={l.at} durationInFrames={l.frames}>
+        <Sequence key={l.at} from={l.at} durationInFrames={l.frames + 30}>
           <Audio src={staticFile(l.src)} />
         </Sequence>
       ))}
@@ -74,7 +76,9 @@ export function Skit() {
           {NAME[(now ?? last)?.who ?? 'customer']}
         </div>
         {now && now.id !== 'customer-fifteen' && (
-          <div style={{ position: 'absolute', top: 392, width: '100%', textAlign: 'center', fontFamily: sans, fontSize: 38, fontStyle: 'italic', color: TINT[now.who] }}>“{now.say}”</div>
+          <div style={{ position: 'absolute', top: 392, width: '100%', textAlign: 'center', fontFamily: sans, fontSize: 38, fontStyle: 'italic', color: TINT[now.who] }}>
+            “{now.parts ? [...now.parts].reverse().find((p) => f >= LEAD + p.start * FPS)?.text ?? now.parts[0]!.text : now.say}”
+          </div>
         )}
         <div style={{ position: 'absolute', top: 500, width: '100%', display: 'flex', justifyContent: 'center', gap: 28, fontFamily: sans, fontWeight: 600, fontSize: 92, letterSpacing: -2.2, color: c.text }}>
           {WORDS.map(({ word, at: t }) => {

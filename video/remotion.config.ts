@@ -8,6 +8,8 @@ Config.setJpegQuality(95);
 // The console's own components live in ../packages/web; they must use this React, not the root one.
 Config.overrideWebpackConfig((config) => ({
   ...config,
+  // Real CLI output (src/data/*.txt) is imported as text.
+  module: { ...config.module, rules: [...(config.module?.rules ?? []), { test: /\.txt$/, type: 'asset/source' }] },
   resolve: {
     ...config.resolve,
     alias: {

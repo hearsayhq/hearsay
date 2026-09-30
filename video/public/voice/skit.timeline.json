@@ -1,69 +1,67 @@
 {
  "model": "gpt-4o-mini-tts",
- "lengthSeconds": 13.014,
+ "lengthSeconds": 11.356,
  "lines": [
   {
    "id": "customer-fifteen",
    "who": "customer",
    "text": "Add fifteen dollars of fruit.",
-   "start": 0.4,
-   "end": 2.505,
+   "start": 0.25,
+   "end": 2.379,
    "src": "voice/customer-fifteen.mp3"
   },
   {
-   "id": "ear-whoops",
+   "id": "ear",
    "who": "ear",
-   "text": "Whoops... missed that.",
-   "start": 2.955,
-   "end": 4.537,
-   "src": "voice/ear-whoops.mp3"
-  },
-  {
-   "id": "ear-fifteen",
-   "who": "ear",
-   "text": "Fifteen?",
-   "start": 4.787,
-   "end": 5.428,
-   "src": "voice/ear-fifteen.mp3"
-  },
-  {
-   "id": "ear-fifty",
-   "who": "ear",
-   "text": "Fifty?",
-   "start": 5.608,
-   "end": 6.138,
-   "src": "voice/ear-fifty.mp3"
-  },
-  {
-   "id": "ear-definitely",
-   "who": "ear",
-   "text": "Nah. Definitely fifty.",
-   "start": 6.688,
-   "end": 9.518,
-   "src": "voice/ear-definitely.mp3"
+   "text": "Whoops, missed that... Fifteen? Fifty? ... Nah. Definitely fifty.",
+   "start": 2.729,
+   "end": 7.902,
+   "src": "voice/ear.mp3",
+   "parts": [
+    {
+     "text": "Whoops, missed that.",
+     "start": 2.729,
+     "end": 4.048
+    },
+    {
+     "text": "Fifteen?",
+     "start": 4.385,
+     "end": 5.692
+    },
+    {
+     "text": "Fifty?",
+     "start": 6.035,
+     "end": 6.408
+    },
+    {
+     "text": "Nah. Definitely fifty.",
+     "start": 6.799,
+     "end": 7.902
+    }
+   ]
   },
   {
    "id": "addon-sure",
    "who": "addon",
    "text": "Are you sure?",
-   "start": 10.018,
-   "end": 10.984,
+   "start": 8.302,
+   "end": 9.042,
    "src": "voice/addon-sure.mp3"
   },
   {
    "id": "customer-yes",
    "who": "customer",
    "text": "Yeah, sure.",
-   "start": 11.284,
-   "end": 12.297,
+   "start": 9.262,
+   "end": 10.595,
    "src": "voice/customer-yes.mp3"
   },
   {
    "id": "addon-added",
    "who": "addon",
    "text": "Added!",
-   "start": 12.547,
-   "end": 13.014,
+   "start": 10.795,
+   "end": 11.356,
    "src": "voice/addon-added.mp3"
   }
  ]

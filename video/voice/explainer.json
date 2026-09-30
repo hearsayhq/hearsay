@@ -1,0 +1,12 @@
+{
+  "about": "Explainer, part 1: a request's journey. Narrated; the pipeline animation cuts to these lines.",
+  "model": "gpt-4o-mini-tts",
+  "tempo": 1.05,
+  "lines": [
+    { "id": "n-trip", "who": "narrator", "voice": "verse", "text": "When someone talks to your add-on, their words take a trip.", "direction": "Warm, confident tech-launch narrator. Brisk and upbeat, a hint of intrigue on 'take a trip'.", "gapBeforeMs": 300 },
+    { "id": "n-asr", "who": "narrator", "voice": "verse", "text": "Speech recognition turns the sound into text. And sometimes, fifteen becomes fifty.", "direction": "Brisk narrator; a small knowing smile on 'fifteen becomes fifty'.", "gapBeforeMs": 250 },
+    { "id": "n-model", "who": "narrator", "voice": "verse", "text": "The assistant's model picks one of your tools, and fills in the numbers.", "direction": "Brisk, clear, matter-of-fact.", "gapBeforeMs": 250 },
+    { "id": "n-reply", "who": "narrator", "voice": "verse", "text": "Your add-on answers. Out loud. Every word of it.", "direction": "Short punchy beats, a slight pause between the three phrases.", "gapBeforeMs": 250 },
+    { "id": "n-hearsay", "who": "narrator", "voice": "verse", "text": "Hearsay rides along the whole trip, and asks four questions a listener would ask.", "direction": "Confident reveal, a lift in energy on 'Hearsay'. Brisk.", "gapBeforeMs": 350 }
+  ]
+}
