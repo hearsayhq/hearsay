@@ -1,113 +1,113 @@
 {
- "firstFrameEpoch": 1790804944.974331,
- "t0Epoch": 1790804944.971,
+ "firstFrameEpoch": 1790805200.727135,
+ "t0Epoch": 1790805200.724,
  "events": [
   {
    "t": 0,
    "what": "start"
   },
   {
-   "t": 1.644,
+   "t": 1.651,
    "what": "connected"
   },
   {
-   "t": 2.86,
+   "t": 2.877,
    "what": "type",
    "id": "grant",
    "text": "you can reorder groceries up to forty dollars today"
   },
   {
-   "t": 4.975,
+   "t": 5.819,
    "what": "say",
    "id": "grant",
    "text": "you can reorder groceries up to forty dollars today"
   },
   {
-   "t": 5.025,
+   "t": 5.877,
    "what": "dialog",
    "id": "grant",
    "message": "Allow me to reorder milk, eggs, bread, fruit, and oat milk, up to forty dollars in total, for today?"
   },
   {
-   "t": 8.247,
+   "t": 9.696,
    "what": "answered",
    "id": "grant",
    "label": "Yes"
   },
   {
-   "t": 8.274,
+   "t": 9.726,
    "what": "reply",
    "id": "grant",
    "spoken": "Done. I can reorder milk, eggs, bread, fruit, and oat milk up to forty dollars."
   },
   {
-   "t": 9.694,
+   "t": 10.943,
    "what": "type",
    "id": "fruit",
    "text": "add fifty dollars of fruit"
   },
   {
-   "t": 10.925,
+   "t": 13.289,
    "what": "say",
    "id": "fruit",
    "text": "add fifty dollars of fruit"
   },
   {
-   "t": 10.974,
+   "t": 13.342,
    "what": "reply",
    "id": "fruit",
    "spoken": "That would go over the total budget you gave me. You can add less, or give me a bigger budget."
   },
   {
-   "t": 17.81,
+   "t": 20.177,
    "what": "type",
    "id": "milk",
    "text": "add two cartons of milk"
   },
   {
-   "t": 18.957,
+   "t": 21.974,
    "what": "say",
    "id": "milk",
    "text": "add two cartons of milk"
   },
   {
-   "t": 19.01,
+   "t": 22.025,
    "what": "reply",
    "id": "milk",
    "spoken": "Added two cartons of milk. Your cart is seven dollars and forty cents."
   },
   {
-   "t": 23.893,
+   "t": 26.912,
    "what": "type",
    "id": "order",
    "text": "place the order"
   },
   {
-   "t": 24.742,
+   "t": 28.02,
    "what": "say",
    "id": "order",
    "text": "place the order"
   },
   {
-   "t": 24.795,
+   "t": 28.078,
    "what": "dialog",
    "id": "order",
    "message": "Place the order: two cartons of milk, seven dollars and forty cents?"
   },
   {
-   "t": 31.42,
+   "t": 34.6,
    "what": "answered",
    "id": "order",
    "label": "No"
   },
   {
-   "t": 31.442,
+   "t": 34.625,
    "what": "reply",
    "id": "order",
    "spoken": "Okay, I did not place the order. Your cart is still there."
   },
   {
-   "t": 42.665,
+   "t": 46.048,
    "what": "end"
   }
  ]
