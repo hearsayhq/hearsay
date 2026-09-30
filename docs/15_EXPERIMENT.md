@@ -315,13 +315,38 @@ flaws, knowing which defects were holdout-only, so they test exactly those gaps;
 to cover the tool surface (the `write-hearsay-suite` skill) was not part of either arm. Arm B's
 prompt names the rules most of the holdouts test.
 
-**Proposed sentence for README, Devpost and the video** (the owner decides; it replaces the v1
-sentence above):
+**Confound (named by the owner, 30 Sep).** Arms A and B differ in two things, not one: A had
+Hearsay *and* the narrow goal "make it pass its Hearsay suite"; B and B′ had the broad goal "make
+it work well behind a voice assistant". The holdout gap can come from the goal as much as from
+the tool, and nobody would tell their agent only to make a suite green. The sentence proposed
+here earlier is withdrawn; README, Devpost and the video keep the v1 sentence until A″ and A‴
+are in.
 
-> Agents with Hearsay never stopped on a defect they could see: 0 of 18 runs, against 11 of 27
-> without it. But they fix what the suite covers and then stop. On unseen cases in the harder
-> round they did worse than agents told the rules (68 % against 83 %). Hearsay is only as good as
-> your suite.
+## v2 follow-up: A″ and A‴ (pre-registered 30 Sep 2026, before any A″ run)
 
-Sources: visible errors left, v1 and v2 together (A 0 of 9 and 0 of 9; B 4 of 9 and 4 of 9, B′ 3
-of 9); holdout runs passed in v2 (A 88/129, B 107/129).
+Status: **fixed before any A″ run; A‴ waits for the product change below.**
+
+- **A″:** arm B's prompt word for word, with the Hearsay MCP server and `fix-hearsay-findings`
+  available exactly as in arm A (no shell). Same servers, v2 builds, holdouts, model, cap, harness
+  and blocks of at most six; 9 runs. It separates the tool from the goal.
+- **Product change (D-025, owner's freeze exception):** `coverage.*` checks (warn, source
+  `hearsay`) report what the visible suite does not exercise: tools without a case, enum values
+  and bounds that never occur, tools that ask for confirmation without a decline case, mandate
+  tools without a limit case. `hearsay_run` reports them. `fix-hearsay-findings` no longer stops
+  at green: it reviews the whole catalog (`hearsay_explain` per question) and proposes cases for
+  every coverage gap as text, never writing `suites/`. `write-hearsay-suite` drafts against
+  `coverage.*`.
+- **A‴:** arm B's prompt word for word, with the changed Hearsay MCP server and skill; 9 runs.
+- Arms A″ and A‴ are compared with arm B's nine v2 runs; B is not run again. Model and alias are
+  the same (`sonnet`, recorded as `claude-sonnet-5-5` in every transcript); a different model id
+  in a new run is reported.
+
+**Hypotheses.**
+
+- **H5:** A″ passes at least as many holdout runs as B minus 3 percentage points, and at most 1 of
+  9 A″ runs ends with visible errors.
+- **H6:** A‴ passes at least as many holdout runs as B, and at most 1 of 9 A‴ runs ends with
+  visible errors.
+
+Analysis rules as in §v2. The wording for README, Devpost and the video is proposed only after
+both, and names the limit that the holdouts were written by the author of the flaws.
