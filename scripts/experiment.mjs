@@ -134,6 +134,9 @@ function workspace(server, arm, W, port) {
 
 function agent(server, arm, W) {
   const args = ['-p', PROMPT[arm](server), '--model', opt.model, '--setting-sources', 'project', '--allowedTools', ...TOOLS[arm], ...(arm === 'Bs' ? [] : ['--disallowedTools', 'Bash']), '--permission-mode', 'acceptEdits', '--max-budget-usd', '5', '--output-format', 'stream-json', '--verbose'];
+  // B′'s shell runs sandboxed: it writes only inside the workspace, reaches only localhost, and
+  // cannot retry outside the sandbox. Passed on the command line, so the agent cannot edit it.
+  if (arm === 'Bs') args.push('--settings', JSON.stringify({ sandbox: { enabled: true, autoAllowBashIfSandboxed: true, allowUnsandboxedCommands: false, network: { allowLocalBinding: true, allowedDomains: ['localhost', '127.0.0.1'] } } }));
   if (arm === 'A') args.push('--mcp-config', join(W, 'mcp.json'), '--strict-mcp-config');
   else args.push('--strict-mcp-config');
   const r = spawnSync('claude', args, { cwd: W, encoding: 'utf8', maxBuffer: 256 * 1024 * 1024 });

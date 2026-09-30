@@ -187,7 +187,10 @@ server, and twelve holdout cases were few. v2 changes exactly these and nothing 
   same cap of $5 API-equivalent per run.
 - **Isolation:** workspaces outside the repo. B′ gets its own copies of `tsx` and the dependencies,
   so no path in its workspace points into the repo, and the audit also reads shell commands and
-  their output.
+  their output. B′'s shell runs in Claude Code's sandbox, set on the command line where the agent
+  cannot change it: writes only inside the workspace and the temp directory, network only to
+  localhost (it may start the server and call it), no retry outside the sandbox. Reads are not
+  sandboxed; the audit covers them.
 - **Runs:** 3 servers × 3 arms × 3 runs = 27, on the owner's subscription, in blocks of at most
   six with the interim state in `STATUS.md`.
 
