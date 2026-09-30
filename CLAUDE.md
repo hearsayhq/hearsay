@@ -29,6 +29,8 @@ npm run dev:web                            # console on :5180
 npm run pack                               # npm packages into build/npm (never published without the owner)
 node scripts/experiment.mjs --dry-run      # experiment baseline, free; agent runs need the owner's OK
 node scripts/experiment.mjs --first 2 --runs 1   # one block (6 runs); resumable, subscription only
+npx tsx scripts/scan/scan.ts --list <file> --out <dir>   # FR-062 scan, runs third-party code: the owner starts it
+npx tsx scripts/scan/aggregate.ts --out <dir>            # docs/16 from scan results, no names
 ```
 
 ## Rules
