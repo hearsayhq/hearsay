@@ -27,7 +27,8 @@ npm run server:kitchen                     # reference servers on :4101 / :4102 
 npm run hearsay -- serve                   # engine API for the console on :4100
 npm run dev:web                            # console on :5180
 npm run pack                               # npm packages into build/npm (never published without the owner)
-node scripts/experiment.mjs --dry-run      # experiment baseline, free; real runs need the owner's cost OK
+node scripts/experiment.mjs --dry-run      # experiment baseline, free; agent runs need the owner's OK
+node scripts/experiment.mjs --first 2 --runs 1   # one block (6 runs); resumable, subscription only
 ```
 
 ## Rules

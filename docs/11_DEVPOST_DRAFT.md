@@ -66,6 +66,11 @@ permission behind a voice assistant).
 The visible suite is not enough: agent-fixed servers passed their suite and still failed a
 holdout case (the unknown-room reply did not say what it heard).
 
+A precise prompt is not enough either. In 18 runs (docs/15) an agent with Hearsay and one with
+only a task description passed about as many hidden cases (36/42 and 38/42). But every Hearsay
+run ended green, while four of nine others stopped with flaws they had no way to see: an order
+race on the grocery server and a caller that ignores the advertised products.
+
 ## What's next
 
 See docs/ROADMAP.md: MCP 2026-07-28 `input_required` for the kit's `confirm()`, persona-driven

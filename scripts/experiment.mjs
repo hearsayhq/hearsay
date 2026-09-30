@@ -7,23 +7,29 @@
  * holdout file is copied in, and `hearsay run --holdout` judges the result, scripted.
  *
  *   node scripts/experiment.mjs --dry-run                  judge the untouched flawed servers (free)
- *   node scripts/experiment.mjs [--runs 3] [--servers kitchen,household-orders,smart-home]
- *                               [--arms A,B] [--model sonnet]   costs money: owner's approval first
+ *   node scripts/experiment.mjs [--runs 3] [--first 1] [--servers kitchen,household-orders,smart-home]
+ *                               [--arms A,B] [--model sonnet] [--port 4140] [--out dir]
+ *
+ * Agent runs need the owner's approval. A block is one run index across all servers and arms
+ * (`--first 2 --runs 1` = block 2, six runs); rows already in <out>/results.jsonl are skipped, so a
+ * block can be resumed. Through a Claude Code subscription `total_cost_usd` is an API-equivalent
+ * figure, not a bill; the script refuses to run with ANTHROPIC_API_KEY set and stops when a run
+ * reports any other key source than the subscription.
  *
  * Results: build/experiment/<stamp>/results.jsonl and a Markdown table on stdout.
  */
 import { execFileSync, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync, appendFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 
 const REPO = new URL('..', import.meta.url).pathname.replace(/\/$/, '');
 const TSX = join(REPO, 'node_modules/.bin/tsx');
 const KIT = join(REPO, 'build/npm/hearsayhq-kit-0.1.0.tgz');
-const { values: opt } = parseArgs({ options: { runs: { type: 'string', default: '3' }, servers: { type: 'string', default: 'smart-home,kitchen,household-orders' }, arms: { type: 'string', default: 'A,B' }, model: { type: 'string', default: 'sonnet' }, 'dry-run': { type: 'boolean' } } });
+const { values: opt } = parseArgs({ options: { runs: { type: 'string', default: '3' }, servers: { type: 'string', default: 'smart-home,kitchen,household-orders' }, arms: { type: 'string', default: 'A,B' }, model: { type: 'string', default: 'sonnet' }, first: { type: 'string', default: '1' }, port: { type: 'string', default: '4140' }, out: { type: 'string' }, 'dry-run': { type: 'boolean' } } });
 const DRY = !!opt['dry-run'];
-const OUT = join(REPO, 'build/experiment', new Date().toISOString().replace(/[:.]/g, '-'));
+const OUT = opt.out ? resolve(opt.out) : join(REPO, 'build/experiment', new Date().toISOString().replace(/[:.]/g, '-'));
 
 /** Per server: which files form the add-on, and how it starts. */
 const SERVERS = {
@@ -104,7 +110,8 @@ function agent(server, arm, W) {
   const events = (r.stdout ?? '').split('\n').flatMap((l) => { try { return [JSON.parse(l)]; } catch { return []; } });
   const uses = events.filter((e) => e.type === 'assistant').flatMap((e) => (e.message.content ?? []).filter((b) => b.type === 'tool_use'));
   const result = events.find((e) => e.type === 'result') ?? {};
-  return { costUsd: result.total_cost_usd ?? null, turns: result.num_turns ?? null, runs: uses.filter((u) => u.name === 'mcp__hearsay__hearsay_run').length, edits: uses.filter((u) => ['Edit', 'Write'].includes(u.name) && !String(u.input.file_path).includes('/suites/')).length, suiteEdits: uses.filter((u) => ['Edit', 'Write'].includes(u.name) && String(u.input.file_path).includes('/suites/')).length };
+  const init = events.find((e) => e.type === 'system' && e.subtype === 'init') ?? {};
+  return { keySource: init.apiKeySource ?? null, agentOk: result.subtype === 'success' && !result.is_error, agentStatus: result.subtype ?? `exit ${r.status}`, durationMs: result.duration_ms ?? null, costUsd: result.total_cost_usd ?? null, turns: result.num_turns ?? null, runs: uses.filter((u) => u.name === 'mcp__hearsay__hearsay_run').length, edits: uses.filter((u) => ['Edit', 'Write'].includes(u.name) && !String(u.input.file_path).includes('/suites/')).length, suiteEdits: uses.filter((u) => ['Edit', 'Write'].includes(u.name) && String(u.input.file_path).includes('/suites/')).length };
 }
 
 function judge(server, W, ws) {
@@ -127,24 +134,44 @@ function judge(server, W, ws) {
   return { manipulated, visibleErrors: r.summary.errors, visibleFailed: `${r.summary.failed}/${r.summary.cases}`, holdoutPassed: r.holdout.cases - r.holdout.failed, holdoutCases: r.holdout.cases, holdoutErrors: r.holdout.errors };
 }
 
+if (!DRY && process.env.ANTHROPIC_API_KEY) throw new Error('ANTHROPIC_API_KEY is set: the runs would be billed to the API. Unset it to run on the subscription.');
 if (!existsSync(KIT)) execFileSync('node', [join(REPO, 'scripts/pack.mjs')], { stdio: 'inherit' });
 mkdirSync(OUT, { recursive: true });
+const RESULTS = join(OUT, 'results.jsonl');
+const done = existsSync(RESULTS) ? readFileSync(RESULTS, 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l)) : [];
 const rows = [];
-let port = 4140;
-for (const server of opt.servers.split(',')) {
-  for (const arm of DRY ? ['-'] : opt.arms.split(',')) {
-    for (let i = 1; i <= (DRY ? 1 : Number(opt.runs)); i++) {
+let port = Number(opt.port);
+const first = Number(opt.first);
+for (let i = first; i < first + (DRY ? 1 : Number(opt.runs)); i++) {
+  for (const server of opt.servers.split(',')) {
+    for (const arm of DRY ? ['-'] : opt.arms.split(',')) {
+      const armName = DRY ? 'baseline' : arm;
+      const prior = done.find((r) => r.server === server && r.arm === armName && r.run === i && r.agentOk !== false);
+      if (prior) {
+        rows.push(prior);
+        continue;
+      }
       const W = join(OUT, `${server}-${arm}-${i}`, 'addon');
       const ws = workspace(server, arm === '-' ? 'B' : arm, W, port++);
       const a = DRY ? {} : agent(server, arm, W);
-      const row = { server, arm: DRY ? 'baseline' : arm, run: i, model: DRY ? null : opt.model, ...a, ...judge(server, W, ws) };
+      const row = { server, arm: armName, run: i, model: DRY ? null : opt.model, ...a, ...judge(server, W, ws) };
       rows.push(row);
-      appendFileSync(join(OUT, 'results.jsonl'), JSON.stringify(row) + '\n');
-      console.error(`${server} ${row.arm} #${i}: holdout ${row.holdoutPassed}/${row.holdoutCases}, visible errors ${row.startFailed ? 'server did not start' : row.visibleErrors}${row.manipulated ? ', SUITES CHANGED' : ''}${a.costUsd != null ? `, $${a.costUsd.toFixed(2)}` : ''}`);
+      appendFileSync(RESULTS, JSON.stringify(row) + '\n');
+      console.error(`${server} ${row.arm} #${i}: holdout ${row.holdoutPassed}/${row.holdoutCases}, visible errors ${row.startFailed ? 'server did not start' : row.visibleErrors}${row.manipulated ? ', SUITES CHANGED' : ''}${a.agentOk === false ? `, AGENT ${a.agentStatus} (not counted)` : ''}${a.costUsd != null ? `, API-equivalent $${a.costUsd.toFixed(2)}` : ''}`);
+      if (a.keySource && a.keySource !== 'none') throw new Error(`the run used key source "${a.keySource}", not the subscription: stopped`);
     }
   }
 }
-console.log('| Server | Arm | Run | Holdout passed | Visible errors | Suite changed | hearsay_run calls | Edits | Turns | Cost |');
-console.log('|---|---|---|---|---|---|---|---|---|---|');
-for (const r of rows) console.log(`| ${r.server} | ${r.arm} | ${r.run} | ${r.holdoutPassed}/${r.holdoutCases} | ${r.startFailed ? 'did not start' : r.visibleErrors} | ${r.manipulated ? 'yes' : 'no'} | ${r.runs ?? '–'} | ${r.edits ?? '–'} | ${r.turns ?? '–'} | ${r.costUsd != null ? `$${r.costUsd.toFixed(2)}` : '–'} |`);
+console.log('| Server | Arm | Run | Holdout passed | Visible errors | Suite changed | hearsay_run calls | Edits | Turns | Agent | API-equivalent cost¹ |');
+console.log('|---|---|---|---|---|---|---|---|---|---|---|');
+for (const r of rows) console.log(`| ${r.server} | ${r.arm} | ${r.run} | ${r.holdoutPassed}/${r.holdoutCases} | ${r.startFailed ? 'did not start' : r.visibleErrors} | ${r.manipulated ? 'yes' : 'no'} | ${r.runs ?? '–'} | ${r.edits ?? '–'} | ${r.turns ?? '–'} | ${r.agentOk === false ? `failed: ${r.agentStatus}` : r.agentStatus ? 'ok' : '–'} | ${r.costUsd != null ? `$${r.costUsd.toFixed(2)}` : '–'} |`);
+if (!DRY) {
+  console.log('');
+  for (const arm of opt.arms.split(',')) {
+    const rs = rows.filter((r) => r.arm === arm && r.agentOk !== false);
+    const sum = (f) => rs.reduce((n, r) => n + (f(r) ?? 0), 0);
+    console.log(`Arm ${arm}: ${rs.length} runs, holdout ${sum((r) => r.holdoutPassed)}/${sum((r) => r.holdoutCases)}, visible errors left in ${rs.filter((r) => r.startFailed || r.visibleErrors > 0).length} runs, suites changed in ${rs.filter((r) => r.manipulated).length}, API-equivalent $${sum((r) => r.costUsd).toFixed(2)}`);
+  }
+  console.log('\n¹ `total_cost_usd` from Claude Code. On a subscription it is what the tokens would cost at API prices, not a bill.');
+}
 console.error(`results: ${OUT}/results.jsonl`);
