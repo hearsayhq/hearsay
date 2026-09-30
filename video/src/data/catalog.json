@@ -1,0 +1,789 @@
+{
+ "questions": [
+  {
+   "id": "connect",
+   "text": "Precondition: Can it connect?"
+  },
+  {
+   "id": "hear",
+   "text": "Did it hear me right?"
+  },
+  {
+   "id": "wait",
+   "text": "Do I have to wait?"
+  },
+  {
+   "id": "listen",
+   "text": "Can I listen to this?"
+  },
+  {
+   "id": "agree",
+   "text": "Did I agree?"
+  }
+ ],
+ "checks": [
+  {
+   "status": "implemented",
+   "id": "protocol.version",
+   "question": "connect",
+   "scope": "server",
+   "priority": "must",
+   "summary": "Speaks MCP 2025-11-25 over Streamable HTTP, and still works when a client offers 2025-03-26.",
+   "thresholds": [
+    {
+     "severity": "error",
+     "when": "cannot negotiate 2025-11-25 over Streamable HTTP when the client offers it",
+     "source": {
+      "kind": "amazon-fr",
+      "ref": "MCP Toolkit quickstart: 2025-11-25 over Streamable HTTP is required",
+      "url": "https://developer.amazon.com/docs/alexaplus/add-ons/mcp-toolkit-quickstart.html"
+     }
+    },
+    {
+     "severity": "warn",
+     "when": "fails to initialize or list tools when the client offers 2025-03-26",
+     "source": {
+      "kind": "amazon-fr",
+      "ref": "Client lifecycle: the example handshake offers 2025-03-26 (friction log #2)",
+      "url": "https://developer.amazon.com/docs/alexaplus/add-ons/mcp-toolkit-client-lifecycle.html"
+     }
+    }
+   ],
+   "category": "protocol"
+  },
+  {
+   "status": "implemented",
+   "id": "suite.integrity",
+   "question": "connect",
+   "scope": "server",
+   "priority": "must",
+   "alwaysOn": true,
+   "summary": "The suites a run judges by are the ones that were locked.",
+   "thresholds": [
+    {
+     "severity": "error",
+     "when": "a locked suite changed since `hearsay lock`",
+     "source": {
+      "kind": "hearsay",
+      "ref": "docs/03 §Holdouts and the lock"
+     }
+    }
+   ],
+   "category": "suite"
+  },
+  {
+   "status": "implemented",
+   "id": "protocol.list_changed",
+   "question": "connect",
+   "scope": "turn",
+   "priority": "should",
+   "summary": "A tool list that changes during a session is announced with tools/list_changed.",
+   "thresholds": [
+    {
+     "severity": "warn",
+     "when": "the tool list differs between two turns of one session without a declared capability and a notification",
+     "source": {
+      "kind": "mcp-spec",
+      "ref": "MCP 2025-11-25 server/tools: list changed notification",
+      "url": "https://modelcontextprotocol.io/specification/2025-11-25/server/tools"
+     }
+    }
+   ],
+   "category": "protocol"
+  },
+  {
+   "status": "implemented",
+   "id": "coverage.tools",
+   "question": "connect",
+   "scope": "suite",
+   "priority": "should",
+   "alwaysOn": true,
+   "summary": "Every tool the server lists is exercised by at least one visible case.",
+   "thresholds": [
+    {
+     "severity": "warn",
+     "when": "a tool in tools/list is neither called nor expected by any visible case",
+     "source": {
+      "kind": "hearsay",
+      "ref": "docs/05 §Coverage: a suite can only judge what it reaches (D-025)"
+     }
+    }
+   ],
+   "category": "coverage"
+  },
+  {
+   "status": "implemented",
+   "id": "coverage.values",
+   "question": "hear",
+   "scope": "suite",
+   "priority": "should",
+   "alwaysOn": true,
+   "summary": "The suite uses every advertised enum value and tries a value outside each numeric bound.",
+   "thresholds": [
+    {
+     "severity": "warn",
+     "when": "an enum value of a parameter no visible case uses",
+     "source": {
+      "kind": "hearsay",
+      "ref": "docs/05 §Coverage: misheard values land on the values nobody tested (D-025)"
+     }
+    },
+    {
+     "severity": "warn",
+     "when": "a bounded numeric parameter that no visible case tries outside its bounds",
+     "source": {
+      "kind": "hearsay",
+      "ref": "docs/05 §Coverage: out-of-range values are where schema errors reach the person (D-025)"
+     }
+    }
+   ],
+   "category": "coverage"
+  },
+  {
+   "status": "implemented",
+   "id": "asr.robust",
+   "question": "hear",
+   "scope": "turn",
+   "priority": "must",
+   "kit": "speak",
+   "summary": "A misheard variant leads to the same effect, a question back, or a reply that says what was heard.",
+   "thresholds": [
+    {
+     "severity": "error",
+     "when": "a variant silently causes a different effect, or claims success without any effect",
+     "source": {
+      "kind": "amazon-fr",
+      "ref": "Functional requirements: synonyms and alternate spellings in parameter descriptions and enums",
+      "url": "https://developer.amazon.com/docs/alexaplus/add-ons/functional-requirements.html"
+     }
+    }
+   ],
+   "category": "asr"
+  },
+  {
+   "status": "implemented",
+   "id": "lint.tool_names",
+   "question": "hear",
+   "scope": "server",
+   "priority": "must",
+   "summary": "Tool names are valid and not confusable with each other.",
+   "thresholds": [
+    {
+     "severity": "warn",
+     "when": "a name falls outside [A-Za-z0-9_.-]{1,128}",
+     "source": {
+      "kind": "mcp-spec",
+      "ref": "MCP 2025-11-25 server/tools: tool names",
+      "url": "https://modelcontextprotocol.io/specification/2025-11-25/server/tools"
+     }
+    },
+    {
+     "severity": "warn",
+     "when": "two tools name the same words after synonym folding (set/apply/update, get/list/show, start/create/add, stop/cancel/delete) and plurals",
+     "source": {
+      "kind": "amazon-fr",
+      "ref": "Functional requirements: each tool maps to a distinct customer intent",
+      "url": "https://developer.amazon.com/docs/alexaplus/add-ons/functional-requirements.html"
+     }
+    }
+   ],
+   "category": "lint"
+  },
+  {
+   "status": "implemented",
+   "id": "lint.descriptions",
+   "question": "hear",
+   "scope": "server",
+   "priority": "must",
+   "summary": "Every tool and parameter has a description a model can map speech onto.",
+   "thresholds": [
+    {
+     "severity": "warn",
+     "when": "a tool description is missing or under 20 characters, or a parameter has none",
+     "source": {
+      "kind": "amazon-fr",
+      "ref": "Functional requirements: clear, unambiguous tool descriptions",
+      "url": "https://developer.amazon.com/docs/alexaplus/add-ons/functional-requirements.html"
+     }
+    }
+   ],
+   "category": "lint"
+  },
+  {
+   "status": "implemented",
+   "id": "lint.schema_constraints",
+   "question": "hear",
+   "scope": "server",
+   "priority": "should",
+   "summary": "Input schemas are valid, declare required parameters, and use enums and bounds.",
+   "thresholds": [
+    {
+     "severity": "error",
+     "when": "an inputSchema is not valid JSON Schema, or a required parameter is not declared",
+     "source": {
+      "kind": "amazon-fr",
+      "ref": "Functional requirements: valid JSON Schema inputSchema with all required parameters",
+      "url": "https://developer.amazon.com/docs/alexaplus/add-ons/functional-requirements.html"
+     }
+    },
+    {
+     "severity": "warn",
+     "when": "a numeric parameter has no bounds, or a closed set is not an enum",
+     "source": {
+      "kind": "hearsay",
+      "ref": "docs/05 lint.schema_constraints"
+     }
+    }
+   ],
+   "category": "lint"
+  },
+  {
+   "status": "implemented",
+   "id": "case.expect",
+   "question": "hear",
+   "scope": "turn",
+   "priority": "must",
+   "alwaysOn": true,
+   "summary": "What the suite says should happen, happens.",
+   "thresholds": [
+    {
+     "severity": "error",
+     "when": "an expectation of the case is not met",
+     "source": {
+      "kind": "hearsay",
+      "ref": "the suite author's expectation (docs/03 §Expectations)"
+     }
+    }
+   ],
+   "category": "case"
+  },
+  {
+   "status": "implemented",
+   "id": "latency.tool",
+   "question": "wait",
+   "scope": "turn",
+   "priority": "must",
+   "summary": "Each tool round trip stays under 500 ms.",
+   "thresholds": [
+    {
+     "severity": "error",
+     "when": "a tools/call round trip exceeds 500 ms",
+     "source": {
+      "kind": "amazon-fr",
+      "ref": "MCP Toolkit quickstart: round-trip response latency under 500 ms",
+      "url": "https://developer.amazon.com/docs/alexaplus/add-ons/mcp-toolkit-quickstart.html"
+     },
+     "value": 500
+    }
+   ],
+   "category": "latency"
+  },
+  {
+   "status": "implemented",
+   "id": "latency.first_audio",
+   "question": "wait",
+   "scope": "turn",
+   "priority": "must",
+   "summary": "Modeled time to first audio stays within budget. In scripted mode this is a lower bound.",
+   "thresholds": [
+    {
+     "severity": "warn",
+     "when": "modeled asr + plan + tools + speak exceeds the budget",
+     "source": {
+      "kind": "hearsay",
+      "ref": "docs/03 §Latency model"
+     },
+     "value": 1500,
+     "budgetKey": "firstAudioMs"
+    }
+   ],
+   "category": "latency"
+  },
+  {
+   "status": "implemented",
+   "id": "speak.no_structured_dump",
+   "question": "listen",
+   "scope": "turn",
+   "priority": "must",
+   "kit": "speak",
+   "summary": "No JSON, markup, ids, tool names or tool-description text reaches the spoken reply.",
+   "thresholds": [
+    {
+     "severity": "error",
+     "when": "the reply contains JSON, a markdown table or heading, a URL, a UUID, an internal id, or a tool name",
+     "source": {
+      "kind": "amazon-fr",
+      "ref": "Functional requirements: no API codes, tool names, JSON or internal ids in customer-facing responses",
+      "url": "https://developer.amazon.com/docs/alexaplus/add-ons/functional-requirements.html"
+     }
+    },
+    {
+     "severity": "error",
+     "when": "the reply contains 8 or more consecutive words from a tool description",
+     "source": {
+      "kind": "hearsay",
+      "ref": "docs/05 speak.no_structured_dump"
+     }
+    }
+   ],
+   "category": "speak"
+  },
+  {
+   "status": "implemented",
+   "id": "speak.length",
+   "question": "listen",
+   "scope": "turn",
+   "priority": "must",
+   "kit": "speak",
+   "summary": "Spoken replies stay short enough to listen to.",
+   "thresholds": [
+    {
+     "severity": "error",
+     "when": "the reply is longer than 400 characters (about 30 seconds at 150 words per minute)",
+     "source": {
+      "kind": "amazon-fr",
+      "ref": "Functional requirements: voice responses under 30 seconds",
+      "url": "https://developer.amazon.com/docs/alexaplus/add-ons/functional-requirements.html"
+     },
+     "value": 400
+    },
+    {
+     "severity": "warn",
+     "when": "the reply is longer than the budget",
+     "source": {
+      "kind": "hearsay",
+      "ref": "docs/05 speak.length"
+     },
+     "value": 280,
+     "budgetKey": "spokenChars"
+    }
+   ],
+   "category": "speak"
+  },
+  {
+   "status": "implemented",
+   "id": "speak.lists",
+   "question": "listen",
+   "scope": "turn",
+   "priority": "should",
+   "kit": "speak",
+   "summary": "Lists are short and offer more.",
+   "thresholds": [
+    {
+     "severity": "error",
+     "when": "more than 5 options are read out",
+     "source": {
+      "kind": "amazon-fr",
+      "ref": "Functional requirements: at most 5 options, with pagination",
+      "url": "https://developer.amazon.com/docs/alexaplus/add-ons/functional-requirements.html"
+     },
+     "value": 5
+    },
+    {
+     "severity": "warn",
+     "when": "more than the budget are read out without an offer to continue",
+     "source": {
+      "kind": "hearsay",
+      "ref": "docs/05 speak.lists"
+     },
+     "value": 3,
+     "budgetKey": "listItems"
+    }
+   ],
+   "category": "speak"
+  },
+  {
+   "status": "implemented",
+   "id": "lint.error_actionable",
+   "question": "listen",
+   "scope": "turn",
+   "priority": "must",
+   "kit": "refuse",
+   "summary": "Error results are one sentence that says what the person can do.",
+   "thresholds": [
+    {
+     "severity": "error",
+     "when": "the error text contains a stack trace, an error code or an internal id",
+     "source": {
+      "kind": "amazon-fr",
+      "ref": "Functional requirements: no API codes or technical jargon in customer-facing responses",
+      "url": "https://developer.amazon.com/docs/alexaplus/add-ons/functional-requirements.html"
+     }
+    },
+    {
+     "severity": "warn",
+     "when": "the error text is over 200 characters or names no next step",
+     "source": {
+      "kind": "amazon-fr",
+      "ref": "Functional requirements: an actionable next step for every error",
+      "url": "https://developer.amazon.com/docs/alexaplus/add-ons/functional-requirements.html"
+     },
+     "value": 200
+    }
+   ],
+   "category": "lint"
+  },
+  {
+   "status": "implemented",
+   "id": "protocol.refusal_as_result",
+   "question": "listen",
+   "scope": "turn",
+   "priority": "must",
+   "kit": "refuse",
+   "summary": "Refusals are ordinary tool results with isError and a spoken sentence, never protocol errors.",
+   "thresholds": [
+    {
+     "severity": "error",
+     "when": "a tools/call is answered with a JSON-RPC error, or with isError text starting \"MCP error -32602\"",
+     "source": {
+      "kind": "amazon-fr",
+      "ref": "Functional requirements: every tool in tools/list must be invocable",
+      "url": "https://developer.amazon.com/docs/alexaplus/add-ons/functional-requirements.html"
+     }
+    }
+   ],
+   "category": "protocol"
+  },
+  {
+   "status": "implemented",
+   "id": "consent.path",
+   "question": "agree",
+   "scope": "turn",
+   "priority": "must",
+   "kit": "confirm",
+   "summary": "A consequential action commits only after the person said yes, preferably through elicitation.",
+   "thresholds": [
+    {
+     "severity": "error",
+     "when": "the action commits without an accepted elicitation or a valid verbal token",
+     "source": {
+      "kind": "amazon-fr",
+      "ref": "Functional requirements: explicit confirmation before payment, cancellation or deletion",
+      "url": "https://developer.amazon.com/docs/alexaplus/add-ons/functional-requirements.html"
+     }
+    },
+    {
+     "severity": "warn",
+     "when": "the action commits through the verbal path on a client without elicitation (a model can hallucinate a yes)",
+     "source": {
+      "kind": "hearsay",
+      "ref": "docs/06 §Consent tiers"
+     }
+    },
+    {
+     "severity": "warn",
+     "when": "the server uses the verbal path although the client declared elicitation",
+     "source": {
+      "kind": "hearsay",
+      "ref": "docs/06 §Consent tiers: the server chose the weaker path"
+     }
+    },
+    {
+     "severity": "info",
+     "when": "the client has no elicitation and the server refuses to commit: safe, but unusable on hosts without elicitation",
+     "source": {
+      "kind": "hearsay",
+      "ref": "docs/06 §Consent tiers"
+     }
+    }
+   ],
+   "category": "consent"
+  },
+  {
+   "status": "implemented",
+   "id": "consent.decline_holds",
+   "question": "agree",
+   "scope": "turn",
+   "priority": "must",
+   "kit": "confirm",
+   "summary": "A declined or cancelled confirmation changes nothing.",
+   "thresholds": [
+    {
+     "severity": "error",
+     "when": "committed state changes after the person declined or cancelled",
+     "source": {
+      "kind": "amazon-fr",
+      "ref": "Functional requirements: explicit confirmation before high-consequence actions",
+      "url": "https://developer.amazon.com/docs/alexaplus/add-ons/functional-requirements.html"
+     }
+    }
+   ],
+   "category": "consent"
+  },
+  {
+   "status": "implemented",
+   "id": "consent.states_details",
+   "question": "agree",
+   "scope": "turn",
+   "priority": "must",
+   "kit": "confirm",
+   "summary": "The confirmation says what and how much.",
+   "thresholds": [
+    {
+     "severity": "error",
+     "when": "the confirmation question does not state the amount and the items",
+     "source": {
+      "kind": "amazon-fr",
+      "ref": "Functional requirements: confirmation with key details",
+      "url": "https://developer.amazon.com/docs/alexaplus/add-ons/functional-requirements.html"
+     }
+    }
+   ],
+   "category": "consent"
+  },
+  {
+   "status": "implemented",
+   "id": "consent.verbal_token",
+   "question": "agree",
+   "scope": "server",
+   "priority": "must",
+   "kit": "confirm",
+   "summary": "A verbal confirmation token is bound, short-lived and single-use.",
+   "thresholds": [
+    {
+     "severity": "error",
+     "when": "the token is not bound to items and amount, lives longer than 60 s, can be replayed, or survives a cart change",
+     "source": {
+      "kind": "hearsay",
+      "ref": "docs/05 §Verbal confirmation"
+     },
+     "value": 60
+    }
+   ],
+   "category": "consent"
+  },
+  {
+   "status": "implemented",
+   "id": "consent.misheard_amount",
+   "question": "agree",
+   "scope": "turn",
+   "priority": "must",
+   "kit": "confirm",
+   "summary": "A misheard amount never commits.",
+   "thresholds": [
+    {
+     "severity": "error",
+     "when": "a perturbed amount commits: it was neither refused nor stated in a confirmation the person could decline",
+     "source": {
+      "kind": "amazon-fr",
+      "ref": "Functional requirements: explicit verbal confirmation for voice-only transactions",
+      "url": "https://developer.amazon.com/docs/alexaplus/add-ons/functional-requirements.html"
+     }
+    }
+   ],
+   "category": "consent"
+  },
+  {
+   "status": "implemented",
+   "id": "consent.over_confirmation",
+   "question": "agree",
+   "scope": "turn",
+   "priority": "must",
+   "kit": "confirm",
+   "summary": "Confirmation only when money moves: never for reads, never for what an active mandate already covers.",
+   "thresholds": [
+    {
+     "severity": "warn",
+     "when": "a confirmation is asked during a call to a read-only tool",
+     "source": {
+      "kind": "amazon-fr",
+      "ref": "Functional requirements: confirmation before high-consequence actions (payment, cancellation, deletion)",
+      "url": "https://developer.amazon.com/docs/alexaplus/add-ons/functional-requirements.html"
+     }
+    },
+    {
+     "severity": "warn",
+     "when": "a confirmation is asked for an action that commits nothing inside an active mandate",
+     "source": {
+      "kind": "hearsay",
+      "ref": "docs/06: grant once, act freely within the limit, confirm only when money moves"
+     }
+    }
+   ],
+   "category": "consent"
+  },
+  {
+   "status": "implemented",
+   "id": "lint.destructive_annotated",
+   "question": "agree",
+   "scope": "server",
+   "priority": "must",
+   "summary": "Annotations tell the truth about side effects.",
+   "thresholds": [
+    {
+     "severity": "error",
+     "when": "a tool declares readOnlyHint: true but two identical reads differ",
+     "source": {
+      "kind": "mcp-spec",
+      "ref": "MCP 2025-11-25 server/tools: tool annotations",
+      "url": "https://modelcontextprotocol.io/specification/2025-11-25/server/tools"
+     }
+    },
+    {
+     "severity": "warn",
+     "when": "a tool changes state without explicit annotations",
+     "source": {
+      "kind": "hearsay",
+      "ref": "docs/05 lint.destructive_annotated"
+     }
+    }
+   ],
+   "category": "lint"
+  },
+  {
+   "status": "implemented",
+   "id": "coverage.decline",
+   "question": "agree",
+   "scope": "suite",
+   "priority": "should",
+   "alwaysOn": true,
+   "summary": "A tool that asks for confirmation has a case where the person says no.",
+   "thresholds": [
+    {
+     "severity": "warn",
+     "when": "a tool asks for confirmation (seen or expected) and no visible case declines or cancels it",
+     "source": {
+      "kind": "hearsay",
+      "ref": "docs/05 §Coverage: the no is the path that must hold (D-025)"
+     }
+    }
+   ],
+   "category": "coverage"
+  },
+  {
+   "status": "implemented",
+   "id": "coverage.limits",
+   "question": "agree",
+   "scope": "suite",
+   "priority": "should",
+   "alwaysOn": true,
+   "summary": "Under the mandate profile, a tool that takes an amount has a case that goes over the limit.",
+   "thresholds": [
+    {
+     "severity": "warn",
+     "when": "a changing tool with an amount or quantity parameter has no visible case refused with LIMIT_EXCEEDED",
+     "source": {
+      "kind": "hearsay",
+      "ref": "docs/05 §Coverage: the limit is the mandate's point (D-025)"
+     }
+    }
+   ],
+   "category": "coverage"
+  },
+  {
+   "status": "implemented",
+   "id": "mandate.schema_ignoring_caller",
+   "question": "agree",
+   "scope": "server",
+   "priority": "must",
+   "kit": "withMandate",
+   "profile": "mandate",
+   "summary": "Calls that ignore the advertised schema are refused by authorize(), not by the schema.",
+   "thresholds": [
+    {
+     "severity": "error",
+     "when": "a value outside the advertised enum, or an extra field, is not refused with a mandate code",
+     "source": {
+      "kind": "hearsay",
+      "ref": "docs/06: a schema communicates authority, it never confers it"
+     }
+    }
+   ],
+   "category": "mandate"
+  },
+  {
+   "status": "implemented",
+   "id": "mandate.version_race",
+   "question": "agree",
+   "scope": "server",
+   "priority": "must",
+   "kit": "withMandate",
+   "profile": "mandate",
+   "summary": "Nothing staged under an older mandate version commits.",
+   "thresholds": [
+    {
+     "severity": "error",
+     "when": "a call naming a stale version is not refused with POLICY_CHANGED, or a line staged before a narrowing commits",
+     "source": {
+      "kind": "hearsay",
+      "ref": "docs/06 §Lifecycle"
+     }
+    }
+   ],
+   "category": "mandate"
+  },
+  {
+   "status": "implemented",
+   "id": "mandate.expiry",
+   "question": "agree",
+   "scope": "server",
+   "priority": "must",
+   "kit": "withMandate",
+   "profile": "mandate",
+   "summary": "An expired mandate is refused without any client action, with a spoken sentence.",
+   "thresholds": [
+    {
+     "severity": "error",
+     "when": "a call after expiry is not refused with MANDATE_EXPIRED and a spoken sentence",
+     "source": {
+      "kind": "amazon-fr",
+      "ref": "Functional requirements: a clear expiry message after the session",
+      "url": "https://developer.amazon.com/docs/alexaplus/add-ons/functional-requirements.html"
+     }
+    }
+   ],
+   "category": "mandate"
+  },
+  {
+   "status": "implemented",
+   "id": "mandate.injection",
+   "question": "agree",
+   "scope": "turn",
+   "priority": "should",
+   "kit": "withMandate",
+   "profile": "mandate",
+   "summary": "Instructions inside tool results do not widen the scope.",
+   "thresholds": [
+    {
+     "severity": "error",
+     "when": "the scope or tool list changes after an injected result, or the compromised model's out-of-scope call is not refused",
+     "source": {
+      "kind": "hearsay",
+      "ref": "docs/06 §Honest limits"
+     }
+    }
+   ],
+   "category": "mandate"
+  },
+  {
+   "status": "implemented",
+   "id": "mandate.principal_bound",
+   "question": "agree",
+   "scope": "server",
+   "priority": "should",
+   "kit": "withMandate",
+   "profile": "mandate",
+   "summary": "A mandate belongs to the person who granted it, across sessions.",
+   "thresholds": [
+    {
+     "severity": "error",
+     "when": "another principal can use the mandate",
+     "source": {
+      "kind": "hearsay",
+      "ref": "docs/06 §Principal"
+     }
+    },
+    {
+     "severity": "warn",
+     "when": "a new session of the same principal does not see the mandate",
+     "source": {
+      "kind": "amazon-fr",
+      "ref": "Functional requirements: preserve context across the session",
+      "url": "https://developer.amazon.com/docs/alexaplus/add-ons/functional-requirements.html"
+     }
+    }
+   ],
+   "category": "mandate"
+  }
+ ]
+}

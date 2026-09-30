@@ -12,3 +12,6 @@ suites/*.holdout.yaml
 build/
 holdouts/
 **/*.holdout.yaml
+
+# Video renders (the MP4 goes to YouTube or Vimeo, not the repo)
+video/out/
