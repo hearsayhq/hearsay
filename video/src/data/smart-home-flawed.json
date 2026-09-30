@@ -1,0 +1,984 @@
+{
+  "suite": "smart-home",
+  "startedAt": "2026-09-30T19:20:09.626Z",
+  "orchestrator": "scripted",
+  "seed": 1,
+  "tools": [
+    {
+      "name": "set_scene",
+      "description": "Set the scene for a room: turn devices on or off, or set the brightness of the lights.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "room": {
+            "type": "string",
+            "description": "Room name, or all for the whole house."
+          },
+          "state": {
+            "description": "on or off.",
+            "type": "string"
+          },
+          "brightness": {
+            "description": "Brightness in percent.",
+            "type": "number"
+          }
+        },
+        "required": [
+          "room"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "apply_scene",
+      "description": "Apply a named scene to a room, such as movie or bedtime.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "room": {
+            "type": "string",
+            "description": "Room name."
+          },
+          "scene": {
+            "type": "string",
+            "description": "Scene name."
+          }
+        },
+        "required": [
+          "room",
+          "scene"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    }
+  ],
+  "serverFindings": [
+    {
+      "checkId": "coverage.tools",
+      "severity": "warn",
+      "question": "connect",
+      "source": {
+        "kind": "hearsay",
+        "ref": "docs/05 §Coverage: a suite can only judge what it reaches (D-025)"
+      },
+      "message": "apply_scene has no case",
+      "hint": "Propose a case for it in your pull request description; the suite is changed by a person, never by the agent (D-021).",
+      "evidence": {
+        "tool": "apply_scene"
+      }
+    },
+    {
+      "checkId": "lint.destructive_annotated",
+      "severity": "warn",
+      "question": "agree",
+      "source": {
+        "kind": "hearsay",
+        "ref": "docs/05 lint.destructive_annotated"
+      },
+      "message": "set_scene sounds like it changes state but declares neither readOnlyHint nor destructiveHint",
+      "hint": "Set annotations explicitly: destructiveHint: true for anything a person should confirm.",
+      "evidence": {
+        "tool": "set_scene"
+      }
+    },
+    {
+      "checkId": "lint.destructive_annotated",
+      "severity": "warn",
+      "question": "agree",
+      "source": {
+        "kind": "hearsay",
+        "ref": "docs/05 lint.destructive_annotated"
+      },
+      "message": "apply_scene sounds like it changes state but declares neither readOnlyHint nor destructiveHint",
+      "hint": "Set annotations explicitly: destructiveHint: true for anything a person should confirm.",
+      "evidence": {
+        "tool": "apply_scene"
+      }
+    },
+    {
+      "checkId": "lint.tool_names",
+      "severity": "warn",
+      "question": "hear",
+      "source": {
+        "kind": "amazon-fr",
+        "ref": "Functional requirements: each tool maps to a distinct customer intent",
+        "url": "https://developer.amazon.com/docs/alexaplus/add-ons/functional-requirements.html"
+      },
+      "message": "set_scene and apply_scene name the same intent",
+      "hint": "Keep one tool per intent; a model choosing between synonyms by voice will guess.",
+      "evidence": {
+        "tools": [
+          "set_scene",
+          "apply_scene"
+        ],
+        "folded": "scene set"
+      }
+    }
+  ],
+  "cases": [
+    {
+      "caseId": "living-room-off",
+      "variant": "clean",
+      "trace": {
+        "suite": "smart-home",
+        "caseId": "living-room-off",
+        "variant": "clean",
+        "orchestrator": "scripted",
+        "principal": "hs-test-e1619f35-f97c-46cb-9b75-d50524dc0322",
+        "client": {
+          "elicitation": true
+        },
+        "server": {
+          "url": "http://localhost:4102/mcp",
+          "name": "hearsay-smart-home",
+          "version": "0.1.0-flawed",
+          "protocolVersion": "2025-11-25",
+          "capabilities": {
+            "tools": {
+              "listChanged": true
+            }
+          }
+        },
+        "turns": [
+          {
+            "id": "living-room-off#1",
+            "utterance": "turn off everything in the living room",
+            "heard": "turn off everything in the living room",
+            "spans": [
+              {
+                "kind": "asr",
+                "name": "asr",
+                "startMs": 0,
+                "endMs": 300,
+                "modeled": true
+              },
+              {
+                "kind": "plan",
+                "name": "scripted",
+                "startMs": 300,
+                "endMs": 300,
+                "modeled": true
+              },
+              {
+                "kind": "tool",
+                "name": "set_scene",
+                "startMs": 300,
+                "endMs": 1414.0182080000002
+              },
+              {
+                "kind": "speak",
+                "name": "speak",
+                "startMs": 1414.0182080000002,
+                "endMs": 1614.0182080000002,
+                "modeled": true
+              }
+            ],
+            "toolCalls": [
+              {
+                "tool": "set_scene",
+                "args": {
+                  "room": "living_room",
+                  "state": "off"
+                },
+                "result": {
+                  "isError": false,
+                  "text": "{\"ok\":true,\"room\":\"living_room\",\"devices\":[{\"id\":\"dev-lr-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"living_room\",\"brightness\":100,\"on\":false},{\"id\":\"dev-lr-floor\",\"name\":\"Floor lamp\",\"type\":\"light\",\"room\":\"living_room\",\"brightness\":80,\"on\":false},{\"id\":\"dev-lr-tv\",\"name\":\"TV\",\"type\":\"media\",\"room\":\"living_room\",\"on\":false},{\"id\":\"dev-lr-speaker\",\"name\":\"Speaker\",\"type\":\"media\",\"room\":\"living_room\",\"on\":false},{\"id\":\"dev-lr-blinds\",\"name\":\"Blinds\",\"type\":\"blinds\",\"room\":\"living_room\",\"on\":false},{\"id\":\"dev-lr-heater\",\"name\":\"Heater\",\"type\":\"climate\",\"room\":\"living_room\",\"on\":false},{\"id\":\"dev-br-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"bedroom\",\"brightness\":100,\"on\":true},{\"id\":\"dev-br-bedside\",\"name\":\"Bedside lamp\",\"type\":\"light\",\"room\":\"bedroom\",\"brightness\":60,\"on\":true},{\"id\":\"dev-br-fan\",\"name\":\"Fan\",\"type\":\"climate\",\"room\":\"bedroom\",\"on\":true},{\"id\":\"dev-kt-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"kitchen\",\"brightness\":100,\"on\":true},{\"id\":\"dev-kt-counter\",\"name\":\"Counter lights\",\"type\":\"light\",\"room\":\"kitchen\",\"brightness\":100,\"on\":true},{\"id\":\"dev-kt-kettle\",\"name\":\"Kettle plug\",\"type\":\"plug\",\"room\":\"kitchen\",\"on\":true},{\"id\":\"dev-of-desk\",\"name\":\"Desk lamp\",\"type\":\"light\",\"room\":\"office\",\"brightness\":90,\"on\":true},{\"id\":\"dev-of-monitor\",\"name\":\"Monitor plug\",\"type\":\"plug\",\"room\":\"office\",\"on\":true}]}"
+                },
+                "latencyMs": 1114.0182080000002
+              }
+            ],
+            "elicitations": [],
+            "spoken": "{\"ok\":true,\"room\":\"living_room\",\"devices\":[{\"id\":\"dev-lr-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"living_room\",\"brightness\":100,\"on\":false},{\"id\":\"dev-lr-floor\",\"name\":\"Floor lamp\",\"type\":\"light\",\"room\":\"living_room\",\"brightness\":80,\"on\":false},{\"id\":\"dev-lr-tv\",\"name\":\"TV\",\"type\":\"media\",\"room\":\"living_room\",\"on\":false},{\"id\":\"dev-lr-speaker\",\"name\":\"Speaker\",\"type\":\"media\",\"room\":\"living_room\",\"on\":false},{\"id\":\"dev-lr-blinds\",\"name\":\"Blinds\",\"type\":\"blinds\",\"room\":\"living_room\",\"on\":false},{\"id\":\"dev-lr-heater\",\"name\":\"Heater\",\"type\":\"climate\",\"room\":\"living_room\",\"on\":false},{\"id\":\"dev-br-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"bedroom\",\"brightness\":100,\"on\":true},{\"id\":\"dev-br-bedside\",\"name\":\"Bedside lamp\",\"type\":\"light\",\"room\":\"bedroom\",\"brightness\":60,\"on\":true},{\"id\":\"dev-br-fan\",\"name\":\"Fan\",\"type\":\"climate\",\"room\":\"bedroom\",\"on\":true},{\"id\":\"dev-kt-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"kitchen\",\"brightness\":100,\"on\":true},{\"id\":\"dev-kt-counter\",\"name\":\"Counter lights\",\"type\":\"light\",\"room\":\"kitchen\",\"brightness\":100,\"on\":true},{\"id\":\"dev-kt-kettle\",\"name\":\"Kettle plug\",\"type\":\"plug\",\"room\":\"kitchen\",\"on\":true},{\"id\":\"dev-of-desk\",\"name\":\"Desk lamp\",\"type\":\"light\",\"room\":\"office\",\"brightness\":90,\"on\":true},{\"id\":\"dev-of-monitor\",\"name\":\"Monitor plug\",\"type\":\"plug\",\"room\":\"office\",\"on\":true}]}",
+            "toolListRevision": 0
+          }
+        ],
+        "startedAt": "2026-09-30T19:20:09.651Z",
+        "state": {
+          "before": {},
+          "after": {}
+        }
+      },
+      "findings": [
+        {
+          "checkId": "latency.first_audio",
+          "severity": "warn",
+          "question": "wait",
+          "source": {
+            "kind": "hearsay",
+            "ref": "docs/03 §Latency model"
+          },
+          "message": "first audio after 1614 ms (budget 1500 ms, lower bound: planning counted as 0)",
+          "hint": "The tool share is the part the server controls; see latency.tool.",
+          "turnId": "living-room-off#1",
+          "evidence": {
+            "totalMs": 1614,
+            "asrMs": 300,
+            "planMs": 0,
+            "toolMs": 1114,
+            "speakMs": 200,
+            "budgetMs": 1500,
+            "lowerBound": true
+          }
+        },
+        {
+          "checkId": "latency.tool",
+          "severity": "error",
+          "question": "wait",
+          "source": {
+            "kind": "amazon-fr",
+            "ref": "MCP Toolkit quickstart: round-trip response latency under 500 ms",
+            "url": "https://developer.amazon.com/docs/alexaplus/add-ons/mcp-toolkit-quickstart.html"
+          },
+          "message": "set_scene took 1114 ms (limit 500 ms)",
+          "hint": "Answer from a cache or acknowledge first and finish in the background; keep upstream calls off the spoken path.",
+          "turnId": "living-room-off#1",
+          "evidence": {
+            "tool": "set_scene",
+            "latencyMs": 1114,
+            "limitMs": 500
+          }
+        },
+        {
+          "checkId": "speak.length",
+          "severity": "error",
+          "question": "listen",
+          "source": {
+            "kind": "amazon-fr",
+            "ref": "Functional requirements: voice responses under 30 seconds",
+            "url": "https://developer.amazon.com/docs/alexaplus/add-ons/functional-requirements.html"
+          },
+          "message": "spoken reply is 1369 characters (over 400, about 30 seconds)",
+          "hint": "Build the reply with speak() from @hearsayhq/kit; put data for programs in structuredContent, not in the text.",
+          "turnId": "living-room-off#1",
+          "evidence": {
+            "chars": 1369
+          }
+        },
+        {
+          "checkId": "speak.no_structured_dump",
+          "severity": "error",
+          "question": "listen",
+          "source": {
+            "kind": "amazon-fr",
+            "ref": "Functional requirements: no API codes, tool names, JSON or internal ids in customer-facing responses",
+            "url": "https://developer.amazon.com/docs/alexaplus/add-ons/functional-requirements.html"
+          },
+          "message": "spoken reply contains JSON or brackets (1369 chars)",
+          "hint": "Build the reply with speak() from @hearsayhq/kit; put data for programs in structuredContent, not in the text.",
+          "turnId": "living-room-off#1",
+          "evidence": {
+            "spoken": "{\"ok\":true,\"room\":\"living_room\",\"devices\":[{\"id\":\"dev-lr-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"living_room\",\"brightness\":100,\"on\":false},{\"id\":\"dev-lr-floor\",\"name\":\"Floor lamp\",\"type",
+            "matched": "JSON or brackets"
+          }
+        }
+      ],
+      "verdict": "fail"
+    },
+    {
+      "caseId": "living-room-off",
+      "variant": "asr.compound_split#1",
+      "trace": {
+        "suite": "smart-home",
+        "caseId": "living-room-off",
+        "variant": "asr.compound_split#1",
+        "edits": [
+          {
+            "from": "living room",
+            "to": "livingroom"
+          }
+        ],
+        "orchestrator": "scripted",
+        "principal": "hs-test-9d286b21-9dad-459a-811c-ac376ddb51d9",
+        "client": {
+          "elicitation": true
+        },
+        "server": {
+          "url": "http://localhost:4102/mcp",
+          "name": "hearsay-smart-home",
+          "version": "0.1.0-flawed",
+          "protocolVersion": "2025-11-25",
+          "capabilities": {
+            "tools": {
+              "listChanged": true
+            }
+          }
+        },
+        "turns": [
+          {
+            "id": "living-room-off#1",
+            "utterance": "turn off everything in the living room",
+            "heard": "turn off everything in the livingroom",
+            "spans": [
+              {
+                "kind": "asr",
+                "name": "asr",
+                "startMs": 0,
+                "endMs": 300,
+                "modeled": true
+              },
+              {
+                "kind": "plan",
+                "name": "scripted",
+                "startMs": 300,
+                "endMs": 300,
+                "modeled": true
+              },
+              {
+                "kind": "tool",
+                "name": "set_scene",
+                "startMs": 300,
+                "endMs": 1404.3209579999998
+              },
+              {
+                "kind": "speak",
+                "name": "speak",
+                "startMs": 1404.3209579999998,
+                "endMs": 1604.3209579999998,
+                "modeled": true
+              }
+            ],
+            "toolCalls": [
+              {
+                "tool": "set_scene",
+                "args": {
+                  "room": "livingroom",
+                  "state": "off"
+                },
+                "result": {
+                  "isError": false,
+                  "text": "Done."
+                },
+                "latencyMs": 1104.3209579999998
+              }
+            ],
+            "elicitations": [],
+            "spoken": "Done.",
+            "toolListRevision": 0
+          }
+        ],
+        "startedAt": "2026-09-30T19:20:10.790Z",
+        "state": {
+          "before": {},
+          "after": {}
+        }
+      },
+      "findings": [
+        {
+          "checkId": "asr.robust",
+          "severity": "error",
+          "question": "hear",
+          "source": {
+            "kind": "amazon-fr",
+            "ref": "Functional requirements: synonyms and alternate spellings in parameter descriptions and enums",
+            "url": "https://developer.amazon.com/docs/alexaplus/add-ons/functional-requirements.html"
+          },
+          "message": "heard \"turn off everything in the livingroom\": set_scene answered \"Done.\" — a different result without saying what it heard",
+          "hint": "Normalise what could be misheard (looseEnum() with synonyms), ask back when unsure, and read values back with speak().",
+          "turnId": "living-room-off#1",
+          "evidence": {
+            "heard": "turn off everything in the livingroom",
+            "edits": [
+              {
+                "from": "living room",
+                "to": "livingroom"
+              }
+            ],
+            "args": {
+              "room": "livingroom",
+              "state": "off"
+            },
+            "cleanArgs": {
+              "room": "living_room",
+              "state": "off"
+            },
+            "result": "Done.",
+            "cleanResult": "{\"ok\":true,\"room\":\"living_room\",\"devices\":[{\"id\":\"dev-lr-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"living_room\",\"brightness\":100,\"on\":false},{\"id\":\"dev-lr-floor\",\"name\":\"Floor lamp\",\"type"
+          }
+        },
+        {
+          "checkId": "latency.first_audio",
+          "severity": "warn",
+          "question": "wait",
+          "source": {
+            "kind": "hearsay",
+            "ref": "docs/03 §Latency model"
+          },
+          "message": "first audio after 1604 ms (budget 1500 ms, lower bound: planning counted as 0)",
+          "hint": "The tool share is the part the server controls; see latency.tool.",
+          "turnId": "living-room-off#1",
+          "evidence": {
+            "totalMs": 1604,
+            "asrMs": 300,
+            "planMs": 0,
+            "toolMs": 1104,
+            "speakMs": 200,
+            "budgetMs": 1500,
+            "lowerBound": true
+          }
+        },
+        {
+          "checkId": "latency.tool",
+          "severity": "error",
+          "question": "wait",
+          "source": {
+            "kind": "amazon-fr",
+            "ref": "MCP Toolkit quickstart: round-trip response latency under 500 ms",
+            "url": "https://developer.amazon.com/docs/alexaplus/add-ons/mcp-toolkit-quickstart.html"
+          },
+          "message": "set_scene took 1104 ms (limit 500 ms)",
+          "hint": "Answer from a cache or acknowledge first and finish in the background; keep upstream calls off the spoken path.",
+          "turnId": "living-room-off#1",
+          "evidence": {
+            "tool": "set_scene",
+            "latencyMs": 1104,
+            "limitMs": 500
+          }
+        }
+      ],
+      "verdict": "fail"
+    },
+    {
+      "caseId": "whole-home-off-needs-confirmation",
+      "variant": "clean",
+      "trace": {
+        "suite": "smart-home",
+        "caseId": "whole-home-off-needs-confirmation",
+        "variant": "clean",
+        "orchestrator": "scripted",
+        "principal": "hs-test-a776e204-d727-4c33-afd5-d29a5d365e9b",
+        "client": {
+          "elicitation": true
+        },
+        "server": {
+          "url": "http://localhost:4102/mcp",
+          "name": "hearsay-smart-home",
+          "version": "0.1.0-flawed",
+          "protocolVersion": "2025-11-25",
+          "capabilities": {
+            "tools": {
+              "listChanged": true
+            }
+          }
+        },
+        "turns": [
+          {
+            "id": "whole-home-off-needs-confirmation#1",
+            "utterance": "turn off the whole house",
+            "heard": "turn off the whole house",
+            "spans": [
+              {
+                "kind": "asr",
+                "name": "asr",
+                "startMs": 0,
+                "endMs": 300,
+                "modeled": true
+              },
+              {
+                "kind": "plan",
+                "name": "scripted",
+                "startMs": 300,
+                "endMs": 300,
+                "modeled": true
+              },
+              {
+                "kind": "tool",
+                "name": "set_scene",
+                "startMs": 300,
+                "endMs": 1402.2449589999997
+              },
+              {
+                "kind": "speak",
+                "name": "speak",
+                "startMs": 1402.2449589999997,
+                "endMs": 1602.2449589999997,
+                "modeled": true
+              }
+            ],
+            "toolCalls": [
+              {
+                "tool": "set_scene",
+                "args": {
+                  "room": "all",
+                  "state": "off"
+                },
+                "result": {
+                  "isError": false,
+                  "text": "{\"ok\":true,\"room\":\"all\",\"devices\":[{\"id\":\"dev-lr-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"living_room\",\"brightness\":100,\"on\":false},{\"id\":\"dev-lr-floor\",\"name\":\"Floor lamp\",\"type\":\"light\",\"room\":\"living_room\",\"brightness\":80,\"on\":false},{\"id\":\"dev-lr-tv\",\"name\":\"TV\",\"type\":\"media\",\"room\":\"living_room\",\"on\":false},{\"id\":\"dev-lr-speaker\",\"name\":\"Speaker\",\"type\":\"media\",\"room\":\"living_room\",\"on\":false},{\"id\":\"dev-lr-blinds\",\"name\":\"Blinds\",\"type\":\"blinds\",\"room\":\"living_room\",\"on\":false},{\"id\":\"dev-lr-heater\",\"name\":\"Heater\",\"type\":\"climate\",\"room\":\"living_room\",\"on\":false},{\"id\":\"dev-br-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"bedroom\",\"brightness\":100,\"on\":false},{\"id\":\"dev-br-bedside\",\"name\":\"Bedside lamp\",\"type\":\"light\",\"room\":\"bedroom\",\"brightness\":60,\"on\":false},{\"id\":\"dev-br-fan\",\"name\":\"Fan\",\"type\":\"climate\",\"room\":\"bedroom\",\"on\":false},{\"id\":\"dev-kt-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"kitchen\",\"brightness\":100,\"on\":false},{\"id\":\"dev-kt-counter\",\"name\":\"Counter lights\",\"type\":\"light\",\"room\":\"kitchen\",\"brightness\":100,\"on\":false},{\"id\":\"dev-kt-kettle\",\"name\":\"Kettle plug\",\"type\":\"plug\",\"room\":\"kitchen\",\"on\":false},{\"id\":\"dev-of-desk\",\"name\":\"Desk lamp\",\"type\":\"light\",\"room\":\"office\",\"brightness\":90,\"on\":false},{\"id\":\"dev-of-monitor\",\"name\":\"Monitor plug\",\"type\":\"plug\",\"room\":\"office\",\"on\":false}]}"
+                },
+                "latencyMs": 1102.2449589999997
+              }
+            ],
+            "elicitations": [],
+            "spoken": "{\"ok\":true,\"room\":\"all\",\"devices\":[{\"id\":\"dev-lr-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"living_room\",\"brightness\":100,\"on\":false},{\"id\":\"dev-lr-floor\",\"name\":\"Floor lamp\",\"type\":\"light\",\"room\":\"living_room\",\"brightness\":80,\"on\":false},{\"id\":\"dev-lr-tv\",\"name\":\"TV\",\"type\":\"media\",\"room\":\"living_room\",\"on\":false},{\"id\":\"dev-lr-speaker\",\"name\":\"Speaker\",\"type\":\"media\",\"room\":\"living_room\",\"on\":false},{\"id\":\"dev-lr-blinds\",\"name\":\"Blinds\",\"type\":\"blinds\",\"room\":\"living_room\",\"on\":false},{\"id\":\"dev-lr-heater\",\"name\":\"Heater\",\"type\":\"climate\",\"room\":\"living_room\",\"on\":false},{\"id\":\"dev-br-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"bedroom\",\"brightness\":100,\"on\":false},{\"id\":\"dev-br-bedside\",\"name\":\"Bedside lamp\",\"type\":\"light\",\"room\":\"bedroom\",\"brightness\":60,\"on\":false},{\"id\":\"dev-br-fan\",\"name\":\"Fan\",\"type\":\"climate\",\"room\":\"bedroom\",\"on\":false},{\"id\":\"dev-kt-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"kitchen\",\"brightness\":100,\"on\":false},{\"id\":\"dev-kt-counter\",\"name\":\"Counter lights\",\"type\":\"light\",\"room\":\"kitchen\",\"brightness\":100,\"on\":false},{\"id\":\"dev-kt-kettle\",\"name\":\"Kettle plug\",\"type\":\"plug\",\"room\":\"kitchen\",\"on\":false},{\"id\":\"dev-of-desk\",\"name\":\"Desk lamp\",\"type\":\"light\",\"room\":\"office\",\"brightness\":90,\"on\":false},{\"id\":\"dev-of-monitor\",\"name\":\"Monitor plug\",\"type\":\"plug\",\"room\":\"office\",\"on\":false}]}",
+            "toolListRevision": 0
+          }
+        ],
+        "startedAt": "2026-09-30T19:20:11.902Z",
+        "state": {
+          "before": {},
+          "after": {}
+        }
+      },
+      "findings": [
+        {
+          "checkId": "case.expect",
+          "severity": "error",
+          "question": "agree",
+          "source": {
+            "kind": "hearsay",
+            "ref": "the suite author's expectation (docs/03 §Expectations)"
+          },
+          "message": "expected the person to be asked before anything commits; no confirmation happened",
+          "hint": "Ask with confirm() from @hearsayhq/kit before committing.",
+          "turnId": "whole-home-off-needs-confirmation#1"
+        },
+        {
+          "checkId": "case.expect",
+          "severity": "error",
+          "question": "listen",
+          "source": {
+            "kind": "hearsay",
+            "ref": "the suite author's expectation (docs/03 §Expectations)"
+          },
+          "message": "spoken reply does not include \"okay\"",
+          "turnId": "whole-home-off-needs-confirmation#1",
+          "evidence": {
+            "spoken": "{\"ok\":true,\"room\":\"all\",\"devices\":[{\"id\":\"dev-lr-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"living_room\",\"brightness\":100,\"on\":false},{\"id\":\"dev-lr-floor\",\"name\":\"Floor lamp\",\"type\":\"light\",\"room\":\"living_room\",\"brightness\":80,\"on\":false},{\"id\":\"dev-lr-tv\",\"name\":\"TV\",\"type\":\"media\",\"room\":\"living_room\",\"on\":false},{\"id\":\"dev-lr-speaker\",\"name\":\"Speaker\",\"type\":\"media\",\"room\":\"living_room\",\"on\":false},{\"id\":\"dev-lr-blinds\",\"name\":\"Blinds\",\"type\":\"blinds\",\"room\":\"living_room\",\"on\":false},{\"id\":\"dev-lr-heater\",\"name\":\"Heater\",\"type\":\"climate\",\"room\":\"living_room\",\"on\":false},{\"id\":\"dev-br-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"bedroom\",\"brightness\":100,\"on\":false},{\"id\":\"dev-br-bedside\",\"name\":\"Bedside lamp\",\"type\":\"light\",\"room\":\"bedroom\",\"brightness\":60,\"on\":false},{\"id\":\"dev-br-fan\",\"name\":\"Fan\",\"type\":\"climate\",\"room\":\"bedroom\",\"on\":false},{\"id\":\"dev-kt-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"kitchen\",\"brightness\":100,\"on\":false},{\"id\":\"dev-kt-counter\",\"name\":\"Counter lights\",\"type\":\"light\",\"room\":\"kitchen\",\"brightness\":100,\"on\":false},{\"id\":\"dev-kt-kettle\",\"name\":\"Kettle plug\",\"type\":\"plug\",\"room\":\"kitchen\",\"on\":false},{\"id\":\"dev-of-desk\",\"name\":\"Desk lamp\",\"type\":\"light\",\"room\":\"office\",\"brightness\":90,\"on\":false},{\"id\":\"dev-of-monitor\",\"name\":\"Monitor plug\",\"type\":\"plug\",\"room\":\"office\",\"on\":false}]}"
+          }
+        },
+        {
+          "checkId": "consent.path",
+          "severity": "error",
+          "question": "agree",
+          "source": {
+            "kind": "amazon-fr",
+            "ref": "Functional requirements: explicit confirmation before payment, cancellation or deletion",
+            "url": "https://developer.amazon.com/docs/alexaplus/add-ons/functional-requirements.html"
+          },
+          "message": "set_scene went ahead without asking the person",
+          "hint": "Ask with confirm() from @hearsayhq/kit: it elicits through the host, stating what and how much, and only at commit or outside the mandate.",
+          "turnId": "whole-home-off-needs-confirmation#1",
+          "evidence": {
+            "tool": "set_scene",
+            "args": {
+              "room": "all",
+              "state": "off"
+            },
+            "result": "{\"ok\":true,\"room\":\"all\",\"devices\":[{\"id\":\"dev-lr-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"living_room\",\"brightness\":100,\"on\":false},{\"id\":\"dev-lr-"
+          }
+        },
+        {
+          "checkId": "latency.first_audio",
+          "severity": "warn",
+          "question": "wait",
+          "source": {
+            "kind": "hearsay",
+            "ref": "docs/03 §Latency model"
+          },
+          "message": "first audio after 1602 ms (budget 1500 ms, lower bound: planning counted as 0)",
+          "hint": "The tool share is the part the server controls; see latency.tool.",
+          "turnId": "whole-home-off-needs-confirmation#1",
+          "evidence": {
+            "totalMs": 1602,
+            "asrMs": 300,
+            "planMs": 0,
+            "toolMs": 1102,
+            "speakMs": 200,
+            "budgetMs": 1500,
+            "lowerBound": true
+          }
+        },
+        {
+          "checkId": "latency.tool",
+          "severity": "error",
+          "question": "wait",
+          "source": {
+            "kind": "amazon-fr",
+            "ref": "MCP Toolkit quickstart: round-trip response latency under 500 ms",
+            "url": "https://developer.amazon.com/docs/alexaplus/add-ons/mcp-toolkit-quickstart.html"
+          },
+          "message": "set_scene took 1102 ms (limit 500 ms)",
+          "hint": "Answer from a cache or acknowledge first and finish in the background; keep upstream calls off the spoken path.",
+          "turnId": "whole-home-off-needs-confirmation#1",
+          "evidence": {
+            "tool": "set_scene",
+            "latencyMs": 1102,
+            "limitMs": 500
+          }
+        },
+        {
+          "checkId": "speak.length",
+          "severity": "error",
+          "question": "listen",
+          "source": {
+            "kind": "amazon-fr",
+            "ref": "Functional requirements: voice responses under 30 seconds",
+            "url": "https://developer.amazon.com/docs/alexaplus/add-ons/functional-requirements.html"
+          },
+          "message": "spoken reply is 1369 characters (over 400, about 30 seconds)",
+          "hint": "Build the reply with speak() from @hearsayhq/kit; put data for programs in structuredContent, not in the text.",
+          "turnId": "whole-home-off-needs-confirmation#1",
+          "evidence": {
+            "chars": 1369
+          }
+        },
+        {
+          "checkId": "speak.no_structured_dump",
+          "severity": "error",
+          "question": "listen",
+          "source": {
+            "kind": "amazon-fr",
+            "ref": "Functional requirements: no API codes, tool names, JSON or internal ids in customer-facing responses",
+            "url": "https://developer.amazon.com/docs/alexaplus/add-ons/functional-requirements.html"
+          },
+          "message": "spoken reply contains JSON or brackets (1369 chars)",
+          "hint": "Build the reply with speak() from @hearsayhq/kit; put data for programs in structuredContent, not in the text.",
+          "turnId": "whole-home-off-needs-confirmation#1",
+          "evidence": {
+            "spoken": "{\"ok\":true,\"room\":\"all\",\"devices\":[{\"id\":\"dev-lr-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"living_room\",\"brightness\":100,\"on\":false},{\"id\":\"dev-lr-floor\",\"name\":\"Floor lamp\",\"type\":\"light",
+            "matched": "JSON or brackets"
+          }
+        }
+      ],
+      "verdict": "fail"
+    },
+    {
+      "caseId": "dim-bedroom",
+      "variant": "clean",
+      "trace": {
+        "suite": "smart-home",
+        "caseId": "dim-bedroom",
+        "variant": "clean",
+        "orchestrator": "scripted",
+        "principal": "hs-test-4708e852-55bb-481a-8f05-e206d2c05e97",
+        "client": {
+          "elicitation": true
+        },
+        "server": {
+          "url": "http://localhost:4102/mcp",
+          "name": "hearsay-smart-home",
+          "version": "0.1.0-flawed",
+          "protocolVersion": "2025-11-25",
+          "capabilities": {
+            "tools": {
+              "listChanged": true
+            }
+          }
+        },
+        "turns": [
+          {
+            "id": "dim-bedroom#1",
+            "utterance": "dim the bedroom to thirty percent",
+            "heard": "dim the bedroom to thirty percent",
+            "spans": [
+              {
+                "kind": "asr",
+                "name": "asr",
+                "startMs": 0,
+                "endMs": 300,
+                "modeled": true
+              },
+              {
+                "kind": "plan",
+                "name": "scripted",
+                "startMs": 300,
+                "endMs": 300,
+                "modeled": true
+              },
+              {
+                "kind": "tool",
+                "name": "set_scene",
+                "startMs": 300,
+                "endMs": 1402.8233339999997
+              },
+              {
+                "kind": "speak",
+                "name": "speak",
+                "startMs": 1402.8233339999997,
+                "endMs": 1602.8233339999997,
+                "modeled": true
+              }
+            ],
+            "toolCalls": [
+              {
+                "tool": "set_scene",
+                "args": {
+                  "room": "bedroom",
+                  "brightness": 30
+                },
+                "result": {
+                  "isError": false,
+                  "text": "{\"ok\":true,\"room\":\"bedroom\",\"devices\":[{\"id\":\"dev-lr-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"living_room\",\"brightness\":100,\"on\":true},{\"id\":\"dev-lr-floor\",\"name\":\"Floor lamp\",\"type\":\"light\",\"room\":\"living_room\",\"brightness\":80,\"on\":true},{\"id\":\"dev-lr-tv\",\"name\":\"TV\",\"type\":\"media\",\"room\":\"living_room\",\"on\":true},{\"id\":\"dev-lr-speaker\",\"name\":\"Speaker\",\"type\":\"media\",\"room\":\"living_room\",\"on\":true},{\"id\":\"dev-lr-blinds\",\"name\":\"Blinds\",\"type\":\"blinds\",\"room\":\"living_room\",\"on\":true},{\"id\":\"dev-lr-heater\",\"name\":\"Heater\",\"type\":\"climate\",\"room\":\"living_room\",\"on\":true},{\"id\":\"dev-br-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"bedroom\",\"brightness\":30,\"on\":true},{\"id\":\"dev-br-bedside\",\"name\":\"Bedside lamp\",\"type\":\"light\",\"room\":\"bedroom\",\"brightness\":30,\"on\":true},{\"id\":\"dev-br-fan\",\"name\":\"Fan\",\"type\":\"climate\",\"room\":\"bedroom\",\"on\":true},{\"id\":\"dev-kt-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"kitchen\",\"brightness\":100,\"on\":true},{\"id\":\"dev-kt-counter\",\"name\":\"Counter lights\",\"type\":\"light\",\"room\":\"kitchen\",\"brightness\":100,\"on\":true},{\"id\":\"dev-kt-kettle\",\"name\":\"Kettle plug\",\"type\":\"plug\",\"room\":\"kitchen\",\"on\":true},{\"id\":\"dev-of-desk\",\"name\":\"Desk lamp\",\"type\":\"light\",\"room\":\"office\",\"brightness\":90,\"on\":true},{\"id\":\"dev-of-monitor\",\"name\":\"Monitor plug\",\"type\":\"plug\",\"room\":\"office\",\"on\":true}]}"
+                },
+                "latencyMs": 1102.8233339999997
+              }
+            ],
+            "elicitations": [],
+            "spoken": "{\"ok\":true,\"room\":\"bedroom\",\"devices\":[{\"id\":\"dev-lr-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"living_room\",\"brightness\":100,\"on\":true},{\"id\":\"dev-lr-floor\",\"name\":\"Floor lamp\",\"type\":\"light\",\"room\":\"living_room\",\"brightness\":80,\"on\":true},{\"id\":\"dev-lr-tv\",\"name\":\"TV\",\"type\":\"media\",\"room\":\"living_room\",\"on\":true},{\"id\":\"dev-lr-speaker\",\"name\":\"Speaker\",\"type\":\"media\",\"room\":\"living_room\",\"on\":true},{\"id\":\"dev-lr-blinds\",\"name\":\"Blinds\",\"type\":\"blinds\",\"room\":\"living_room\",\"on\":true},{\"id\":\"dev-lr-heater\",\"name\":\"Heater\",\"type\":\"climate\",\"room\":\"living_room\",\"on\":true},{\"id\":\"dev-br-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"bedroom\",\"brightness\":30,\"on\":true},{\"id\":\"dev-br-bedside\",\"name\":\"Bedside lamp\",\"type\":\"light\",\"room\":\"bedroom\",\"brightness\":30,\"on\":true},{\"id\":\"dev-br-fan\",\"name\":\"Fan\",\"type\":\"climate\",\"room\":\"bedroom\",\"on\":true},{\"id\":\"dev-kt-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"kitchen\",\"brightness\":100,\"on\":true},{\"id\":\"dev-kt-counter\",\"name\":\"Counter lights\",\"type\":\"light\",\"room\":\"kitchen\",\"brightness\":100,\"on\":true},{\"id\":\"dev-kt-kettle\",\"name\":\"Kettle plug\",\"type\":\"plug\",\"room\":\"kitchen\",\"on\":true},{\"id\":\"dev-of-desk\",\"name\":\"Desk lamp\",\"type\":\"light\",\"room\":\"office\",\"brightness\":90,\"on\":true},{\"id\":\"dev-of-monitor\",\"name\":\"Monitor plug\",\"type\":\"plug\",\"room\":\"office\",\"on\":true}]}",
+            "toolListRevision": 0
+          }
+        ],
+        "startedAt": "2026-09-30T19:20:13.013Z",
+        "state": {
+          "before": {},
+          "after": {}
+        }
+      },
+      "findings": [
+        {
+          "checkId": "latency.first_audio",
+          "severity": "warn",
+          "question": "wait",
+          "source": {
+            "kind": "hearsay",
+            "ref": "docs/03 §Latency model"
+          },
+          "message": "first audio after 1603 ms (budget 1500 ms, lower bound: planning counted as 0)",
+          "hint": "The tool share is the part the server controls; see latency.tool.",
+          "turnId": "dim-bedroom#1",
+          "evidence": {
+            "totalMs": 1603,
+            "asrMs": 300,
+            "planMs": 0,
+            "toolMs": 1103,
+            "speakMs": 200,
+            "budgetMs": 1500,
+            "lowerBound": true
+          }
+        },
+        {
+          "checkId": "latency.tool",
+          "severity": "error",
+          "question": "wait",
+          "source": {
+            "kind": "amazon-fr",
+            "ref": "MCP Toolkit quickstart: round-trip response latency under 500 ms",
+            "url": "https://developer.amazon.com/docs/alexaplus/add-ons/mcp-toolkit-quickstart.html"
+          },
+          "message": "set_scene took 1103 ms (limit 500 ms)",
+          "hint": "Answer from a cache or acknowledge first and finish in the background; keep upstream calls off the spoken path.",
+          "turnId": "dim-bedroom#1",
+          "evidence": {
+            "tool": "set_scene",
+            "latencyMs": 1103,
+            "limitMs": 500
+          }
+        },
+        {
+          "checkId": "speak.length",
+          "severity": "error",
+          "question": "listen",
+          "source": {
+            "kind": "amazon-fr",
+            "ref": "Functional requirements: voice responses under 30 seconds",
+            "url": "https://developer.amazon.com/docs/alexaplus/add-ons/functional-requirements.html"
+          },
+          "message": "spoken reply is 1358 characters (over 400, about 30 seconds)",
+          "hint": "Build the reply with speak() from @hearsayhq/kit; put data for programs in structuredContent, not in the text.",
+          "turnId": "dim-bedroom#1",
+          "evidence": {
+            "chars": 1358
+          }
+        },
+        {
+          "checkId": "speak.no_structured_dump",
+          "severity": "error",
+          "question": "listen",
+          "source": {
+            "kind": "amazon-fr",
+            "ref": "Functional requirements: no API codes, tool names, JSON or internal ids in customer-facing responses",
+            "url": "https://developer.amazon.com/docs/alexaplus/add-ons/functional-requirements.html"
+          },
+          "message": "spoken reply contains JSON or brackets (1358 chars)",
+          "hint": "Build the reply with speak() from @hearsayhq/kit; put data for programs in structuredContent, not in the text.",
+          "turnId": "dim-bedroom#1",
+          "evidence": {
+            "spoken": "{\"ok\":true,\"room\":\"bedroom\",\"devices\":[{\"id\":\"dev-lr-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"living_room\",\"brightness\":100,\"on\":true},{\"id\":\"dev-lr-floor\",\"name\":\"Floor lamp\",\"type\":\"li",
+            "matched": "JSON or brackets"
+          }
+        }
+      ],
+      "verdict": "fail"
+    },
+    {
+      "caseId": "dim-bedroom",
+      "variant": "asr.number_confusion#1",
+      "trace": {
+        "suite": "smart-home",
+        "caseId": "dim-bedroom",
+        "variant": "asr.number_confusion#1",
+        "edits": [
+          {
+            "from": "thirty",
+            "to": "thirteen"
+          }
+        ],
+        "orchestrator": "scripted",
+        "principal": "hs-test-49a2f331-fc5b-447b-bd12-bb8ae6a247de",
+        "client": {
+          "elicitation": true
+        },
+        "server": {
+          "url": "http://localhost:4102/mcp",
+          "name": "hearsay-smart-home",
+          "version": "0.1.0-flawed",
+          "protocolVersion": "2025-11-25",
+          "capabilities": {
+            "tools": {
+              "listChanged": true
+            }
+          }
+        },
+        "turns": [
+          {
+            "id": "dim-bedroom#1",
+            "utterance": "dim the bedroom to thirty percent",
+            "heard": "dim the bedroom to thirteen percent",
+            "spans": [
+              {
+                "kind": "asr",
+                "name": "asr",
+                "startMs": 0,
+                "endMs": 300,
+                "modeled": true
+              },
+              {
+                "kind": "plan",
+                "name": "scripted",
+                "startMs": 300,
+                "endMs": 300,
+                "modeled": true
+              },
+              {
+                "kind": "tool",
+                "name": "set_scene",
+                "startMs": 300,
+                "endMs": 1402.7399589999995
+              },
+              {
+                "kind": "speak",
+                "name": "speak",
+                "startMs": 1402.7399589999995,
+                "endMs": 1602.7399589999995,
+                "modeled": true
+              }
+            ],
+            "toolCalls": [
+              {
+                "tool": "set_scene",
+                "args": {
+                  "room": "bedroom",
+                  "brightness": 13
+                },
+                "result": {
+                  "isError": false,
+                  "text": "{\"ok\":true,\"room\":\"bedroom\",\"devices\":[{\"id\":\"dev-lr-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"living_room\",\"brightness\":100,\"on\":true},{\"id\":\"dev-lr-floor\",\"name\":\"Floor lamp\",\"type\":\"light\",\"room\":\"living_room\",\"brightness\":80,\"on\":true},{\"id\":\"dev-lr-tv\",\"name\":\"TV\",\"type\":\"media\",\"room\":\"living_room\",\"on\":true},{\"id\":\"dev-lr-speaker\",\"name\":\"Speaker\",\"type\":\"media\",\"room\":\"living_room\",\"on\":true},{\"id\":\"dev-lr-blinds\",\"name\":\"Blinds\",\"type\":\"blinds\",\"room\":\"living_room\",\"on\":true},{\"id\":\"dev-lr-heater\",\"name\":\"Heater\",\"type\":\"climate\",\"room\":\"living_room\",\"on\":true},{\"id\":\"dev-br-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"bedroom\",\"brightness\":13,\"on\":true},{\"id\":\"dev-br-bedside\",\"name\":\"Bedside lamp\",\"type\":\"light\",\"room\":\"bedroom\",\"brightness\":13,\"on\":true},{\"id\":\"dev-br-fan\",\"name\":\"Fan\",\"type\":\"climate\",\"room\":\"bedroom\",\"on\":true},{\"id\":\"dev-kt-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"kitchen\",\"brightness\":100,\"on\":true},{\"id\":\"dev-kt-counter\",\"name\":\"Counter lights\",\"type\":\"light\",\"room\":\"kitchen\",\"brightness\":100,\"on\":true},{\"id\":\"dev-kt-kettle\",\"name\":\"Kettle plug\",\"type\":\"plug\",\"room\":\"kitchen\",\"on\":true},{\"id\":\"dev-of-desk\",\"name\":\"Desk lamp\",\"type\":\"light\",\"room\":\"office\",\"brightness\":90,\"on\":true},{\"id\":\"dev-of-monitor\",\"name\":\"Monitor plug\",\"type\":\"plug\",\"room\":\"office\",\"on\":true}]}"
+                },
+                "latencyMs": 1102.7399589999995
+              }
+            ],
+            "elicitations": [],
+            "spoken": "{\"ok\":true,\"room\":\"bedroom\",\"devices\":[{\"id\":\"dev-lr-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"living_room\",\"brightness\":100,\"on\":true},{\"id\":\"dev-lr-floor\",\"name\":\"Floor lamp\",\"type\":\"light\",\"room\":\"living_room\",\"brightness\":80,\"on\":true},{\"id\":\"dev-lr-tv\",\"name\":\"TV\",\"type\":\"media\",\"room\":\"living_room\",\"on\":true},{\"id\":\"dev-lr-speaker\",\"name\":\"Speaker\",\"type\":\"media\",\"room\":\"living_room\",\"on\":true},{\"id\":\"dev-lr-blinds\",\"name\":\"Blinds\",\"type\":\"blinds\",\"room\":\"living_room\",\"on\":true},{\"id\":\"dev-lr-heater\",\"name\":\"Heater\",\"type\":\"climate\",\"room\":\"living_room\",\"on\":true},{\"id\":\"dev-br-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"bedroom\",\"brightness\":13,\"on\":true},{\"id\":\"dev-br-bedside\",\"name\":\"Bedside lamp\",\"type\":\"light\",\"room\":\"bedroom\",\"brightness\":13,\"on\":true},{\"id\":\"dev-br-fan\",\"name\":\"Fan\",\"type\":\"climate\",\"room\":\"bedroom\",\"on\":true},{\"id\":\"dev-kt-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"kitchen\",\"brightness\":100,\"on\":true},{\"id\":\"dev-kt-counter\",\"name\":\"Counter lights\",\"type\":\"light\",\"room\":\"kitchen\",\"brightness\":100,\"on\":true},{\"id\":\"dev-kt-kettle\",\"name\":\"Kettle plug\",\"type\":\"plug\",\"room\":\"kitchen\",\"on\":true},{\"id\":\"dev-of-desk\",\"name\":\"Desk lamp\",\"type\":\"light\",\"room\":\"office\",\"brightness\":90,\"on\":true},{\"id\":\"dev-of-monitor\",\"name\":\"Monitor plug\",\"type\":\"plug\",\"room\":\"office\",\"on\":true}]}",
+            "toolListRevision": 0
+          }
+        ],
+        "startedAt": "2026-09-30T19:20:14.129Z",
+        "state": {
+          "before": {},
+          "after": {}
+        }
+      },
+      "findings": [
+        {
+          "checkId": "latency.first_audio",
+          "severity": "warn",
+          "question": "wait",
+          "source": {
+            "kind": "hearsay",
+            "ref": "docs/03 §Latency model"
+          },
+          "message": "first audio after 1603 ms (budget 1500 ms, lower bound: planning counted as 0)",
+          "hint": "The tool share is the part the server controls; see latency.tool.",
+          "turnId": "dim-bedroom#1",
+          "evidence": {
+            "totalMs": 1603,
+            "asrMs": 300,
+            "planMs": 0,
+            "toolMs": 1103,
+            "speakMs": 200,
+            "budgetMs": 1500,
+            "lowerBound": true
+          }
+        },
+        {
+          "checkId": "latency.tool",
+          "severity": "error",
+          "question": "wait",
+          "source": {
+            "kind": "amazon-fr",
+            "ref": "MCP Toolkit quickstart: round-trip response latency under 500 ms",
+            "url": "https://developer.amazon.com/docs/alexaplus/add-ons/mcp-toolkit-quickstart.html"
+          },
+          "message": "set_scene took 1103 ms (limit 500 ms)",
+          "hint": "Answer from a cache or acknowledge first and finish in the background; keep upstream calls off the spoken path.",
+          "turnId": "dim-bedroom#1",
+          "evidence": {
+            "tool": "set_scene",
+            "latencyMs": 1103,
+            "limitMs": 500
+          }
+        },
+        {
+          "checkId": "speak.length",
+          "severity": "error",
+          "question": "listen",
+          "source": {
+            "kind": "amazon-fr",
+            "ref": "Functional requirements: voice responses under 30 seconds",
+            "url": "https://developer.amazon.com/docs/alexaplus/add-ons/functional-requirements.html"
+          },
+          "message": "spoken reply is 1358 characters (over 400, about 30 seconds)",
+          "hint": "Build the reply with speak() from @hearsayhq/kit; put data for programs in structuredContent, not in the text.",
+          "turnId": "dim-bedroom#1",
+          "evidence": {
+            "chars": 1358
+          }
+        },
+        {
+          "checkId": "speak.no_structured_dump",
+          "severity": "error",
+          "question": "listen",
+          "source": {
+            "kind": "amazon-fr",
+            "ref": "Functional requirements: no API codes, tool names, JSON or internal ids in customer-facing responses",
+            "url": "https://developer.amazon.com/docs/alexaplus/add-ons/functional-requirements.html"
+          },
+          "message": "spoken reply contains JSON or brackets (1358 chars)",
+          "hint": "Build the reply with speak() from @hearsayhq/kit; put data for programs in structuredContent, not in the text.",
+          "turnId": "dim-bedroom#1",
+          "evidence": {
+            "spoken": "{\"ok\":true,\"room\":\"bedroom\",\"devices\":[{\"id\":\"dev-lr-ceiling\",\"name\":\"Ceiling light\",\"type\":\"light\",\"room\":\"living_room\",\"brightness\":100,\"on\":true},{\"id\":\"dev-lr-floor\",\"name\":\"Floor lamp\",\"type\":\"li",
+            "matched": "JSON or brackets"
+          }
+        }
+      ],
+      "verdict": "fail"
+    }
+  ],
+  "skippedChecks": [],
+  "summary": {
+    "cases": 3,
+    "runs": 5,
+    "failedRuns": 5,
+    "errors": 17,
+    "warnings": 9,
+    "infos": 0,
+    "skipped": 0
+  }
+}
