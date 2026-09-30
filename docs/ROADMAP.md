@@ -33,5 +33,13 @@ new idea is recorded; moving one into docs/07 needs the owner.
 
 - Host profiles beyond Alexa+ (budgets and confirmation rules per assistant).
 - Real Polly → Transcribe round trip inside runs, measuring asr and speak instead of modeling them.
+- `speak.lists` counts an enumeration only when "and" or "or" comes before the last item; "a, b, c,
+  d, e, f." read without it goes uncounted (found building experiment v2, 30 Sep). Needs a rule
+  that does not also count ordinary sentences with several commas, and a fixture.
+- `consent.states_details` takes any number as "how much": a checkout question with quantities
+  but no total ("Place the order: three cartons of milk and two dozen eggs?") passes (found
+  building experiment v2, 30 Sep). A question before payment should name the total.
+- `asr.robust` reads only the reply, not the confirmation question: a server that asked "Add fifty
+  dollars of fruit?" and was told no still counts as not saying what it heard.
 - Interim-message check for tools slower than 3 s (Amazon's search requirement) once the MCP
   mechanism for it is clear.

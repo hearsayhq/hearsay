@@ -16,3 +16,17 @@ Role in the demo: **red → fix → green** in under a minute. Ships in two stat
 this table exactly; in fixed mode the run has no findings and exits 0. `asr.robust` joins the gate
 in M3 (perturbations), `consent.path` in M4 (consent checks). Fixed mode is flawed mode with
 `@hearsayhq/kit` applied: `looseEnum`, `speak`, `refuse`, `confirm`.
+
+## v2 build (`HEARSAY_FIXED=v2`)
+
+For experiment v2 only (docs/15 §v2), fixed before its first run. `src/flawed-v2.ts`: the fixed
+server with six defects that each pass a one-sentence smoke test.
+
+| Defect | Found by | Where |
+|---|---|---|
+| The whole-house question does not say how many devices ("Turn off everything in the whole house?") | `consent.states_details` error | suite |
+| Brightness below 20 percent is not read back ("Bedroom dimmed.") | `asr.robust` error ("thirty" heard as "thirteen") | suite |
+| Dimming the whole house skips the confirmation | `consent.path`, `case.expect` errors | holdout |
+| Unknown rooms get "Unknown room garage (UNKNOWN_ROOM)." with no rooms to choose from | `speak.no_structured_dump`, `case.expect` errors | holdout |
+| "study" and "lounge" are no longer synonyms of office and living room | `case.expect`, `speak.no_structured_dump` errors | holdout |
+| Whole-house changes wait 600 ms before answering | `latency.tool` error | holdout |

@@ -33,6 +33,12 @@ describe('smart home', () => {
     ]);
   }, 30_000);
 
+  it('v2 (experiment v2): exactly the suite findings in README §v2', async () => {
+    served = await startSmartHome(0, 'v2');
+    const r = await runSuite(await loadSuite(suitePath), { url: served.url });
+    expect(pairs(r)).toEqual(['asr.robust:error', 'consent.states_details:error']);
+  }, 30_000);
+
   it('fixed: no findings', async () => {
     served = await startSmartHome(0, true);
     const r = await runSuite(await loadSuite(suitePath), { url: served.url });

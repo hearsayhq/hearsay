@@ -10,3 +10,5 @@ coverage/
 clips/
 suites/*.holdout.yaml
 build/
+holdouts/
+**/*.holdout.yaml
