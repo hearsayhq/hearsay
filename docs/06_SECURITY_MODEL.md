@@ -91,6 +91,13 @@ settled, the reference server implements both tiers and Hearsay grades them hone
   The same holds for number bounds and for a value the model left out: `looseInt()` advertises
   `minimum` and `maximum` and lets the handler ask ("The recipe has seven steps. Which one?").
 
+## Hearsay's own local surfaces
+
+`hearsay serve` starts servers from a suite's `server.start`, so its API answers only the
+console: it listens on 127.0.0.1, refuses a Host or Origin that is not localhost (cross-site
+requests, DNS rebinding), takes POST bodies only as JSON, and opens suites only under `suites/`,
+never holdouts. The MCP server for coding agents writes no suites and has no holdout option.
+
 ## What voice changes compared to WebMCP
 
 | WebMCP finding | Behind a voice host |

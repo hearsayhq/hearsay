@@ -70,7 +70,8 @@ engine/src/
 ### Console API (`hearsay serve`, FR-040)
 
 Localhost only (127.0.0.1:4100). The console proxies `/api` to it; the engine decides, the
-console renders.
+console renders. Requests with a non-local Host or Origin, and POSTs that are not JSON, are
+refused; `suitePath` must name a suite under `suites/` (docs/06 §Hearsay's own local surfaces).
 
 | Endpoint | Does |
 |---|---|
