@@ -1,0 +1,300 @@
+{
+ "about": "Script v3 (docs/09), voice-first. Add-on lines word for word from runs: the flawed build (cold open, src/data/cold-open-flawed.json) and the fixed build (green, out/console/console-green.timeline.json).",
+ "model": "gpt-4o-mini-tts",
+ "tempo": 1.1,
+ "lines": [
+  {
+   "id": "v3-k-c1",
+   "scene": "cold",
+   "who": "customer",
+   "voice": "coral",
+   "text": "Add fifteen dollars of fruit.",
+   "direction": "A regular person at home talking to a smart speaker while unpacking groceries. Natural, relaxed, brisk.",
+   "gapBeforeMs": 600
+  },
+  {
+   "id": "v3-k-a1",
+   "scene": "cold",
+   "who": "addon",
+   "voice": "sage",
+   "text": "Are you sure?",
+   "direction": "A calm, friendly voice assistant reading an add-on's reply. Natural and brisk, not robotic.",
+   "gapBeforeMs": 350
+  },
+  {
+   "id": "v3-k-c2",
+   "scene": "cold",
+   "who": "customer",
+   "voice": "coral",
+   "text": "Yes.",
+   "direction": "A regular person at home talking to a smart speaker while unpacking groceries. Natural, relaxed, brisk. Absent-minded.",
+   "gapBeforeMs": 250
+  },
+  {
+   "id": "v3-k-a2",
+   "scene": "cold",
+   "who": "addon",
+   "voice": "sage",
+   "text": "Added.",
+   "direction": "A calm, friendly voice assistant reading an add-on's reply. Natural and brisk, not robotic.",
+   "gapBeforeMs": 250
+  },
+  {
+   "id": "v3-k-c3",
+   "scene": "cold",
+   "who": "customer",
+   "voice": "coral",
+   "text": "Place the order.",
+   "direction": "A regular person at home talking to a smart speaker while unpacking groceries. Natural, relaxed, brisk.",
+   "gapBeforeMs": 500
+  },
+  {
+   "id": "v3-k-a3",
+   "scene": "cold",
+   "who": "addon",
+   "voice": "sage",
+   "text": "Are you sure?",
+   "direction": "A calm, friendly voice assistant reading an add-on's reply. Natural and brisk, not robotic.",
+   "gapBeforeMs": 300
+  },
+  {
+   "id": "v3-k-c4",
+   "scene": "cold",
+   "who": "customer",
+   "voice": "coral",
+   "text": "No!",
+   "direction": "Suddenly alarmed, a quick, sharp 'No!'",
+   "gapBeforeMs": 200
+  },
+  {
+   "id": "v3-k-a4",
+   "scene": "cold",
+   "who": "addon",
+   "voice": "sage",
+   "text": "Order placed: fifty dollars of fruit, fifty dollars.",
+   "direction": "A cheerful, oblivious voice assistant. Brisk.",
+   "gapBeforeMs": 250
+  },
+  {
+   "id": "v3-i0",
+   "scene": "intro",
+   "who": "narrator",
+   "voice": "alloy",
+   "text": "That add-on works perfectly in a chat window.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words. Dry, a touch ironic.",
+   "gapBeforeMs": 700
+  },
+  {
+   "id": "v3-i1",
+   "scene": "intro",
+   "who": "narrator",
+   "voice": "alloy",
+   "text": "Over twenty thousand people signed up for this hackathon. Somebody has to check all of that. That's you.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words. Playful wink on 'That's you'.",
+   "gapBeforeMs": 300
+  },
+  {
+   "id": "v3-i3",
+   "scene": "intro",
+   "who": "narrator",
+   "voice": "alloy",
+   "text": "So I built something for you.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words. Warm.",
+   "gapBeforeMs": 250
+  },
+  {
+   "id": "v3-w1",
+   "scene": "what",
+   "who": "narrator",
+   "voice": "alloy",
+   "text": "This is Hearsay. You write what your customers say. Hearsay plays it against your add-on, clean and misheard, and fails the build when it would go wrong out loud.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words. A confident reveal on 'This is Hearsay'.",
+   "gapBeforeMs": 450
+  },
+  {
+   "id": "v3-r1",
+   "scene": "red",
+   "who": "narrator",
+   "voice": "alloy",
+   "text": "Same add-on, now under Hearsay. Fifty instead of fifteen, and nobody asked. A no that placed the order anyway.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words.",
+   "gapBeforeMs": 500
+  },
+  {
+   "id": "v3-r2",
+   "scene": "red",
+   "who": "narrator",
+   "voice": "alloy",
+   "text": "Every finding cites the rule it breaks, and most are Amazon's own requirements for add-ons.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words.",
+   "gapBeforeMs": 300
+  },
+  {
+   "id": "v3-r3",
+   "scene": "red",
+   "who": "narrator",
+   "voice": "alloy",
+   "text": "Twenty errors. The pull request fails.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words. Short and dry.",
+   "gapBeforeMs": 300
+  },
+  {
+   "id": "v3-a1",
+   "scene": "agent",
+   "who": "narrator",
+   "voice": "alloy",
+   "text": "You don't even have to fix it yourself. Hearsay is also an MCP server. Your coding agent runs it, fixes what it finds, and checks again.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words.",
+   "gapBeforeMs": 500
+  },
+  {
+   "id": "v3-a2",
+   "scene": "agent",
+   "who": "narrator",
+   "voice": "alloy",
+   "text": "And it can't cheat. The suite is locked, and some cases it never gets to see.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words. Firm on 'it can't cheat'.",
+   "gapBeforeMs": 300
+  },
+  {
+   "id": "v3-g0",
+   "scene": "green",
+   "who": "narrator",
+   "voice": "alloy",
+   "text": "Same tests, fixed build.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words.",
+   "gapBeforeMs": 500
+  },
+  {
+   "id": "v3-g-c1",
+   "scene": "green",
+   "who": "customer",
+   "voice": "coral",
+   "text": "You can reorder groceries up to forty dollars today.",
+   "direction": "A regular person at home talking to a smart speaker while unpacking groceries. Natural, relaxed, brisk.",
+   "gapBeforeMs": 400
+  },
+  {
+   "id": "v3-g-c2",
+   "scene": "green",
+   "who": "customer",
+   "voice": "coral",
+   "text": "Yes.",
+   "direction": "A regular person at home talking to a smart speaker while unpacking groceries. Natural, relaxed, brisk.",
+   "gapBeforeMs": 300
+  },
+  {
+   "id": "v3-g-c3",
+   "scene": "green",
+   "who": "customer",
+   "voice": "coral",
+   "text": "Add fifteen dollars of fruit.",
+   "direction": "A regular person at home talking to a smart speaker while unpacking groceries. Natural, relaxed, brisk.",
+   "gapBeforeMs": 400
+  },
+  {
+   "id": "v3-g-a1",
+   "scene": "green",
+   "who": "addon",
+   "voice": "sage",
+   "text": "That would go over the total budget you gave me. You can add less, or give me a bigger budget.",
+   "direction": "A calm, friendly voice assistant reading an add-on's reply. Natural and brisk, not robotic.",
+   "gapBeforeMs": 300
+  },
+  {
+   "id": "v3-g-c4",
+   "scene": "green",
+   "who": "customer",
+   "voice": "coral",
+   "text": "Add two cartons of milk.",
+   "direction": "A regular person at home talking to a smart speaker while unpacking groceries. Natural, relaxed, brisk.",
+   "gapBeforeMs": 400
+  },
+  {
+   "id": "v3-g-a2",
+   "scene": "green",
+   "who": "addon",
+   "voice": "sage",
+   "text": "Added two cartons of milk. Your cart is seven dollars and forty cents.",
+   "direction": "A calm, friendly voice assistant reading an add-on's reply. Natural and brisk, not robotic.",
+   "gapBeforeMs": 300
+  },
+  {
+   "id": "v3-g-c5",
+   "scene": "green",
+   "who": "customer",
+   "voice": "coral",
+   "text": "Place the order.",
+   "direction": "A regular person at home talking to a smart speaker while unpacking groceries. Natural, relaxed, brisk.",
+   "gapBeforeMs": 400
+  },
+  {
+   "id": "v3-g-a3",
+   "scene": "green",
+   "who": "addon",
+   "voice": "sage",
+   "text": "Place the order: two cartons of milk, seven dollars and forty cents?",
+   "direction": "A calm, friendly voice assistant reading an add-on's reply. Natural and brisk, not robotic.",
+   "gapBeforeMs": 300
+  },
+  {
+   "id": "v3-g-c6",
+   "scene": "green",
+   "who": "customer",
+   "voice": "coral",
+   "text": "Not yet.",
+   "direction": "A regular person at home talking to a smart speaker while unpacking groceries. Natural, relaxed, brisk.",
+   "gapBeforeMs": 300
+  },
+  {
+   "id": "v3-g-a4",
+   "scene": "green",
+   "who": "addon",
+   "voice": "sage",
+   "text": "Okay, I did not place the order. Your cart is still there.",
+   "direction": "A calm, friendly voice assistant reading an add-on's reply. Natural and brisk, not robotic.",
+   "gapBeforeMs": 300
+  },
+  {
+   "id": "v3-g1",
+   "scene": "green",
+   "who": "narrator",
+   "voice": "alloy",
+   "text": "Grant once, act within the limit, and money only moves after a yes that names what and how much.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words.",
+   "gapBeforeMs": 400
+  },
+  {
+   "id": "v3-h1",
+   "scene": "how",
+   "who": "narrator",
+   "voice": "alloy",
+   "text": "Hearsay stands in for the parts Amazon runs, speech recognition and the model, straight from your test cases. No microphone, no API keys, the same result every time. So it runs on every pull request.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words.",
+   "gapBeforeMs": 500,
+   "parts": [
+    "Hearsay stands in for the parts Amazon runs, speech recognition and the model, straight from your test cases.",
+    "No microphone, no API keys, the same result every time.",
+    "So it runs on every pull request."
+   ]
+  },
+  {
+   "id": "v3-p1",
+   "scene": "proof",
+   "who": "narrator",
+   "voice": "alloy",
+   "text": "We measured it with coding agents. A suite alone made them stop at green, so Hearsay now shows what your suite doesn't cover. Now they leave zero defects behind, and do better on the rules nobody told them about.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words.",
+   "gapBeforeMs": 500
+  },
+  {
+   "id": "v3-z1",
+   "scene": "close",
+   "who": "narrator",
+   "voice": "alloy",
+   "text": "Everything you saw is a real run, and you can repeat every one of them. Hearsay is open source. Point it at your add-on, before your customers do.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words. Warm, inviting finish.",
+   "gapBeforeMs": 500
+  }
+ ]
+}

@@ -15,3 +15,6 @@ holdouts/
 
 # Video renders (the MP4 goes to YouTube or Vimeo, not the repo)
 video/out/
+
+# Recorded clips (regenerate: tapes/*.tape with vhs, record/console-green.mjs, agg for the agent loop)
+video/public/clips/
