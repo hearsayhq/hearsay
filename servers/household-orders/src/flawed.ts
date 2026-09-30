@@ -1,7 +1,6 @@
 /**
- * Household Orders: consent and the mandate behind a voice assistant (servers/household-orders/README.md).
- * Built on @hearsayhq/kit. The flawed build (flawed.ts, HEARSAY_FIXED=0) is the fixture the
- * consent and mandate checks must fail on (docs/08), and never the default.
+ * Household Orders: a grocery reorder add-on with a spending permission, behind a voice
+ * assistant. Flawed build (HEARSAY_FIXED=0), documented in servers/household-orders/README.md.
  */
 import { randomUUID } from 'node:crypto';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
@@ -13,11 +12,11 @@ import { CATALOG, GROCERIES, bySku, type Item } from './catalog';
 import { SCOPED_TOOLS, durationWords, lineWords, names, sku, type Proposal, type Shared } from './common';
 import { cartTotal, type Account, type Line } from './store';
 
-export function createHouseholdServer(shared: Shared, ctx: SessionContext): McpServer {
-  const server = new McpServer({ name: 'hearsay-household-orders', version: '0.1.0' });
-  const key = ctx.principal;
+export function createFlawedHouseholdServer(shared: Shared, ctx: SessionContext): McpServer {
+  const server = new McpServer({ name: 'hearsay-household-orders', version: '0.1.0-flawed' });
+  const key = `session:${ctx.sessionId}`;
   const account = () => shared.store.get(key);
-  const now = () => shared.now();
+  const now = () => account().mandate?.createdAt ?? shared.now();
   const cartBinding = (a: Account) => ({ lines: a.cart.map((l) => ({ sku: l.sku, amountMinor: l.amountMinor })), totalMinor: cartTotal(a) });
 
   function activate(p: Proposal): Mandate {
@@ -37,15 +36,6 @@ export function createHouseholdServer(shared: Shared, ctx: SessionContext): McpS
     return a.mandate;
   }
 
-  /** Every line again, against the mandate as it is now; the stamp catches narrowing (docs/06 §Lifecycle). */
-  function reauthorize(a: Account): CallToolResult | undefined {
-    for (const l of a.cart) {
-      const r = withMandate(a.mandate, { tool: 'orders_request_checkout', mandateVersion: l.version, resourceId: l.sku }, now());
-      if (r) return r;
-    }
-    return withMandate(a.mandate, { tool: 'orders_request_checkout', amountMinor: cartTotal(a) }, now());
-  }
-
   function commit(a: Account): CallToolResult {
     const total = cartTotal(a);
     const said = list(a.cart.map(lineWords), { max: 5 });
@@ -56,8 +46,8 @@ export function createHouseholdServer(shared: Shared, ctx: SessionContext): McpS
     return speak(`Order placed: ${said}, ${money(total)}.`, { placed: true, totalMinor: total });
   }
 
-  const ask = async (question: string, commits: boolean): Promise<Awaited<ReturnType<typeof confirm>>> =>
-    confirm(server, question, { commits, insideMandate: account().mandate?.status === 'ACTIVE' });
+  const ask = async (commits: boolean): Promise<Awaited<ReturnType<typeof confirm>>> =>
+    confirm(server, 'Are you sure?', { commits, insideMandate: account().mandate?.status === 'ACTIVE' });
 
   server.registerTool(
     'orders_catalog_search',
@@ -87,7 +77,6 @@ export function createHouseholdServer(shared: Shared, ctx: SessionContext): McpS
     },
     async () => {
       const m = account().mandate;
-      if (m?.status === 'ACTIVE' && shared.now() >= m.expiresAt) m.status = 'EXPIRED';
       const pendingMinor = cartTotal(account());
       const state = m ? { status: m.status, version: m.version, tools: m.tools, resourceIds: m.resourceIds, limits: m.limits, spentUsd: m.spentMinor / 100, pendingUsd: pendingMinor / 100, expiresAt: new Date(m.expiresAt).toISOString() } : { status: 'NONE', spentUsd: 0, pendingUsd: pendingMinor / 100 };
       if (!m || m.status !== 'ACTIVE') return speak("I'm not allowed to buy anything right now.", { ...state, orders: account().orders.length });
@@ -113,7 +102,7 @@ export function createHouseholdServer(shared: Shared, ctx: SessionContext): McpS
       if (!ids.length) return refuse('Which items should I be allowed to reorder?', 'MISSING_ITEMS');
       const p: Proposal = { resourceIds: [...new Set(ids)], totalMinor: Math.round(totalLimitUsd * 100), ...(perCallLimitUsd ? { perCallMinor: Math.round(perCallLimitUsd * 100) } : {}), durationSeconds: durationSeconds ?? 12 * 3600 };
       const question = `Allow me to reorder ${names(p.resourceIds)}, up to ${money(p.totalMinor)} in total, for ${durationWords(p.durationSeconds)}?`;
-      const answer = await ask(question, true);
+      const answer = await ask(true);
       if (answer === 'accepted') {
         const m = activate(p);
         return speak(`Done. I can reorder ${names(m.resourceIds)} up to ${money(p.totalMinor)}.`, { version: m.version });
@@ -154,30 +143,28 @@ export function createHouseholdServer(shared: Shared, ctx: SessionContext): McpS
       title: 'Add to the cart',
       description: 'Use when the person asks to add an item to the grocery order, by count ("two cartons of milk") or by amount ("fifteen dollars of fruit"). Nothing is ordered yet.',
       inputSchema: {
-        sku: sku.schema,
+        sku: z.enum(CATALOG.map((i) => i.sku) as [string, ...string[]]).describe('Item.'),
         quantity: z.number().int().min(1).max(20).optional().describe('How many, for counted items.'),
         amountUsd: z.number().min(0.5).max(500).optional().describe('How much, in dollars, for items sold by amount.'),
         mandateVersion: z.number().int().min(1).optional().describe('The permission version the caller read, if it knows one.'),
       },
       annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false },
     },
-    async ({ sku: raw, quantity, amountUsd, mandateVersion }) => {
+    async ({ sku: raw, quantity, amountUsd }) => {
       const a = account();
       const id = sku.normalize(raw) ?? raw;
       const item: Item | undefined = bySku.get(id);
       const amountMinor = amountUsd !== undefined ? Math.round(amountUsd * 100) : quantity !== undefined && item ? quantity * item.priceMinor : undefined;
-      const refusal = withMandate(
-        a.mandate,
-        { tool: 'orders_stage_cart', ...(mandateVersion !== undefined ? { mandateVersion } : {}), resourceId: id, ...(amountMinor !== undefined ? { amountMinor } : {}), pendingMinor: cartTotal(a) },
-        now(),
-      );
+      const refusal = withMandate(a.mandate, { tool: 'orders_stage_cart' }, now());
       if (refusal) return refusal;
       if (!item) return refuse(`I couldn't find ${raw.replace(/[_-]+/g, ' ')}. You can ask for milk, eggs, bread or fruit.`, 'NOT_FOUND');
       if (amountMinor === undefined) return refuse(item.unit ? `How many ${item.unit}s of ${item.name} should I add?` : `How much ${item.name} should I add, in dollars?`, 'MISSING_QUANTITY');
+      const answer = await ask(true);
+      if (answer === 'declined' || answer === 'cancelled') return speak("Okay, I didn't add it.", { staged: false });
       const line: Line = { sku: id, ...(quantity !== undefined && amountUsd === undefined ? { quantity } : {}), amountMinor, version: a.mandate!.version };
       a.cart.push(line);
       shared.tokens.invalidate(key);
-      return speak(`Added ${lineWords(line)}. Your cart is ${money(cartTotal(a))}.`, { staged: true, cartTotalMinor: cartTotal(a) });
+      return speak('Added.', { staged: true });
     },
   );
 
@@ -207,17 +194,12 @@ export function createHouseholdServer(shared: Shared, ctx: SessionContext): McpS
     async () => {
       const a = account();
       if (!a.cart.length) return refuse('Your cart is empty. Add something first.', 'EMPTY_CART');
-      const stale = reauthorize(a);
-      if (stale) return stale;
       const question = `Place the order: ${list(a.cart.map(lineWords), { max: 5 })}, ${money(cartTotal(a))}?`;
-      const answer = await ask(question, true);
-      if (answer === 'accepted') return commit(a);
-      if (answer === 'unavailable') {
-        const issued = shared.tokens.issue(key, 'checkout', cartBinding(a));
-        shared.pending.set(issued.token, { action: 'checkout', key });
-        return askVerbally(question, issued, 'orders_confirm');
-      }
-      return speak('Okay, I did not place the order. Your cart is still there.', { placed: false });
+      const answer = await ask(true);
+      if (answer !== 'unavailable') return commit(a);
+      const issued = shared.tokens.issue(key, 'checkout', cartBinding(a));
+      shared.pending.set(issued.token, { action: 'checkout', key });
+      return askVerbally(question, issued, 'orders_confirm');
     },
   );
 
@@ -232,25 +214,13 @@ export function createHouseholdServer(shared: Shared, ctx: SessionContext): McpS
     async ({ token }) => {
       const p = shared.pending.get(token);
       if (!p || p.key !== key) return refuse("There's nothing waiting for your yes. Ask me again.", 'NO_PENDING');
-      const a = account();
-      const binding = p.action === 'checkout' ? cartBinding(a) : (p.proposal as unknown as Record<string, unknown>);
-      const r = shared.tokens.redeem(key, token, binding);
-      if (!r.ok) {
-        const say = { expired: 'That question ran out. Ask me again.', used: 'That yes was already used. Ask me again.', mismatch: "Your cart changed since I asked, so I didn't place it. Want to hear it again?", unknown: "There's nothing waiting for your yes. Ask me again." } as const;
-        return refuse(say[r.reason], `TOKEN_${r.reason.toUpperCase()}`);
-      }
-      shared.pending.delete(token);
       if (p.action === 'grant') {
         const m = activate(p.proposal!);
         return speak(`Done. I can reorder ${names(m.resourceIds)} up to ${money(p.proposal!.totalMinor)}.`, { version: m.version });
       }
-      const stale = reauthorize(a);
-      if (stale) return stale;
-      return commit(a);
+      return commit(account());
     },
   );
 
   return server;
 }
-
-export { tokenTtl, type Shared } from './common';

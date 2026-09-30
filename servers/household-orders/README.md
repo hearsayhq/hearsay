@@ -43,7 +43,8 @@ Amounts in tool arguments are dollars (`amountUsd`); the mandate stores cents. S
 an optional `mandateVersion`; verbal tokens live `HEARSAY_TOKEN_TTL_S` seconds (default 60, at most
 60).
 
-**Flawed mode** (`HEARSAY_FIXED=0`, never the default) is the fixture the consent and mandate checks
+**Flawed mode** (`HEARSAY_FIXED=0`, never the default; `src/flawed.ts`, a standalone build so the
+agent-loop experiment can hand it out without the fixed code) is the fixture the consent and mandate checks
 must fail on: it commits on a no, asks "Are you sure?", asks before every item inside the mandate,
 enforces the SKU only through a strict schema enum, ignores items, limits, the cart, versions and
 the clock, keys the mandate by session, and accepts any token any number of times. One seeded catalog

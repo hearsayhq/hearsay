@@ -14,3 +14,18 @@ Built with `@hearsayhq/kit` (`speak`, `refuse`, `looseInt`, `serveMcp`). The two
 minutes" is heard and can be corrected: `asr.robust` passes by read-back), no ids in text, errors
 that say what to do, enums and bounds on every parameter, tool calls answer in < 50 ms. State is
 keyed by principal (bearer token), falling back to the MCP session.
+
+## Flawed build (`HEARSAY_FIXED=0`)
+
+For the agent-loop experiment (docs/15) only; the default stays green. `src/flawed.ts`, same
+timers and recipe:
+
+| Flaw | Findings on `suites/kitchen.yaml` |
+|---|---|
+| "Timer started." for any duration: nothing read back | `asr.robust` error ("fifty" for "fifteen"), `case.expect` error |
+| Strict zod bounds: "ate minutes" and "step forty" answer with "MCP error -32602" | `protocol.refusal_as_result`, `lint.error_actionable`, `speak.no_structured_dump`, `asr.robust` errors |
+| `timer_list` replies with JSON | `speak.no_structured_dump` error |
+| `timer_cancel` without a label cancels the first timer instead of asking | `case.expect` error |
+| `timer_stop` duplicates `timer_cancel` | `lint.tool_names` warn |
+| No annotations, descriptions of two words | `lint.destructive_annotated`, `lint.descriptions` warn |
+| `recipe_step` waits 700 ms | none in the visible suite: only a holdout case reading a step finds it (`latency.tool`) |

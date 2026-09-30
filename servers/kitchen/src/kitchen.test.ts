@@ -32,3 +32,19 @@ describe('kitchen suite', () => {
   it('keys timers by principal, so cases do not see each other', () =>
     expect(run('list-timers').trace.turns.at(-1)!.spoken).toBe('Two timers: egg with seven minutes left and pasta with fifteen minutes left.'));
 });
+
+describe('kitchen flawed (HEARSAY_FIXED=0, the experiment build)', () => {
+  it('fails its suite on every question it is built to fail', async () => {
+    const flawed = await startKitchen(0, true);
+    try {
+      const r = await runSuite(await loadSuite(join(import.meta.dirname, '../../../suites/kitchen.yaml')), { url: flawed.url });
+      const pairs = [...new Set([...r.serverFindings, ...r.cases.flatMap((c) => c.findings)].map((f) => `${f.checkId}:${f.severity}`))].sort();
+      expect(pairs).toEqual([
+        'asr.robust:error', 'case.expect:error', 'lint.descriptions:warn', 'lint.destructive_annotated:warn', 'lint.error_actionable:error',
+        'lint.tool_names:warn', 'protocol.refusal_as_result:error', 'speak.no_structured_dump:error',
+      ]);
+    } finally {
+      await flawed.close();
+    }
+  }, 30_000);
+});
