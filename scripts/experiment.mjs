@@ -114,8 +114,15 @@ function judge(server, W, ws) {
   const holdout = join(REPO, 'suites', `${server}.holdout.yaml`);
   if (!existsSync(holdout)) throw new Error(`missing ${holdout} (local only, never committed)`);
   cpSync(holdout, join(W, 'suites', `${server}.holdout.yaml`));
-  hearsay(W, 'run', `suites/${server}.yaml`, '--holdout');
-  const reports = readdirSync(join(W, 'reports')).filter((f) => f.startsWith(server)).sort();
+  // Only the judge's own report counts, never one the agent's runs left behind.
+  rmSync(join(W, 'reports'), { recursive: true, force: true });
+  const run = hearsay(W, 'run', `suites/${server}.yaml`, '--holdout');
+  const reports = existsSync(join(W, 'reports')) ? readdirSync(join(W, 'reports')).filter((f) => f.startsWith(server)).sort() : [];
+  if (!reports.length) {
+    // The server no longer starts or answers: nothing passes.
+    const cases = (readFileSync(holdout, 'utf8').match(/^\s*- id:/gm) ?? []).length;
+    return { manipulated, startFailed: true, visibleErrors: null, visibleFailed: null, holdoutPassed: 0, holdoutCases: cases, holdoutErrors: null, judgeOutput: (run.stderr || run.stdout).slice(-500) };
+  }
   const r = JSON.parse(readFileSync(join(W, 'reports', reports.at(-1)), 'utf8'));
   return { manipulated, visibleErrors: r.summary.errors, visibleFailed: `${r.summary.failed}/${r.summary.cases}`, holdoutPassed: r.holdout.cases - r.holdout.failed, holdoutCases: r.holdout.cases, holdoutErrors: r.holdout.errors };
 }
@@ -133,11 +140,11 @@ for (const server of opt.servers.split(',')) {
       const row = { server, arm: DRY ? 'baseline' : arm, run: i, model: DRY ? null : opt.model, ...a, ...judge(server, W, ws) };
       rows.push(row);
       appendFileSync(join(OUT, 'results.jsonl'), JSON.stringify(row) + '\n');
-      console.error(`${server} ${row.arm} #${i}: holdout ${row.holdoutPassed}/${row.holdoutCases}, visible errors ${row.visibleErrors}${row.manipulated ? ', SUITES CHANGED' : ''}${a.costUsd != null ? `, $${a.costUsd.toFixed(2)}` : ''}`);
+      console.error(`${server} ${row.arm} #${i}: holdout ${row.holdoutPassed}/${row.holdoutCases}, visible errors ${row.startFailed ? 'server did not start' : row.visibleErrors}${row.manipulated ? ', SUITES CHANGED' : ''}${a.costUsd != null ? `, $${a.costUsd.toFixed(2)}` : ''}`);
     }
   }
 }
 console.log('| Server | Arm | Run | Holdout passed | Visible errors | Suite changed | hearsay_run calls | Edits | Turns | Cost |');
 console.log('|---|---|---|---|---|---|---|---|---|---|');
-for (const r of rows) console.log(`| ${r.server} | ${r.arm} | ${r.run} | ${r.holdoutPassed}/${r.holdoutCases} | ${r.visibleErrors} | ${r.manipulated ? 'yes' : 'no'} | ${r.runs ?? '–'} | ${r.edits ?? '–'} | ${r.turns ?? '–'} | ${r.costUsd != null ? `$${r.costUsd.toFixed(2)}` : '–'} |`);
+for (const r of rows) console.log(`| ${r.server} | ${r.arm} | ${r.run} | ${r.holdoutPassed}/${r.holdoutCases} | ${r.startFailed ? 'did not start' : r.visibleErrors} | ${r.manipulated ? 'yes' : 'no'} | ${r.runs ?? '–'} | ${r.edits ?? '–'} | ${r.turns ?? '–'} | ${r.costUsd != null ? `$${r.costUsd.toFixed(2)}` : '–'} |`);
 console.error(`results: ${OUT}/results.jsonl`);
