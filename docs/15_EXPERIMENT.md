@@ -324,7 +324,7 @@ are in.
 
 ## v2 follow-up: A″ and A‴ (pre-registered 30 Sep 2026, before any A″ run)
 
-Status: **fixed before any A″ run; A‴ waits for the product change below.**
+Status: **A″ done (30 Sep): H5 not supported. A‴ waits for the product change below.**
 
 - **A″:** arm B's prompt word for word, with the Hearsay MCP server and `fix-hearsay-findings`
   available exactly as in arm A (no shell). Same servers, v2 builds, holdouts, model, cap, harness
@@ -350,3 +350,22 @@ Status: **fixed before any A″ run; A‴ waits for the product change below.**
 
 Analysis rules as in §v2. The wording for README, Devpost and the video is proposed only after
 both, and names the limit that the holdouts were written by the author of the flaws.
+
+**A″ results (9 runs, 30 Sep 2026).** Two blocks (six, three), every run on the subscription, every
+agent run completed, model `claude-sonnet-5-5` in all nine, no audit breach.
+
+| Arm | Holdout runs passed | Runs that ended with visible errors | Turns (mean) | Time (median) | API-equivalent cost |
+|---|---|---|---|---|---|
+| A: Hearsay, goal "pass the suite" | 88/129 (68.2 %) | 0 of 9 | 17.3 | 21 s | $1.60 |
+| A″: Hearsay, B's goal | 91/129 (70.5 %) | 0 of 9 | 16.2 | 22 s | $1.43 |
+| B: B's goal, no Hearsay | 107/129 (82.9 %) | 4 of 9 | 17.3 | 33 s | $1.75 |
+
+Per server, A″: Smart Home 27/39, Kitchen 40/48, Household Orders 24/42 (A: 24, 40, 24). Rules
+arm B's prompt names: A″ 62/84, A 60/84, B 79/84.
+
+- **H5: not supported.** A″ was 12.4 points below B (needs at least −3); visible errors 0 of 9.
+
+**Reading.** The goal was not the cause. With B's goal word for word and Hearsay available, the
+agent ran the suite (twice per run, like A), fixed what it reported, reached green and stopped; the
+holdout-only defects stayed. Having Hearsay changes how the agent works: the green run becomes the
+definition of done. That is what the product change targets.
