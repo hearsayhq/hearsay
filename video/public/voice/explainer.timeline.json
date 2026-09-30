@@ -1,0 +1,46 @@
+{
+ "model": "gpt-4o-mini-tts",
+ "lengthSeconds": 24.958,
+ "lines": [
+  {
+   "id": "n-trip",
+   "who": "narrator",
+   "text": "When someone talks to your add-on, their words take a trip.",
+   "start": 0.3,
+   "end": 4.249,
+   "src": "voice/n-trip.mp3"
+  },
+  {
+   "id": "n-asr",
+   "who": "narrator",
+   "text": "Speech recognition turns the sound into text. And sometimes, fifteen becomes fifty.",
+   "start": 4.499,
+   "end": 10.898,
+   "src": "voice/n-asr.mp3"
+  },
+  {
+   "id": "n-model",
+   "who": "narrator",
+   "text": "The assistant's model picks one of your tools, and fills in the numbers.",
+   "start": 11.148,
+   "end": 15.604,
+   "src": "voice/n-model.mp3"
+  },
+  {
+   "id": "n-reply",
+   "who": "narrator",
+   "text": "Your add-on answers. Out loud. Every word of it.",
+   "start": 15.854,
+   "end": 19.729,
+   "src": "voice/n-reply.mp3"
+  },
+  {
+   "id": "n-hearsay",
+   "who": "narrator",
+   "text": "Hearsay rides along the whole trip, and asks four questions a listener would ask.",
+   "start": 20.079,
+   "end": 24.958,
+   "src": "voice/n-hearsay.mp3"
+  }
+ ]
+}

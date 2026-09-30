@@ -1,0 +1,11 @@
+
+> hearsay
+> tsx packages/cli/src/index.ts run suites/kitchen.yaml
+
+kitchen · 6 cases · 8 runs with variants · scripted · seed 1
+
+Did it hear me right?
+! (server)         coverage.values  warn   timer_start.minutes: no case tries a value outside 1–240
+
+0 errors · 1 warning · 0 info · 0 of 8 runs failed
+report: reports/kitchen-2026-09-30T19-58-34.json
