@@ -1,6 +1,6 @@
 ---
 name: fix-hearsay-findings
-description: Fix an MCP add-on server until its Hearsay suite is green. Use when a Hearsay run (the hearsay_run tool) reports findings for the server you are working on, or when asked to make an add-on work behind a voice assistant such as Alexa+. Changes server code only; never edits suites or the suite lock.
+description: Fix an MCP add-on server until its Hearsay suite is green, then review it beyond what the suite covers. Use when a Hearsay run (the hearsay_run tool) reports findings for the server you are working on, or when asked to make an add-on work behind a voice assistant such as Alexa+. Changes server code only; never edits suites or the suite lock.
 ---
 
 # Fix Hearsay findings
@@ -17,8 +17,28 @@ change the **server** until Hearsay has no errors.
 3. Change only the server's code. Prefer the `@hearsayhq/kit` block the hint names.
 4. `hearsay_run` again with `only: "failed"`.
 5. Repeat until there are no errors.
-6. Finish with one full `hearsay_run` (no `only`) and report: errors and warnings left, and what
-   you changed, in a few lines.
+6. Green is not the end. Go on with the review below.
+
+## After green: review beyond the suite
+
+Green means the suite's cases pass. It does not mean the server is right: the suite only judges the
+paths it reaches, and Hearsay also runs cases you cannot see.
+
+1. Read the `coverage.*` warnings of the last run. They name tools, parameter values, bounds and
+   confirmation paths that no case exercises. Read the code of each of those paths.
+2. Go through the four questions. For each, call `hearsay_explain` on its checks and check every
+   tool's code, every branch, not only the ones the suite reaches:
+   - Did it hear me right? `asr.robust`, `lint.schema_constraints`, `coverage.values`
+   - Do I have to wait? `latency.tool`
+   - Can I listen to this? `speak.no_structured_dump`, `speak.length`, `speak.lists`,
+     `lint.error_actionable`
+   - Did I agree? `consent.path`, `consent.states_details`, `consent.decline_holds`,
+     `consent.over_confirmation`, and `mandate.version_race` if the server has a mandate
+   Fix what breaks a rule, in server code.
+3. Finish with one full `hearsay_run` (no `only`); it must stay green.
+4. Report in a few lines: errors and warnings left, what you changed, and under **Proposed cases**
+   one YAML case per coverage gap (`id`, `say`, `expect`) for a person to add to the suite by pull
+   request. Never write them into `suites/` yourself.
 
 ## Hard rules
 
@@ -50,6 +70,7 @@ change the **server** until Hearsay has no errors.
 | `words(n)`, `money(minor)`, `count(n, noun)`, `list(items)` | Numbers, money and short lists in words. |
 | `refuse(sentence, code, details?)` | A refusal as `isError` with one sentence and a code. |
 | `looseEnum(values, synonyms)` | Advertise an enum, accept any string, normalise it ("livingroom" → `living_room`). |
+| `looseInt(min, max)` | Advertise an integer range, accept anything, refuse out-of-range values in words instead of a schema error. |
 | `confirm(server, question, { commits, insideMandate })` | Ask the person through the host (elicitation) before a commit. Returns `accepted`, `declined`, `cancelled`, `unavailable` or `not-needed`. |
 | `VerbalTokens`, `askVerbally` | Spoken confirmation with a bound, single-use token when the host has no elicitation. |
 | `withMandate(mandate, call)` | Refuse anything outside what the person allowed, as a spoken result. |

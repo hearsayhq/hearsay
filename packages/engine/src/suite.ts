@@ -107,7 +107,7 @@ export const SuiteSchema = z
   .strict()
   .superRefine((s, ctx) => {
     const ids = new Set<string>();
-    const serverScope = new Set(CHECKS.filter((c) => c.scope === 'server').map((c) => c.id));
+    const serverScope = new Set(CHECKS.filter((c) => c.scope !== 'turn').map((c) => c.id));
     for (const c of s.cases) {
       if (ids.has(c.id)) ctx.addIssue({ code: 'custom', message: `duplicate case id "${c.id}"` });
       ids.add(c.id);
@@ -140,6 +140,13 @@ export function serverChecksFor(suite: Suite): string[] {
   const always = server.filter((x) => x.alwaysOn).map((x) => x.id);
   const ids = new Set(server.map((x) => x.id));
   return [...new Set([...always, ...suite.checks.filter((id) => ids.has(id))])];
+}
+
+/** Suite-scope checks (coverage.*): always-on ones plus the suite's; run once after all cases. */
+export function suiteChecksFor(suite: Suite): string[] {
+  const scoped = CHECKS.filter((x) => x.scope === 'suite');
+  const ids = new Set(scoped.map((x) => x.id));
+  return [...new Set([...scoped.filter((x) => x.alwaysOn).map((x) => x.id), ...suite.checks.filter((id) => ids.has(id))])];
 }
 
 /** Holdout cases (FR-018): `<suite>.holdout.yaml` next to the suite, gitignored, only for `--holdout`. */

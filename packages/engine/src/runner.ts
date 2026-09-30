@@ -6,7 +6,7 @@
 import { randomUUID } from 'node:crypto';
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { CHECKS } from './catalog';
-import { IMPLEMENTED, SERVER_CHECKS, TURN_CHECKS } from './checks/index';
+import { IMPLEMENTED, SERVER_CHECKS, SUITE_CHECKS, TURN_CHECKS } from './checks/index';
 import type { Cassette, ModelProvider, Orchestrator, OrchestratorMode } from './orchestrator';
 import { llmOrchestrator } from './orchestrators/llm';
 import { misheardNumbers, scriptedCall, scriptedOrchestrator } from './orchestrators/scripted';
@@ -14,7 +14,7 @@ import { CLEAN, variantsFor, type Variant } from './perturb/index';
 import { loadRecorded } from './perturb/recorded';
 import type { CaseResult, Finding, Report } from './report';
 import { McpSession } from './session';
-import { loadHoldout, serverChecksFor, turnChecksFor, type Suite, type SuiteCase } from './suite';
+import { loadHoldout, serverChecksFor, suiteChecksFor, turnChecksFor, type Suite, type SuiteCase } from './suite';
 import type { Span, StateSnapshot, ToolResult, Trace, Turn } from './trace';
 
 export interface RunOptions {
@@ -231,6 +231,12 @@ export async function runSuite(suiteIn: Suite, opts: RunOptions = {}): Promise<R
       const check = SERVER_CHECKS.get(id);
       if (check) serverFindings.push(...(await check.run({ suite, url, tools, server: firstServer, newPrincipal, playForProbe: (c, o) => playForProbe(suite, url, c, o), ...(opts.suitePath ? { suitePath: opts.suitePath } : {}) })));
     }
+
+  // Coverage over the visible suite: holdout cases and their traces never count (FR-067).
+  if (tools) {
+    const ctx = { suite, cases: suite.cases.filter((c) => !holdoutIds.has(c.id)), tools, results: cases.filter((r) => !r.holdout) };
+    for (const id of suiteChecksFor(suite)) serverFindings.push(...(SUITE_CHECKS.get(id)?.run(ctx) ?? []));
+  }
 
   const asked = new Set([...suite.checks, ...selected.flatMap((c) => c.checks ?? []), ...CHECKS.filter((x) => x.alwaysOn).map((x) => x.id)]);
   const skippedChecks = [...asked].filter((id) => !IMPLEMENTED.has(id)).sort();

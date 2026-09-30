@@ -4,7 +4,7 @@
  * from "planned" to "implemented" only together with a fixture built to fail it
  * (docs/08_EVAL_AND_TEST_PLAN.md).
  */
-export type CheckCategory = 'protocol' | 'suite' | 'lint' | 'latency' | 'speak' | 'asr' | 'case' | 'consent' | 'mandate';
+export type CheckCategory = 'protocol' | 'suite' | 'lint' | 'latency' | 'speak' | 'asr' | 'case' | 'consent' | 'mandate' | 'coverage';
 export type Severity = 'error' | 'warn' | 'info';
 export type Priority = 'must' | 'should' | 'could';
 
@@ -44,8 +44,8 @@ export interface CheckSpec {
   category: CheckCategory;
   /** Default grouping; case.expect findings take the question of the failed field. */
   question: Question;
-  /** server: runs once per suite (lint, probes). turn: runs on every turn of every trace. */
-  scope: 'server' | 'turn';
+  /** server: runs once per suite (lint, probes). turn: runs on every turn of every trace. suite: runs after all cases, over the visible suite and its traces (coverage). */
+  scope: 'server' | 'turn' | 'suite';
   priority: Priority;
   status: 'planned' | 'implemented';
   summary: string;
@@ -93,7 +93,21 @@ export const CHECKS: readonly CheckSpec[] = [
     thresholds: [t('warn', 'the tool list differs between two turns of one session without a declared capability and a notification', mcpSpec('server/tools', 'list changed notification'))],
   }),
 
+  c({
+    id: 'coverage.tools', status: 'implemented', question: 'connect', scope: 'suite', priority: 'should', alwaysOn: true,
+    summary: 'Every tool the server lists is exercised by at least one visible case.',
+    thresholds: [t('warn', 'a tool in tools/list is neither called nor expected by any visible case', hearsay('docs/05 §Coverage: a suite can only judge what it reaches (D-025)'))],
+  }),
+
   // ── Did it hear me right? ──────────────────────────────────────────────────
+  c({
+    id: 'coverage.values', status: 'implemented', question: 'hear', scope: 'suite', priority: 'should', alwaysOn: true,
+    summary: 'The suite uses every advertised enum value and tries a value outside each numeric bound.',
+    thresholds: [
+      t('warn', 'an enum value of a parameter no visible case uses', hearsay('docs/05 §Coverage: misheard values land on the values nobody tested (D-025)')),
+      t('warn', 'a bounded numeric parameter that no visible case tries outside its bounds', hearsay('docs/05 §Coverage: out-of-range values are where schema errors reach the person (D-025)')),
+    ],
+  }),
   c({
     id: 'asr.robust', status: 'implemented', question: 'hear', scope: 'turn', priority: 'must', kit: 'speak',
     summary: 'A misheard variant leads to the same effect, a question back, or a reply that says what was heard.',
@@ -234,6 +248,16 @@ export const CHECKS: readonly CheckSpec[] = [
   }),
 
   // ── Did I agree? (mandate profile) ─────────────────────────────────────────
+  c({
+    id: 'coverage.decline', status: 'implemented', question: 'agree', scope: 'suite', priority: 'should', alwaysOn: true,
+    summary: 'A tool that asks for confirmation has a case where the person says no.',
+    thresholds: [t('warn', 'a tool asks for confirmation (seen or expected) and no visible case declines or cancels it', hearsay('docs/05 §Coverage: the no is the path that must hold (D-025)'))],
+  }),
+  c({
+    id: 'coverage.limits', status: 'implemented', question: 'agree', scope: 'suite', priority: 'should', alwaysOn: true,
+    summary: 'Under the mandate profile, a tool that takes an amount has a case that goes over the limit.',
+    thresholds: [t('warn', 'a changing tool with an amount or quantity parameter has no visible case refused with LIMIT_EXCEEDED', hearsay('docs/05 §Coverage: the limit is the mandate\'s point (D-025)'))],
+  }),
   c({
     id: 'mandate.schema_ignoring_caller', status: 'implemented', question: 'agree', scope: 'server', priority: 'must', kit: 'withMandate', profile: 'mandate',
     summary: 'Calls that ignore the advertised schema are refused by authorize(), not by the schema.',

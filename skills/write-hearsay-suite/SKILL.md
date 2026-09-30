@@ -33,7 +33,13 @@ none. The owner reviews it in a pull request and locks it; from then on it is th
    - `after` for cases that need earlier state (listing timers after starting two).
 4. Call `hearsay_run` on the new file. If it says the suite is not valid, fix the suite and run
    again until it loads.
-5. Report in the chat: the file, the cases in one line each, and the run's findings as they are.
+5. Read the `coverage.*` warnings: tools no case reaches, enum values no case uses, bounds no case
+   crosses, confirmations nobody declines, amounts never taken over the limit. Add cases to your
+   draft until they are gone, or say in the report why a gap stays (a tool a test must not call,
+   say). Run again after adding. A suite an agent will fix against is only as good as what it
+   reaches.
+6. Report in the chat: the file, the cases in one line each, the coverage gaps left and why, and
+   the run's findings as they are.
 
 ## Hard rules
 

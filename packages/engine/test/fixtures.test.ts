@@ -13,7 +13,9 @@ afterEach(async () => {
   served = undefined;
 });
 
-const findings = (r: Report) => [...r.serverFindings, ...r.cases.flatMap((c) => c.findings)];
+// coverage.* (suite-level) has its own fixtures; here it is noise.
+const findings = (r: Report) => [...r.serverFindings, ...r.cases.flatMap((c) => c.findings)].filter((f) => !f.checkId.startsWith('coverage.'));
+const server = (r: Report) => r.serverFindings.filter((f) => !f.checkId.startsWith('coverage.'));
 const pairs = (r: Report) => findings(r).map((f) => `${f.checkId}:${f.severity}`);
 
 describe('latency.tool', () => {
@@ -73,18 +75,18 @@ describe('protocol.version', () => {
   it('is an error when the server negotiates an older version than 2025-11-25', async () => {
     served = await rawServer(() => '2025-06-18');
     const r = await runSuite(suite(served.url));
-    expect(r.serverFindings).toEqual([expect.objectContaining({ checkId: 'protocol.version', severity: 'error', question: 'connect' })]);
+    expect(server(r)).toEqual([expect.objectContaining({ checkId: 'protocol.version', severity: 'error', question: 'connect' })]);
   });
 
   it('is a warning when a client offering 2025-03-26 is turned away', async () => {
     served = await rawServer((v) => (v === '2025-03-26' ? new Error('Unsupported protocol version') : v));
     const r = await runSuite(suite(served.url));
-    expect(r.serverFindings).toEqual([expect.objectContaining({ checkId: 'protocol.version', severity: 'warn', source: expect.objectContaining({ kind: 'amazon-fr' }) })]);
+    expect(server(r)).toEqual([expect.objectContaining({ checkId: 'protocol.version', severity: 'warn', source: expect.objectContaining({ kind: 'amazon-fr' }) })]);
   });
 
   it('passes an SDK server', async () => {
     served = await fakeServer(twoTools);
-    expect((await runSuite(suite(served.url))).serverFindings).toEqual([]);
+    expect(server(await runSuite(suite(served.url)))).toEqual([]);
   });
 });
 
