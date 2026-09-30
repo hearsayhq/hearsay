@@ -7,14 +7,14 @@ Judges may stop at 3:00. Best material first. M7 only cuts: every shot comes fro
 
 | Time | Shot | Line |
 |---|---|---|
-| 0:00 | Console, Household Orders: "add fifteen dollars of fruit" heard as "fifty" → `LIMIT_EXCEEDED`, spoken | "Speech recognition changes numbers. Hearsay makes sure that never turns into a payment nobody agreed to." |
-| 0:20 | Four questions on screen; Local Inspector comparison line | "Amazon's Local Inspector checks what your server declares. Hearsay tests what happens when a person talks to it." |
+| 0:00 | Console, Household Orders, Run suite: case `misheard-amount`, said "add fifteen dollars of fruit", heard "add fifty dollars of fruit" → the spoken refusal (`LIMIT_EXCEEDED`) | "Speech recognition changes numbers. Hearsay makes sure that never turns into a payment nobody agreed to." |
+| 0:20 | Four questions on screen, "Can it connect?" as the precondition above them; Local Inspector comparison line | "Amazon's Local Inspector checks what your server declares. Hearsay tests what happens when a person talks to it." |
 | 0:35 | Smart Home flawed: JSON read aloud, "livingroom" misheard, whole house off without asking, 1.1 s tool → kit applied, green, exit code 0 | "This one works fine in a chat client. Spoken, it's broken. Every finding cites the rule it breaks, and the fix." |
 | 1:05 | An agent edits an expectation in the suite → `suite.integrity` red | "And it can't cheat. Hearsay locks your suite and keeps test cases your agent never sees." |
 | 1:25 | Household Orders: grant once, stage without being asked, "place the order" → elicitation modal → decline → nothing committed | "Consent is for your customers, not for you. Grant once, act freely within the limit, confirm only when money moves." |
 | 1:50 | Same with a client without elicitation: spoken question, token, warn | "Without elicitation, a model could hallucinate that yes. Hearsay says so." |
 | 2:15 | `gen-variants`: Polly → phone line → Transcribe, the heard text in the suite | "Real mishearings, recorded once, replayed forever." |
-| 2:35 | The agent loop (clip `m2b-agent-loop`), then the experiment's one sentence; catalog, repo, license | "Hearsay itself is an MCP server and Agent Skills: your coding agent runs it, fixes what it finds, and can't cheat by editing the tests. Open source, for Alexa+, unofficial." |
+| 2:35 | The agent loop (clip `m2b-agent-loop`), then the experiment's one sentence from docs/15, word for word, with "precise task description, three runs per server and arm" as a caption; catalog, repo, license | "Hearsay itself is an MCP server and Agent Skills: your coding agent runs it, fixes what it finds, and can't cheat by editing the tests. Open source, for Alexa+, unofficial." |
 
 ## Clips per gate
 

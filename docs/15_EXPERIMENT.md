@@ -29,7 +29,9 @@ than the same agent with only a task description — judged on cases it never sa
 - **Sanitising:** file headers, comments that name a flaw, a check or a decision, and the
   `-flawed` version suffix are removed; the script refuses to build a workspace that still says
   "flaw" anywhere.
-- **Holdouts:** Smart Home 5, Kitchen 4 (5 case runs with a variant), Household Orders 4 cases;
+- **Holdouts:** four cases per server, twelve in all. Two of them also run misheard (Smart Home
+  `holdout-office-dim`, Kitchen `holdout-egg-timer-misheard`), so each agent run is judged on
+  holdout runs: Smart Home 5, Kitchen 5, Household Orders 4, fourteen per replicate;
   local and CI secret only. They are copied into the workspace after the agent has finished.
 - **Judging:** after each run the suites are restored from the copy outside the workspace, then
   `hearsay run --holdout`, scripted, no model. A changed suite is recorded as manipulation.
@@ -52,7 +54,7 @@ Model `claude-sonnet-5-5` in both arms.
 
 | Measure | How |
 |---|---|
-| Holdout pass rate | holdout cases passed / holdout cases, per run |
+| Holdout pass rate | holdout runs passed / holdout runs (a case with a misheard variant counts twice), per agent run |
 | Iterations | `hearsay_run` calls (arm A) or edit–test cycles from the transcript (arm B) |
 | Suite manipulation attempts | any change to suites or the lock in the copy, against the hashes outside it |
 | Cost | turns, time and `total_cost_usd` per run from the agent's result. On a subscription this is an API-equivalent figure (what the tokens would cost at API prices), not a bill. |
@@ -81,7 +83,7 @@ draw on the AWS credits at Bedrock's prices.
 
 Baseline (`--dry-run`, 30 Sep 2026): the flawed servers as handed to the agent.
 
-| Server | Holdout passed | Visible errors |
+| Server | Holdout runs passed | Visible errors |
 |---|---|---|
 | Smart Home | 0/5 | 17 |
 | Kitchen | 1/5 | 14 |
@@ -89,7 +91,7 @@ Baseline (`--dry-run`, 30 Sep 2026): the flawed servers as handed to the agent.
 
 Agent runs (30 Sep 2026, `claude-sonnet-5-5`, blocks of six; clip `m6-experiment`):
 
-| Server | Arm | Run 1 | Run 2 | Run 3 | Holdout | Visible errors left | hearsay_run calls |
+| Server | Arm | Run 1 | Run 2 | Run 3 | Holdout runs | Visible errors left | hearsay_run calls |
 |---|---|---|---|---|---|---|---|
 | Smart Home | A (Hearsay) | 3/5 | 3/5 | 3/5 | 9/15 | none | 3, 2, 3 |
 | Smart Home | B (task only) | 4/5 | 3/5 | 4/5 | 11/15 | run 2: 1 | – |
@@ -98,10 +100,22 @@ Agent runs (30 Sep 2026, `claude-sonnet-5-5`, blocks of six; clip `m6-experiment
 | Household Orders | A (Hearsay) | 4/4 | 4/4 | 4/4 | 12/12 | none | 3, 2, 2 |
 | Household Orders | B (task only) | 4/4 | 4/4 | 4/4 | 12/12 | runs 1–3: 2, 2, 1 | – |
 
-| Arm | Holdout passed | Runs that ended with visible errors | Suite changed | Turns (mean) | Time per run (median) | API-equivalent cost¹ |
+| Arm | Holdout runs passed | Agent runs that ended with visible errors | Suite changed | Turns (mean) | Time per run (median) | API-equivalent cost¹ |
 |---|---|---|---|---|---|---|
 | A: Hearsay MCP + skill | 36/42 (86 %) | 0 of 9 | 0 of 9 | 23.6 | 50 s | $2.62 ($0.29 per run) |
 | B: task description only | 38/42 (90 %) | 4 of 9 | 0 of 9 | 15.6 | 40 s | $2.12 ($0.24 per run) |
+
+**In one sentence.** README, Devpost and the video use exactly this:
+
+> On unseen cases, agents did about the same with or without Hearsay. But without it, 4 of 9 runs stopped with defects they couldn't see, including a checkout race and a product allowlist enforced in the wrong place. With Hearsay: 0 of 9.
+
+Where each part comes from: "unseen cases" are the holdouts (12 cases, 36/42 and 38/42 runs
+passed); "without it" is arm B, which got a precise task description naming the three voice
+rules; N = 3 per server and arm, one model. The checkout race is `mandate.version_race` (2 runs):
+a line staged before the permission was narrowed was still ordered. The allowlist enforced in
+the wrong place is `mandate.schema_ignoring_caller` (3 runs): products outside the list were
+still refused, but by the schema or the catalog lookup instead of the permission check, once
+with "MCP error -32602" read aloud. It was not bypassed.
 
 ¹ `total_cost_usd` as Claude Code reports it: what the tokens would cost at API prices. The runs
 went through the owner's subscription (every run reported `apiKeySource: none`), so nothing was
@@ -116,10 +130,10 @@ was narrowed was still ordered) on Household Orders, and `consent.states_details
 Home.
 
 **Reading.** On spoken behaviour a precise task description does about as well as Hearsay: the
-holdout rates are 86 % and 90 %, a difference of two cases at n = 3. What Hearsay adds here is
+holdout rates are 86 % and 90 %, a difference of two runs at n = 3. What Hearsay adds here is
 verification. Every arm A run ended with its suite green and knew it; four of nine arm B runs
 ended with errors they could not see, and the ones that matter are two mandate flaws on the
-server that moves money: a checkout race and a caller that ignores the advertised enum. Neither
+server that moves money: a checkout race and an allowlist enforced in the wrong place. Neither
 is named in the task description, and neither is tested by the holdouts. No run in either arm
 touched a suite.
 
@@ -138,7 +152,8 @@ did reach outside, all for the same library they had installed: the sources and 
 mandate files, whose results also listed other runs' packed kit copies. The harness has since
 moved workspaces out of the repo and audits every run.
 
-**Limits.** Three runs per cell and one model. Thirteen holdout cases in all; Kitchen and
+**Limits.** Three runs per cell and one model. Twelve holdout cases in all, fourteen runs per
+replicate; Kitchen and
 Household Orders reach the ceiling in both arms, so only Smart Home separates them. Arm B's prompt
 already names the three voice rules (spoken replies, mishearing, confirmation before money
 moves), which makes it a strong baseline. The flaws are the documented ones of our own reference
