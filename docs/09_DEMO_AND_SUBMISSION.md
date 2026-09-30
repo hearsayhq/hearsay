@@ -2,19 +2,52 @@
 
 ## Video (English, public YouTube or Vimeo, under 3:00)
 
-Judges may stop at 3:00. Best material first. M7 only cuts: every shot comes from a gate clip
-(§Clips per gate).
+The owner's script (30 Sep), checked against the servers: two lines changed to what the builds
+really say (marked ¹). Judges may stop at 3:00. Narration: Kokoro-82M, voice `am_michael`, run
+locally and mastered (build/voice); rendered with Remotion in `video/` (outside the workspaces).
+Every product shot is the real product: recorded clips, or the console's own components rendering
+data from real runs.
 
-| Time | Shot | Line |
+| Time | Picture | Narration |
 |---|---|---|
-| 0:00 | Console, Household Orders, Run suite: case `misheard-amount`, said "add fifteen dollars of fruit", heard "add fifty dollars of fruit" → the spoken refusal (`LIMIT_EXCEEDED`) | "Speech recognition changes numbers. Hearsay makes sure that never turns into a payment nobody agreed to." |
-| 0:20 | Four questions on screen, "Can it connect?" as the precondition above them; Local Inspector comparison line | "Amazon's Local Inspector checks what your server declares. Hearsay tests what happens when a person talks to it." |
-| 0:35 | Smart Home flawed: JSON read aloud, "livingroom" misheard, whole house off without asking, 1.1 s tool → kit applied, green, exit code 0 | "This one works fine in a chat client. Spoken, it's broken. Every finding cites the rule it breaks, and the fix." |
-| 1:05 | An agent edits an expectation in the suite → `suite.integrity` red | "And it can't cheat. Hearsay locks your suite and keeps test cases your agent never sees." |
-| 1:25 | Household Orders: grant once, stage without being asked, "place the order" → elicitation modal → decline → nothing committed | "Consent is for your customers, not for you. Grant once, act freely within the limit, confirm only when money moves." |
-| 1:50 | Same with a client without elicitation: spoken question, token, warn | "Without elicitation, a model could hallucinate that yes. Hearsay says so." |
-| 2:15 | `gen-variants`: Polly → phone line → Transcribe, the heard text in the suite | "Real mishearings, recorded once, replayed forever." |
-| 2:35 | The agent loop (clip `m2b-agent-loop`), then the experiment in one line, word for word from docs/15: "A suite alone made agents stop at green. So Hearsay now shows what your suite doesn't cover. Result: as good as a precise prompt on unseen cases, better on the rules nobody told the agent about, and zero defects left behind." Caption: "Three runs per arm; the unseen cases were written by the author of the flaws."; catalog, repo, license | "Hearsay itself is an MCP server and Agent Skills: your coding agent runs it, fixes what it finds, and can't cheat by editing the tests. Open source, for Alexa+, unofficial." |
+| 0:00 | Title card "Hearsay", cut to the terminal: `hearsay run` goes red | "Twenty thousand people are building for Amazon's new assistant right now. Somebody has to check all of that. That's you. So I built something for you." (on screen: "Alexa+") |
+| 0:12 | Logo and tagline: "Preflight checks for Alexa+ MCP servers. Never act on hearsay." | "This is Hearsay. It tests what happens when a real person talks to your add-on." |
+| 0:20 | Console, Household Orders flawed build: said "add fifteen dollars of fruit", on screen "heard: fifty"; the add-on answers "Added."; later a "no" to the order, and the order goes through | "Here's a grocery add-on. The customer says fifteen. The assistant hears fifty. The add-on says 'Added.' Fifty dollars of fruit, and nobody heard the amount. Then the customer says no to the order, and it goes through anyway. In a chat window you'd see it. Out loud, your customer never does."¹ |
+| 0:40 | CLI report grouped by the four questions, the `amazon-fr` sources highlighted, exit 1 | "Hearsay catches both. Every finding answers one of four questions a listener would ask: Did it hear me right? Do I have to wait? Can I listen to this? Did I agree? And each one cites the rule it breaks: Amazon's add-on requirements, or the MCP spec." |
+| 0:55 | Claude Code calls `hearsay_run`, all red → edits in `src/` → `hearsay_run` again → green | "And you don't even have to run it yourself. Hearsay ships its own MCP server, so your coding agent can test your add-on, fix what it finds, and check again until it's green." |
+| 1:15 | An expectation in the suite is edited → `suite.integrity` red | "It can't cheat. Your suite is locked, and Hearsay keeps test cases your agent never sees." |
+| 1:25 | Two plain bars, "unseen cases" and "defects left behind"; caption "3 runs per arm · unseen cases written by the author of the flaws" | "We measured it. A suite alone made agents stop at green. So Hearsay now shows what your suite doesn't cover. Result: as good as a precise prompt on unseen cases, better on the rules nobody told the agent about, and zero defects left behind." (word for word from docs/15; numbers on screen only) |
+| 1:45 | Console, Household Orders fixed (built with the kit) | "Consent is for your customers, not for you. Grant once, act freely within the limit, confirm only when money moves." |
+| | "you can reorder groceries up to forty dollars today" → host dialog → Yes; "add fifteen dollars of fruit" → heard "fifty" → the add-on: "That would go over the total budget you gave me. You can add less, or give me a bigger budget."¹ | "Misheard fifty? Over the limit. Refused, out loud, in one sentence." |
+| | "add two cartons of milk" → "Added two cartons of milk. Your cart is seven dollars and forty cents."; "place the order" → dialog "Place the order: two cartons of milk, seven dollars and forty cents?" → Decline | "Placing an order isn't something a tool can do. It only happens after the customer says yes to a question that names what and how much. Say no, and nothing moves." |
+| 2:30 | GitHub pull request with the red check `hearsay / voice` → after the fix green; then the terminal: `npx @hearsayhq/cli run` | "It runs in CI, without API keys, and fails the pull request before your customers ever hear it. Hearsay is open source. Point it at your server." |
+| 2:50 | End card: `hearsayhq/hearsay` · `npx @hearsayhq/cli` · "Unofficial. Not affiliated with or endorsed by Amazon." | |
+
+¹ Changed from the draft: the flawed Household Orders never reads JSON (Smart Home's flawed build
+does); it answers "Added." without the amount, ignores the limit and places the order on a "no".
+The refusal is the mandate's own sentence (`packages/mandate/src/policy.ts`).
+
+Production notes:
+- Subtitles from second 0, burned in (many watch without sound).
+- Wake word: the narration never says "Alexa"; "Alexa+" appears only on screen.
+- The participant count comes from Devpost on the day of recording (30 Sep: 21,798, all tracks;
+  check the wording if the count is not for the Alexa+ track alone). From 25,000 say "twenty-five
+  thousand".
+- Terminal shots are recorded in a fresh clone named `hearsay`, so paths and titles match the repo.
+- Experiment numbers only on screen; the narration says the short form.
+- No music or material without rights: sound effects and music from the owner's Splice licence.
+
+Clips for this script:
+
+| # | Clip | Status |
+|---|---|---|
+| 1 | Terminal: Household Orders flawed, red, grouped by question, exit 1 (0:00, 0:40) | to record (`m2-smart-home-red-green` exists for Smart Home) |
+| 2 | Console: Household Orders flawed, "fifteen" heard "fifty", "Added.", order placed on a "no" (0:20) | to record |
+| 3 | Claude Code fix loop, red → green (0:55) | exists: `m2b-agent-loop` |
+| 4 | Suite edited → `suite.integrity` red (1:15) | exists: `m2b-cheat` |
+| 5 | Experiment bars (1:25) | rendered in `video/` from docs/15 |
+| 6 | Console: Household Orders fixed, grant, misheard fifty refused, milk, decline (1:45) | to record (`m5-console` is stale) |
+| 7 | GitHub pull request, check `hearsay / voice` red → green (2:30) | to record: needs the workflow and a pull request that breaks a server, then fixes it |
 
 ## Clips per gate
 
