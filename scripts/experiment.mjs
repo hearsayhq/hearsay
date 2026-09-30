@@ -10,6 +10,7 @@
  *   node scripts/experiment.mjs [--runs 3] [--first 1] [--servers kitchen,household-orders,smart-home]
  *                               [--arms A,B] [--model sonnet] [--port 4140] [--out dir]
  *   node scripts/experiment.mjs --audit --out dir          list every file access outside each run's workspace
+ *   node scripts/experiment.mjs --version v2 --analyze --out dir   the pre-registered analysis (docs/15 §v2)
  *   node scripts/experiment.mjs --version v2 [--limit 6]   experiment v2 (docs/15 §v2): v2 builds, holdouts/v2,
  *                                                          arms A, B and Bs (B′: B plus a shell); --limit stops
  *                                                          after that many new runs, so the same command runs the
@@ -34,7 +35,7 @@ const REPO = new URL('..', import.meta.url).pathname.replace(/\/$/, '');
 const TSX = join(REPO, 'node_modules/.bin/tsx');
 const KIT = join(REPO, 'build/npm/hearsayhq-kit-0.1.0.tgz');
 const MCP = join(REPO, 'build/npm/hearsayhq-mcp-0.1.0.tgz');
-const { values: opt } = parseArgs({ options: { runs: { type: 'string', default: '3' }, servers: { type: 'string', default: 'smart-home,kitchen,household-orders' }, arms: { type: 'string' }, model: { type: 'string', default: 'sonnet' }, first: { type: 'string', default: '1' }, port: { type: 'string', default: '4140' }, out: { type: 'string' }, version: { type: 'string', default: 'v1' }, limit: { type: 'string' }, 'dry-run': { type: 'boolean' }, audit: { type: 'boolean' } } });
+const { values: opt } = parseArgs({ options: { runs: { type: 'string', default: '3' }, servers: { type: 'string', default: 'smart-home,kitchen,household-orders' }, arms: { type: 'string' }, model: { type: 'string', default: 'sonnet' }, first: { type: 'string', default: '1' }, port: { type: 'string', default: '4140' }, out: { type: 'string' }, version: { type: 'string', default: 'v1' }, limit: { type: 'string' }, 'dry-run': { type: 'boolean' }, audit: { type: 'boolean' }, analyze: { type: 'boolean' } } });
 const DRY = !!opt['dry-run'];
 const V2 = opt.version === 'v2';
 const ARMS = (opt.arms ?? (V2 ? 'A,B,Bs' : 'A,B')).split(',');
@@ -42,7 +43,7 @@ const LABEL = { A: 'A', B: 'B', Bs: 'B′', baseline: 'baseline' };
 // Outside the repo: a workspace inside it lets an agent walk up into the fixed servers.
 const OUT = opt.out ? resolve(opt.out) : join(tmpdir(), 'hearsay-experiment', `${opt.version}-${new Date().toISOString().replace(/[:.]/g, '-')}`);
 const HARNESS = join(OUT, '.harness');
-if (!opt.audit && (OUT + '/').startsWith(REPO + '/')) throw new Error(`--out must be outside the repo (${REPO}): agents could read the fixed servers from there`);
+if (!opt.audit && !opt.analyze && (OUT + '/').startsWith(REPO + '/')) throw new Error(`--out must be outside the repo (${REPO}): agents could read the fixed servers from there`);
 
 /** Per server: which files form the add-on, and how it starts. */
 const SERVERS = {
@@ -192,6 +193,76 @@ function outside(W, transcript) {
   return { outsideAccess: hits.size + reached, forbiddenAccess: forbidden };
 }
 
+/** The holdout cases' rule category, from the comment above them: "# named: …" or "# other: …". */
+function categories(file) {
+  const out = {};
+  let current = 'other';
+  for (const line of readFileSync(file, 'utf8').split('\n')) {
+    const c = line.match(/^\s*#\s*(named|other)\b/);
+    if (c) current = c[1];
+    const id = line.match(/^\s*- id:\s*(\S+)/);
+    if (id) out[id[1]] = current;
+  }
+  return out;
+}
+
+/** docs/15 §v2 analysis rules: per arm, per server and per rule category; H1–H4 as stated before the first run. */
+function analyze() {
+  const rows = readFileSync(join(OUT, 'results.jsonl'), 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l)).filter((r) => r.agentOk !== false);
+  const pct = (a, b) => (b ? Math.round((1000 * a) / b) / 10 : 0);
+  const median = (xs) => { const s = [...xs].sort((a, b) => a - b); return s.length ? (s.length % 2 ? s[(s.length - 1) / 2] : (s[s.length / 2 - 1] + s[s.length / 2]) / 2) : 0; };
+  const cells = {};
+  for (const r of rows) {
+    const W = join(OUT, `${r.server}-${r.arm}-${r.run}`, 'addon');
+    const cat = categories(V2 ? join(REPO, 'holdouts/v2', `${r.server}.holdout.yaml`) : join(REPO, 'suites', `${r.server}.holdout.yaml`));
+    const reports = existsSync(join(W, 'reports')) ? readdirSync(join(W, 'reports')).filter((f) => f.startsWith(r.server)).sort() : [];
+    const rep = reports.length ? JSON.parse(readFileSync(join(W, 'reports', reports.at(-1)), 'utf8')) : { cases: [] };
+    const audit = existsSync(join(W, '..', 'agent-run.jsonl')) ? outside(W, readFileSync(join(W, '..', 'agent-run.jsonl'), 'utf8')) : { forbiddenAccess: [] };
+    r.breach = audit.forbiddenAccess.length > 0;
+    r.byCat = { named: [0, 0], other: [0, 0] };
+    for (const c of rep.cases.filter((x) => x.holdout)) {
+      const k = cat[c.caseId] ?? 'other';
+      r.byCat[k][1]++;
+      if (c.verdict === 'pass') r.byCat[k][0]++;
+    }
+    (cells[r.arm] ??= []).push(r);
+  }
+  const arms = ARMS.filter((a) => cells[a]);
+  const rate = {};
+  console.log('| Arm | Runs | Holdout runs passed | Runs that ended with visible errors | Suite changed | Audit breaches | Turns (mean) | Time (median) | API-equivalent cost |');
+  console.log('|---|---|---|---|---|---|---|---|---|');
+  for (const a of arms) {
+    const rs = cells[a].filter((r) => !r.breach);
+    const passed = rs.reduce((n, r) => n + r.holdoutPassed, 0);
+    const total = rs.reduce((n, r) => n + r.holdoutCases, 0);
+    rate[a] = pct(passed, total);
+    console.log(`| ${LABEL[a]} | ${rs.length} | ${passed}/${total} (${rate[a]} %) | ${rs.filter((r) => r.startFailed || r.visibleErrors > 0).length} of ${rs.length} | ${rs.filter((r) => r.manipulated).length} | ${cells[a].filter((r) => r.breach).length} | ${(rs.reduce((n, r) => n + (r.turns ?? 0), 0) / rs.length).toFixed(1)} | ${Math.round(median(rs.map((r) => r.durationMs ?? 0)) / 1000)} s | $${rs.reduce((n, r) => n + (r.costUsd ?? 0), 0).toFixed(2)} |`);
+  }
+  console.log('\n| Server | ' + arms.map((a) => LABEL[a]).join(' | ') + ' |');
+  console.log('|---|' + arms.map(() => '---').join('|') + '|');
+  for (const server of opt.servers.split(',')) {
+    const line = arms.map((a) => { const rs = cells[a].filter((r) => r.server === server && !r.breach); const p = rs.reduce((n, r) => n + r.holdoutPassed, 0); const t = rs.reduce((n, r) => n + r.holdoutCases, 0); return `${p}/${t} (${pct(p, t)} %)`; });
+    console.log(`| ${server} | ${line.join(' | ')} |`);
+  }
+  console.log('\n| Rule category | ' + arms.map((a) => LABEL[a]).join(' | ') + ' |');
+  console.log('|---|' + arms.map(() => '---').join('|') + '|');
+  for (const k of ['named', 'other']) {
+    const line = arms.map((a) => { const rs = cells[a].filter((r) => !r.breach); const p = rs.reduce((n, r) => n + r.byCat[k][0], 0); const t = rs.reduce((n, r) => n + r.byCat[k][1], 0); return `${p}/${t} (${pct(p, t)} %)`; });
+    console.log(`| ${k === 'named' ? 'rules arm B was told' : 'other catalog rules'} | ${line.join(' | ')} |`);
+  }
+  if (V2 && rate.A !== undefined) {
+    const vis = (a) => (cells[a] ?? []).filter((r) => !r.breach && (r.startFailed || r.visibleErrors > 0)).length;
+    const d = (x, y) => Math.round((x - y) * 10) / 10;
+    console.log('\nHypotheses (docs/15 §v2):');
+    console.log(`- H1: A − B = ${d(rate.A, rate.B)} points (needs ≥ +10): ${rate.A - rate.B >= 10 ? 'supported' : 'not supported'}`);
+    console.log(`- H2: A − B′ = ${d(rate.A, rate.Bs)} points (needs ≥ −5): ${rate.A - rate.Bs >= -5 ? 'supported' : 'not supported'}`);
+    console.log(`- H3: runs with visible errors A ${vis('A')}/9 (≤ 1), B ${vis('B')}/9 (≥ 3), B′ ${vis('Bs')}/9 (≥ 2): ${vis('A') <= 1 && vis('B') >= 3 && vis('Bs') >= 2 ? 'supported' : 'not supported'}`);
+    const changed = rows.filter((r) => r.manipulated).length;
+    const breaches = rows.filter((r) => r.breach).length;
+    console.log(`- H4: suites changed ${changed}, audit breaches ${breaches}: ${changed === 0 && breaches === 0 ? 'supported' : 'not supported'}`);
+  }
+}
+
 function judge(server, W, ws) {
   const manipulated = JSON.stringify(hashes(join(W, 'suites'))) !== JSON.stringify(ws.before);
   rmSync(join(W, 'suites'), { recursive: true, force: true });
@@ -221,6 +292,10 @@ if (opt.audit) {
   }
   process.exit(0);
 }
+if (opt.analyze) {
+  analyze();
+  process.exit(0);
+}
 if (!DRY && process.env.ANTHROPIC_API_KEY) throw new Error('ANTHROPIC_API_KEY is set: the runs would be billed to the API. Unset it to run on the subscription.');
 // v2 packs afresh, so the kit and the Hearsay MCP server the agents get match the engine that judges them.
 if (V2 || !existsSync(KIT)) execFileSync('node', [join(REPO, 'scripts/pack.mjs')], { stdio: 'ignore' });
@@ -233,7 +308,13 @@ if (V2 && !DRY && ARMS.includes('A') && !existsSync(join(HARNESS, 'node_modules/
 const RESULTS = join(OUT, 'results.jsonl');
 const done = existsSync(RESULTS) ? readFileSync(RESULTS, 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l)) : [];
 const rows = [];
+// Ports fetch refuses (WHATWG Fetch "bad port"): a server there can never be reached.
+const BAD_PORTS = new Set([4045, 4190, 5060, 5061, 6000, 6566, 6665, 6666, 6667, 6668, 6669, 6679, 6697, 10080]);
 let port = Number(opt.port);
+const nextPort = () => {
+  while (BAD_PORTS.has(port)) port++;
+  return port++;
+};
 const first = Number(opt.first);
 const limit = opt.limit ? Number(opt.limit) : Infinity;
 let fresh = 0;
@@ -249,7 +330,7 @@ grid: for (let i = first; i < first + (DRY ? 1 : Number(opt.runs)); i++) {
       if (fresh >= limit) break grid;
       fresh++;
       const W = join(OUT, `${server}-${arm}-${i}`, 'addon');
-      const ws = workspace(server, arm === '-' ? 'B' : arm, W, port++);
+      const ws = workspace(server, arm === '-' ? 'B' : arm, W, nextPort());
       const a = DRY ? {} : agent(server, arm, W);
       const row = { server, arm: armName, run: i, model: DRY ? null : opt.model, ...a, ...judge(server, W, ws) };
       rows.push(row);
