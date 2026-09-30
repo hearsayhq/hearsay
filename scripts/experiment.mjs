@@ -25,7 +25,7 @@
  */
 import { execFileSync, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync, appendFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync, appendFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { isAbsolute, join, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
@@ -153,8 +153,16 @@ function agent(server, arm, W) {
 /** Every file the agent touched outside its workspace, from its own transcript: what it asked for and what came back. */
 function outside(W, transcript) {
   const FORBIDDEN = /<repo>\/(servers|suites|docs|skills|holdouts)\/|holdout|\/build\/experiment\/|<out>\/(?!\.harness)/;
+  // macOS reaches the temp directory as /var and as /private/var: compare real paths, and scrub both spellings.
+  const real = (p) => { try { return realpathSync(p); } catch { return p; } };
+  const RUN = resolve(W, '..');
   const OUTDIR = resolve(W, '../..');
-  const scrub = (t) => t.replaceAll(W, '<workspace>').replaceAll(OUTDIR, '<out>').replaceAll(REPO, '<repo>');
+  const spellings = (p) => [...new Set([real(p), p])].sort((a, b) => b.length - a.length);
+  const scrub = (t) => {
+    for (const [p, tag] of [[W, '<workspace>'], [RUN, '<run>'], [OUTDIR, '<out>'], [REPO, '<repo>']]) for (const s of spellings(p)) t = t.replaceAll(s, tag);
+    return t;
+  };
+  const inside = (abs) => spellings(W).some((w) => abs === w || abs.startsWith(w + '/')) || (() => { const r = real(abs); return spellings(W).some((w) => r === w || r.startsWith(w + '/')); })();
   const events = transcript.split('\n').flatMap((l) => { try { return [JSON.parse(l)]; } catch { return []; } });
   const hits = new Map();
   const shell = new Map();
@@ -167,12 +175,12 @@ function outside(W, transcript) {
         const p = b.input?.[key];
         if (typeof p !== 'string') continue;
         const abs = isAbsolute(p) ? resolve(p) : resolve(W, p);
-        if (abs !== W && !abs.startsWith(W + '/')) hits.set(b.id, `${b.name} ${abs.replace(REPO, '<repo>')} ${[b.input.pattern, b.input.glob].filter(Boolean).join(' ')}`.trim());
+        if (!inside(abs)) hits.set(b.id, `${b.name} ${scrub(abs)} ${[b.input.pattern, b.input.glob].filter(Boolean).join(' ')}`.trim());
       }
     }
   }
   const forbidden = [...hits.values(), ...shell.values()].filter((h) => FORBIDDEN.test(h));
-  const reached = [...shell.values()].filter((c) => /<repo>|<out>|(^|\s)\.\.(\/|\s|$)/.test(c)).length;
+  const reached = [...shell.values()].filter((c) => /<repo>|<out>|<run>|(^|\s)\.\.(\/|\s|$)/.test(c)).length;
   for (const e of events.filter((x) => x.type === 'user' && Array.isArray(x.message?.content))) {
     for (const b of e.message.content) {
       if (b.type !== 'tool_result' || !(hits.has(b.tool_use_id) || shell.has(b.tool_use_id))) continue;
