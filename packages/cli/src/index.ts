@@ -14,7 +14,7 @@ import { existsSync } from 'node:fs';
 import { readdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
-import { CHECKS, ConnectError, IMPLEMENTED, PollyTts, serveConsole, TranscribeStt, genVariants, loadHoldout, PERTURBATIONS, QUESTIONS, QUESTION_ORDER, RecordingProvider, ReplayProvider, cassettePathFor, ensureServer, exitCodeFor, lintServer, loadCassette, loadSuite, lockSuites, providerFromEnv, runSuite, saveCassette, writeReport, type Cassette, type ModelProvider } from '@hearsayhq/engine';
+import { CHECKS, ConnectError, IMPLEMENTED, PollyTts, serveConsole, TranscribeStt, genVariants, loadHoldout, PERTURBATIONS, QUESTIONS, QUESTION_ORDER, RecordingProvider, ReplayProvider, cassetteEntries, cassettePathFor, ensureServer, exitCodeFor, lintServer, loadCassette, loadSuite, lockSuites, providerFromEnv, runSuite, saveCassette, writeReport, type Cassette, type ModelProvider } from '@hearsayhq/engine';
 import { printReport } from './print';
 
 const [cmd, ...args] = process.argv.slice(2);
@@ -134,7 +134,7 @@ async function run(argv: string[]): Promise<number> {
       if (cassette) {
         const path = cassettePathFor(file, suite.suite);
         await saveCassette(path, cassette);
-        console.error(`recorded ${Object.keys(cassette.entries).length} model calls to ${path}`);
+        console.error(`recorded ${cassetteEntries(cassette).length} model calls to ${path}`);
       }
       const path = await writeReport(report);
       printReport(report, path, values.verbose);

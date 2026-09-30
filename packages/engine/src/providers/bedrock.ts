@@ -11,8 +11,15 @@ const toBedrock = (c: ModelContent): ContentBlock => {
   return { toolResult: { toolUseId: c.toolUseId, content: [{ text: c.text || '(empty)' }], status: c.isError ? 'error' : 'success' } };
 };
 
+/** Nova writes its reasoning into the text as <thinking>…</thinking> and may wrap the answer in <response>; neither is meant to be spoken. */
+export const spokenText = (text: string): string =>
+  text.replace(/<thinking>[\s\S]*?(<\/thinking>|$)/g, '').replace(/<\/?response>/g, '').trim();
+
 const fromBedrock = (b: ContentBlock): ModelContent[] => {
-  if (b.text !== undefined) return [{ type: 'text', text: b.text }];
+  if (b.text !== undefined) {
+    const text = spokenText(b.text);
+    return text ? [{ type: 'text', text }] : [];
+  }
   if (b.toolUse) return [{ type: 'tool_use', id: b.toolUse.toolUseId!, name: b.toolUse.name!, input: (b.toolUse.input ?? {}) as Record<string, unknown> }];
   return [];
 };

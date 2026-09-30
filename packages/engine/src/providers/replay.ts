@@ -6,13 +6,16 @@
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import type { Cassette, ModelProvider, ModelRequest, ModelResponse } from '../orchestrator';
+import type { Cassette, CassetteEntry, ModelProvider, ModelRequest, ModelResponse } from '../orchestrator';
 
 const canonical = (v: unknown): string =>
   Array.isArray(v) ? `[${v.map(canonical).join(',')}]` : v && typeof v === 'object' ? `{${Object.keys(v).sort().map((k) => `${JSON.stringify(k)}:${canonical((v as Record<string, unknown>)[k])}`).join(',')}}` : JSON.stringify(v);
 
 export const hashRequest = (req: ModelRequest) => createHash('sha256').update(canonical(req)).digest('hex');
 export const cassettePathFor = (suitePath: string, suiteName: string) => join(dirname(suitePath), 'cassettes', `${suiteName}.json`);
+
+/** Every recorded call, in recording order per request. */
+export const cassetteEntries = (c: Cassette): CassetteEntry[] => Object.values(c.entries).flat();
 
 export class ReplayMismatch extends Error {
   override name = 'ReplayMismatch';
@@ -29,20 +32,30 @@ export class RecordingProvider implements ModelProvider {
     const started = performance.now();
     const response = await this.inner.converse(req);
     const durationMs = Math.round(performance.now() - started);
-    this.cassette.entries[hashRequest(request)] = { request, response: structuredClone(response), durationMs };
+    // A model may answer the same request differently each time; keep every answer so replay stays in step.
+    const key = hashRequest(request);
+    const entry = { request, response: structuredClone(response), durationMs };
+    const seen = this.cassette.entries[key];
+    this.cassette.entries[key] = seen === undefined ? entry : [...(Array.isArray(seen) ? seen : [seen]), entry];
     return { ...response, durationMs };
   }
 }
 
 export class ReplayProvider implements ModelProvider {
   readonly id: string;
+  private asked = new Map<string, number>();
   constructor(readonly cassette: Cassette) {
     this.id = `replay:${cassette.provider}`;
   }
   async converse(req: ModelRequest): Promise<ModelResponse & { durationMs: number }> {
-    const hit = this.cassette.entries[hashRequest(req)];
-    if (hit) return { ...hit.response, durationMs: hit.durationMs };
-    throw new ReplayMismatch(describeMiss(req, Object.values(this.cassette.entries).map((e) => e.request)));
+    const key = hashRequest(req);
+    const found = this.cassette.entries[key];
+    if (!found) throw new ReplayMismatch(describeMiss(req, cassetteEntries(this.cassette).map((e) => e.request)));
+    const answers = Array.isArray(found) ? found : [found];
+    const n = this.asked.get(key) ?? 0;
+    this.asked.set(key, n + 1);
+    const hit = answers[Math.min(n, answers.length - 1)]!;
+    return { ...hit.response, durationMs: hit.durationMs };
   }
 }
 

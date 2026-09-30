@@ -72,5 +72,6 @@ export interface Cassette {
   provider: string;
   model: string;
   recordedAt: string;
-  entries: Record<string, CassetteEntry>;
+  /** By request hash. A request asked again (the same first turns in two cases) keeps every answer, in order. */
+  entries: Record<string, CassetteEntry | CassetteEntry[]>;
 }

@@ -41,7 +41,7 @@ gen-variants (offline, AWS): utterance ─► Polly ─► noise + telephone ban
 | `packages/mcp` (`@hearsayhq/mcp`) | engine, MCP SDK | Hearsay as an MCP server (stdio and Streamable HTTP) for coding agents: lint, run, explain (FR-034). No logic of its own; no tool writes suites. |
 | `packages/web` | engine (types only) | Console UI. Renders traces and findings; decides nothing. |
 | `servers/*` | MCP SDK, zod, mandate | Reference servers, one per demo story. |
-| `suites/` | — | YAML suites; `suites/cassettes/` for replay; `suites/variants/` for recorded mishearings. |
+| `suites/` | — | YAML suites; `suites/cassettes/` for replay (keyed by request; a request asked again, such as the same first turns in two cases, keeps every answer and replays them in order); `suites/variants/` for recorded mishearings. |
 | `skills/fix-hearsay-findings` | — | Agent Skill: the fix loop for coding agents (FR-038). |
 | `skills/write-hearsay-suite` | — | Agent Skill that drafts a suite from `tools/list` (FR-033). |
 
