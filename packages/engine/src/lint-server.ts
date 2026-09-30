@@ -26,6 +26,6 @@ export async function lintServer(url: string): Promise<Report> {
     serverFindings: findings.sort((a, b) => a.checkId.localeCompare(b.checkId)),
     cases: [],
     skippedChecks: [],
-    summary: { cases: 0, failed: 0, errors: count('error'), warnings: count('warn'), infos: count('info'), skipped: 0 },
+    summary: { cases: 0, runs: 0, failedRuns: 0, errors: count('error'), warnings: count('warn'), infos: count('info'), skipped: 0 },
   };
 }

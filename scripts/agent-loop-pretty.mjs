@@ -11,7 +11,7 @@ function verdictLine(parts) {
     if (!t.trimStart().startsWith('{')) return t.split('\n')[0];
     try {
       const r = JSON.parse(t);
-      if (r.summary) return `${r.suite}: ${String(r.verdict).toUpperCase()} · ${r.summary.errors} errors, ${r.summary.warnings} warnings · ${r.summary.cases} case runs`;
+      if (r.summary) return `${r.suite}: ${String(r.verdict).toUpperCase()} · ${r.summary.errors} errors, ${r.summary.warnings} warnings · ${r.summary.cases} cases, ${r.summary.runs ?? r.summary.cases} runs`;
     } catch {}
   }
   return '';

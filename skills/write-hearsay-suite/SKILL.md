@@ -92,10 +92,11 @@ Case fields: `human: { answer: accept | decline | cancel }`, `client: { elicitat
 
 Checks by question (`hearsay_explain <id>` gives the rule and its source):
 
-- Can it connect? `protocol.version`, `protocol.list_changed`, `protocol.refusal_as_result`
+- Precondition, can it connect? `protocol.version`, `protocol.list_changed` (`suite.integrity` always runs)
 - Did it hear me right? `asr.robust`, `lint.tool_names`, `lint.descriptions`, `lint.schema_constraints`
 - Do I have to wait? `latency.tool`, `latency.first_audio`
-- Can I listen to this? `speak.length`, `speak.no_structured_dump`, `speak.lists`, `lint.error_actionable`
+- Can I listen to this? `speak.length`, `speak.no_structured_dump`, `speak.lists`, `lint.error_actionable`,
+  `protocol.refusal_as_result`
 - Did I agree? `consent.path`, `consent.decline_holds`, `consent.states_details`,
   `consent.verbal_token`, `consent.misheard_amount`, `consent.over_confirmation`,
   `lint.destructive_annotated`, and for servers with spending limits `mandate.schema_ignoring_caller`,

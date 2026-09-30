@@ -1,13 +1,18 @@
 # UX spec
 
 Two surfaces, one data model (Trace, Finding). Neither computes a verdict of its own. Both are
-organised by the four questions (docs/00).
+organised by the four questions (docs/00), with the precondition shown first and labelled
+"Precondition: Can it connect?", never as a fifth question.
+
+Counting is the same everywhere: a **case** is one entry in the suite, a **run** is a case with
+one variant (clean or misheard), so a case with one misheard variant is one case and two runs.
+Holdout cases and runs are counted apart and never added to the visible ones.
 
 ## CLI (primary for CI and judges)
 
 ```
 $ npm run hearsay -- run suites/smart-home.yaml
-smart-home · 3 cases · 5 variants · scripted · seed 1
+smart-home · 3 cases · 5 runs with variants · scripted · seed 1
 
 Did it hear me right?
 ✗ living-room-off  asr.compound_split#1  asr.robust        error  "livingroom" matched no room, reply said "Done."
@@ -18,7 +23,8 @@ Can I listen to this?
 Did I agree?
 ✗ whole-home-off…  clean                 consent.path      error  whole house turned off without a confirmation
 
-4 errors · 3 warnings · 0 info · 2 skipped (planned) · report: reports/smart-home-2026-10-06T19-04.json
+4 errors · 3 warnings · 0 info · 5 of 5 runs failed · 2 skipped (planned)
+report: reports/smart-home-2026-10-06T19-04.json
 ```
 
 One line per finding: case, variant, check id, severity, what happened. The source is in the

@@ -2,6 +2,7 @@
 import { QUESTIONS, QUESTION_ORDER, type Finding, type Report } from '@hearsayhq/engine';
 
 const MARK = { error: '✗', warn: '!', info: 'i' } as const;
+const n = (count: number, word: string) => `${count} ${word}${count === 1 ? '' : 's'}`;
 
 interface Row {
   caseId: string;
@@ -10,9 +11,10 @@ interface Row {
 }
 
 export function printReport(r: Report, reportPath: string, verbose = false): void {
-  const variants = r.cases.length;
-  const caseCount = new Set(r.cases.map((c) => c.caseId)).size;
-  console.log(`${r.suite} · ${caseCount} cases · ${variants} variants · ${r.orchestrator} · seed ${r.seed}`);
+  const s = r.summary;
+  const h = r.holdout;
+  // Cases are the suite's; runs are case × variant. Holdouts are counted apart, never mixed in.
+  console.log(`${r.suite} · ${s.cases} cases · ${s.runs} runs with variants${h ? ` · holdout: ${h.cases} cases, ${h.runs} runs, reported apart` : ''} · ${r.orchestrator} · seed ${r.seed}`);
 
   const rows: Row[] = [
     ...r.serverFindings.map((f) => ({ caseId: '(server)', variant: '', f })),
@@ -36,7 +38,7 @@ export function printReport(r: Report, reportPath: string, verbose = false): voi
   }
   if (!rows.length) console.log('\n✓ no findings');
   if (r.holdout) {
-    console.log(`\nHoldout (${r.holdout.cases} case runs, never shown to agents)`);
+    console.log(`\nHoldout (${r.holdout.cases} cases, ${r.holdout.runs} runs, never shown to agents)`);
     for (const { caseId, variant, f } of hidden) console.log(`${MARK[f.severity]} ${caseId.padEnd(w1)}  ${variant.padEnd(w2)}  ${f.checkId.padEnd(w3)}  ${f.severity.padEnd(5)}  ${f.message}`);
     if (!hidden.length) console.log('✓ no findings');
   }
@@ -46,14 +48,14 @@ export function printReport(r: Report, reportPath: string, verbose = false): voi
       console.log(`\n${c.caseId} · ${c.variant} · ${c.trace.principal}`);
       for (const t of c.trace.turns) {
         const spans = t.spans.map((s) => `${s.kind}${s.modeled ? '~' : ''} ${Math.round(s.endMs - s.startMs)}ms`).join(' · ');
-        console.log(`  ${t.setupOf ? `(setup ${t.setupOf}) ` : ''}"${t.heard}" → ${t.toolCalls.map((x) => x.tool).join(', ') || 'no call'} → "${t.spoken}"`);
+        const said = t.heard === t.utterance ? `"${t.heard}"` : `"${t.utterance}" heard as "${t.heard}"`;
+        console.log(`  ${t.setupOf ? `(setup ${t.setupOf}) ` : ''}${said} → ${t.toolCalls.map((x) => x.tool).join(', ') || 'no call'} → "${t.spoken}"`);
         console.log(`    ${spans}`);
       }
     }
 
-  const s = r.summary;
   const skipped = s.skipped ? ` · ${s.skipped} skipped (planned): ${r.skippedChecks.join(', ')}` : '';
-  console.log(`\n${s.errors} errors · ${s.warnings} warnings · ${s.infos} info${skipped}`);
-  if (r.holdout) console.log(`holdout: ${r.holdout.errors} errors · ${r.holdout.warnings} warnings · ${r.holdout.failed}/${r.holdout.cases} case runs failed`);
+  console.log(`\n${n(s.errors, 'error')} · ${n(s.warnings, 'warning')} · ${s.infos} info · ${s.failedRuns} of ${n(s.runs, 'run')} failed${skipped}`);
+  if (h) console.log(`holdout: ${n(h.errors, 'error')} · ${n(h.warnings, 'warning')} · ${h.failedRuns} of ${n(h.runs, 'run')} failed (${n(h.cases, 'case')})`);
   console.log(`report: ${reportPath}`);
 }

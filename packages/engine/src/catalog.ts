@@ -8,11 +8,11 @@ export type CheckCategory = 'protocol' | 'suite' | 'lint' | 'latency' | 'speak' 
 export type Severity = 'error' | 'warn' | 'info';
 export type Priority = 'must' | 'should' | 'could';
 
-/** The four questions a listener asks, plus the precondition (docs/00). */
+/** The four questions a listener asks, plus the precondition (docs/00). The precondition is labelled as one, never as a fifth question. */
 export type Question = 'connect' | 'hear' | 'wait' | 'listen' | 'agree';
 
 export const QUESTIONS: Readonly<Record<Question, string>> = {
-  connect: 'Can it connect?',
+  connect: 'Precondition: Can it connect?',
   hear: 'Did it hear me right?',
   wait: 'Do I have to wait?',
   listen: 'Can I listen to this?',
