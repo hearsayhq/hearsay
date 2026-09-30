@@ -9,7 +9,11 @@ async function answers(url: string): Promise<boolean> {
   try {
     await fetch(url, { method: 'GET', signal: AbortSignal.timeout(1000) });
     return true;
-  } catch {
+  } catch (e) {
+    // fetch refuses some ports outright (WHATWG Fetch "bad port", e.g. 4190); waiting would only time out.
+    if ((e as { cause?: { message?: string } }).cause?.message === 'bad port') {
+      throw new ConnectError(`fetch refuses port ${new URL(url).port} (a "bad port" in the Fetch standard), so ${url} cannot be reached. Pick another port for the server.`);
+    }
     return false;
   }
 }
