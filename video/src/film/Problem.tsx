@@ -11,6 +11,7 @@ import { linesOf } from './timeline';
 import { Card, Sev, Source, Terminal } from './ui';
 
 const L = linesOf('problem');
+const P3 = L.p2!.parts![1]!;
 const clamp = { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' } as const;
 const ROW = 30;
 const rows = [`$ hearsay run suites/household-orders.yaml`, ...(output as string).split('\n').slice(3).filter((l, i, a) => !(l === '' && a[i - 1] === ''))].map((l) => l.replace(/\s{2,}/g, '  ').slice(0, 118));
@@ -34,13 +35,13 @@ export function Problem() {
   const f = useCurrentFrame();
   const { fps } = useVideoConfig();
   const ease = Easing.bezier(0.45, 0, 0.2, 1);
-  const target = f < L.p2!.at ? 0 : f < L.p3!.at ? MISHEARD - 10 : f < L.p4!.at + 60 ? DECLINE - 10 : SUMMARY - 18;
-  const from = f < L.p2!.at ? 0 : f < L.p3!.at ? 0 : f < L.p4!.at + 60 ? MISHEARD - 10 : DECLINE - 10;
-  const start = f < L.p2!.at ? 0 : f < L.p3!.at ? L.p2!.at : f < L.p4!.at + 60 ? L.p3!.at : L.p4!.at + 60;
+  const target = f < L.p2!.at ? 0 : f < P3.at ? MISHEARD - 10 : f < L.p4!.at + 60 ? DECLINE - 10 : SUMMARY - 18;
+  const from = f < L.p2!.at ? 0 : f < P3.at ? 0 : f < L.p4!.at + 60 ? MISHEARD - 10 : DECLINE - 10;
+  const start = f < L.p2!.at ? 0 : f < P3.at ? L.p2!.at : f < L.p4!.at + 60 ? P3.at : L.p4!.at + 60;
   const scroll = interpolate(f, [start, start + 50], [from, target], { ...clamp, easing: ease }) * ROW;
   const typed = Math.floor(interpolate(f, [L.p1!.at, L.p1!.at + 40], [0, rows[0]!.length], clamp));
   const shown = interpolate(f, [L.p1!.at + 45, L.p2!.at], [1, 60], clamp);
-  const hl = f >= L.p4!.at + 60 ? -1 : f >= L.p3!.at + 20 ? DECLINE : f >= L.p2!.at + 20 ? MISHEARD : -1;
+  const hl = f >= L.p4!.at + 60 ? -1 : f >= P3.at + 20 ? DECLINE : f >= L.p2!.at + 20 ? MISHEARD : -1;
   const callout = (id: string, at: number, text: string) => {
     const k = spring({ frame: f - at, fps, config: { damping: 16 } });
     return (
@@ -71,8 +72,8 @@ export function Problem() {
           </div>
         </Terminal>
       </div>
-      {f >= L.p2!.at + 20 && f < L.p3!.at + 10 && callout('consent.misheard_amount', L.p2!.at + 20, 'Heard “fifty”, and the add-on took the amount without the person hearing it.')}
-      {f >= L.p3!.at + 20 && f < L.p4!.at + 50 && callout('consent.decline_holds', L.p3!.at + 20, 'The person said no, and the order changed anyway.')}
+      {f >= L.p2!.at + 20 && f < P3.at + 10 && callout('consent.misheard_amount', L.p2!.at + 20, 'Heard “fifty”, and the add-on took the amount without the person hearing it.')}
+      {f >= P3.at + 20 && f < L.p4!.at + 50 && callout('consent.decline_holds', P3.at + 20, 'The person said no, and the order changed anyway.')}
       {f >= L.p4!.at + 60 && (
         <Card style={{ position: 'absolute', right: 70, top: 280, width: 560, opacity: end, transform: `scale(${0.9 + end * 0.1})` }}>
           <div style={{ fontSize: 22, color: c.muted }}>household-orders, flawed build</div>

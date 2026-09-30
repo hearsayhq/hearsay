@@ -7,12 +7,13 @@ import { Close } from './Close';
 import { Consent } from './Consent';
 import { Experiment } from './Experiment';
 import { Intro, What } from './Intro';
-import { Journey } from './Journey';
+import { How } from './How';
 import { Problem } from './Problem';
+import { Rules } from './Rules';
 import { Subtitles } from './Subtitles';
 import { LINES, SCENES, window, type SceneName } from './timeline';
 
-const SCENE: Record<SceneName, ComponentType> = { intro: Intro, what: What, journey: Journey, problem: Problem, agent: Agent, experiment: Experiment, consent: Consent, close: Close };
+const SCENE: Record<SceneName, ComponentType> = { intro: Intro, what: What, how: How, rules: Rules, problem: Problem, consent: Consent, agent: Agent, experiment: Experiment, close: Close };
 
 function Fade({ children }: { children: React.ReactNode }) {
   const f = useCurrentFrame();
