@@ -44,8 +44,12 @@ At about five and a half build days a week this lands on Sun 18 Oct; at four and
   "MCP error -32602". Fixed with `looseInt()` in the kit; both cases joined `suites/kitchen.yaml`.
   It also asked for confirmation to cancel a timer, against D-022; the skill's rule was
   sharpened. Second draft: valid, green on Kitchen, 9 cases, $0.23.
-- Fresh clone (FR-060): `git clone` → `npm ci` → `hearsay run suites/kitchen.yaml` green in 4 s
-  with an empty npm cache on the build machine, no keys (clip `m6-fresh-clone`).
+- Fresh clone (FR-060), measured again on 30 Sep with each step apart, no keys: `git clone`
+  1.2 s; `npm ci` 2.2 s with an empty npm cache (215 packages, 144 MB in node_modules, fast
+  connection; 1.5 s warm); first `hearsay run suites/kitchen.yaml` green in 1.4 s, later runs
+  about 1 s. CI on Ubuntu 24.04 with the Actions npm cache: `npm ci` 4 s, first run 2 s. The
+  install dominates and depends on the network. Clip `m6-fresh-clone` predates the split and is
+  re-recorded in M7.
 - Packages: `npm run pack` builds `@hearsayhq/cli` (with the console), `@hearsayhq/mcp` (with the
   skills) and `@hearsayhq/kit`; installed from the tarballs in an empty project, `npx hearsay run`,
   `serve`, `hearsay-mcp` over stdio and the kit's types work. Publishing is a step of M7, on the
@@ -54,9 +58,10 @@ At about five and a half build days a week this lands on Sun 18 Oct; at four and
   standalone file; local holdouts for both; `scripts/experiment.mjs` builds sanitised workspaces
   and judges them. Baseline judged (docs/15). The owner approved the 18 runs on 30 Sep: on the
   Claude Code subscription, in blocks of six, with the $5 cap per run. Done the same day: holdout
-  36/42 with Hearsay, 38/42 with the task description only; every Hearsay run ended green, four
-  of nine others left errors, among them two mandate flaws on Household Orders (docs/15, clip
-  `m6-experiment`). Found on the way: a server on port 4190 timed out after 30 s, because fetch
+  runs 36/42 with Hearsay, 38/42 with the task description only; every Hearsay run ended green,
+  four of nine others left errors, among them two mandate flaws on Household Orders (docs/15,
+  clip `m6-experiment`). An audit of all transcripts afterwards found no access to the fixed
+  servers, suites or holdouts; workspaces now live outside the repo. Found on the way: a server on port 4190 timed out after 30 s, because fetch
   refuses that port; Hearsay now says so at once.
   Building it tightened `asr.robust`: the same reply to different arguments ("Timer started." for
   fifteen and for fifty) no longer counts as the same effect.

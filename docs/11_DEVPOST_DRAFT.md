@@ -66,10 +66,8 @@ permission behind a voice assistant).
 The visible suite is not enough: agent-fixed servers passed their suite and still failed a
 holdout case (the unknown-room reply did not say what it heard).
 
-A precise prompt is not enough either. In 18 runs (docs/15) an agent with Hearsay and one with
-only a task description passed about as many hidden cases (36/42 and 38/42). But every Hearsay
-run ended green, while four of nine others stopped with flaws they had no way to see: an order
-race on the grocery server and a caller that ignores the advertised products.
+A precise prompt is not enough either. On unseen cases, agents did about the same with or without Hearsay. But without it, 4 of 9 runs stopped with defects they couldn't see, including a checkout race and a product allowlist enforced in the wrong place. With Hearsay: 0 of 9. (docs/15: the agents without Hearsay got a
+precise task description; three runs per server and arm.)
 
 ## What's next
 

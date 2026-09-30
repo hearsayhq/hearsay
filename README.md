@@ -8,7 +8,10 @@ your server never moves money on what the assistant only thinks it heard.
 
 A crash test for voice add-ons: Hearsay plays through what happens when someone talks to your MCP
 server — with mishearings, with waiting, with money — and turns the pull request red where it
-breaks. Every check answers one of four questions:
+breaks. Every check answers one of four questions, once the precondition holds.
+
+**Precondition: Can it connect?** MCP 2025-11-25 over Streamable HTTP, and the suite is the one
+that was locked.
 
 - **Did it hear me right?** Misheard numbers and words; tool names and enums a model can map speech onto.
 - **Do I have to wait?** Tool round trips under 500 ms; modeled time to first audio.
@@ -26,10 +29,11 @@ specification, or Hearsay's own rule.
 > runs without a model. Waiting on access: Bedrock and Polly/Transcribe recordings.
 > See [docs/07](docs/07_IMPLEMENTATION_PLAN.md).
 
-In an 18-run experiment ([docs/15](docs/15_EXPERIMENT.md)) a coding agent passed hidden holdout
-cases about as often with Hearsay as with a precise task description (36/42 and 38/42), but only
-the Hearsay runs always ended green; four of nine others left flaws they could not see, such as a
-checkout race on the server that orders groceries.
+**Does it help a coding agent?** On unseen cases, agents did about the same with or without
+Hearsay. But without it, 4 of 9 runs stopped with defects they couldn't see, including a checkout
+race and a product allowlist enforced in the wrong place. With Hearsay: 0 of 9.
+([docs/15](docs/15_EXPERIMENT.md): the agents without Hearsay got a precise task description;
+three runs per server and arm.)
 
 ## Quickstart
 
