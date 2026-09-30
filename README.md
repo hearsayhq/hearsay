@@ -26,6 +26,11 @@ specification, or Hearsay's own rule.
 > runs without a model. Waiting on access: Bedrock and Polly/Transcribe recordings.
 > See [docs/07](docs/07_IMPLEMENTATION_PLAN.md).
 
+In an 18-run experiment ([docs/15](docs/15_EXPERIMENT.md)) a coding agent passed hidden holdout
+cases about as often with Hearsay as with a precise task description (36/42 and 38/42), but only
+the Hearsay runs always ended green; four of nine others left flaws they could not see, such as a
+checkout race on the server that orders groceries.
+
 ## Quickstart
 
 From a clone (no API keys; about a minute on a fresh machine):
