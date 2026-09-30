@@ -1,0 +1,14 @@
+{
+  "about": "The mishearing skit as a radio play. Each line: who, voice, text, direction (how it is acted), gapBeforeMs (silence before it). OpenAI gpt-4o-mini-tts takes the direction as instructions.",
+  "model": "gpt-4o-mini-tts",
+  "lines": [
+    { "id": "customer-fifteen", "who": "customer", "voice": "coral", "text": "Add fifteen dollars of fruit.", "direction": "Casual and a little distracted, talking to a smart speaker across the kitchen while cooking. Natural, unhurried.", "gapBeforeMs": 400 },
+    { "id": "ear-whoops", "who": "ear", "voice": "ash", "text": "Whoops... missed that.", "direction": "A speech recognizer caught not listening, like an intern snapping back to attention. Quick, sheepish mumble.", "gapBeforeMs": 450 },
+    { "id": "ear-fifteen", "who": "ear", "voice": "ash", "text": "Fifteen?", "direction": "Unsure, squinting, trying the word on. Rising, hesitant.", "gapBeforeMs": 250 },
+    { "id": "ear-fifty", "who": "ear", "voice": "ash", "text": "Fifty?", "direction": "Trying the other option, slightly higher, still unsure.", "gapBeforeMs": 180 },
+    { "id": "ear-definitely", "who": "ear", "voice": "ash", "text": "Nah. Definitely fifty.", "direction": "A short beat, then overconfident and smug, fast, very sure of itself. Comic timing.", "gapBeforeMs": 550 },
+    { "id": "addon-sure", "who": "addon", "voice": "alloy", "text": "Are you sure?", "direction": "Flat, polite, bored customer-service tone. Says nothing about the amount.", "gapBeforeMs": 500 },
+    { "id": "customer-yes", "who": "customer", "voice": "coral", "text": "Yeah, sure.", "direction": "Absent-minded, still cooking, not really listening.", "gapBeforeMs": 300 },
+    { "id": "addon-added", "who": "addon", "voice": "alloy", "text": "Added!", "direction": "Cheerful and oblivious.", "gapBeforeMs": 250 }
+  ]
+}

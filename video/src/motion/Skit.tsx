@@ -5,31 +5,38 @@
  * freeze on the finding Hearsay raised against that build.
  */
 import { AbsoluteFill, Audio, Easing, interpolate, Sequence, spring, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
-import marks from '../../public/voice/customer-fifteen.words.json';
-import dur from '../../public/voice/skit-durations.json';
+import timeline from '../../public/voice/skit.timeline.json';
 import { VoicePill } from '../glass/VoicePill';
 import { Stage } from '../product/Stage';
 import { c, mono, sans } from '../theme';
 
 const FPS = 60;
-const len = (s: number) => Math.round(s * FPS) + 8;
+const LEAD = 20; // frames of room tone before the first line
 const EAR = '#9FA8FF';
 const ADDON = '#7FE0C7';
-// Who speaks when (frame, clip, speaker).
-const LINES = [
-  { at: 20, src: 'voice/customer-fifteen.mp3', who: 'customer', frames: len(1.944) },
-  { at: 150, src: 'voice/ear-whoops.mp3', who: 'ear', frames: len(dur['ear-whoops']), say: 'Whoops, missed that.' },
-  { at: 222, src: 'voice/ear-fifteen.mp3', who: 'ear', frames: len(dur['ear-fifteen']), say: 'Fifteen?' },
-  { at: 276, src: 'voice/ear-fifty.mp3', who: 'ear', frames: len(dur['ear-fifty']), say: 'Fifty?' },
-  { at: 330, src: 'voice/ear-definitely.mp3', who: 'ear', frames: len(dur['ear-definitely']), say: 'Nah. Definitely fifty.' },
-  { at: 450, src: 'voice/addon-sure.mp3', who: 'addon', frames: len(dur['addon-sure']), say: 'Are you sure?' },
-  { at: 532, src: 'voice/customer-yes.mp3', who: 'customer', frames: len(0.72), say: 'Yes.' },
-  { at: 590, src: 'voice/addon-added.mp3', who: 'addon', frames: len(dur['addon-added']), say: 'Added.' },
-] as const;
-const TINT = { customer: c.amber, ear: EAR, addon: ADDON } as const;
-const NAME = { customer: 'CUSTOMER', ear: 'SPEECH RECOGNITION', addon: 'GROCERY ADD-ON' } as const;
+type Who = 'customer' | 'ear' | 'addon';
+// Every beat follows the dialogue's own timeline (voice/make-dialogue.mjs): the picture cuts to the audio.
+const LINES = timeline.lines.map((l) => ({ ...l, who: l.who as Who, at: LEAD + Math.round(l.start * FPS), frames: Math.round((l.end - l.start) * FPS) + 6, say: l.text }));
+const line = (id: string) => LINES.find((l) => l.id === id)!;
+export const SKIT_FRAMES = LEAD + Math.round(timeline.lengthSeconds * FPS) + 200;
+// No word timings from the voice model: spread the customer's words over the line by length.
+const first = line('customer-fifteen');
+const WORDS = (() => {
+  const words = first.text.replace(/[.,]/g, '').toLowerCase().split(' ');
+  const weight = words.map((w) => w.length + 2);
+  const total = weight.reduce((a, b) => a + b, 0);
+  let acc = 0;
+  return words.map((w, i) => {
+    const at = first.at + (acc / total) * first.frames * 0.92;
+    acc += weight[i]!;
+    return { word: w, at };
+  });
+})();
+const TINT: Record<Who, string> = { customer: c.amber, ear: EAR, addon: ADDON };
+const NAME: Record<Who, string> = { customer: 'CUSTOMER', ear: 'SPEECH RECOGNITION', addon: 'GROCERY ADD-ON' };
 const FRUIT = ['🍎', '🍊', '🍌', '🍇', '🍐', '🍓', '🍍', '🥝', '🍑', '🍋'];
-const FREEZE = 700;
+const ADDED = line('addon-added');
+const FREEZE = ADDED.at + ADDED.frames + 40;
 const clamp = { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' } as const;
 const ease = Easing.bezier(0.22, 1, 0.36, 1);
 
@@ -38,14 +45,16 @@ export function Skit() {
   const { fps } = useVideoConfig();
   const now = [...LINES].reverse().find((l) => f >= l.at && f < l.at + l.frames);
   const last = [...LINES].reverse().find((l) => f >= l.at);
-  const slot = f < 222 ? 'fifteen' : f < 276 ? 'fifteen?' : f < 358 ? 'fifty?' : 'fifty';
-  const settled = spring({ frame: f - 358, fps, config: { damping: 9, stiffness: 180 } });
-  const jitter = f >= 150 && f < 358 ? Math.sin(f * 1.7) * 3 : 0;
+  const definitely = line('ear-definitely');
+  const landed = definitely.at + Math.round(definitely.frames * 0.45);
+  const slot = f < line('ear-fifteen').at ? 'fifteen' : f < line('ear-fifty').at ? 'fifteen?' : f < landed ? 'fifty?' : 'fifty';
+  const settled = spring({ frame: f - landed, fps, config: { damping: 9, stiffness: 180 } });
+  const jitter = f >= line('ear-whoops').at && f < landed ? Math.sin(f * 1.7) * 3 : 0;
   const frozen = f >= FREEZE;
   const dim = interpolate(f, [FREEZE, FREEZE + 20], [0, 1], clamp);
   const card = spring({ frame: f - (FREEZE + 16), fps, config: { damping: 16 } });
-  const cart = interpolate(f, [600, 690], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) });
-
+  const cart = interpolate(f, [ADDED.at + 6, ADDED.at + 96], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) });
+  const trayIn = line('addon-sure').at - 10;
   return (
     <Stage>
       {LINES.map((l) => (
@@ -64,29 +73,27 @@ export function Skit() {
         <div style={{ position: 'absolute', top: 350, width: '100%', textAlign: 'center', fontFamily: sans, fontSize: 20, fontWeight: 600, letterSpacing: 5, color: TINT[(now ?? last)?.who ?? 'customer'] }}>
           {NAME[(now ?? last)?.who ?? 'customer']}
         </div>
-        {now && 'say' in now && (
+        {now && now.id !== 'customer-fifteen' && (
           <div style={{ position: 'absolute', top: 392, width: '100%', textAlign: 'center', fontFamily: sans, fontSize: 38, fontStyle: 'italic', color: TINT[now.who] }}>“{now.say}”</div>
         )}
         <div style={{ position: 'absolute', top: 500, width: '100%', display: 'flex', justifyContent: 'center', gap: 28, fontFamily: sans, fontWeight: 600, fontSize: 92, letterSpacing: -2.2, color: c.text }}>
-          {marks.words.map((w) => {
-            const word = w.value.replace(/[.,]/g, '').toLowerCase();
-            const t = 20 + (w.time / 1000) * FPS;
+          {WORDS.map(({ word, at: t }) => {
             const o = interpolate(f, [t, t + 10], [0, 1], clamp);
             const y = interpolate(f, [t, t + 18], [22, 0], { ...clamp, easing: ease });
-            if (word !== 'fifteen') return <span key={w.time} style={{ opacity: o, transform: `translateY(${y}px)`, display: 'inline-block' }}>{word}</span>;
+            if (word !== 'fifteen') return <span key={word} style={{ opacity: o, transform: `translateY(${y}px)`, display: 'inline-block' }}>{word}</span>;
             const final = slot === 'fifty';
             return (
-              <span key={w.time} style={{ display: 'inline-block', minWidth: 300, textAlign: 'center', opacity: o, color: final ? c.amber : slot.endsWith('?') ? EAR : c.text, transform: `translate(${jitter}px, ${y}px) scale(${final ? 1 + (1 - settled) * 0.25 : 1})` }}>
+              <span key={word} style={{ display: 'inline-block', minWidth: 300, textAlign: 'center', opacity: o, color: final ? c.amber : slot.endsWith('?') ? EAR : c.text, transform: `translate(${jitter}px, ${y}px) scale(${final ? 1 + (1 - settled) * 0.25 : 1})` }}>
                 {slot}
               </span>
             );
           })}
         </div>
-        <div style={{ position: 'absolute', left: 560, top: 680, width: 800, height: 230, opacity: interpolate(f, [440, 470], [0, 1], clamp) }}>
+        <div style={{ position: 'absolute', left: 560, top: 680, width: 800, height: 230, opacity: interpolate(f, [trayIn, trayIn + 30], [0, 1], clamp) }}>
           <div style={{ position: 'absolute', left: 0, bottom: 0, width: 800, height: 120, borderRadius: 24, background: 'rgba(30,30,28,0.9)', border: '1px solid rgba(255,255,255,0.10)' }} />
           {cart > 0 &&
             Array.from({ length: 46 }, (_, i) => {
-              const born = 600 + i * 2;
+              const born = ADDED.at + 6 + i * 2;
               const p = spring({ frame: f - born, fps, config: { damping: 12, mass: 0.6 } });
               const x = 30 + ((i * 0.6180339887) % 1) * 720;
               const mound = 70 * Math.exp(-(((x - 390) / 260) ** 2));

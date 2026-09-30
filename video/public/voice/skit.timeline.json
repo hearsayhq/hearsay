@@ -1,0 +1,70 @@
+{
+ "model": "stand-in (Kokoro and Polly)",
+ "lengthSeconds": 11.56,
+ "lines": [
+  {
+   "id": "customer-fifteen",
+   "who": "customer",
+   "text": "Add fifteen dollars of fruit.",
+   "start": 0.4,
+   "end": 2.344,
+   "src": "voice/customer-fifteen.mp3"
+  },
+  {
+   "id": "ear-whoops",
+   "who": "ear",
+   "text": "Whoops... missed that.",
+   "start": 2.794,
+   "end": 3.818,
+   "src": "voice/ear-whoops.mp3"
+  },
+  {
+   "id": "ear-fifteen",
+   "who": "ear",
+   "text": "Fifteen?",
+   "start": 4.068,
+   "end": 4.815,
+   "src": "voice/ear-fifteen.mp3"
+  },
+  {
+   "id": "ear-fifty",
+   "who": "ear",
+   "text": "Fifty?",
+   "start": 4.995,
+   "end": 5.699,
+   "src": "voice/ear-fifty.mp3"
+  },
+  {
+   "id": "ear-definitely",
+   "who": "ear",
+   "text": "Nah. Definitely fifty.",
+   "start": 6.249,
+   "end": 7.678,
+   "src": "voice/ear-definitely.mp3"
+  },
+  {
+   "id": "addon-sure",
+   "who": "addon",
+   "text": "Are you sure?",
+   "start": 8.178,
+   "end": 9.373,
+   "src": "voice/addon-sure.mp3"
+  },
+  {
+   "id": "customer-yes",
+   "who": "customer",
+   "text": "Yeah, sure.",
+   "start": 9.673,
+   "end": 10.393,
+   "src": "voice/customer-yes.mp3"
+  },
+  {
+   "id": "addon-added",
+   "who": "addon",
+   "text": "Added!",
+   "start": 10.643,
+   "end": 11.56,
+   "src": "voice/addon-added.mp3"
+  }
+ ]
+}
