@@ -19,7 +19,8 @@ decides. `catalog.test.ts` fails if an id exists in code but not here.
 - **Amazon thresholds are fixed.** A suite's `budget` can only tune thresholds sourced
   `hearsay` (D-011).
 - **Scope.** `server` checks run once per suite (lint and active probes); `turn` checks run on
-  every turn of every case × variant. Case-level `checks` add turn checks; they never replace the
+  every turn of every case × variant; `suite` checks (`coverage.*`) run once after all cases, over
+  the visible cases and their traces. Case-level `checks` add turn checks; they never replace the
   suite's (D-015).
 - **Planned checks** a suite asks for are listed as `skipped` in the summary and the report,
   never counted as passed (FR-024).
@@ -192,6 +193,25 @@ required parameters.
 - `mandate.principal_bound` — Grant as principal A. As principal B in a new session, a scoped
   call must be refused: else **error**. As principal A in a new session, `mandate_status` must
   show the mandate: else **warn**.
+
+## Coverage
+
+`coverage.*` (FR-067, D-025) reports what the visible suite never exercises, so an agent that
+stops at green can see where the suite stops (docs/15 §v2: agents with Hearsay fixed what the suite
+covered and stopped there). Always on, severity `warn`, source `hearsay`. They read the visible
+cases (their `call`, `expect`, `human`) and the tool calls in their traces; holdout cases never
+count. Every hint says to propose a case in the pull request description: the suite is changed by
+a person, never by the agent (D-021).
+
+| Check | Question | Fires when |
+|---|---|---|
+| `coverage.tools` | precondition | a tool in `tools/list` is neither called nor expected by any visible case |
+| `coverage.values` | hear | an enum value of a parameter is used by no case (named, e.g. "room: kitchen, office never used"), or a parameter with `minimum`/`maximum` that cases use is never tried outside its bounds; skipped for tools no case reaches |
+| `coverage.decline` | agree | a tool asked for confirmation in a run, or a case expects `confirm: required` for it, and no case declines or cancels it |
+| `coverage.limits` | agree | the suite asks for any `mandate.*` check, and a tool that is not read-only and takes a numeric amount or quantity (and no limit parameter, which marks the tool that grants the mandate) is never refused with `LIMIT_EXCEEDED` |
+
+Not covered by design: a destructive tool that never asks (small reversible actions are not
+confirmed, D-022), so there is no "no" to test.
 
 ## Kit blocks named in hints
 

@@ -1,6 +1,6 @@
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { CHECKS, type CheckSpec, type Question } from '../catalog';
-import type { Finding } from '../report';
+import type { CaseResult, Finding } from '../report';
 import type { Suite, SuiteCase } from '../suite';
 import type { McpSession } from '../session';
 import type { ServerInfo, Trace, Turn } from '../trace';
@@ -28,6 +28,20 @@ export interface ServerCheckContext {
   /** What the first session negotiated. */
   server: ServerInfo;
   newPrincipal(): string;
+}
+
+/** After all cases ran: the visible suite, the tool list and the visible cases' results (coverage). */
+export interface SuiteCheckContext {
+  suite: Suite;
+  /** Visible cases only; holdouts never count. */
+  cases: SuiteCase[];
+  tools: Tool[];
+  results: CaseResult[];
+}
+
+export interface SuiteCheck {
+  id: string;
+  run(ctx: SuiteCheckContext): Finding[];
 }
 
 export interface TurnCheck {

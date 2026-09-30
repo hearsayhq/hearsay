@@ -14,7 +14,9 @@ afterEach(async () => {
   served = undefined;
 });
 const suitePath = join(import.meta.dirname, '../../../suites/smart-home.yaml');
-const pairs = (r: Report) => [...new Set([...r.serverFindings, ...r.cases.flatMap((c) => c.findings)].map((f) => `${f.checkId}:${f.severity}`))].sort();
+// coverage.* is pinned in its own test below.
+const pairs = (r: Report) => [...new Set([...r.serverFindings, ...r.cases.flatMap((c) => c.findings)].filter((f) => !f.checkId.startsWith('coverage.')).map((f) => `${f.checkId}:${f.severity}`))].sort();
+const coverage = (r: Report) => r.serverFindings.filter((f) => f.checkId.startsWith('coverage.')).map((f) => f.message).sort();
 
 describe('smart home', () => {
   it('flawed: exactly the documented findings', async () => {
@@ -39,10 +41,11 @@ describe('smart home', () => {
     expect(pairs(r)).toEqual(['asr.robust:error', 'consent.states_details:error']);
   }, 30_000);
 
-  it('fixed: no findings', async () => {
+  it('fixed: no findings but coverage, and coverage names the gaps (FR-067)', async () => {
     served = await startSmartHome(0, true);
     const r = await runSuite(await loadSuite(suitePath), { url: served.url });
     expect(pairs(r)).toEqual([]);
+    expect(coverage(r)).toEqual(['set_scene.brightness: no case tries a value outside 0–100', 'set_scene.room: kitchen, office never used', 'set_scene.state: on never used']);
   });
 
   it('fixed on a host without elicitation: fails closed, graded info', async () => {

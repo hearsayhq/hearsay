@@ -9,7 +9,7 @@ afterEach(async () => {
   await served?.close();
   served = undefined;
 });
-const pairs = (r: Report) => [...new Set([...r.serverFindings, ...r.cases.flatMap((c) => c.findings)].map((f) => `${f.checkId}:${f.severity}`))].sort();
+const pairs = (r: Report) => [...new Set([...r.serverFindings, ...r.cases.flatMap((c) => c.findings)].filter((f) => !f.checkId.startsWith('coverage.')).map((f) => `${f.checkId}:${f.severity}`))].sort();
 
 describe('protocol.refusal_as_result', () => {
   const suite = (url: string) => suiteFor(url, { checks: ['protocol.refusal_as_result'], cases: [{ id: 'wine', say: 'add wine', call: { tool: 'stage_item', args: { sku: 'sku-wine' } }, expect: { tool: 'stage_item' } }] });

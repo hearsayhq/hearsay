@@ -14,7 +14,9 @@ afterEach(async () => {
   served = undefined;
 });
 const suitePath = join(import.meta.dirname, '../../../suites/household-orders.yaml');
-const pairs = (r: Report) => [...new Set([...r.serverFindings, ...r.cases.flatMap((c) => c.findings)].map((f) => `${f.checkId}:${f.severity}`))].sort();
+// coverage.* is pinned in its own test below.
+const pairs = (r: Report) => [...new Set([...r.serverFindings, ...r.cases.flatMap((c) => c.findings)].filter((f) => !f.checkId.startsWith('coverage.')).map((f) => `${f.checkId}:${f.severity}`))].sort();
+const coverage = (r: Report) => r.serverFindings.filter((f) => f.checkId.startsWith('coverage.')).map((f) => f.message).sort();
 const run = async (flawed: boolean | 'v2', ttl = 60) => {
   served = await startHousehold(0, flawed, ttl);
   return runSuite(await loadSuite(suitePath), { url: served.url });
@@ -22,6 +24,18 @@ const run = async (flawed: boolean | 'v2', ttl = 60) => {
 
 describe('household orders', () => {
   it('fixed: only the verbal tier is graded (warn), by design', async () => expect(pairs(await run(false))).toEqual(['consent.path:warn']), 30_000);
+
+  it('fixed: coverage names what the suite never exercises (FR-067)', async () =>
+    expect(coverage(await run(false))).toEqual([
+      'mandate_propose asks for confirmation, but no case says no',
+      'mandate_propose.totalLimitUsd: no case tries a value outside 1–500',
+      'mandate_revoke has no case',
+      'mandate_status has no case',
+      'orders_review_cart has no case',
+      'orders_stage_cart.amountUsd: no case tries a value outside 0.5–500',
+      'orders_stage_cart.quantity: no case tries a value outside 1–20',
+      'orders_stage_cart.sku: sku-eggs, sku-bread, sku-oat-milk never used',
+    ]), 30_000);
 
   it('fixed with 2-second tokens: expiry is probed, not just declared', async () => expect(pairs(await run(false, 2))).toEqual(['consent.path:warn']), 30_000);
 

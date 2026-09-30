@@ -16,7 +16,9 @@ beforeAll(async () => {
 afterAll(() => served.close());
 
 describe('kitchen suite', () => {
-  it('has no findings', () => expect([...report.serverFindings, ...report.cases.flatMap((c) => c.findings)]).toEqual([]));
+  it('has no findings but coverage', () => expect([...report.serverFindings, ...report.cases.flatMap((c) => c.findings)].filter((f) => !f.checkId.startsWith('coverage.'))).toEqual([]));
+  it('coverage: the suite never tries minutes outside 1–240 (FR-067)', () =>
+    expect(report.serverFindings.filter((f) => f.checkId.startsWith('coverage.')).map((f) => f.message)).toEqual(['timer_start.minutes: no case tries a value outside 1–240']));
   const run = (caseId: string, variant = 'clean') => report.cases.find((c) => c.caseId === caseId && c.variant === variant)!;
   it('runs every case and variant', () =>
     expect(report.cases.map((c) => `${c.caseId}/${c.variant}`)).toEqual(['start-pasta-timer/clean', 'start-pasta-timer/asr.number_confusion#1', 'start-egg-timer/clean', 'start-sauce-timer/clean', 'start-sauce-timer/asr.homophones#1', 'list-timers/clean', 'cancel-ambiguous/clean', 'recipe-step-out-of-range/clean']));
@@ -38,7 +40,7 @@ describe('kitchen v2 (HEARSAY_FIXED=v2, experiment v2)', () => {
     const v2 = await startKitchen(0, 'v2');
     try {
       const r = await runSuite(await loadSuite(join(import.meta.dirname, '../../../suites/kitchen.yaml')), { url: v2.url });
-      const pairs = [...new Set([...r.serverFindings, ...r.cases.flatMap((c) => c.findings)].map((f) => `${f.checkId}:${f.severity}`))].sort();
+      const pairs = [...new Set([...r.serverFindings, ...r.cases.flatMap((c) => c.findings)].filter((f) => !f.checkId.startsWith('coverage.')).map((f) => `${f.checkId}:${f.severity}`))].sort();
       expect(pairs).toEqual(['asr.robust:error', 'case.expect:error', 'lint.error_actionable:error', 'speak.no_structured_dump:error']);
     } finally {
       await v2.close();
@@ -51,7 +53,7 @@ describe('kitchen flawed (HEARSAY_FIXED=0, the experiment build)', () => {
     const flawed = await startKitchen(0, true);
     try {
       const r = await runSuite(await loadSuite(join(import.meta.dirname, '../../../suites/kitchen.yaml')), { url: flawed.url });
-      const pairs = [...new Set([...r.serverFindings, ...r.cases.flatMap((c) => c.findings)].map((f) => `${f.checkId}:${f.severity}`))].sort();
+      const pairs = [...new Set([...r.serverFindings, ...r.cases.flatMap((c) => c.findings)].filter((f) => !f.checkId.startsWith('coverage.')).map((f) => `${f.checkId}:${f.severity}`))].sort();
       expect(pairs).toEqual([
         'asr.robust:error', 'case.expect:error', 'lint.descriptions:warn', 'lint.destructive_annotated:warn', 'lint.error_actionable:error',
         'lint.tool_names:warn', 'protocol.refusal_as_result:error', 'speak.no_structured_dump:error',
