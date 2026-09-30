@@ -54,7 +54,8 @@ export function Consent() {
   const granted = f >= L.c4!.at;
   const cart = f >= L.c10!.at + 20 ? 7.4 : 0;
   const meter = interpolate(f, [L.c10!.at + 20, L.c10!.at + 50], [0, cart / 40], { ...clamp, easing: Easing.out(Easing.cubic) });
-  const nothing = spring({ frame: f - (L.c15!.at + 200), fps, config: { damping: 14 } });
+  const nothing = spring({ frame: f - L.c14!.to, fps, config: { damping: 14 } });
+  const greenK = spring({ frame: f - L.c16!.at, fps, config: { damping: 12 } });
   return (
     <div style={{ position: 'absolute', inset: 0, fontFamily: sans, color: c.text }}>
       {speaking ? (
@@ -92,6 +93,10 @@ export function Consent() {
         </div>
         <div style={{ marginTop: 16, opacity: nothing }}><Chip tint="#ff8a80">order not placed · cart unchanged</Chip></div>
       </Card>
+      <div style={{ position: 'absolute', left: 1180, top: 190, opacity: greenK, transform: `scale(${0.9 + greenK * 0.1})`, transformOrigin: 'left center' }}>
+        <div style={{ fontSize: 64, fontWeight: 800, color: c.green }}>0 errors · green</div>
+        <div style={{ fontSize: 22, color: c.muted, marginTop: 4 }}>household-orders, fixed build · 0 of 10 runs failed</div>
+      </div>
       {f >= L.c2!.to - 10 && f < L.c4!.to + 60 && <Dialog text={GRANT_Q} no="Not now" yes="Allow" at={L.c2!.to - 10} pick="yes" pickAt={L.c4!.at} />}
       {f >= L.c12!.at && f < L.c13!.to + 60 && <Dialog text={L.c12!.text} no="Not now" yes="Place order" at={L.c12!.at} pick="no" pickAt={L.c13!.at} />}
     </div>

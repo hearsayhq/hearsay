@@ -30,7 +30,7 @@ export const LINES: Line[] = tl.lines.map((l) => ({
   ...('parts' in l && l.parts ? { parts: (l.parts as Array<{ text: string; start: number; end: number }>).map((p) => ({ text: p.text, at: f(p.start), to: f(p.end) })) } : {}),
 }));
 
-export const SCENES = ['intro', 'what', 'journey', 'problem', 'agent', 'experiment', 'consent', 'close'] as const;
+export const SCENES = ['intro', 'what', 'how', 'rules', 'problem', 'consent', 'agent', 'experiment', 'close'] as const;
 export type SceneName = (typeof SCENES)[number];
 
 const starts = SCENES.map((s) => Math.max(0, LINES.find((l) => l.scene === s)!.at - PRE));

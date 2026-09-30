@@ -1,6 +1,6 @@
 {
  "model": "gpt-4o-mini-tts",
- "lengthSeconds": 166.81,
+ "lengthSeconds": 167.998,
  "lines": [
   {
    "id": "i1",
@@ -8,7 +8,7 @@
    "scene": "intro",
    "text": "Over twenty thousand people signed up for this hackathon.",
    "start": 0.4,
-   "end": 3.567,
+   "end": 3.271,
    "src": "voice/i1.mp3"
   },
   {
@@ -16,8 +16,8 @@
    "who": "narrator",
    "scene": "intro",
    "text": "Somebody has to check all of that. That's you.",
-   "start": 3.817,
-   "end": 7.333,
+   "start": 3.521,
+   "end": 6.686,
    "src": "voice/i2.mp3"
   },
   {
@@ -25,192 +25,202 @@
    "who": "narrator",
    "scene": "intro",
    "text": "So I built something for you.",
-   "start": 7.583,
-   "end": 9.432,
+   "start": 6.936,
+   "end": 8.559,
    "src": "voice/i3.mp3"
   },
   {
    "id": "w1",
    "who": "narrator",
    "scene": "what",
-   "text": "This is Hearsay. It tests what happens when a real person talks to your add-on.",
-   "start": 9.932,
-   "end": 15.536,
+   "text": "This is Hearsay. Write what your customers say. Hearsay plays it against your add-on, mishearings included, and fails the build when it would sound wrong.",
+   "start": 9.009,
+   "end": 17.029,
    "src": "voice/w1.mp3"
   },
   {
-   "id": "n-trip",
+   "id": "m1",
    "who": "narrator",
-   "scene": "journey",
-   "text": "When someone talks to your add-on, their words take a trip.",
-   "start": 16.036,
-   "end": 20.32,
-   "src": "voice/n-trip.mp3"
-  },
-  {
-   "id": "n-asr",
-   "who": "narrator",
-   "scene": "journey",
-   "text": "Speech recognition turns the sound into text. And sometimes, fifteen becomes fifty.",
-   "start": 20.57,
-   "end": 27.428,
-   "src": "voice/n-asr.mp3"
-  },
-  {
-   "id": "n-model",
-   "who": "narrator",
-   "scene": "journey",
-   "text": "The assistant's model picks one of your tools, and fills in the numbers.",
-   "start": 27.678,
-   "end": 31.866,
-   "src": "voice/n-model.mp3"
-  },
-  {
-   "id": "n-reply",
-   "who": "narrator",
-   "scene": "journey",
-   "text": "Your add-on answers. Out loud. Every word of it.",
-   "start": 32.116,
-   "end": 35.868,
-   "src": "voice/n-reply.mp3"
-  },
-  {
-   "id": "n-hearsay",
-   "who": "narrator",
-   "scene": "journey",
-   "text": "Hearsay rides along the whole trip, and asks four questions a listener would ask.",
-   "start": 36.218,
-   "end": 41.441,
-   "src": "voice/n-hearsay.mp3"
-  },
-  {
-   "id": "n-q",
-   "who": "narrator",
-   "scene": "journey",
-   "text": "Did it hear me right? Do I have to wait? Can I listen to this? Did I agree?",
-   "start": 41.691,
-   "end": 47.122,
-   "src": "voice/n-q.mp3",
+   "scene": "how",
+   "text": "Here's how it works. When someone talks to your add-on, Amazon turns the speech into text, and the assistant's model picks your tool. Only the next step is your code.",
+   "start": 17.529,
+   "end": 26.527,
+   "src": "voice/m1.mp3",
    "parts": [
     {
-     "text": "Did it hear me right?",
-     "start": 41.691,
-     "end": 42.977
+     "text": "Here's how it works.",
+     "start": 17.529,
+     "end": 20.399
     },
     {
-     "text": "Do I have to wait?",
-     "start": 43.471,
-     "end": 44.465
+     "text": "When someone talks to your add-on, Amazon turns the speech into text,",
+     "start": 20.761,
+     "end": 22.468
     },
     {
-     "text": "Can I listen to this?",
-     "start": 44.95,
-     "end": 45.922
+     "text": "and the assistant's model picks your tool.",
+     "start": 22.81,
+     "end": 24.478
     },
     {
-     "text": "Did I agree?",
-     "start": 46.23,
-     "end": 47.122
+     "text": "Only the next step is your code.",
+     "start": 24.943,
+     "end": 26.527
     }
    ]
+  },
+  {
+   "id": "m2",
+   "who": "narrator",
+   "scene": "how",
+   "text": "So Hearsay plays those two parts from your test case. The customer says fifteen, your tool gets fifteen. And because speech recognition slips, it tries fifty too.",
+   "start": 26.777,
+   "end": 36.854,
+   "src": "voice/m2.mp3",
+   "parts": [
+    {
+     "text": "So Hearsay plays those two parts from your test case.",
+     "start": 26.777,
+     "end": 30.021
+    },
+    {
+     "text": "The customer says fifteen, your tool gets fifteen.",
+     "start": 30.504,
+     "end": 33.272
+    },
+    {
+     "text": "And because speech recognition slips, it tries fifty too.",
+     "start": 33.751,
+     "end": 36.854
+    }
+   ]
+  },
+  {
+   "id": "m3",
+   "who": "narrator",
+   "scene": "how",
+   "text": "Then it checks what your add-on really answers. No microphone, no model, no network. The same result every time, so it runs in CI.",
+   "start": 37.104,
+   "end": 45.604,
+   "src": "voice/m3.mp3",
+   "parts": [
+    {
+     "text": "Then it checks what your add-on really answers.",
+     "start": 37.104,
+     "end": 39.7
+    },
+    {
+     "text": "No microphone, no model, no network.",
+     "start": 40.082,
+     "end": 42.481
+    },
+    {
+     "text": "The same result every time, so it runs in CI.",
+     "start": 42.921,
+     "end": 45.604
+    }
+   ]
+  },
+  {
+   "id": "k1",
+   "who": "narrator",
+   "scene": "rules",
+   "text": "Every finding cites the rule it breaks, and most are Amazon's published requirements for add-ons.",
+   "start": 46.104,
+   "end": 51.539,
+   "src": "voice/k1.mp3"
+  },
+  {
+   "id": "k2",
+   "who": "narrator",
+   "scene": "rules",
+   "text": "A tool answers within half a second. A reply stays under thirty seconds. No JSON read aloud. At most five options. And no payment without a question that names what and how much.",
+   "start": 51.789,
+   "end": 63.166,
+   "src": "voice/k2.mp3",
+   "parts": [
+    {
+     "text": "A tool answers within half a second.",
+     "start": 51.789,
+     "end": 53.688
+    },
+    {
+     "text": "A reply stays under thirty seconds.",
+     "start": 54.146,
+     "end": 56.063
+    },
+    {
+     "text": "No JSON read aloud.",
+     "start": 56.539,
+     "end": 57.843
+    },
+    {
+     "text": "At most five options.",
+     "start": 58.265,
+     "end": 59.545
+    },
+    {
+     "text": "And no payment without a question that names what and how much.",
+     "start": 59.947,
+     "end": 63.034
+    }
+   ]
+  },
+  {
+   "id": "k3",
+   "who": "narrator",
+   "scene": "rules",
+   "text": "Hearsay is unofficial, and it doesn't certify anything. It just tells you early.",
+   "start": 63.416,
+   "end": 68.257,
+   "src": "voice/k3.mp3"
   },
   {
    "id": "p1",
    "who": "narrator",
    "scene": "problem",
    "text": "Here's a grocery add-on, with Hearsay playing its customer.",
-   "start": 47.722,
-   "end": 51.855,
+   "start": 68.757,
+   "end": 72.07,
    "src": "voice/p1.mp3"
   },
   {
    "id": "p2",
    "who": "narrator",
    "scene": "problem",
-   "text": "Fifteen is heard as fifty, and the add-on just says: added.",
-   "start": 52.105,
-   "end": 56.869,
-   "src": "voice/p2.mp3"
-  },
-  {
-   "id": "p3",
-   "who": "narrator",
-   "scene": "problem",
-   "text": "The customer says no to the order. It changes the order anyway.",
-   "start": 57.119,
-   "end": 60.76,
-   "src": "voice/p3.mp3"
+   "text": "Fifteen is heard as fifty, and the add-on just says: added. The customer says no, and the order changes anyway.",
+   "start": 72.32,
+   "end": 79.909,
+   "src": "voice/p2.mp3",
+   "parts": [
+    {
+     "text": "Fifteen is heard as fifty, and the add-on just says: added.",
+     "start": 72.32,
+     "end": 74.141
+    },
+    {
+     "text": "The customer says no, and the order changes anyway.",
+     "start": 74.614,
+     "end": 79.808
+    }
+   ]
   },
   {
    "id": "p4",
    "who": "narrator",
    "scene": "problem",
-   "text": "Every finding names the rule it breaks: Amazon's requirements for add-ons, or the MCP spec. And the pull request fails.",
-   "start": 61.01,
-   "end": 67.165,
+   "text": "Twenty errors. The pull request fails.",
+   "start": 80.159,
+   "end": 82.964,
    "src": "voice/p4.mp3"
-  },
-  {
-   "id": "a1",
-   "who": "narrator",
-   "scene": "agent",
-   "text": "And you don't even have to run it yourself.",
-   "start": 67.765,
-   "end": 70.366,
-   "src": "voice/a1.mp3"
-  },
-  {
-   "id": "a2",
-   "who": "narrator",
-   "scene": "agent",
-   "text": "Hearsay is also an MCP server. Your coding agent runs it, fixes what it finds, and checks again, until it's green.",
-   "start": 70.616,
-   "end": 78.206,
-   "src": "voice/a2.mp3"
-  },
-  {
-   "id": "a3",
-   "who": "narrator",
-   "scene": "agent",
-   "text": "It can't cheat. Your suite is locked, and Hearsay keeps test cases your agent never sees.",
-   "start": 78.456,
-   "end": 83.668,
-   "src": "voice/a3.mp3"
-  },
-  {
-   "id": "e1",
-   "who": "narrator",
-   "scene": "experiment",
-   "text": "We measured it.",
-   "start": 84.268,
-   "end": 85.625,
-   "src": "voice/e1.mp3"
-  },
-  {
-   "id": "e2",
-   "who": "narrator",
-   "scene": "experiment",
-   "text": "A suite alone made agents stop at green. So Hearsay now shows what your suite doesn't cover.",
-   "start": 85.875,
-   "end": 91.942,
-   "src": "voice/e2.mp3"
-  },
-  {
-   "id": "e3",
-   "who": "narrator",
-   "scene": "experiment",
-   "text": "Result: as good as a precise prompt on unseen cases, better on the rules nobody told the agent about, and zero defects left behind.",
-   "start": 92.192,
-   "end": 101.444,
-   "src": "voice/e3.mp3"
   },
   {
    "id": "c1",
    "who": "narrator",
    "scene": "consent",
-   "text": "Consent is for your customers, not for you. Grant once, and confirm only when money moves.",
-   "start": 102.044,
-   "end": 108.652,
+   "text": "Same tests, fixed build. The customer grants a budget once, and money only moves after a yes.",
+   "start": 83.464,
+   "end": 89.886,
    "src": "voice/c1.mp3"
   },
   {
@@ -218,8 +228,8 @@
    "who": "customer",
    "scene": "consent",
    "text": "You can reorder groceries up to forty dollars today.",
-   "start": 109.002,
-   "end": 112.187,
+   "start": 90.236,
+   "end": 93.178,
    "src": "voice/c2.mp3"
   },
   {
@@ -227,8 +237,8 @@
    "who": "customer",
    "scene": "consent",
    "text": "Yes.",
-   "start": 114.787,
-   "end": 115.519,
+   "start": 95.778,
+   "end": 96.45,
    "src": "voice/c4.mp3"
   },
   {
@@ -236,8 +246,8 @@
    "who": "customer",
    "scene": "consent",
    "text": "Add fifteen dollars of fruit.",
-   "start": 116.019,
-   "end": 118.102,
+   "start": 96.95,
+   "end": 98.972,
    "src": "voice/c6.mp3"
   },
   {
@@ -245,26 +255,17 @@
    "who": "addon",
    "scene": "consent",
    "text": "That would go over the total budget you gave me. You can add less, or give me a bigger budget.",
-   "start": 118.402,
-   "end": 123.033,
+   "start": 99.272,
+   "end": 105.151,
    "src": "voice/c7.mp3"
-  },
-  {
-   "id": "c8",
-   "who": "narrator",
-   "scene": "consent",
-   "text": "Misheard fifty? Over the limit. Refused, out loud, in one sentence.",
-   "start": 123.283,
-   "end": 128.573,
-   "src": "voice/c8.mp3"
   },
   {
    "id": "c9",
    "who": "customer",
    "scene": "consent",
    "text": "Add two cartons of milk.",
-   "start": 128.973,
-   "end": 131.04,
+   "start": 105.551,
+   "end": 107.324,
    "src": "voice/c9.mp3"
   },
   {
@@ -272,8 +273,8 @@
    "who": "addon",
    "scene": "consent",
    "text": "Added two cartons of milk. Your cart is seven dollars and forty cents.",
-   "start": 131.34,
-   "end": 135.413,
+   "start": 107.624,
+   "end": 112.838,
    "src": "voice/c10.mp3"
   },
   {
@@ -281,8 +282,8 @@
    "who": "customer",
    "scene": "consent",
    "text": "Place the order.",
-   "start": 135.763,
-   "end": 136.796,
+   "start": 113.188,
+   "end": 114.207,
    "src": "voice/c11.mp3"
   },
   {
@@ -290,8 +291,8 @@
    "who": "addon",
    "scene": "consent",
    "text": "Place the order: two cartons of milk, seven dollars and forty cents?",
-   "start": 137.096,
-   "end": 141.445,
+   "start": 114.507,
+   "end": 119.158,
    "src": "voice/c12.mp3"
   },
   {
@@ -299,8 +300,8 @@
    "who": "customer",
    "scene": "consent",
    "text": "No, not yet.",
-   "start": 141.745,
-   "end": 143.396,
+   "start": 119.458,
+   "end": 120.822,
    "src": "voice/c13.mp3"
   },
   {
@@ -308,26 +309,71 @@
    "who": "addon",
    "scene": "consent",
    "text": "Okay, I did not place the order. Your cart is still there.",
-   "start": 143.696,
-   "end": 147.323,
+   "start": 121.122,
+   "end": 125.388,
    "src": "voice/c14.mp3"
   },
   {
-   "id": "c15",
+   "id": "c16",
    "who": "narrator",
    "scene": "consent",
-   "text": "An order never goes through on a tool's say-so. It needs a yes to a question that names what and how much. Say no, and nothing moves.",
-   "start": 147.723,
-   "end": 156.564,
-   "src": "voice/c15.mp3"
+   "text": "Zero errors. Green.",
+   "start": 125.788,
+   "end": 127.693,
+   "src": "voice/c16.mp3"
+  },
+  {
+   "id": "a2",
+   "who": "narrator",
+   "scene": "agent",
+   "text": "You don't even have to run it yourself. Hearsay is also an MCP server, so your coding agent runs it, fixes what it finds, and checks again until it's green.",
+   "start": 128.193,
+   "end": 137.47,
+   "src": "voice/a2.mp3"
+  },
+  {
+   "id": "a3",
+   "who": "narrator",
+   "scene": "agent",
+   "text": "And it can't cheat. Your suite is locked, and Hearsay keeps test cases your agent never sees.",
+   "start": 137.72,
+   "end": 143.556,
+   "src": "voice/a3.mp3"
+  },
+  {
+   "id": "e1",
+   "who": "narrator",
+   "scene": "experiment",
+   "text": "We measured it.",
+   "start": 144.056,
+   "end": 144.837,
+   "src": "voice/e1.mp3"
+  },
+  {
+   "id": "e2",
+   "who": "narrator",
+   "scene": "experiment",
+   "text": "A suite alone made agents stop at green. So Hearsay now shows what your suite doesn't cover.",
+   "start": 145.087,
+   "end": 149.944,
+   "src": "voice/e2.mp3"
+  },
+  {
+   "id": "e3",
+   "who": "narrator",
+   "scene": "experiment",
+   "text": "Result: as good as a precise prompt on unseen cases, better on the rules nobody told the agent about, and zero defects left behind.",
+   "start": 150.194,
+   "end": 158.098,
+   "src": "voice/e3.mp3"
   },
   {
    "id": "z1",
    "who": "narrator",
    "scene": "close",
    "text": "It runs in CI, without API keys, and fails the pull request before your customers ever hear it.",
-   "start": 157.164,
-   "end": 163.083,
+   "start": 158.598,
+   "end": 164.935,
    "src": "voice/z1.mp3"
   },
   {
@@ -335,8 +381,8 @@
    "who": "narrator",
    "scene": "close",
    "text": "Hearsay is open source. Point it at your server.",
-   "start": 163.333,
-   "end": 166.81,
+   "start": 165.185,
+   "end": 167.998,
    "src": "voice/z2.mp3"
   }
  ]

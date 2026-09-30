@@ -11,7 +11,7 @@ import { c, mono, sans } from '../theme';
 
 const clamp = { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' } as const;
 const ease = Easing.bezier(0.45, 0, 0.2, 1);
-const L = linesOf('journey');
+const L = linesOf('journey' as never);
 
 const Y = 520;
 const NODES = [

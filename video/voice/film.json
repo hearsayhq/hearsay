@@ -1,202 +1,160 @@
 {
- "about": "The whole video as one directed play (docs/09 script, infographic style). Add-on lines are word for word from runs of the fixed Household Orders build (src/data/consent-fixed.json).",
+ "about": "The whole video, second cut: the mechanic and Amazon's requirements first. Add-on lines word for word from a run of the fixed Household Orders build with a $40 permission (src/data/consent-fixed.json).",
  "model": "gpt-4o-mini-tts",
- "tempo": 1.12,
+ "tempo": 1.1,
  "lines": [
   {
    "id": "i1",
    "scene": "intro",
    "who": "narrator",
-   "voice": "verse",
+   "voice": "alloy",
    "text": "Over twenty thousand people signed up for this hackathon.",
-   "direction": "Warm, confident tech-launch narrator. Brisk, energetic, clear; no drawn-out words. A little awe.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words.",
    "gapBeforeMs": 400
   },
   {
    "id": "i2",
    "scene": "intro",
    "who": "narrator",
-   "voice": "verse",
+   "voice": "alloy",
    "text": "Somebody has to check all of that. That's you.",
-   "direction": "Warm, confident tech-launch narrator. Brisk, energetic, clear; no drawn-out words. Playful, a wink on 'That's you'.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words. Playful wink on 'That's you'.",
    "gapBeforeMs": 250
   },
   {
    "id": "i3",
    "scene": "intro",
    "who": "narrator",
-   "voice": "verse",
+   "voice": "alloy",
    "text": "So I built something for you.",
-   "direction": "Warm, confident tech-launch narrator. Brisk, energetic, clear; no drawn-out words. Warm, a small smile.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words. Warm.",
    "gapBeforeMs": 250
   },
   {
    "id": "w1",
    "scene": "what",
    "who": "narrator",
-   "voice": "verse",
-   "text": "This is Hearsay. It tests what happens when a real person talks to your add-on.",
-   "direction": "Warm, confident tech-launch narrator. Brisk, energetic, clear; no drawn-out words. A confident reveal on 'This is Hearsay'.",
-   "gapBeforeMs": 500
+   "voice": "alloy",
+   "text": "This is Hearsay. Write what your customers say. Hearsay plays it against your add-on, mishearings included, and fails the build when it would sound wrong.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words. A confident reveal on 'This is Hearsay'.",
+   "gapBeforeMs": 450
   },
   {
-   "id": "n-trip",
-   "scene": "journey",
+   "id": "m1",
+   "scene": "how",
    "who": "narrator",
-   "voice": "verse",
-   "text": "When someone talks to your add-on, their words take a trip.",
-   "direction": "Warm, confident tech-launch narrator. Brisk, energetic, clear; no drawn-out words.",
-   "gapBeforeMs": 500
+   "voice": "alloy",
+   "text": "Here's how it works. When someone talks to your add-on, Amazon turns the speech into text, and the assistant's model picks your tool. Only the next step is your code.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words.",
+   "gapBeforeMs": 500,
+   "parts": [
+    "Here's how it works.",
+    "When someone talks to your add-on, Amazon turns the speech into text,",
+    "and the assistant's model picks your tool.",
+    "Only the next step is your code."
+   ]
   },
   {
-   "id": "n-asr",
-   "scene": "journey",
+   "id": "m2",
+   "scene": "how",
    "who": "narrator",
-   "voice": "verse",
-   "text": "Speech recognition turns the sound into text. And sometimes, fifteen becomes fifty.",
-   "direction": "Warm, confident tech-launch narrator. Brisk, energetic, clear; no drawn-out words. A knowing smile on 'fifteen becomes fifty'.",
-   "gapBeforeMs": 250
-  },
-  {
-   "id": "n-model",
-   "scene": "journey",
-   "who": "narrator",
-   "voice": "verse",
-   "text": "The assistant's model picks one of your tools, and fills in the numbers.",
-   "direction": "Warm, confident tech-launch narrator. Brisk, energetic, clear; no drawn-out words.",
-   "gapBeforeMs": 250
-  },
-  {
-   "id": "n-reply",
-   "scene": "journey",
-   "who": "narrator",
-   "voice": "verse",
-   "text": "Your add-on answers. Out loud. Every word of it.",
-   "direction": "Warm, confident tech-launch narrator. Brisk, energetic, clear; no drawn-out words. Short punchy beats.",
-   "gapBeforeMs": 250
-  },
-  {
-   "id": "n-hearsay",
-   "scene": "journey",
-   "who": "narrator",
-   "voice": "verse",
-   "text": "Hearsay rides along the whole trip, and asks four questions a listener would ask.",
-   "direction": "Warm, confident tech-launch narrator. Brisk, energetic, clear; no drawn-out words. A lift in energy on 'Hearsay'.",
-   "gapBeforeMs": 350
-  },
-  {
-   "id": "n-q",
-   "scene": "journey",
-   "who": "narrator",
-   "voice": "verse",
-   "text": "Did it hear me right? Do I have to wait? Can I listen to this? Did I agree?",
-   "direction": "Brisk narrator reading four short questions, a short beat between each, curious and light.",
+   "voice": "alloy",
+   "text": "So Hearsay plays those two parts from your test case. The customer says fifteen, your tool gets fifteen. And because speech recognition slips, it tries fifty too.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words.",
    "gapBeforeMs": 250,
    "parts": [
-    "Did it hear me right?",
-    "Do I have to wait?",
-    "Can I listen to this?",
-    "Did I agree?"
+    "So Hearsay plays those two parts from your test case.",
+    "The customer says fifteen, your tool gets fifteen.",
+    "And because speech recognition slips, it tries fifty too."
    ]
+  },
+  {
+   "id": "m3",
+   "scene": "how",
+   "who": "narrator",
+   "voice": "alloy",
+   "text": "Then it checks what your add-on really answers. No microphone, no model, no network. The same result every time, so it runs in CI.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words.",
+   "gapBeforeMs": 250,
+   "parts": [
+    "Then it checks what your add-on really answers.",
+    "No microphone, no model, no network.",
+    "The same result every time, so it runs in CI."
+   ]
+  },
+  {
+   "id": "k1",
+   "scene": "rules",
+   "who": "narrator",
+   "voice": "alloy",
+   "text": "Every finding cites the rule it breaks, and most are Amazon's published requirements for add-ons.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words.",
+   "gapBeforeMs": 500
+  },
+  {
+   "id": "k2",
+   "scene": "rules",
+   "who": "narrator",
+   "voice": "alloy",
+   "text": "A tool answers within half a second. A reply stays under thirty seconds. No JSON read aloud. At most five options. And no payment without a question that names what and how much.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words. A short beat between the five rules.",
+   "gapBeforeMs": 250,
+   "parts": [
+    "A tool answers within half a second.",
+    "A reply stays under thirty seconds.",
+    "No JSON read aloud.",
+    "At most five options.",
+    "And no payment without a question that names what and how much."
+   ]
+  },
+  {
+   "id": "k3",
+   "scene": "rules",
+   "who": "narrator",
+   "voice": "alloy",
+   "text": "Hearsay is unofficial, and it doesn't certify anything. It just tells you early.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words. Honest, light.",
+   "gapBeforeMs": 250
   },
   {
    "id": "p1",
    "scene": "problem",
    "who": "narrator",
-   "voice": "verse",
+   "voice": "alloy",
    "text": "Here's a grocery add-on, with Hearsay playing its customer.",
-   "direction": "Warm, confident tech-launch narrator. Brisk, energetic, clear; no drawn-out words.",
-   "gapBeforeMs": 600
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words.",
+   "gapBeforeMs": 500
   },
   {
    "id": "p2",
    "scene": "problem",
    "who": "narrator",
-   "voice": "verse",
-   "text": "Fifteen is heard as fifty, and the add-on just says: added.",
-   "direction": "Warm, confident tech-launch narrator. Brisk, energetic, clear; no drawn-out words.",
-   "gapBeforeMs": 250
-  },
-  {
-   "id": "p3",
-   "scene": "problem",
-   "who": "narrator",
-   "voice": "verse",
-   "text": "The customer says no to the order. It changes the order anyway.",
-   "direction": "Warm, confident tech-launch narrator. Brisk, energetic, clear; no drawn-out words. Dry, a touch of disbelief.",
-   "gapBeforeMs": 250
+   "voice": "alloy",
+   "text": "Fifteen is heard as fifty, and the add-on just says: added. The customer says no, and the order changes anyway.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words.",
+   "gapBeforeMs": 250,
+   "parts": [
+    "Fifteen is heard as fifty, and the add-on just says: added.",
+    "The customer says no, and the order changes anyway."
+   ]
   },
   {
    "id": "p4",
    "scene": "problem",
    "who": "narrator",
-   "voice": "verse",
-   "text": "Every finding names the rule it breaks: Amazon's requirements for add-ons, or the MCP spec. And the pull request fails.",
-   "direction": "Warm, confident tech-launch narrator. Brisk, energetic, clear; no drawn-out words.",
-   "gapBeforeMs": 250
-  },
-  {
-   "id": "a1",
-   "scene": "agent",
-   "who": "narrator",
-   "voice": "verse",
-   "text": "And you don't even have to run it yourself.",
-   "direction": "Warm, confident tech-launch narrator. Brisk, energetic, clear; no drawn-out words.",
-   "gapBeforeMs": 600
-  },
-  {
-   "id": "a2",
-   "scene": "agent",
-   "who": "narrator",
-   "voice": "verse",
-   "text": "Hearsay is also an MCP server. Your coding agent runs it, fixes what it finds, and checks again, until it's green.",
-   "direction": "Warm, confident tech-launch narrator. Brisk, energetic, clear; no drawn-out words.",
-   "gapBeforeMs": 250
-  },
-  {
-   "id": "a3",
-   "scene": "agent",
-   "who": "narrator",
-   "voice": "verse",
-   "text": "It can't cheat. Your suite is locked, and Hearsay keeps test cases your agent never sees.",
-   "direction": "Warm, confident tech-launch narrator. Brisk, energetic, clear; no drawn-out words. Firm and confident on 'It can't cheat'.",
-   "gapBeforeMs": 250
-  },
-  {
-   "id": "e1",
-   "scene": "experiment",
-   "who": "narrator",
-   "voice": "verse",
-   "text": "We measured it.",
-   "direction": "Warm, confident tech-launch narrator. Brisk, energetic, clear; no drawn-out words. Serious, short.",
-   "gapBeforeMs": 600
-  },
-  {
-   "id": "e2",
-   "scene": "experiment",
-   "who": "narrator",
-   "voice": "verse",
-   "text": "A suite alone made agents stop at green. So Hearsay now shows what your suite doesn't cover.",
-   "direction": "Warm, confident tech-launch narrator. Brisk, energetic, clear; no drawn-out words.",
-   "gapBeforeMs": 250
-  },
-  {
-   "id": "e3",
-   "scene": "experiment",
-   "who": "narrator",
-   "voice": "verse",
-   "text": "Result: as good as a precise prompt on unseen cases, better on the rules nobody told the agent about, and zero defects left behind.",
-   "direction": "Warm, confident tech-launch narrator. Brisk, energetic, clear; no drawn-out words. Proud but measured.",
+   "voice": "alloy",
+   "text": "Twenty errors. The pull request fails.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words. Short and dry.",
    "gapBeforeMs": 250
   },
   {
    "id": "c1",
    "scene": "consent",
    "who": "narrator",
-   "voice": "verse",
-   "text": "Consent is for your customers, not for you. Grant once, and confirm only when money moves.",
-   "direction": "Warm, confident tech-launch narrator. Brisk, energetic, clear; no drawn-out words.",
-   "gapBeforeMs": 600
+   "voice": "alloy",
+   "text": "Same tests, fixed build. The customer grants a budget once, and money only moves after a yes.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words.",
+   "gapBeforeMs": 500
   },
   {
    "id": "c2",
@@ -229,19 +187,10 @@
    "id": "c7",
    "scene": "consent",
    "who": "addon",
-   "voice": "alloy",
+   "voice": "sage",
    "text": "That would go over the total budget you gave me. You can add less, or give me a bigger budget.",
-   "direction": "A friendly, clear voice assistant reading an add-on's reply. Natural, brisk, not robotic.",
+   "direction": "A calm, friendly voice assistant reading an add-on's reply. Natural and brisk, not robotic.",
    "gapBeforeMs": 300
-  },
-  {
-   "id": "c8",
-   "scene": "consent",
-   "who": "narrator",
-   "voice": "verse",
-   "text": "Misheard fifty? Over the limit. Refused, out loud, in one sentence.",
-   "direction": "Warm, confident tech-launch narrator. Brisk, energetic, clear; no drawn-out words. Punchy, satisfied.",
-   "gapBeforeMs": 250
   },
   {
    "id": "c9",
@@ -256,9 +205,9 @@
    "id": "c10",
    "scene": "consent",
    "who": "addon",
-   "voice": "alloy",
+   "voice": "sage",
    "text": "Added two cartons of milk. Your cart is seven dollars and forty cents.",
-   "direction": "A friendly, clear voice assistant reading an add-on's reply. Natural, brisk, not robotic.",
+   "direction": "A calm, friendly voice assistant reading an add-on's reply. Natural and brisk, not robotic.",
    "gapBeforeMs": 300
   },
   {
@@ -274,9 +223,9 @@
    "id": "c12",
    "scene": "consent",
    "who": "addon",
-   "voice": "alloy",
+   "voice": "sage",
    "text": "Place the order: two cartons of milk, seven dollars and forty cents?",
-   "direction": "A friendly, clear voice assistant reading an add-on's reply. Natural, brisk, not robotic.",
+   "direction": "A calm, friendly voice assistant reading an add-on's reply. Natural and brisk, not robotic.",
    "gapBeforeMs": 300
   },
   {
@@ -292,36 +241,81 @@
    "id": "c14",
    "scene": "consent",
    "who": "addon",
-   "voice": "alloy",
+   "voice": "sage",
    "text": "Okay, I did not place the order. Your cart is still there.",
-   "direction": "A friendly, clear voice assistant reading an add-on's reply. Natural, brisk, not robotic.",
+   "direction": "A calm, friendly voice assistant reading an add-on's reply. Natural and brisk, not robotic.",
    "gapBeforeMs": 300
   },
   {
-   "id": "c15",
+   "id": "c16",
    "scene": "consent",
    "who": "narrator",
-   "voice": "verse",
-   "text": "An order never goes through on a tool's say-so. It needs a yes to a question that names what and how much. Say no, and nothing moves.",
-   "direction": "Warm, confident tech-launch narrator. Brisk, energetic, clear; no drawn-out words.",
+   "voice": "alloy",
+   "text": "Zero errors. Green.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words. Satisfied, short.",
    "gapBeforeMs": 400
+  },
+  {
+   "id": "a2",
+   "scene": "agent",
+   "who": "narrator",
+   "voice": "alloy",
+   "text": "You don't even have to run it yourself. Hearsay is also an MCP server, so your coding agent runs it, fixes what it finds, and checks again until it's green.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words.",
+   "gapBeforeMs": 500
+  },
+  {
+   "id": "a3",
+   "scene": "agent",
+   "who": "narrator",
+   "voice": "alloy",
+   "text": "And it can't cheat. Your suite is locked, and Hearsay keeps test cases your agent never sees.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words. Firm on 'it can't cheat'.",
+   "gapBeforeMs": 250
+  },
+  {
+   "id": "e1",
+   "scene": "experiment",
+   "who": "narrator",
+   "voice": "alloy",
+   "text": "We measured it.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words. Serious, short.",
+   "gapBeforeMs": 500
+  },
+  {
+   "id": "e2",
+   "scene": "experiment",
+   "who": "narrator",
+   "voice": "alloy",
+   "text": "A suite alone made agents stop at green. So Hearsay now shows what your suite doesn't cover.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words.",
+   "gapBeforeMs": 250
+  },
+  {
+   "id": "e3",
+   "scene": "experiment",
+   "who": "narrator",
+   "voice": "alloy",
+   "text": "Result: as good as a precise prompt on unseen cases, better on the rules nobody told the agent about, and zero defects left behind.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words. Proud but measured.",
+   "gapBeforeMs": 250
   },
   {
    "id": "z1",
    "scene": "close",
    "who": "narrator",
-   "voice": "verse",
+   "voice": "alloy",
    "text": "It runs in CI, without API keys, and fails the pull request before your customers ever hear it.",
-   "direction": "Warm, confident tech-launch narrator. Brisk, energetic, clear; no drawn-out words.",
-   "gapBeforeMs": 600
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words.",
+   "gapBeforeMs": 500
   },
   {
    "id": "z2",
    "scene": "close",
    "who": "narrator",
-   "voice": "verse",
+   "voice": "alloy",
    "text": "Hearsay is open source. Point it at your server.",
-   "direction": "Warm, confident tech-launch narrator. Brisk, energetic, clear; no drawn-out words. Warm, inviting finish.",
+   "direction": "Fast, precise, confident narrator for a developer-tool launch. Crisp and clear, brisk pace, no drawn-out words. Warm, inviting finish.",
    "gapBeforeMs": 250
   }
  ]

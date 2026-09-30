@@ -47,16 +47,17 @@ export function What() {
   const f = useCurrentFrame();
   const { fps } = useVideoConfig();
   const word = spring({ frame: f - (W.w1!.at - 10), fps, config: { damping: 18 } });
-  const tag = interpolate(f, [W.w1!.at + 60, W.w1!.at + 90], [0, 1], clamp);
   return (
     <div style={{ position: 'absolute', inset: 0 }}>
-      <div style={{ position: 'absolute', left: 0, right: 0, top: 250, textAlign: 'center', fontFamily: sans, fontSize: 196, fontWeight: 800, letterSpacing: 14, color: c.text, opacity: word, transform: `translateY(${(1 - word) * 30}px)` }}>HEARSAY</div>
+      <div style={{ position: 'absolute', left: 0, right: 0, top: 170, textAlign: 'center', fontFamily: sans, fontSize: 196, fontWeight: 800, letterSpacing: 14, color: c.text, opacity: word, transform: `translateY(${(1 - word) * 30}px)` }}>HEARSAY</div>
       <div style={{ opacity: word }}>
-        <VoicePill src={W.w1!.src} tint={c.amber} x={960} y={600} />
+        <VoicePill src={W.w1!.src} tint={c.amber} x={960} y={500} />
       </div>
-      <div style={{ position: 'absolute', left: 0, right: 0, top: 730, textAlign: 'center', fontFamily: sans, opacity: tag }}>
-        <div style={{ fontSize: 44, fontWeight: 600, color: c.text }}>Preflight checks for Alexa+ add-ons</div>
-        <div style={{ fontSize: 26, color: c.muted, marginTop: 12 }}>Never act on hearsay. · Unofficial</div>
+      <div style={{ position: 'absolute', left: 0, right: 0, top: 620, textAlign: 'center', fontFamily: sans }}>
+        {['Write what your customers say.', 'Hearsay plays it against your add-on, mishearings included,', 'and fails the build when it would sound wrong.'].map((t, i) => {
+          const at = W.w1!.at + (W.w1!.to - W.w1!.at) * [0.22, 0.45, 0.72][i]!;
+          return <div key={t} style={{ fontSize: 40, fontWeight: i === 0 ? 700 : 500, color: i === 2 ? c.amber : c.text, marginTop: 8, opacity: interpolate(f, [at, at + 15], [0, 1], clamp) }}>{t}</div>;
+        })}
       </div>
     </div>
   );

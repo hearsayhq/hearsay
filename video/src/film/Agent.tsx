@@ -12,9 +12,9 @@ import { Card, Chip, Sev } from './ui';
 const L = linesOf('agent');
 const clamp = { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' } as const;
 const NODES = [
-  { label: 'Your coding agent', x: 560, y: 470, tint: '#9FA8FF', glyph: '>_' },
-  { label: 'Hearsay MCP server', x: 1360, y: 470, tint: c.amber, glyph: 'H' },
-  { label: 'src/server.ts', x: 960, y: 800, tint: '#7FE0C7', glyph: '{ }' },
+  { label: 'Your coding agent', x: 560, y: 400, tint: '#9FA8FF', glyph: '>_' },
+  { label: 'Hearsay MCP server', x: 1360, y: 400, tint: c.amber, glyph: 'H' },
+  { label: 'src/server.ts', x: 960, y: 690, tint: '#7FE0C7', glyph: '{ }' },
 ];
 
 function GlassNode({ n, lit }: { n: (typeof NODES)[number]; lit: number }) {
@@ -52,13 +52,13 @@ export function Agent() {
           {f >= loopStart && !green && <circle cx={dot.x} cy={dot.y} r={12} fill={c.amber} />}
         </svg>
         {NODES.map((n, i) => <GlassNode key={n.label} n={n} lit={f >= loopStart && !green ? (i === a ? 1 - seg : i === b ? seg : 0) : green ? 0.6 : 0.2} />)}
-        <div style={{ position: 'absolute', left: 0, right: 0, top: 560, textAlign: 'center', fontFamily: sans }}>
+        <div style={{ position: 'absolute', left: 0, right: 0, top: 470, textAlign: 'center', fontFamily: sans }}>
           <div style={{ fontSize: 76, fontWeight: 800, color: green ? c.green : '#ff8a80', transform: `scale(${green ? 1 + (1 - done) * 0.3 : 1})`, opacity: f >= L.a2!.at ? 1 : 0 }}>{green ? 'green' : '11 errors'}</div>
         </div>
-        <div style={{ position: 'absolute', left: 0, right: 0, top: 150, display: 'flex', justifyContent: 'center', gap: 16, opacity: interpolate(f, [L.a2!.at + 40, L.a2!.at + 70], [0, 1], clamp) }}>
+        <div style={{ position: 'absolute', left: 0, right: 0, top: 120, display: 'flex', justifyContent: 'center', gap: 16, opacity: interpolate(f, [L.a2!.at + 40, L.a2!.at + 70], [0, 1], clamp) }}>
           <Chip>hearsay_run</Chip><Chip>fix</Chip><Chip>hearsay_run only: "failed"</Chip>
         </div>
-        <div style={{ position: 'absolute', left: 0, right: 0, top: 950, display: 'flex', justifyContent: 'center', gap: 16, opacity: done }}>
+        <div style={{ position: 'absolute', left: 0, right: 0, top: 880, display: 'flex', justifyContent: 'center', gap: 16, opacity: done }}>
           <Chip tint={c.green}>21 turns · 56 s</Chip><Chip>only src/server.ts changed</Chip><Chip>suites untouched</Chip>
         </div>
       </div>
