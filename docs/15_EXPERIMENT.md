@@ -162,3 +162,55 @@ servers.
 **Pilot observation (not the experiment).** The two Smart Home servers fixed by the M2b gate runs
 (arm A, n = 2) passed 4 of 5 holdout case runs each; both failed `holdout-unknown-room`, whose
 reply did not read back the room it did not know. Holdouts find what the visible suite does not.
+
+## v2 (pre-registered 30 Sep 2026, before any v2 run)
+
+Status: **design and hypotheses fixed; flawed builds, holdouts and harness in progress; no v2 run
+yet** (FR-066, D-024).
+
+Why a second round: in v1 Kitchen and Household Orders reached the ceiling in both arms, the flaws
+were obvious (JSON read aloud, 1.1 s calls, no confirmation at all), arm B had no way to try the
+server, and twelve holdout cases were few. v2 changes exactly these and nothing else.
+
+**Design.**
+
+- **Servers:** the same three, each with a new flawed build whose defects pass a one-sentence smoke
+  test: the happy path sounds right. Six flaws per server, each listed with its check in the
+  server's README before the first run and marked *suite* (the visible suite can find it) or
+  *holdout* (only a holdout case can); at least two per server are *holdout*.
+- **Holdouts:** at least ten cases per server, local only, written before the first run. At least
+  half test the three rules arm B's prompt names (spoken replies, mishearing, confirmation before
+  money moves); the rest test other catalog rules (waiting, lists, error wording, mandate). The
+  SHA-256 of each holdout file is added to this section before the first run.
+- **Arms:** A, Hearsay MCP server and `fix-hearsay-findings`, no shell (as in v1); B, the task
+  description only, no shell (prompt unchanged); B′, B's prompt plus "You can use the shell to run
+  the server and try it", with Bash allowed. Same model (`claude-sonnet-5-5`), same visible suite,
+  same cap of $5 API-equivalent per run.
+- **Isolation:** workspaces outside the repo. B′ gets its own copies of `tsx` and the dependencies,
+  so no path in its workspace points into the repo, and the audit also reads shell commands and
+  their output.
+- **Runs:** 3 servers × 3 arms × 3 runs = 27, on the owner's subscription, in blocks of at most
+  six with the interim state in `STATUS.md`.
+
+**Measures:** as in v1. Primary: holdout runs passed. Also: agent runs that ended with visible
+errors, suite changes, audit breaches, turns, time and API-equivalent cost; holdout results per
+rule category.
+
+**Hypotheses.**
+
+- **H1 (primary):** arm A passes at least 10 percentage points more holdout runs than arm B.
+- **H2:** arm A passes no fewer holdout runs than arm B′ minus 5 percentage points.
+- **H3:** runs that end with visible errors: A at most 1 of 9, B at least 3 of 9, B′ at least 2 of 9.
+- **H4:** no run changes a suite, and the audit finds no breach.
+
+**Analysis rules.**
+
+- Per arm: holdout runs passed over holdout runs, across all nine runs; per server and per rule
+  category as secondary tables.
+- A difference under 10 percentage points is reported as "about the same". With N = 3 per cell
+  and one model there are no significance claims.
+- An agent run that fails (rate limit, crash, no result) is repeated once in the same block and
+  counted only in the repeat; both are listed. A run with an audit breach is reported and left
+  out of the rates.
+- Each hypothesis is reported as supported or not, with its numbers, and nothing is re-scored
+  afterwards. If a holdout or a flaw changes after the first run, v2 starts again from zero.

@@ -73,6 +73,17 @@ At about five and a half build days a week this lands on Sun 18 Oct; at four and
   owner has read it; the commit carries the owner's GitHub noreply address; the PR waits for a
   second OK. R-02 stays open until the owner asks in office hours.
 
+## Evidence (freeze loosened for evidence only, D-024)
+
+Three items, no new features. Each reports what it finds, including results that do not favour
+Hearsay.
+
+| Item | Scope | Gate |
+|---|---|---|
+| Scan (FR-062) | Public MCP servers of hackathon entries and others on GitHub. Static triage first; only OSI-licensed repos that start without keys or accounts, pinned to a commit. `hearsay lint` plus calls to `readOnlyHint` tools without required arguments, in a container (R-17). The owner sees the candidate list and the procedure before any run and starts the step that executes third-party code. | docs/16: aggregate findings by question and check, no repo or team names; no issues or pull requests to anyone. |
+| Experiment v2 (FR-066) | Subtler flaws in new flawed builds, at least 10 holdout cases per server, a third arm B′ with a shell; design and hypotheses in docs/15 §v2, committed before the first run. | 27 runs judged and audited; results in docs/15 whatever they show. |
+| R-03 | Elicitation through the KayLerch bridge on a real device, once AWS is there. | At most 2 h; outcome in the friction log and R-03. |
+
 ## Blocked by access
 
 If a gate item depends only on external access that has not arrived (AWS credits and Bedrock,
@@ -101,7 +112,7 @@ Any Bedrock model with tool use works through Converse (`HEARSAY_BEDROCK_MODEL_I
 records first; if it plans badly on the fixed Kitchen, one recording with Haiku. In total about
 $3–5, under $10 with retakes; a budget alarm at $20 covers it.
 
-R-03 (elicitation through the KayLerch bridge) is cut, first in the cut order: it needs AWS and an
+R-03 comes back under D-024 once AWS is there, at most 2 h. Before that it was cut, first in the cut order: it needs AWS and an
 Alexa developer account; revisit only if both are available before M6.
 
 ## Automatic cut rule

@@ -70,9 +70,10 @@ new ideas go to docs/ROADMAP.md.
 |---|---|---|---|
 | FR-060 | M | Fresh clone to first green run in under 5 minutes, with no API keys (scripted + replay). | M6 |
 | FR-061 | M | Submission package per docs/09: video < 3 min, feedback, friction log, disclosures. | M7 |
-| FR-062 | — | *Replaced by FR-065 (ROADMAP):* scan of public MCP servers: `tools/list` plus calls to `readOnlyHint` tools only, no auth, terms of use respected, results published in aggregate only. | M6 |
+| FR-062 | S | Scan of public MCP servers (hackathon entries and others on GitHub), back under D-024: `hearsay lint` plus calls to `readOnlyHint` tools only, started locally in an isolated container, no auth, no names, no issues or pull requests to others, results only in aggregate in docs/16. The candidate list and the procedure go to the owner before any run. | M6–M7 |
 | FR-063 | S | Open Source contribution: issue, then PR to AlSayedGamal/mcp-voice-simulator (form elicitation as a spoken confirmation, fail closed). Plan B: MCP transport for sujitnoronha/voicecheck. At most half a day. | M6 |
 | FR-064 | M | A short demo clip after every gate (docs/09 §Clips per gate). | M1–M6 |
+| FR-066 | S | Experiment v2 (D-024): subtler flaws, at least 10 holdout cases per server, a third arm B′ (task description plus a shell); hypotheses, measures and analysis fixed in docs/15 before the first run; results reported whatever they show. | M6–M7 |
 | FR-065 | S | Agent-loop experiment: 3 flawed servers × {Hearsay MCP + skill, task description only} × 3 runs, judged against holdouts; measures holdout pass rate, iterations and suite-manipulation attempts; reproducible script; results in docs/15, one sentence in README and video. Cost estimated and approved by the owner before running. | M6 |
 
 ## Non-functional
