@@ -13,7 +13,8 @@
  * scripts/scan/aggregate.ts writes docs/16 without them.
  *
  * Candidate: { id, repo?, sha?, local?, group: "A"|"B"|"C"|"E", mode: "calls"|"list",
- *              runtime: "node"|"python", install, start, port, path?, subdir?, env? }
+ *              runtime: "node"|"python", image?, install, start, port, path?, subdir?, env?,
+ *              bearer? (sent as the bearer token, for servers that require one) }
  */
 import { execFileSync, spawnSync } from 'node:child_process';
 import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
@@ -32,6 +33,9 @@ interface Candidate {
   group: 'A' | 'B' | 'C' | 'E';
   mode: 'calls' | 'list';
   runtime: 'node' | 'python';
+  /** Base image when the runtime default does not fit, e.g. node:24-slim. */
+  image?: string;
+  bearer?: string;
   install: string;
   start: string;
   port: number;
@@ -83,7 +87,7 @@ async function scan(c: Candidate, hostPort: number): Promise<Record<string, unkn
     }
     row.stage = 'build';
     const work = c.subdir ? `/app/${c.subdir}` : '/app';
-    writeFileSync(join(dir, 'Dockerfile'), `FROM ${BASE[c.runtime]}\nWORKDIR /app\nCOPY src/ /app/\nWORKDIR ${work}\nRUN ${c.install}\n`);
+    writeFileSync(join(dir, 'Dockerfile'), `FROM ${c.image ?? BASE[c.runtime]}\nWORKDIR /app\nCOPY src/ /app/\nWORKDIR ${work}\nRUN ${c.install}\n`);
     const build = docker(['build', '-q', '-t', tag, dir], 900_000);
     if (build.status !== 0) return { ...row, error: build.stderr.slice(-600) };
 
@@ -102,7 +106,7 @@ async function scan(c: Candidate, hostPort: number): Promise<Record<string, unkn
     if (!(await answers(url, Date.now() + 120_000))) return { ...row, error: 'did not answer within 120 s', logs: docker(['logs', srv]).stdout.slice(-600) + docker(['logs', srv]).stderr.slice(-600) };
 
     row.stage = 'lint';
-    const lint = await lintServer(url);
+    const lint = await lintServer(url, c.bearer);
     const tools = lint.tools;
     row.started = true;
     row.tools = tools.length;
@@ -113,7 +117,7 @@ async function scan(c: Candidate, hostPort: number): Promise<Record<string, unkn
     if (c.mode === 'calls') {
       row.stage = 'calls';
       const suite = SuiteSchema.parse({ suite: 'scan', server: { url }, orchestrator: 'scripted', cases: [{ id: 'scan', say: 'scan', expect: { tool: 'scan' } }] });
-      const session = await McpSession.open({ url, principal: newPrincipal(), elicitation: false });
+      const session = await McpSession.open({ url, principal: c.bearer ?? newPrincipal(), elicitation: false });
       const calls = [];
       try {
         const eligible = tools.filter((t) => t.annotations?.readOnlyHint === true && !((t.inputSchema as { required?: string[] }).required ?? []).length);
