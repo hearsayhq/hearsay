@@ -7,9 +7,10 @@ import type { Finding, Report } from './report';
 import { newPrincipal } from './runner';
 import { McpSession } from './session';
 
-export async function lintServer(url: string): Promise<Report> {
+/** `principal` is sent as the bearer token; a server that requires one gets it (FR-062 scan). */
+export async function lintServer(url: string, principal = newPrincipal()): Promise<Report> {
   const startedAt = new Date().toISOString();
-  const session = await McpSession.open({ url, principal: newPrincipal(), elicitation: false });
+  const session = await McpSession.open({ url, principal, elicitation: false });
   const tools = session.tools;
   const server = session.serverInfo();
   await session.close();
