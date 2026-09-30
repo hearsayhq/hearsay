@@ -250,15 +250,16 @@ export async function runSuite(suiteIn: Suite, opts: RunOptions = {}): Promise<R
     cases,
     skippedChecks,
     summary: {
-      cases: visible.length,
-      failed: visible.filter((r) => r.verdict === 'fail').length,
+      cases: new Set(visible.map((r) => r.caseId)).size,
+      runs: visible.length,
+      failedRuns: visible.filter((r) => r.verdict === 'fail').length,
       errors: tally(visibleFindings, 'error'),
       warnings: tally(visibleFindings, 'warn'),
       infos: tally(visibleFindings, 'info'),
       skipped: skippedChecks.length,
     },
     ...(opts.holdout
-      ? { holdout: { cases: hidden.length, failed: hidden.filter((r) => r.verdict === 'fail').length, errors: tally(hiddenFindings, 'error'), warnings: tally(hiddenFindings, 'warn'), infos: tally(hiddenFindings, 'info') } }
+      ? { holdout: { cases: new Set(hidden.map((r) => r.caseId)).size, runs: hidden.length, failedRuns: hidden.filter((r) => r.verdict === 'fail').length, errors: tally(hiddenFindings, 'error'), warnings: tally(hiddenFindings, 'warn'), infos: tally(hiddenFindings, 'info') } }
       : {}),
   };
 }

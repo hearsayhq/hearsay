@@ -53,7 +53,7 @@ export function summarize(r: Report, reportPath: string, opts: { verbose?: boole
   const findings = compactFindings(r);
   const verdict = r.summary.errors ? 'red' : 'green';
   const lines = [
-    `${r.suite}: ${verdict.toUpperCase()} · ${r.summary.errors} errors, ${r.summary.warnings} warnings, ${r.summary.infos} info · ${r.summary.cases} case runs${opts.rerun ? ` (rerun of failed: ${opts.rerun.join(', ')})` : ''}`,
+    `${r.suite}: ${verdict.toUpperCase()} · ${r.summary.errors} errors, ${r.summary.warnings} warnings, ${r.summary.infos} info · ${r.summary.cases} cases, ${r.summary.runs} runs with variants, ${r.summary.failedRuns} failed${opts.rerun ? ` (rerun of failed: ${opts.rerun.join(', ')})` : ''}`,
   ];
   for (const f of findings) {
     lines.push(`${f.severity === 'error' ? '✗' : f.severity === 'warn' ? '!' : 'i'} ${f.severity} ${f.checkId}${f.caseId ? ` [${f.caseId}/${f.variant}]` : ''}: ${f.message}`);

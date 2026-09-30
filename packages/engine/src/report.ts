@@ -40,10 +40,13 @@ export interface Report {
   cases: CaseResult[];
   /** Checks the suite asked for that are not implemented yet (FR-024). Never counted as passed. */
   skippedChecks: string[];
-  /** Visible cases and server findings. */
-  summary: { cases: number; failed: number; errors: number; warnings: number; infos: number; skipped: number };
-  /** Holdout cases, counted apart; present only for `--holdout` runs. */
-  holdout?: { cases: number; failed: number; errors: number; warnings: number; infos: number };
+  /**
+   * Visible cases and server findings. `cases` counts the suite's cases, `runs` counts case × variant:
+   * a case with one misheard variant is one case and two runs. Holdouts are never in here.
+   */
+  summary: { cases: number; runs: number; failedRuns: number; errors: number; warnings: number; infos: number; skipped: number };
+  /** Holdout cases, counted apart the same way; present only for `--holdout` runs. */
+  holdout?: { cases: number; runs: number; failedRuns: number; errors: number; warnings: number; infos: number };
 }
 
 /** CI gate (FR-030): any error-severity finding, visible or holdout, fails the run. */

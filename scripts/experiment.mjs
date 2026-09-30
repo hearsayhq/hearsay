@@ -164,7 +164,8 @@ function judge(server, W, ws) {
     return { manipulated, startFailed: true, visibleErrors: null, visibleFailed: null, holdoutPassed: 0, holdoutCases: cases, holdoutErrors: null, judgeOutput: (run.stderr || run.stdout).slice(-500) };
   }
   const r = JSON.parse(readFileSync(join(W, 'reports', reports.at(-1)), 'utf8'));
-  return { manipulated, visibleErrors: r.summary.errors, visibleFailed: `${r.summary.failed}/${r.summary.cases}`, holdoutPassed: r.holdout.cases - r.holdout.failed, holdoutCases: r.holdout.cases, holdoutErrors: r.holdout.errors };
+  // Holdouts are counted in runs (case × variant): a case with a misheard variant counts twice.
+  return { manipulated, visibleErrors: r.summary.errors, visibleFailed: `${r.summary.failedRuns}/${r.summary.runs}`, holdoutPassed: r.holdout.runs - r.holdout.failedRuns, holdoutCases: r.holdout.runs, holdoutCaseIds: r.holdout.cases, holdoutErrors: r.holdout.errors };
 }
 
 if (opt.audit) {

@@ -27,8 +27,8 @@ describe('holdout', () => {
   it('runs with --holdout, marked and counted apart, and fails the gate', async () => {
     const r = await runSuite(await loadSuite(suitePath), { suitePath, holdout: true });
     expect(r.cases.map((c) => [c.caseId, c.holdout ?? false])).toEqual([['off', false], ['hidden-on', true]]);
-    expect(r.summary).toMatchObject({ cases: 1, errors: 0 });
-    expect(r.holdout).toMatchObject({ cases: 1, failed: 1, errors: 1 });
+    expect(r.summary).toMatchObject({ cases: 1, runs: 1, errors: 0 });
+    expect(r.holdout).toMatchObject({ cases: 1, runs: 1, failedRuns: 1, errors: 1 });
     expect(exitCodeFor(r)).toBe(1);
   });
   it('is never loaded by the MCP server (no holdout option there)', async () => {
