@@ -109,6 +109,10 @@ Agent runs (30 Sep 2026, `claude-sonnet-5-5`, blocks of six; clip `m6-experiment
 
 > On unseen cases, agents did about the same with or without Hearsay. But without it, 4 of 9 runs stopped with defects they couldn't see, including a checkout race and a product allowlist enforced in the wrong place. With Hearsay: 0 of 9.
 
+After v2 this sentence tells only half: in the harder second round the agents without Hearsay did
+better on unseen cases (§v2). README, Devpost and the video keep it until the owner picks the new
+wording; the proposal is at the end of §v2.
+
 Where each part comes from: "unseen cases" are the holdouts (12 cases, 36/42 and 38/42 runs
 passed); "without it" is arm B, which got a precise task description naming the three voice
 rules; N = 3 per server and arm, one model. The checkout race is `mandate.version_race` (2 runs):
@@ -165,7 +169,8 @@ reply did not read back the room it did not know. Holdouts find what the visible
 
 ## v2 (pre-registered 30 Sep 2026, before any v2 run)
 
-Status: **design, hypotheses and materials fixed; no v2 agent run yet** (FR-066, D-024).
+Status: **done, 30 Sep 2026: 27 of 27 runs. H1 and H2 not supported, H3 and H4 supported**
+(FR-066, D-024).
 
 Why a second round: in v1 Kitchen and Household Orders reached the ceiling in both arms, the flaws
 were obvious (JSON read aloud, 1.1 s calls, no confirmation at all), arm B had no way to try the
@@ -245,3 +250,78 @@ Baseline (`--version v2 --dry-run`, 30 Sep): the v2 builds as handed to the agen
 | Smart Home | 5/13 | 2 |
 | Kitchen | 7/16 | 5 |
 | Household Orders | 6/14 | 7 |
+
+**Results (27 runs, 30 Sep 2026).** `claude-sonnet-5-5`, five blocks of at most six, every run on
+the subscription (`apiKeySource: none`), every agent run completed. `node scripts/experiment.mjs
+--version v2 --analyze` produces these tables from the transcripts and reports.
+
+| Arm | Holdout runs passed | Runs that ended with visible errors | Suite changed | Audit breaches | Turns (mean) | Time (median) | API-equivalent cost |
+|---|---|---|---|---|---|---|---|
+| A: Hearsay MCP + skill | 88/129 (68.2 %) | 0 of 9 | 0 | 0 | 17.3 | 21 s | $1.60 |
+| B: task description only | 107/129 (82.9 %) | 4 of 9 | 0 | 0 | 17.3 | 33 s | $1.75 |
+| B′: task description + sandboxed shell | 98/129 (76.0 %) | 3 of 9 | 0 | 0 | 9.1 | 45 s | $1.91 |
+
+| Server | A | B | B′ |
+|---|---|---|---|
+| Smart Home | 24/39 (61.5 %) | 31/39 (79.5 %) | 24/39 (61.5 %) |
+| Kitchen | 40/48 (83.3 %) | 44/48 (91.7 %) | 44/48 (91.7 %) |
+| Household Orders | 24/42 (57.1 %) | 32/42 (76.2 %) | 30/42 (71.4 %) |
+
+| Rule category | A | B | B′ |
+|---|---|---|---|
+| Rules arm B's prompt names | 60/84 (71.4 %) | 79/84 (94.0 %) | 69/84 (82.1 %) |
+| Other catalog rules | 28/45 (62.2 %) | 28/45 (62.2 %) | 29/45 (64.4 %) |
+
+**Hypotheses, as registered.**
+
+- H1, A at least 10 points above B: **not supported.** A was 14.7 points *below* B.
+- H2, A no more than 5 points below B′: **not supported.** A was 7.8 points below.
+- H3, visible errors in at most 1 of 9 A runs, at least 3 of 9 B and 2 of 9 B′: **supported**
+  (0, 4, 3).
+- H4, no suite changed and no audit breach: **supported.**
+
+**What failed.** Holdout runs failed per arm (of 3 agent runs each; ~ marks the misheard variant):
+
+| Holdout case | Defect | A | B | B′ |
+|---|---|---|---|---|
+| ho-checkout-two-lines, -declined, -verbal | "Ready to place your order?" with two lines | 3, 3, 3 | 0, 0, 0 | 1, 1, 1 |
+| ho-fruit-fifteen, ~ | amounts not read back | 3, 3 | 1, 2 | 1, 2 |
+| ho-milk-six | asked inside the permission | 3 | 2 | 2 |
+| hs-study-off, hs-lounge-on | synonyms missing | 3, 3 | 0, 0 | 1, 1 |
+| hs-whole-house-dim | dimming the house without asking | 3 | 2 | 3 |
+| hk-restart-tea | a restart said as "set" | 3 | 1 | 1 |
+| ho-wine, ho-over-budget | refusal codes read aloud | 0, 0 | 2, 2 | 1, 1 |
+| hk-list-six, hs-garage | six timers read out; unknown room with a code | 3, 3 | 3, 3 | 3, 3 |
+
+**Reading.** Every arm A run fixed what the visible suite reported, reached green, and stopped.
+The defects only holdouts could find stayed in all three A runs; B and B′, asked to make the
+server "work well behind a voice assistant", reviewed the whole server against the rules their
+prompt named and fixed most of them. A beat B only where the visible suite itself fired (refusal
+codes read aloud). A green suite is a stopping signal: with Hearsay an agent does exactly what
+the suite covers, no more. That is the verification v1 found (no run with Hearsay ever stopped
+on a defect it could see), and it is also the limit v2 shows: Hearsay is as good as the suite it
+runs. The shell (B′) did not help over B; it spent its turns running the server rather than
+reading the code.
+
+**Operations.** Block 4 was first started with base port 4190, which fetch refuses; the operator
+stopped it within seconds, before any agent result, deleted the one workspace it had built and
+restarted from port 4200 (the harness now skips such ports). Block 1's recorded counts of
+accesses outside the workspace were inflated by macOS's `/var` and `/private/var`; the audit now
+compares real paths, and the re-audit of all 27 runs finds no breach. Arm A and B agents tried a
+shell command five times in all; Bash was disallowed for them and nothing ran.
+
+**Limits.** Three runs per cell and one model. The holdouts were written by the author of the
+flaws, knowing which defects were holdout-only, so they test exactly those gaps; a suite written
+to cover the tool surface (the `write-hearsay-suite` skill) was not part of either arm. Arm B's
+prompt names the rules most of the holdouts test.
+
+**Proposed sentence for README, Devpost and the video** (the owner decides; it replaces the v1
+sentence above):
+
+> Agents with Hearsay never stopped on a defect they could see: 0 of 18 runs, against 11 of 27
+> without it. But they fix what the suite covers and then stop. On unseen cases in the harder
+> round they did worse than agents told the rules (68 % against 83 %). Hearsay is only as good as
+> your suite.
+
+Sources: visible errors left, v1 and v2 together (A 0 of 9 and 0 of 9; B 4 of 9 and 4 of 9, B′ 3
+of 9); holdout runs passed in v2 (A 88/129, B 107/129).

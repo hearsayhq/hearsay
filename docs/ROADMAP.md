@@ -41,5 +41,9 @@ new idea is recorded; moving one into docs/07 needs the owner.
   building experiment v2, 30 Sep). A question before payment should name the total.
 - `asr.robust` reads only the reply, not the confirmation question: a server that asked "Add fifty
   dollars of fruit?" and was told no still counts as not saying what it heard.
+- Experiment v2 (docs/15): agents with Hearsay fix what the suite reports and stop at green.
+  Ideas, after the freeze: `fix-hearsay-findings` ends with a pass over the code paths no case
+  exercised, and `write-hearsay-suite` aims at covering every tool and branch, so the suite
+  (the thing an agent stops at) reaches further.
 - Interim-message check for tools slower than 3 s (Amazon's search requirement) once the MCP
   mechanism for it is clear.
