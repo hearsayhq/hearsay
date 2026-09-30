@@ -165,8 +165,7 @@ reply did not read back the room it did not know. Holdouts find what the visible
 
 ## v2 (pre-registered 30 Sep 2026, before any v2 run)
 
-Status: **design and hypotheses fixed; flawed builds, holdouts and harness in progress; no v2 run
-yet** (FR-066, D-024).
+Status: **design, hypotheses and materials fixed; no v2 agent run yet** (FR-066, D-024).
 
 Why a second round: in v1 Kitchen and Household Orders reached the ceiling in both arms, the flaws
 were obvious (JSON read aloud, 1.1 s calls, no confirmation at all), arm B had no way to try the
@@ -214,3 +213,32 @@ rule category.
   out of the rates.
 - Each hypothesis is reported as supported or not, with its numbers, and nothing is re-scored
   afterwards. If a holdout or a flaw changes after the first run, v2 starts again from zero.
+
+**Materials, fixed before the first run.**
+
+- Flaws: the §v2 table in each server's README (`HEARSAY_FIXED=v2`, `src/flawed-v2.ts`), six per
+  server, two or three found by the visible suite and the rest only by holdouts. Server tests pin
+  the visible findings of each build.
+- Holdouts (`holdouts/v2/`, gitignored), per server: cases, runs with variants, cases on the rules
+  arm B's prompt names:
+
+  | Server | Cases | Runs | Named-rule cases | SHA-256 |
+  |---|---|---|---|---|
+  | Kitchen | 15 | 16 | 9 | `65466cb951cfe15d736e0978bd955d6077a5a0a9c95514d2bd9823c3cffd9d09` |
+  | Smart Home | 12 | 13 | 7 | `7fe92e089049bb9e20cfdab374d6c77c79f464c78e42aa7da2c855107802b540` |
+  | Household Orders | 13 | 14 | 9 | `2953122d6ac7f14c1f63dfa66b1a0a23bb35b3832b785d443caf128840c54b7e` |
+
+  The fixed reference servers pass every holdout run; the v2 builds fail them where the tables
+  say.
+- Harness: `node scripts/experiment.mjs --version v2 --limit 6` runs the next block of six.
+  Workspaces are self-contained (their own `tsx` and dependencies from the npm cache, the kit as a
+  local tarball); arm A's Hearsay MCP server is the packed `@hearsayhq/mcp`, installed outside
+  the repo. No path in a workspace points into the repo.
+
+Baseline (`--version v2 --dry-run`, 30 Sep): the v2 builds as handed to the agents.
+
+| Server | Holdout runs passed | Visible errors |
+|---|---|---|
+| Smart Home | 5/13 | 2 |
+| Kitchen | 7/16 | 5 |
+| Household Orders | 6/14 | 7 |

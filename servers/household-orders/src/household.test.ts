@@ -15,7 +15,7 @@ afterEach(async () => {
 });
 const suitePath = join(import.meta.dirname, '../../../suites/household-orders.yaml');
 const pairs = (r: Report) => [...new Set([...r.serverFindings, ...r.cases.flatMap((c) => c.findings)].map((f) => `${f.checkId}:${f.severity}`))].sort();
-const run = async (flawed: boolean, ttl = 60) => {
+const run = async (flawed: boolean | 'v2', ttl = 60) => {
   served = await startHousehold(0, flawed, ttl);
   return runSuite(await loadSuite(suitePath), { url: served.url });
 };
@@ -33,6 +33,9 @@ describe('household orders', () => {
     ])
       expect(found).toContain(p);
   }, 60_000);
+
+  it('v2 (experiment v2): exactly the suite findings in README §v2', async () =>
+    expect(pairs(await run('v2'))).toEqual(['consent.path:warn', 'consent.verbal_token:error', 'lint.error_actionable:error', 'mandate.version_race:error', 'speak.no_structured_dump:error']), 30_000);
 
   it('never commits "fifty" when "fifteen" was meant', async () => {
     const r = await run(false);

@@ -29,3 +29,18 @@ timers and recipe:
 | `timer_stop` duplicates `timer_cancel` | `lint.tool_names` warn |
 | No annotations, descriptions of two words | `lint.destructive_annotated`, `lint.descriptions` warn |
 | `recipe_step` waits 700 ms | none in the visible suite: only a holdout case reading a step finds it (`latency.tool`) |
+
+## v2 build (`HEARSAY_FIXED=v2`)
+
+For experiment v2 only (docs/15 §v2), fixed before its first run. `src/flawed-v2.ts`: the good
+server with six defects that each pass a one-sentence smoke test. *Suite*: the visible suite
+finds it; *holdout*: only a holdout case does.
+
+| Defect | Found by | Where |
+|---|---|---|
+| Durations of 30 minutes or more are not read back ("Pasta timer set."), so "fifty" for "fifteen" goes unheard | `asr.robust` error | suite |
+| `timer_cancel` without a label cancels the soonest timer instead of asking which | `case.expect` error | suite |
+| `NO_SUCH_STEP` says "There is no step 40 (NO_SUCH_STEP)." | `lint.error_actionable`, `speak.no_structured_dump`, `case.expect` errors | suite |
+| `recipe_step` takes 560 ms when the step exists | `latency.tool` error | holdout |
+| `timer_list` reads every timer, however many | `speak.lists` error from six timers | holdout |
+| Restarting a running timer is said as "set", not "restarted" | `case.expect` error | holdout |
