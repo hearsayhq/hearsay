@@ -28,6 +28,7 @@ export function mentions(question: string, values: string[]): boolean {
 
 export interface SessionOptions {
   url: string;
+  /** Sent as the bearer token. Empty sends no Authorization header (FR-062 scan: servers that verify the tokens they issue). */
   principal: string;
   elicitation: boolean;
 }
@@ -65,7 +66,7 @@ export class McpSession {
       { capabilities: options.elicitation ? { elicitation: { form: {} } } : {} },
     );
     const transport = new StreamableHTTPClientTransport(new URL(options.url), {
-      requestInit: { headers: { Authorization: `Bearer ${options.principal}` } },
+      ...(options.principal ? { requestInit: { headers: { Authorization: `Bearer ${options.principal}` } } } : {}),
     });
     const session = new McpSession(client, transport, options);
     if (options.elicitation) client.setRequestHandler(ElicitRequestSchema, async (req) => session.elicit(req.params));

@@ -17,6 +17,13 @@ const { values: opt } = parseArgs({ options: { out: { type: 'string' } } });
 if (!opt.out) throw new Error('--out <dir> is required');
 const rows: Row[] = readdirSync(opt.out).filter((f) => f.endsWith('.json')).map((f) => JSON.parse(readFileSync(join(opt.out!, f), 'utf8')));
 const pct = (a: number, b: number) => (b ? `${Math.round((100 * a) / b)} %` : '–');
+const STOPPED: Record<string, string> = {
+  clone: 'could not be cloned',
+  build: 'did not build',
+  start: 'did not answer within 120 s',
+  lint: 'answered but refused an MCP client without credentials or a browser session',
+  calls: 'failed while being called',
+};
 const median = (xs: number[]) => { const s = [...xs].sort((a, b) => a - b); return s.length ? (s.length % 2 ? s[(s.length - 1) / 2]! : (s[s.length / 2 - 1]! + s[s.length / 2]!) / 2) : 0; };
 
 function section(title: string, rs: Row[]): string[] {
@@ -24,7 +31,7 @@ function section(title: string, rs: Row[]): string[] {
   const out = [`## ${title}`, '', `${rs.length} servers; ${ok.length} started as their README says and answered MCP (${pct(ok.length, rs.length)}).`, ''];
   const stops: Record<string, number> = {};
   for (const r of rs.filter((x) => !x.started)) stops[r.stage] = (stops[r.stage] ?? 0) + 1;
-  if (Object.keys(stops).length) out.push(`Did not start: ${Object.entries(stops).map(([s, n]) => `${n} at ${s}`).join(', ')}.`, '');
+  if (Object.keys(stops).length) out.push(`Did not get through: ${Object.entries(stops).map(([s, n]) => `${n} ${STOPPED[s] ?? `stopped at ${s}`}`).join('; ')}.`, '');
   const tools = ok.map((r) => r.tools ?? 0);
   const allTools = tools.reduce((a, b) => a + b, 0);
   out.push(`Tools per server: median ${median(tools)}. Tools with side-effect annotations: ${pct(ok.reduce((a, r) => a + (r.annotated ?? 0), 0), allTools)}; marked read-only: ${pct(ok.reduce((a, r) => a + (r.readOnly ?? 0), 0), allTools)}.`, '');
@@ -44,7 +51,7 @@ function section(title: string, rs: Row[]): string[] {
   const calls = ok.flatMap((r) => r.calls ?? []);
   if (calls.length) {
     const timed = calls.filter((c) => typeof c.ms === 'number').map((c) => c.ms!);
-    out.push('', `Read-only calls without arguments: ${calls.length} on ${ok.filter((r) => r.calls?.length).length} servers; median ${Math.round(median(timed))} ms; over 500 ms: ${pct(timed.filter((m) => m > 500).length, timed.length)}; timed out after 10 s: ${calls.filter((c) => c.timeout).length}.`);
+    out.push('', `Read-only tools without arguments, judged as replies: ${calls.length} on ${ok.filter((r) => r.calls?.length).length} servers; median ${Math.round(median(timed))} ms; over 500 ms: ${pct(timed.filter((m) => m > 500).length, timed.length)}; timed out after 10 s: ${calls.filter((c) => c.timeout).length}.`);
   }
   const listOnly = rs.filter((r) => r.mode === 'list');
   if (listOnly.some((r) => r.outbound !== undefined)) out.push('', `Listed only (no calls): ${listOnly.length}; of these, ${listOnly.filter((r) => r.outbound).length} tried to reach the network at start (blocked).`);
@@ -56,7 +63,7 @@ const general = rows.filter((r) => r.group === 'E');
 console.log([
   '# Scan of public MCP servers',
   '',
-  'Aggregates only (FR-062, D-024): no repository or team names, no issues or pull requests to anyone. Servers were built and run locally in containers with no network beyond Hearsay, no credentials, pinned to a commit; only `tools/list` was read, and read-only tools without arguments were called once each. The two groups below are never added together.',
+  'Aggregates only (FR-062, D-024): no repository or team names, no issues or pull requests to anyone. Servers were pinned to a commit, built and run locally in containers with no network beyond Hearsay and no credentials. Servers listed only were read (handshake and `tools/list`) and never called. In calls mode, each tool the server marks read-only that needs no arguments was called three times: twice to see that it reads the same, once to judge the reply as spoken. The two groups below are never added together.',
   '',
   ...section('Alexa+ add-on servers (hackathon entries)', alexa),
   ...section('General MCP servers, not built for voice', general),

@@ -7,16 +7,23 @@ import type { Finding, Report } from './report';
 import { newPrincipal } from './runner';
 import { McpSession } from './session';
 
-/** `principal` is sent as the bearer token; a server that requires one gets it (FR-062 scan). */
-export async function lintServer(url: string, principal = newPrincipal()): Promise<Report> {
+export interface LintOptions {
+  /** One bearer for every session lint opens; '' sends none. Default: a fresh principal per session. */
+  principal?: string;
+  /** False: read only what the server declares; the annotation probe calls no tool (FR-062 scan, list mode). */
+  callTools?: boolean;
+}
+
+export async function lintServer(url: string, opts: LintOptions = {}): Promise<Report> {
   const startedAt = new Date().toISOString();
-  const session = await McpSession.open({ url, principal, elicitation: false });
+  const principal = opts.principal === undefined ? newPrincipal : () => opts.principal!;
+  const session = await McpSession.open({ url, principal: principal(), elicitation: false });
   const tools = session.tools;
   const server = session.serverInfo();
   await session.close();
 
   const findings: Finding[] = [];
-  for (const id of LINT_CHECKS) findings.push(...(await SERVER_CHECKS.get(id)!.run({ url, tools, server, newPrincipal })));
+  for (const id of LINT_CHECKS) findings.push(...(await SERVER_CHECKS.get(id)!.run({ url, tools, server, newPrincipal: principal, callTools: opts.callTools })));
   const count = (s: Finding['severity']) => findings.filter((f) => f.severity === s).length;
   return {
     suite: `lint ${new URL(url).host}`,

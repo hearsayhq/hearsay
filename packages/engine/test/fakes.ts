@@ -43,12 +43,13 @@ export const twoTools = (s: McpServer) => {
  * A JSON-RPC server that negotiates whatever `negotiate` returns (or fails initialize),
  * lists `tools`, and answers every tools/call with a JSON-RPC error.
  */
-export async function rawServer(negotiate: (requested: string) => string | Error, tools: object[] = []): Promise<Served> {
+export async function rawServer(negotiate: (requested: string) => string | Error, tools: object[] = [], seen?: (r: { method: string; authorization?: string }) => void): Promise<Served> {
   const http = createServer(async (req, res) => {
     if (req.method !== 'POST') return void res.writeHead(405).end();
     let body = '';
     for await (const c of req) body += c;
     const msg = JSON.parse(body) as { id?: number; method: string; params?: { protocolVersion?: string } };
+    seen?.({ method: msg.method, authorization: req.headers.authorization });
     if (msg.id === undefined) return void res.writeHead(202).end();
     const reply = (payload: object) => res.writeHead(200, { 'content-type': 'application/json' }).end(JSON.stringify({ jsonrpc: '2.0', id: msg.id, ...payload }));
     if (msg.method === 'initialize') {

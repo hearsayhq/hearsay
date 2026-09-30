@@ -28,6 +28,8 @@ export interface ServerCheckContext {
   /** What the first session negotiated. */
   server: ServerInfo;
   newPrincipal(): string;
+  /** False: never call a tool, only read what the server declares (FR-062 scan, list mode). Default true. */
+  callTools?: boolean;
 }
 
 /** After all cases ran: the visible suite, the tool list and the visible cases' results (coverage). */

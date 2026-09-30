@@ -82,7 +82,7 @@ const explicit = (t: Tool) => t.annotations?.readOnlyHint !== undefined || t.ann
 
 export const lintDestructiveAnnotated: ServerCheck = {
   id: 'lint.destructive_annotated',
-  async run({ tools, url, newPrincipal }) {
+  async run({ tools, url, newPrincipal, callTools = true }) {
     const out = [];
     for (const t of tools)
       if (!explicit(t) && tokens(t.name).some((w) => MUTATING.has(w)))
@@ -90,7 +90,7 @@ export const lintDestructiveAnnotated: ServerCheck = {
 
     // Probe: a read-only tool with no required arguments must read the same twice in a row.
     const probes = tools.filter((t) => t.annotations?.readOnlyHint === true && !((t.inputSchema.required as string[] | undefined)?.length));
-    if (!probes.length) return out;
+    if (!probes.length || !callTools) return out;
     const session = await McpSession.open({ url, principal: newPrincipal(), elicitation: false });
     try {
       for (const t of probes) {

@@ -145,7 +145,8 @@ them before and after a case's own turns when a check needs it.
   nothing (for the mandate profile: `mandate_status.spentUsd` and the order count unchanged) while
   an active mandate covers it: **warn** (grant once, act freely within the limit; docs/06).
 - `lint.destructive_annotated` — Active probe: each tool declaring `readOnlyHint: true` with no
-  required arguments is called twice in a fresh session; if the two reads differ: **error**. A
+  required arguments is called twice in a fresh session; if the two reads differ: **error**. The
+  probe is skipped when lint must not call tools (`callTools: false`, the scan's list mode). A
   tool named with a mutating verb (set, apply, update, delete, cancel, start, add, place, order,
   turn, send, pay, buy, stage, …) without explicit `readOnlyHint`/`destructiveHint`: **warn**. Per the MCP spec an unannotated tool already counts
   as destructive, so a missing annotation is advice; a lying one is a fault.
