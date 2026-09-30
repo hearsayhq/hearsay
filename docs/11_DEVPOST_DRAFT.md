@@ -66,8 +66,13 @@ permission behind a voice assistant).
 The visible suite is not enough: agent-fixed servers passed their suite and still failed a
 holdout case (the unknown-room reply did not say what it heard).
 
-A precise prompt is not enough either. On unseen cases, agents did about the same with or without Hearsay. But without it, 4 of 9 runs stopped with defects they couldn't see, including a checkout race and a product allowlist enforced in the wrong place. With Hearsay: 0 of 9. (docs/15: the agents without Hearsay got a
-precise task description; three runs per server and arm.)
+We measured it. Without Hearsay, 11 of 27 agent runs ended with defects the suite would have
+caught; with it, 0 of 36. But a suite alone made agents stop at green: on unseen cases they did
+worse than agents given a precise prompt (68–71 % vs 83 %). So Hearsay now reports what your suite
+doesn't cover, and its skill reviews beyond green. Measured again: level with the precise prompt
+on unseen cases (84 % vs 83 %), clearly ahead on rules the prompt never mentioned (37/45 vs
+28/45), and still zero defects left behind. (Three runs per arm; the unseen cases were written by
+the author of the flaws.) (docs/15)
 
 ## What's next
 
