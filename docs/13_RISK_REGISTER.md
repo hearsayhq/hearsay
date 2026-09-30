@@ -17,6 +17,7 @@
 | R-13 | A coding agent makes itself green by editing the tests. | H | H | Lock and `suite.integrity`, holdouts, normal PR review with optional CODEOWNERS (docs/03); honest that the lock detects rather than prevents. | M2b |
 | R-14 | *Closed (D-021):* no suite-change tool, so client elicitation support in coding agents does not matter. | — | — | — | — |
 | R-15 | The agent-loop experiment costs more than planned. | M | L | Estimate first (docs/15), owner approves before any run; the pair can be cut (docs/07). | M6 |
+| R-16 | MCP 2026-07-28 replaces push elicitation with `input_required` results; the kit's `confirm()` and the engine (SDK 1.31, 2025-11-25) only speak push elicitation. If Alexa+ moves, consent detection and the kit need the new shape. | L | M | Alexa+ requires 2025-11-25 and SDK 2.0 still defaults to it; ROADMAP item for `input_required` in `confirm()` and the session; friction log #7. | after M7 |
 
 L = likelihood, I = impact.
 

@@ -12,6 +12,11 @@ new idea is recorded; moving one into docs/07 needs the owner.
 - Composite GitHub Action (the README has a workflow snippet).
 - Anthropic and OpenAI-compatible model adapters (kept only as an R-06 fallback).
 
+## Later
+
+- MCP 2026-07-28: `confirm()` returns `input_required` and the engine session answers it (SDK 2.x),
+  so consent checks work on both protocol eras (R-16).
+
 ## Replaced or declined
 
 - Scan of public MCP servers (FR-062), replaced by the agent-loop experiment (D-017).

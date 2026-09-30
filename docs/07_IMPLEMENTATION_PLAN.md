@@ -54,6 +54,11 @@ At about five and a half build days a week this lands on Sun 18 Oct; at four and
   and judges them. Baseline judged (docs/15); the 18 agent runs wait for the owner's approval.
   Building it tightened `asr.robust`: the same reply to different arguments ("Timer started." for
   fifteen and for fifty) no longer counts as the same effect.
+- Open Source (FR-063): the contribution to AlSayedGamal/mcp-voice-simulator is built and tested
+  locally (opt-in `SIM_ELICITATION=voice`: a confirmation is spoken and answered in the page;
+  other forms, URL mode and silence fail closed; 10 tests, upstream `npm run check` green,
+  checked in the browser). Patch, issue and PR texts in `build/oss/` (local). Posting the issue
+  and the PR waits for the owner's OK and R-02.
 
 ## Blocked by access
 
