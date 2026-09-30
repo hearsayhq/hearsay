@@ -141,6 +141,7 @@ docs/              spec pack
 [Plan](docs/07_IMPLEMENTATION_PLAN.md) ·
 [Eval](docs/08_EVAL_AND_TEST_PLAN.md) ·
 [Submission](docs/09_DEMO_AND_SUBMISSION.md) ·
+[Feedback](docs/10_FEEDBACK.md) ·
 [Decisions](docs/12_DECISIONS.md) ·
 [Risks](docs/13_RISK_REGISTER.md) ·
 [Sources](docs/14_SOURCE_REGISTER.md) ·
