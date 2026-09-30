@@ -1,0 +1,990 @@
+{
+  "suite": "cold-open",
+  "startedAt": "2026-09-30T21:26:33.378Z",
+  "orchestrator": "scripted",
+  "seed": 1,
+  "tools": [
+    {
+      "name": "orders_catalog_search",
+      "title": "Search the grocery catalog",
+      "description": "Use when the person asks what is available or what something costs.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60,
+            "description": "What to look for, such as oat milk."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "mandate_status",
+      "title": "What the assistant may do",
+      "description": "Use when the person asks what the assistant is allowed to buy, how much is left, or until when.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "mandate_propose",
+      "title": "Ask for permission to reorder",
+      "description": "Use when the person says what the assistant may buy, how much, and for how long, such as \"you can reorder groceries up to fifty dollars today\". The person confirms before it takes effect.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "totalLimitUsd": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 500,
+            "description": "The most the assistant may spend in total, in dollars."
+          },
+          "perCallLimitUsd": {
+            "description": "The most for a single item, in dollars.",
+            "type": "number",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "resourceIds": {
+            "description": "Which items; groceries if not given.",
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "sku-milk",
+                "sku-eggs",
+                "sku-bread",
+                "sku-fruit",
+                "sku-oat-milk",
+                "sku-wine",
+                "sku-giftcard"
+              ],
+              "description": "The item, such as milk, eggs, bread, fruit or oat milk."
+            }
+          },
+          "durationSeconds": {
+            "description": "How long the permission lasts, in seconds; until the end of today if not given.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 86400
+          }
+        },
+        "required": [
+          "totalLimitUsd"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "mandate_revoke",
+      "title": "Take back the permission",
+      "description": "Use when the person says the assistant should stop buying things.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "orders_stage_cart",
+      "title": "Add to the cart",
+      "description": "Use when the person asks to add an item to the grocery order, by count (\"two cartons of milk\") or by amount (\"fifteen dollars of fruit\"). Nothing is ordered yet.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "enum": [
+              "sku-milk",
+              "sku-eggs",
+              "sku-bread",
+              "sku-fruit",
+              "sku-oat-milk",
+              "sku-wine",
+              "sku-giftcard"
+            ],
+            "description": "Item."
+          },
+          "quantity": {
+            "description": "How many, for counted items.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "amountUsd": {
+            "description": "How much, in dollars, for items sold by amount.",
+            "type": "number",
+            "minimum": 0.5,
+            "maximum": 500
+          },
+          "mandateVersion": {
+            "description": "The permission version the caller read, if it knows one.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "sku"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "orders_review_cart",
+      "title": "Read the cart",
+      "description": "Use when the person asks what is in the cart or what it costs.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "orders_request_checkout",
+      "title": "Ask to place the order",
+      "description": "Use when the person asks to place or send the order. The person is asked to confirm items and total; only their yes places it.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "orders_confirm",
+      "title": "Confirm by voice",
+      "description": "Use only after the person answered yes to a question the assistant asked out loud, passing the token that question came with.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "The token from the question the person said yes to."
+          }
+        },
+        "required": [
+          "token"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    }
+  ],
+  "serverFindings": [
+    {
+      "checkId": "coverage.decline",
+      "severity": "warn",
+      "question": "agree",
+      "source": {
+        "kind": "hearsay",
+        "ref": "docs/05 §Coverage: the no is the path that must hold (D-025)"
+      },
+      "message": "mandate_propose asks for confirmation, but no case says no",
+      "hint": "Propose a case for it in your pull request description; the suite is changed by a person, never by the agent (D-021).",
+      "evidence": {
+        "tool": "mandate_propose"
+      }
+    },
+    {
+      "checkId": "coverage.decline",
+      "severity": "warn",
+      "question": "agree",
+      "source": {
+        "kind": "hearsay",
+        "ref": "docs/05 §Coverage: the no is the path that must hold (D-025)"
+      },
+      "message": "orders_stage_cart asks for confirmation, but no case says no",
+      "hint": "Propose a case for it in your pull request description; the suite is changed by a person, never by the agent (D-021).",
+      "evidence": {
+        "tool": "orders_stage_cart"
+      }
+    },
+    {
+      "checkId": "coverage.tools",
+      "severity": "warn",
+      "question": "connect",
+      "source": {
+        "kind": "hearsay",
+        "ref": "docs/05 §Coverage: a suite can only judge what it reaches (D-025)"
+      },
+      "message": "orders_catalog_search has no case",
+      "hint": "Propose a case for it in your pull request description; the suite is changed by a person, never by the agent (D-021).",
+      "evidence": {
+        "tool": "orders_catalog_search"
+      }
+    },
+    {
+      "checkId": "coverage.tools",
+      "severity": "warn",
+      "question": "connect",
+      "source": {
+        "kind": "hearsay",
+        "ref": "docs/05 §Coverage: a suite can only judge what it reaches (D-025)"
+      },
+      "message": "mandate_status has no case",
+      "hint": "Propose a case for it in your pull request description; the suite is changed by a person, never by the agent (D-021).",
+      "evidence": {
+        "tool": "mandate_status"
+      }
+    },
+    {
+      "checkId": "coverage.tools",
+      "severity": "warn",
+      "question": "connect",
+      "source": {
+        "kind": "hearsay",
+        "ref": "docs/05 §Coverage: a suite can only judge what it reaches (D-025)"
+      },
+      "message": "mandate_revoke has no case",
+      "hint": "Propose a case for it in your pull request description; the suite is changed by a person, never by the agent (D-021).",
+      "evidence": {
+        "tool": "mandate_revoke"
+      }
+    },
+    {
+      "checkId": "coverage.tools",
+      "severity": "warn",
+      "question": "connect",
+      "source": {
+        "kind": "hearsay",
+        "ref": "docs/05 §Coverage: a suite can only judge what it reaches (D-025)"
+      },
+      "message": "orders_review_cart has no case",
+      "hint": "Propose a case for it in your pull request description; the suite is changed by a person, never by the agent (D-021).",
+      "evidence": {
+        "tool": "orders_review_cart"
+      }
+    },
+    {
+      "checkId": "coverage.tools",
+      "severity": "warn",
+      "question": "connect",
+      "source": {
+        "kind": "hearsay",
+        "ref": "docs/05 §Coverage: a suite can only judge what it reaches (D-025)"
+      },
+      "message": "orders_confirm has no case",
+      "hint": "Propose a case for it in your pull request description; the suite is changed by a person, never by the agent (D-021).",
+      "evidence": {
+        "tool": "orders_confirm"
+      }
+    },
+    {
+      "checkId": "coverage.values",
+      "severity": "warn",
+      "question": "hear",
+      "source": {
+        "kind": "hearsay",
+        "ref": "docs/05 §Coverage: out-of-range values are where schema errors reach the person (D-025)"
+      },
+      "message": "mandate_propose.totalLimitUsd: no case tries a value outside 1–500",
+      "hint": "Propose a case for it in your pull request description; the suite is changed by a person, never by the agent (D-021).",
+      "evidence": {
+        "tool": "mandate_propose",
+        "param": "totalLimitUsd",
+        "minimum": 1,
+        "maximum": 500
+      }
+    },
+    {
+      "checkId": "coverage.values",
+      "severity": "warn",
+      "question": "hear",
+      "source": {
+        "kind": "hearsay",
+        "ref": "docs/05 §Coverage: misheard values land on the values nobody tested (D-025)"
+      },
+      "message": "orders_stage_cart.sku: sku-milk, sku-eggs, sku-bread, sku-oat-milk, sku-wine and 1 more never used",
+      "hint": "Propose a case for it in your pull request description; the suite is changed by a person, never by the agent (D-021).",
+      "evidence": {
+        "tool": "orders_stage_cart",
+        "param": "sku",
+        "missing": [
+          "sku-milk",
+          "sku-eggs",
+          "sku-bread",
+          "sku-oat-milk",
+          "sku-wine",
+          "sku-giftcard"
+        ]
+      }
+    },
+    {
+      "checkId": "coverage.values",
+      "severity": "warn",
+      "question": "hear",
+      "source": {
+        "kind": "hearsay",
+        "ref": "docs/05 §Coverage: out-of-range values are where schema errors reach the person (D-025)"
+      },
+      "message": "orders_stage_cart.amountUsd: no case tries a value outside 0.5–500",
+      "hint": "Propose a case for it in your pull request description; the suite is changed by a person, never by the agent (D-021).",
+      "evidence": {
+        "tool": "orders_stage_cart",
+        "param": "amountUsd",
+        "minimum": 0.5,
+        "maximum": 500
+      }
+    }
+  ],
+  "cases": [
+    {
+      "caseId": "grant",
+      "variant": "clean",
+      "trace": {
+        "suite": "cold-open",
+        "caseId": "grant",
+        "variant": "clean",
+        "orchestrator": "scripted",
+        "principal": "hs-test-fddb43dc-e188-49bf-ac20-aa35ee647061",
+        "client": {
+          "elicitation": true
+        },
+        "server": {
+          "url": "http://localhost:4103/mcp",
+          "name": "hearsay-household-orders",
+          "version": "0.1.0-flawed",
+          "protocolVersion": "2025-11-25",
+          "capabilities": {
+            "tools": {
+              "listChanged": true
+            }
+          }
+        },
+        "turns": [
+          {
+            "id": "grant#1",
+            "utterance": "you can reorder groceries up to forty dollars today",
+            "heard": "you can reorder groceries up to forty dollars today",
+            "spans": [
+              {
+                "kind": "asr",
+                "name": "asr",
+                "startMs": 0,
+                "endMs": 300,
+                "modeled": true
+              },
+              {
+                "kind": "plan",
+                "name": "scripted",
+                "startMs": 300,
+                "endMs": 300,
+                "modeled": true
+              },
+              {
+                "kind": "tool",
+                "name": "mandate_propose",
+                "startMs": 300,
+                "endMs": 308.814417
+              },
+              {
+                "kind": "elicitation",
+                "name": "elicitation",
+                "startMs": 304.14383399999997,
+                "endMs": 304.149084
+              },
+              {
+                "kind": "speak",
+                "name": "speak",
+                "startMs": 308.814417,
+                "endMs": 508.814417,
+                "modeled": true
+              }
+            ],
+            "toolCalls": [
+              {
+                "tool": "mandate_propose",
+                "args": {
+                  "totalLimitUsd": 40
+                },
+                "result": {
+                  "isError": false,
+                  "text": "Done. I can reorder milk, eggs, bread, fruit, and oat milk up to forty dollars.",
+                  "structuredContent": {
+                    "version": 1
+                  }
+                },
+                "latencyMs": 8.809166999999945,
+                "elicitations": [
+                  {
+                    "message": "Are you sure?",
+                    "requestedSchema": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "action": "accept",
+                    "content": {}
+                  }
+                ]
+              }
+            ],
+            "elicitations": [
+              {
+                "message": "Are you sure?",
+                "requestedSchema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "action": "accept",
+                "content": {}
+              }
+            ],
+            "spoken": "Done. I can reorder milk, eggs, bread, fruit, and oat milk up to forty dollars.",
+            "toolListRevision": 0
+          }
+        ],
+        "startedAt": "2026-09-30T21:26:33.401Z"
+      },
+      "findings": [],
+      "verdict": "pass"
+    },
+    {
+      "caseId": "fruit-heard-fifty",
+      "variant": "clean",
+      "trace": {
+        "suite": "cold-open",
+        "caseId": "fruit-heard-fifty",
+        "variant": "clean",
+        "orchestrator": "scripted",
+        "principal": "hs-test-26451f75-1af5-45d9-b7c6-73eb3b300362",
+        "client": {
+          "elicitation": true
+        },
+        "server": {
+          "url": "http://localhost:4103/mcp",
+          "name": "hearsay-household-orders",
+          "version": "0.1.0-flawed",
+          "protocolVersion": "2025-11-25",
+          "capabilities": {
+            "tools": {
+              "listChanged": true
+            }
+          }
+        },
+        "turns": [
+          {
+            "id": "grant#1",
+            "utterance": "you can reorder groceries up to forty dollars today",
+            "heard": "you can reorder groceries up to forty dollars today",
+            "spans": [
+              {
+                "kind": "asr",
+                "name": "asr",
+                "startMs": 0,
+                "endMs": 300,
+                "modeled": true
+              },
+              {
+                "kind": "plan",
+                "name": "scripted",
+                "startMs": 300,
+                "endMs": 300,
+                "modeled": true
+              },
+              {
+                "kind": "tool",
+                "name": "mandate_propose",
+                "startMs": 300,
+                "endMs": 302.615209
+              },
+              {
+                "kind": "elicitation",
+                "name": "elicitation",
+                "startMs": 301.389292,
+                "endMs": 301.392334
+              },
+              {
+                "kind": "speak",
+                "name": "speak",
+                "startMs": 302.615209,
+                "endMs": 502.615209,
+                "modeled": true
+              }
+            ],
+            "toolCalls": [
+              {
+                "tool": "mandate_propose",
+                "args": {
+                  "totalLimitUsd": 40
+                },
+                "result": {
+                  "isError": false,
+                  "text": "Done. I can reorder milk, eggs, bread, fruit, and oat milk up to forty dollars.",
+                  "structuredContent": {
+                    "version": 1
+                  }
+                },
+                "latencyMs": 2.6121669999999995,
+                "elicitations": [
+                  {
+                    "message": "Are you sure?",
+                    "requestedSchema": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "action": "accept",
+                    "content": {}
+                  }
+                ]
+              }
+            ],
+            "elicitations": [
+              {
+                "message": "Are you sure?",
+                "requestedSchema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "action": "accept",
+                "content": {}
+              }
+            ],
+            "spoken": "Done. I can reorder milk, eggs, bread, fruit, and oat milk up to forty dollars.",
+            "toolListRevision": 0,
+            "setupOf": "grant"
+          },
+          {
+            "id": "fruit-heard-fifty#1",
+            "utterance": "add fifty dollars of fruit",
+            "heard": "add fifty dollars of fruit",
+            "spans": [
+              {
+                "kind": "asr",
+                "name": "asr",
+                "startMs": 0,
+                "endMs": 300,
+                "modeled": true
+              },
+              {
+                "kind": "plan",
+                "name": "scripted",
+                "startMs": 300,
+                "endMs": 300,
+                "modeled": true
+              },
+              {
+                "kind": "tool",
+                "name": "orders_stage_cart",
+                "startMs": 300,
+                "endMs": 302.303958
+              },
+              {
+                "kind": "elicitation",
+                "name": "elicitation",
+                "startMs": 301.070417,
+                "endMs": 301.07275
+              },
+              {
+                "kind": "speak",
+                "name": "speak",
+                "startMs": 302.303958,
+                "endMs": 502.303958,
+                "modeled": true
+              }
+            ],
+            "toolCalls": [
+              {
+                "tool": "orders_stage_cart",
+                "args": {
+                  "sku": "sku-fruit",
+                  "amountUsd": 50
+                },
+                "result": {
+                  "isError": false,
+                  "text": "Added.",
+                  "structuredContent": {
+                    "staged": true
+                  }
+                },
+                "latencyMs": 2.301625000000058,
+                "elicitations": [
+                  {
+                    "message": "Are you sure?",
+                    "requestedSchema": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "action": "accept",
+                    "content": {}
+                  }
+                ]
+              }
+            ],
+            "elicitations": [
+              {
+                "message": "Are you sure?",
+                "requestedSchema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "action": "accept",
+                "content": {}
+              }
+            ],
+            "spoken": "Added.",
+            "toolListRevision": 0
+          }
+        ],
+        "startedAt": "2026-09-30T21:26:33.422Z"
+      },
+      "findings": [],
+      "verdict": "pass"
+    },
+    {
+      "caseId": "order-declined",
+      "variant": "clean",
+      "trace": {
+        "suite": "cold-open",
+        "caseId": "order-declined",
+        "variant": "clean",
+        "orchestrator": "scripted",
+        "principal": "hs-test-ff49ace9-f1f0-4e86-91e2-4ce9a7d5afc9",
+        "client": {
+          "elicitation": true
+        },
+        "server": {
+          "url": "http://localhost:4103/mcp",
+          "name": "hearsay-household-orders",
+          "version": "0.1.0-flawed",
+          "protocolVersion": "2025-11-25",
+          "capabilities": {
+            "tools": {
+              "listChanged": true
+            }
+          }
+        },
+        "turns": [
+          {
+            "id": "grant#1",
+            "utterance": "you can reorder groceries up to forty dollars today",
+            "heard": "you can reorder groceries up to forty dollars today",
+            "spans": [
+              {
+                "kind": "asr",
+                "name": "asr",
+                "startMs": 0,
+                "endMs": 300,
+                "modeled": true
+              },
+              {
+                "kind": "plan",
+                "name": "scripted",
+                "startMs": 300,
+                "endMs": 300,
+                "modeled": true
+              },
+              {
+                "kind": "tool",
+                "name": "mandate_propose",
+                "startMs": 300,
+                "endMs": 301.54525
+              },
+              {
+                "kind": "elicitation",
+                "name": "elicitation",
+                "startMs": 300.718166,
+                "endMs": 300.72108299999996
+              },
+              {
+                "kind": "speak",
+                "name": "speak",
+                "startMs": 301.54525,
+                "endMs": 501.54525,
+                "modeled": true
+              }
+            ],
+            "toolCalls": [
+              {
+                "tool": "mandate_propose",
+                "args": {
+                  "totalLimitUsd": 40
+                },
+                "result": {
+                  "isError": false,
+                  "text": "Done. I can reorder milk, eggs, bread, fruit, and oat milk up to forty dollars.",
+                  "structuredContent": {
+                    "version": 1
+                  }
+                },
+                "latencyMs": 1.542333000000042,
+                "elicitations": [
+                  {
+                    "message": "Are you sure?",
+                    "requestedSchema": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "action": "accept",
+                    "content": {}
+                  }
+                ]
+              }
+            ],
+            "elicitations": [
+              {
+                "message": "Are you sure?",
+                "requestedSchema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "action": "accept",
+                "content": {}
+              }
+            ],
+            "spoken": "Done. I can reorder milk, eggs, bread, fruit, and oat milk up to forty dollars.",
+            "toolListRevision": 0,
+            "setupOf": "grant"
+          },
+          {
+            "id": "fruit-heard-fifty#1",
+            "utterance": "add fifty dollars of fruit",
+            "heard": "add fifty dollars of fruit",
+            "spans": [
+              {
+                "kind": "asr",
+                "name": "asr",
+                "startMs": 0,
+                "endMs": 300,
+                "modeled": true
+              },
+              {
+                "kind": "plan",
+                "name": "scripted",
+                "startMs": 300,
+                "endMs": 300,
+                "modeled": true
+              },
+              {
+                "kind": "tool",
+                "name": "orders_stage_cart",
+                "startMs": 300,
+                "endMs": 301.856625
+              },
+              {
+                "kind": "elicitation",
+                "name": "elicitation",
+                "startMs": 300.94725,
+                "endMs": 300.94983299999996
+              },
+              {
+                "kind": "speak",
+                "name": "speak",
+                "startMs": 301.856625,
+                "endMs": 501.856625,
+                "modeled": true
+              }
+            ],
+            "toolCalls": [
+              {
+                "tool": "orders_stage_cart",
+                "args": {
+                  "sku": "sku-fruit",
+                  "amountUsd": 50
+                },
+                "result": {
+                  "isError": false,
+                  "text": "Added.",
+                  "structuredContent": {
+                    "staged": true
+                  }
+                },
+                "latencyMs": 1.8540420000000495,
+                "elicitations": [
+                  {
+                    "message": "Are you sure?",
+                    "requestedSchema": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "action": "accept",
+                    "content": {}
+                  }
+                ]
+              }
+            ],
+            "elicitations": [
+              {
+                "message": "Are you sure?",
+                "requestedSchema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "action": "accept",
+                "content": {}
+              }
+            ],
+            "spoken": "Added.",
+            "toolListRevision": 0,
+            "setupOf": "fruit-heard-fifty"
+          },
+          {
+            "id": "order-declined#1",
+            "utterance": "place the order",
+            "heard": "place the order",
+            "spans": [
+              {
+                "kind": "asr",
+                "name": "asr",
+                "startMs": 0,
+                "endMs": 300,
+                "modeled": true
+              },
+              {
+                "kind": "plan",
+                "name": "scripted",
+                "startMs": 300,
+                "endMs": 300,
+                "modeled": true
+              },
+              {
+                "kind": "tool",
+                "name": "orders_request_checkout",
+                "startMs": 300,
+                "endMs": 301.08587500000004
+              },
+              {
+                "kind": "elicitation",
+                "name": "elicitation",
+                "startMs": 300.571958,
+                "endMs": 300.579916
+              },
+              {
+                "kind": "speak",
+                "name": "speak",
+                "startMs": 301.08587500000004,
+                "endMs": 501.08587500000004,
+                "modeled": true
+              }
+            ],
+            "toolCalls": [
+              {
+                "tool": "orders_request_checkout",
+                "args": {},
+                "result": {
+                  "isError": false,
+                  "text": "Order placed: fifty dollars of fruit, fifty dollars.",
+                  "structuredContent": {
+                    "placed": true,
+                    "totalMinor": 5000
+                  }
+                },
+                "latencyMs": 1.0779170000000136,
+                "elicitations": [
+                  {
+                    "message": "Are you sure?",
+                    "requestedSchema": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "action": "decline"
+                  }
+                ]
+              }
+            ],
+            "elicitations": [
+              {
+                "message": "Are you sure?",
+                "requestedSchema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "action": "decline"
+              }
+            ],
+            "spoken": "Order placed: fifty dollars of fruit, fifty dollars.",
+            "toolListRevision": 0
+          }
+        ],
+        "startedAt": "2026-09-30T21:26:33.432Z"
+      },
+      "findings": [],
+      "verdict": "pass"
+    }
+  ],
+  "skippedChecks": [],
+  "summary": {
+    "cases": 3,
+    "runs": 3,
+    "failedRuns": 0,
+    "errors": 0,
+    "warnings": 10,
+    "infos": 0,
+    "skipped": 0
+  }
+}
