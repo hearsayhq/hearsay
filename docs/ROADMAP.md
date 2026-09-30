@@ -41,9 +41,10 @@ new idea is recorded; moving one into docs/07 needs the owner.
   building experiment v2, 30 Sep). A question before payment should name the total.
 - `asr.robust` reads only the reply, not the confirmation question: a server that asked "Add fifty
   dollars of fruit?" and was told no still counts as not saying what it heard.
-- Experiment v2 (docs/15): agents with Hearsay fix what the suite reports and stop at green.
-  Ideas, after the freeze: `fix-hearsay-findings` ends with a pass over the code paths no case
-  exercised, and `write-hearsay-suite` aims at covering every tool and branch, so the suite
-  (the thing an agent stops at) reaches further.
+- Coverage of branches, not only of tools and values (docs/15 §A‴): amounts not read back on one
+  path and a whole-house dim without asking stayed in every A‴ run, because the suite uses those
+  tools and values elsewhere. A per-branch view needs the server's code or traces with branch ids.
+- `fix-hearsay-findings` asks for `hearsay_explain` per question; no A‴ agent called it. Either
+  drop the step or put the rules the review needs into the skill itself.
 - Interim-message check for tools slower than 3 s (Amazon's search requirement) once the MCP
   mechanism for it is clear.

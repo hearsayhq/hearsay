@@ -324,7 +324,7 @@ are in.
 
 ## v2 follow-up: A″ and A‴ (pre-registered 30 Sep 2026, before any A″ run)
 
-Status: **A″ done (30 Sep): H5 not supported. A‴ waits for the product change below.**
+Status: **done, 30 Sep 2026: A″ (H5 not supported) and A‴ (H6 supported, by one holdout run).**
 
 - **A″:** arm B's prompt word for word, with the Hearsay MCP server and `fix-hearsay-findings`
   available exactly as in arm A (no shell). Same servers, v2 builds, holdouts, model, cap, harness
@@ -369,3 +369,62 @@ arm B's prompt names: A″ 62/84, A 60/84, B 79/84.
 agent ran the suite (twice per run, like A), fixed what it reported, reached green and stopped; the
 holdout-only defects stayed. Having Hearsay changes how the agent works: the green run becomes the
 definition of done. That is what the product change targets.
+
+**A‴ results (9 runs, 30 Sep 2026).** After the product change (PR #17): two blocks, every run on
+the subscription, model `claude-sonnet-5-5` in all nine, no suite changed, no audit breach. A‴'s
+Hearsay MCP server was installed from the pack of that commit, apart from A's and A″'s.
+
+| Arm | Holdout runs passed | Runs that ended with visible errors | Turns (mean) | Time (median) | API-equivalent cost |
+|---|---|---|---|---|---|
+| A: Hearsay, goal "pass the suite" | 88/129 (68.2 %) | 0 of 9 | 17.3 | 21 s | $1.60 |
+| A″: Hearsay, B's goal | 91/129 (70.5 %) | 0 of 9 | 16.2 | 22 s | $1.43 |
+| **A‴: Hearsay with coverage and the reviewing skill, B's goal** | **108/129 (83.7 %)** | **0 of 9** | 21.3 | 36 s | $2.02 |
+| B: B's goal, no Hearsay | 107/129 (82.9 %) | 4 of 9 | 17.3 | 33 s | $1.75 |
+| B′: B's goal and a shell | 98/129 (76.0 %) | 3 of 9 | 9.1 | 45 s | $1.91 |
+
+| Rule category | A | A″ | A‴ | B | B′ |
+|---|---|---|---|---|---|
+| Rules arm B's prompt names | 60/84 | 62/84 | 71/84 | 79/84 | 69/84 |
+| Other catalog rules | 28/45 | 29/45 | 37/45 | 28/45 | 29/45 |
+
+- **H6: supported**, by the smallest margin: A‴ passed one holdout run more than B (+0.8 points;
+  "about the same" under the analysis rules), with 0 of 9 runs left with visible errors against
+  B's 4 of 9.
+
+**What changed per case** (holdout runs failed, of 3 agent runs, A / A″ / A‴ / B): synonyms
+"study", "lounge" 3 / 2 / 0 / 0; staging asked about inside the permission 3 / 3 / 0 / 2; the order
+question with two lines 3 / 3 / 1 / 0; six timers read out 3 / 3 / 1 / 3 (no other arm fixed it);
+steps slower than 500 ms 1 / 1 / 0 / 0. Unchanged: amounts not read back 3 / 3 / 3 / 1, dimming the
+whole house without asking 3 / 3 / 3 / 2; coverage cannot point at either, because the suite uses
+those tools and values, only not on that branch. New: "kitchen lights to zero" failed in two A‴
+runs and in no other arm.
+
+**How the agents used it.** All nine A‴ runs ended with a **Proposed cases** section for a person
+to add (for example a declined grant, the rooms kitchen and office, out-of-range amounts) and none
+touched `suites/`. None called `hearsay_explain`, which the skill asks for per question; they
+reviewed the code directly.
+
+**Reading.** The narrowing was real and it was the tool's: with a suite and a green signal, agents
+did what the suite covered and stopped (A and A″, whatever the goal). Reporting what the suite does
+not cover, and telling the agent that green is not the end, closed the gap to the best prompt on
+unseen cases (A‴ 83.7 %, B 82.9 %) and kept Hearsay's verification (0 of 9 runs with defects left,
+against 4 of 9). A‴ was strongest on rules the prompt does not name (37/45 against 28/45) and
+weaker on the ones it does (71/84 against 79/84). Coverage finds untested tools and values, not
+untested branches of tested tools.
+
+**Limits.** Three runs per arm, one model, and the holdouts were written by the author of the
+flaws, who knew which defects were holdout-only. A‴ ran after the other arms (same model id); B was
+not run again.
+
+**Proposed wording for README, Devpost and the video** (the owner decides):
+
+> We measured it. Agents with Hearsay never stopped on a defect they could see (0 of 36 runs, 11
+> of 27 without it), but on unseen cases they did worse than agents with a good prompt (68–71 %
+> against 83 %): they fixed what the suite covered and stopped at green. So Hearsay now reports
+> what the suite doesn't cover, and its skill reviews beyond green. Measured again: 84 % on unseen
+> cases, level with the prompt, and still no defects left behind. (Three runs per arm; the unseen
+> cases were written by the author of the flaws.)
+
+Short form for the video: "With a suite alone, agents fixed what it covered and stopped. So Hearsay
+now shows what your suite doesn't cover. Next round: level with the best prompt on unseen cases,
+and zero defects left behind."
