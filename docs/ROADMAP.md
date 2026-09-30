@@ -19,7 +19,7 @@ new idea is recorded; moving one into docs/07 needs the owner.
 
 ## Replaced or declined
 
-- Scan of public MCP servers (FR-062), replaced by the agent-loop experiment (D-017).
+- Scan of public MCP servers (FR-062): replaced by the agent-loop experiment (D-017), then back in the plan for evidence only (D-024).
 - Watch mode, PR comments, a `hearsay fix` command (declined by the owner).
 
 ## Not adopted from voicecheck
