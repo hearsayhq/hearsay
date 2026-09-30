@@ -132,9 +132,9 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 .finding .hint { color: var(--muted); font-size: 13px; }
 .finding-head { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
 .sev { font-size: 11px; font-weight: 600; text-transform: uppercase; padding: 1px 6px; border-radius: 4px; }
-.sev-error { color: var(--err); background: var(--err-bg); }
-.sev-warn { color: var(--warn); background: var(--warn-bg); }
-.sev-info { color: var(--info); background: var(--info-bg); }
+.sev.sev-error { color: var(--err); background: var(--err-bg); }
+.sev.sev-warn { color: var(--warn); background: var(--warn-bg); }
+.sev.sev-info { color: var(--info); background: var(--info-bg); }
 .source { font-size: 11px; padding: 1px 6px; border-radius: 4px; border: 1px solid var(--line); color: var(--muted); }
 a .source:hover { border-color: var(--muted); color: var(--ink); }
 .source-amazon-fr { color: var(--ink); }
