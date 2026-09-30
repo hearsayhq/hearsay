@@ -13,6 +13,7 @@ import { runSuite } from '../runner';
 import { writeReport } from '../report-file';
 import { loadSuite } from '../suite';
 import { ConsoleSession, type ConsoleEvent } from './session-hub';
+import { localOnly, suitePathOk } from './guard';
 import { staticFiles } from './static';
 
 export interface ServeOptions {
@@ -34,6 +35,7 @@ export function createConsoleApp(opts: ServeOptions = {}) {
     return running;
   };
   const app = new Hono().basePath('/api');
+  app.use('*', localOnly);
 
   app.get('/health', (c) => c.json({ ok: true }));
   app.get('/catalog', (c) => c.json({ questions: QUESTION_ORDER.map((q) => ({ id: q, text: QUESTIONS[q] })), checks: CHECKS }));
@@ -47,7 +49,8 @@ export function createConsoleApp(opts: ServeOptions = {}) {
   });
 
   app.post('/connect', async (c) => {
-    const { suitePath } = await c.req.json<{ suitePath: string }>();
+    const { suitePath } = await c.req.json<{ suitePath: unknown }>();
+    if (!suitePathOk(suitePath)) return c.json({ error: 'suitePath must be a suite under suites/' }, 400);
     const suite = await loadSuite(resolve(cwd, suitePath));
     const running = await ensure(suite.server).catch((e: Error) => e);
     if (running instanceof Error) return c.json({ error: running.message }, 502);
@@ -91,7 +94,8 @@ export function createConsoleApp(opts: ServeOptions = {}) {
   });
 
   app.post('/run', async (c) => {
-    const { suitePath } = await c.req.json<{ suitePath: string }>();
+    const { suitePath } = await c.req.json<{ suitePath: unknown }>();
+    if (!suitePathOk(suitePath)) return c.json({ error: 'suitePath must be a suite under suites/' }, 400);
     const abs = resolve(cwd, suitePath);
     const suite = await loadSuite(abs);
     const running = await ensure(suite.server).catch((e: Error) => e);
