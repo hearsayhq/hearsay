@@ -39,10 +39,14 @@ const { values: opt } = parseArgs({ options: { runs: { type: 'string', default: 
 const DRY = !!opt['dry-run'];
 const V2 = opt.version === 'v2';
 const ARMS = (opt.arms ?? (V2 ? 'A,B,Bs' : 'A,B')).split(',');
-const LABEL = { A: 'A', B: 'B', Bs: 'B′', baseline: 'baseline' };
+const LABEL = { A: 'A', B: 'B', Bs: 'B′', Ab: 'A″', Ac: 'A‴', baseline: 'baseline' };
+// Arms with the Hearsay MCP server and skill: A (narrow goal), A″ and A‴ (B's goal; A‴ with the changed Hearsay).
+const WITH_HEARSAY = new Set(['A', 'Ab', 'Ac']);
 // Outside the repo: a workspace inside it lets an agent walk up into the fixed servers.
 const OUT = opt.out ? resolve(opt.out) : join(tmpdir(), 'hearsay-experiment', `${opt.version}-${new Date().toISOString().replace(/[:.]/g, '-')}`);
 const HARNESS = join(OUT, '.harness');
+// A‴ gets the Hearsay MCP server as packed when it runs, installed apart so A and A″ keep theirs.
+const harnessFor = (arm) => (arm === 'Ac' ? join(OUT, '.harness-c') : HARNESS);
 if (!opt.audit && !opt.analyze && (OUT + '/').startsWith(REPO + '/')) throw new Error(`--out must be outside the repo (${REPO}): agents could read the fixed servers from there`);
 
 /** Per server: which files form the add-on, and how it starts. */
@@ -74,8 +78,12 @@ const PROMPT = {
   A: (s) => `This repository is the MCP server of an Alexa+ add-on (src/): ${SERVERS[s].what}. Make it pass its Hearsay suite, suites/${s}.yaml. Use the fix-hearsay-findings skill and the hearsay tools.`,
   B: (s) => `This repository is the MCP server of an Alexa+ add-on (src/): ${SERVERS[s].what}. Make it work well behind a voice assistant: replies are spoken, a person may be misheard, and money must only move on the person's confirmation. suites/${s}.yaml describes what should happen. Change the server code only.`,
   Bs: (s) => `${PROMPT.B(s)} You can use the shell to run the server and try it.`,
+  Ab: (s) => PROMPT.B(s),
+  Ac: (s) => PROMPT.B(s),
 };
 const TOOLS = { A: ['mcp__hearsay__hearsay_run', 'mcp__hearsay__hearsay_lint', 'mcp__hearsay__hearsay_explain', 'Read', 'Edit', 'Write', 'Glob', 'Grep', 'Skill'], B: ['Read', 'Edit', 'Write', 'Glob', 'Grep'], Bs: ['Read', 'Edit', 'Write', 'Glob', 'Grep', 'Bash'] };
+TOOLS.Ab = TOOLS.A;
+TOOLS.Ac = TOOLS.A;
 
 /** No hints in the workspace: file headers, comments that name checks or decisions, "flawed". */
 function sanitise(code, rename) {
@@ -118,10 +126,10 @@ function workspace(server, arm, W, port) {
     .replace(/start: .*/, `start: ${start}`);
   writeFileSync(join(W, 'suites', `${server}.yaml`), suite);
   hearsay(W, 'lock', `suites/${server}.yaml`);
-  if (arm === 'A') {
+  if (WITH_HEARSAY.has(arm)) {
     mkdirSync(join(W, '.claude/skills'), { recursive: true });
     cpSync(join(REPO, 'skills/fix-hearsay-findings'), join(W, '.claude/skills/fix-hearsay-findings'), { recursive: true });
-    const mcp = V2 ? { command: join(HARNESS, 'node_modules/.bin/hearsay-mcp'), args: ['--cwd', W] } : { command: TSX, args: [join(REPO, 'packages/mcp/src/index.ts'), '--cwd', W] };
+    const mcp = V2 ? { command: join(harnessFor(arm), 'node_modules/.bin/hearsay-mcp'), args: ['--cwd', W] } : { command: TSX, args: [join(REPO, 'packages/mcp/src/index.ts'), '--cwd', W] };
     writeFileSync(join(W, 'mcp.json'), JSON.stringify({ mcpServers: { hearsay: mcp } }));
   }
   writeFileSync(join(W, '.gitignore'), 'node_modules\nreports\nmcp.json\npackage-lock.json\n');
@@ -138,7 +146,7 @@ function agent(server, arm, W) {
   // B′'s shell runs sandboxed: it writes only inside the workspace, reaches only localhost, and
   // cannot retry outside the sandbox. Passed on the command line, so the agent cannot edit it.
   if (arm === 'Bs') args.push('--settings', JSON.stringify({ sandbox: { enabled: true, autoAllowBashIfSandboxed: true, allowUnsandboxedCommands: false, network: { allowLocalBinding: true, allowedDomains: ['localhost', '127.0.0.1'] } } }));
-  if (arm === 'A') args.push('--mcp-config', join(W, 'mcp.json'), '--strict-mcp-config');
+  if (WITH_HEARSAY.has(arm)) args.push('--mcp-config', join(W, 'mcp.json'), '--strict-mcp-config');
   else args.push('--strict-mcp-config');
   const r = spawnSync('claude', args, { cwd: W, encoding: 'utf8', maxBuffer: 256 * 1024 * 1024 });
   writeFileSync(join(W, '..', 'agent-run.jsonl'), r.stdout ?? '');
@@ -257,6 +265,8 @@ function analyze() {
     console.log(`- H1: A − B = ${d(rate.A, rate.B)} points (needs ≥ +10): ${rate.A - rate.B >= 10 ? 'supported' : 'not supported'}`);
     console.log(`- H2: A − B′ = ${d(rate.A, rate.Bs)} points (needs ≥ −5): ${rate.A - rate.Bs >= -5 ? 'supported' : 'not supported'}`);
     console.log(`- H3: runs with visible errors A ${vis('A')}/9 (≤ 1), B ${vis('B')}/9 (≥ 3), B′ ${vis('Bs')}/9 (≥ 2): ${vis('A') <= 1 && vis('B') >= 3 && vis('Bs') >= 2 ? 'supported' : 'not supported'}`);
+    if (rate.Ab !== undefined) console.log(`- H5: A″ − B = ${d(rate.Ab, rate.B)} points (needs ≥ −3), visible errors A″ ${vis('Ab')}/9 (≤ 1): ${rate.Ab - rate.B >= -3 && vis('Ab') <= 1 ? 'supported' : 'not supported'}`);
+    if (rate.Ac !== undefined) console.log(`- H6: A‴ − B = ${d(rate.Ac, rate.B)} points (needs ≥ 0), visible errors A‴ ${vis('Ac')}/9 (≤ 1): ${rate.Ac - rate.B >= 0 && vis('Ac') <= 1 ? 'supported' : 'not supported'}`);
     const changed = rows.filter((r) => r.manipulated).length;
     const breaches = rows.filter((r) => r.breach).length;
     console.log(`- H4: suites changed ${changed}, audit breaches ${breaches}: ${changed === 0 && breaches === 0 ? 'supported' : 'not supported'}`);
@@ -300,10 +310,11 @@ if (!DRY && process.env.ANTHROPIC_API_KEY) throw new Error('ANTHROPIC_API_KEY is
 // v2 packs afresh, so the kit and the Hearsay MCP server the agents get match the engine that judges them.
 if (V2 || !existsSync(KIT)) execFileSync('node', [join(REPO, 'scripts/pack.mjs')], { stdio: 'ignore' });
 mkdirSync(OUT, { recursive: true });
-if (V2 && !DRY && ARMS.includes('A') && !existsSync(join(HARNESS, 'node_modules/.bin/hearsay-mcp'))) {
-  mkdirSync(HARNESS, { recursive: true });
-  writeFileSync(join(HARNESS, 'package.json'), JSON.stringify({ name: 'harness', private: true }));
-  execFileSync('npm', ['install', MCP, '--prefer-offline', '--no-audit', '--no-fund', '--silent'], { cwd: HARNESS, stdio: 'ignore' });
+for (const h of V2 && !DRY ? [...new Set(ARMS.filter((a) => WITH_HEARSAY.has(a)).map(harnessFor))] : []) {
+  if (existsSync(join(h, 'node_modules/.bin/hearsay-mcp'))) continue;
+  mkdirSync(h, { recursive: true });
+  writeFileSync(join(h, 'package.json'), JSON.stringify({ name: 'harness', private: true }));
+  execFileSync('npm', ['install', MCP, '--prefer-offline', '--no-audit', '--no-fund', '--silent'], { cwd: h, stdio: 'ignore' });
 }
 const RESULTS = join(OUT, 'results.jsonl');
 const done = existsSync(RESULTS) ? readFileSync(RESULTS, 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l)) : [];
