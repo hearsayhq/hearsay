@@ -48,11 +48,12 @@ try {
   mark('connected');
   await page.waitForTimeout(1200);
   const turns = () => page.locator('.turn').count();
-  const say = async (text, id) => {
+  // Type at the pace the customer speaks the line, so the reply appears as the spoken line ends.
+  const say = async (text, id, voiceId) => {
     const before = await turns();
     await input.click();
     mark('type', { id, text });
-    await input.pressSequentially(text, { delay: 32 });
+    await input.pressSequentially(text, { delay: Math.max(25, Math.round((voice[voiceId] - 300) / text.length)) });
     await page.waitForTimeout(250);
     mark('say', { id, text });
     await page.getByRole('button', { name: 'Say' }).click();
@@ -71,20 +72,20 @@ try {
     mark('answered', { id, label });
   };
 
-  let b = await say('you can reorder groceries up to forty dollars today', 'grant');
-  await answer('Yes', 'grant', 3200);
+  let b = await say('you can reorder groceries up to forty dollars today', 'grant', 'v3-g-c1');
+  await answer('Yes', 'grant', 3200 + hold('v3-g-c2', 100));
   await replied(b, 'grant');
-  await page.waitForTimeout(1400);
-  b = await say('add fifty dollars of fruit', 'fruit');
+  await page.waitForTimeout(1200);
+  b = await say('add fifty dollars of fruit', 'fruit', 'v3-g-c3');
   await replied(b, 'fruit');
   await page.waitForTimeout(hold('v3-g-a1'));
-  b = await say('add two cartons of milk', 'milk');
+  b = await say('add two cartons of milk', 'milk', 'v3-g-c4');
   await replied(b, 'milk');
   await page.waitForTimeout(hold('v3-g-a2'));
-  b = await say('place the order', 'order');
-  await answer('No', 'order', hold('v3-g-a3') + hold('v3-g-c6', 0));
+  b = await say('place the order', 'order', 'v3-g-c5');
+  await answer('No', 'order', hold('v3-g-a3', 300) + hold('v3-g-c6', 0));
   await replied(b, 'order');
-  await page.waitForTimeout(hold('v3-g-a4') + hold('v3-g1', 300));
+  await page.waitForTimeout(hold('v3-g-a4') + hold('v3-g1', 500));
   mark('end');
   const endEpoch = Date.now() / 1000;
   await cdp.send('Page.stopScreencast');

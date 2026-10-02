@@ -1,0 +1,103 @@
+{
+ "id": "v4-how3",
+ "text": "No microphone. No model. No API keys. The same result every time, so it runs on every pull request.",
+ "heard": "No microphone. No model. No API keys. The same result every time, so it runs on every pull request.",
+ "duration": 6.820000171661377,
+ "words": [
+  {
+   "word": "No",
+   "start": 0,
+   "end": 0.3400000035762787
+  },
+  {
+   "word": "microphone.",
+   "start": 0.3400000035762787,
+   "end": 0.8199999928474426
+  },
+  {
+   "word": "No",
+   "start": 1.3600000143051147,
+   "end": 1.5399999618530273
+  },
+  {
+   "word": "model.",
+   "start": 1.5399999618530273,
+   "end": 1.7799999713897705
+  },
+  {
+   "word": "No",
+   "start": 2.259999990463257,
+   "end": 2.4200000762939453
+  },
+  {
+   "word": "API",
+   "start": 2.4200000762939453,
+   "end": 2.759999990463257
+  },
+  {
+   "word": "keys.",
+   "start": 2.759999990463257,
+   "end": 3.119999885559082
+  },
+  {
+   "word": "The",
+   "start": 3.5799999237060547,
+   "end": 3.6600000858306885
+  },
+  {
+   "word": "same",
+   "start": 3.6600000858306885,
+   "end": 3.880000114440918
+  },
+  {
+   "word": "result",
+   "start": 3.880000114440918,
+   "end": 4.159999847412109
+  },
+  {
+   "word": "every",
+   "start": 4.159999847412109,
+   "end": 4.539999961853027
+  },
+  {
+   "word": "time,",
+   "start": 4.539999961853027,
+   "end": 4.840000152587891
+  },
+  {
+   "word": "so",
+   "start": 5.119999885559082,
+   "end": 5.21999979019165
+  },
+  {
+   "word": "it",
+   "start": 5.21999979019165,
+   "end": 5.420000076293945
+  },
+  {
+   "word": "runs",
+   "start": 5.420000076293945,
+   "end": 5.539999961853027
+  },
+  {
+   "word": "on",
+   "start": 5.539999961853027,
+   "end": 5.820000171661377
+  },
+  {
+   "word": "every",
+   "start": 5.820000171661377,
+   "end": 6.119999885559082
+  },
+  {
+   "word": "pull",
+   "start": 6.119999885559082,
+   "end": 6.320000171661377
+  },
+  {
+   "word": "request.",
+   "start": 6.320000171661377,
+   "end": 6.699999809265137
+  }
+ ]
+}

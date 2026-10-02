@@ -18,3 +18,5 @@ video/out/
 
 # Recorded clips (regenerate: tapes/*.tape with vhs, record/console-green.mjs, agg for the agent loop)
 video/public/clips/
+
+video/public/sound/

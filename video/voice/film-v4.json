@@ -1,0 +1,135 @@
+{
+ "about": "Film v4, the infomercial cut: one narrator explains what happens, no character voices. Every reply quoted on screen is word for word from the Household Orders runs in video/tapes (flawed: reports of household-flawed.tape; fixed: household-fixed.tape); numbers from the same runs and from PR #27's CI.",
+ "model": "gpt-4o-mini-tts",
+ "tempo": 1.1,
+ "lines": [
+  {
+   "id": "v4-cold",
+   "who": "narrator",
+   "voice": "alloy",
+   "gapBeforeMs": 0,
+   "text": "Here's a grocery add-on. Ask for fifteen dollars of fruit: it hears fifty, asks, \"are you sure?\", and adds it. Say no at checkout: it places the order anyway.",
+   "direction": "Upbeat, charismatic host of a modern tech infomercial, explaining what we see. Fast, crisp and precise, a smile in the voice. A little deadpan on 'it places the order anyway'. Never shouty, never cheesy."
+  },
+  {
+   "id": "v4-prob",
+   "who": "narrator",
+   "voice": "alloy",
+   "gapBeforeMs": 0,
+   "text": "In a chat window, this add-on looks fine. Out loud, it breaks. Numbers get misheard. Replies read out JSON. Lists run longer than anyone can remember. And money moves without a clear yes.",
+   "direction": "Upbeat, charismatic host of a modern tech infomercial, explaining a problem. Fast, crisp and precise, punchy rhythm on each short sentence. Never shouty, never cheesy."
+  },
+  {
+   "id": "v4-intro",
+   "who": "narrator",
+   "voice": "alloy",
+   "gapBeforeMs": 0,
+   "text": "This is Hearsay: preflight checks for voice add-ons. You write what your customers say. Hearsay plays it against your server, clean and misheard, and fails the build when it would go wrong out loud.",
+   "direction": "Upbeat, charismatic host of a modern tech infomercial, introducing the product with pride. Fast, crisp and precise, a smile in the voice, clear emphasis on 'Hearsay'. Never shouty, never cheesy."
+  },
+  {
+   "id": "v4-how1",
+   "who": "narrator",
+   "voice": "alloy",
+   "gapBeforeMs": 0,
+   "text": "Here's how. When someone speaks, only one step is your code: the server.",
+   "direction": "Upbeat, charismatic host of a modern tech infomercial, revealing a clever trick. Fast, crisp and precise. Never shouty, never cheesy."
+  },
+  {
+   "id": "v4-how2",
+   "who": "narrator",
+   "voice": "alloy",
+   "gapBeforeMs": 0,
+   "text": "Hearsay plays the rest, straight from your test case: the words, the mishearings, and the tool call the model would make. Then it checks what your server answers.",
+   "direction": "Upbeat, charismatic host of a modern tech infomercial, explaining how it works. Fast, crisp and precise. Never shouty, never cheesy."
+  },
+  {
+   "id": "v4-how3",
+   "who": "narrator",
+   "voice": "alloy",
+   "gapBeforeMs": 0,
+   "text": "No microphone. No model. No API keys. The same result every time, so it runs on every pull request.",
+   "direction": "Upbeat, charismatic host of a modern tech infomercial, listing benefits with punch. Fast, crisp and precise, short beats between the first three. Never shouty, never cheesy."
+  },
+  {
+   "id": "v4-rules",
+   "who": "narrator",
+   "voice": "alloy",
+   "gapBeforeMs": 0,
+   "text": "Every answer is graded by the rules Amazon published for add-ons: half a second per tool, short replies, no JSON, five options at most, and no payment without naming what and how much.",
+   "direction": "Upbeat, charismatic host of a modern tech infomercial, running through a checklist. Fast, crisp and precise, a light beat between the items. Never shouty, never cheesy."
+  },
+  {
+   "id": "v4-red1",
+   "who": "narrator",
+   "voice": "alloy",
+   "gapBeforeMs": 0,
+   "text": "Here's the real run on that add-on. One take, no cuts.",
+   "direction": "Upbeat, charismatic host of a modern tech infomercial, starting a live demo. Fast, crisp and precise. Never shouty, never cheesy."
+  },
+  {
+   "id": "v4-red2",
+   "who": "narrator",
+   "voice": "alloy",
+   "gapBeforeMs": 0,
+   "text": "Fifty instead of fifteen, taken without reading it back. A no that placed the order anyway. Twenty errors. Exit one. The build fails.",
+   "direction": "Upbeat, charismatic host of a modern tech infomercial, calling out results of a live demo. Fast, crisp and precise, punchy on the numbers. Never shouty, never cheesy."
+  },
+  {
+   "id": "v4-after",
+   "who": "narrator",
+   "voice": "alloy",
+   "gapBeforeMs": 0,
+   "text": "The fixed build, same tests. The misheard fifty is refused, and the add-on says why. Zero errors.",
+   "direction": "Upbeat, charismatic host of a modern tech infomercial, showing the after shot. Fast, crisp and precise, satisfied on 'Zero errors'. Never shouty, never cheesy."
+  },
+  {
+   "id": "v4-ci",
+   "who": "narrator",
+   "voice": "alloy",
+   "gapBeforeMs": 0,
+   "text": "And it guards every pull request. This change let fifty dollars of fruit skip the budget. Hearsay caught it, and the check went red. One fix, and it's green.",
+   "direction": "Upbeat, charismatic host of a modern tech infomercial, explaining a real example. Fast, crisp and precise. Never shouty, never cheesy."
+  },
+  {
+   "id": "v4-more1",
+   "who": "narrator",
+   "voice": "alloy",
+   "gapBeforeMs": 0,
+   "text": "But wait, there's more. Hearsay is also an MCP server. Your coding agent runs it, fixes what it finds, and runs it again, until it's green.",
+   "direction": "Upbeat, charismatic host of a modern tech infomercial, with a playful wink on 'But wait, there's more', then explaining. Fast, crisp and precise. Never shouty, never cheesy."
+  },
+  {
+   "id": "v4-more2",
+   "who": "narrator",
+   "voice": "alloy",
+   "gapBeforeMs": 0,
+   "text": "And it can't cheat: change a locked test, and the run fails.",
+   "direction": "Upbeat, charismatic host of a modern tech infomercial, a confident aside. Fast, crisp and precise. Never shouty, never cheesy."
+  },
+  {
+   "id": "v4-proof",
+   "who": "narrator",
+   "voice": "alloy",
+   "gapBeforeMs": 0,
+   "text": "We measured it with coding agents. A suite alone made them stop at green, so Hearsay now shows what your suite doesn't cover. The result: zero defects left behind, and better on the rules nobody told them about.",
+   "direction": "Upbeat, charismatic host of a modern tech infomercial, presenting honest results. Fast, crisp and precise, credible rather than salesy. Never shouty, never cheesy."
+  },
+  {
+   "id": "v4-offer",
+   "who": "narrator",
+   "voice": "alloy",
+   "gapBeforeMs": 0,
+   "text": "And the price? Zero. Hearsay is open source. No keys, no account. Clone it, install it, run it.",
+   "direction": "Upbeat, charismatic host of a modern tech infomercial, the classic price reveal with a grin, then quick and practical. Fast, crisp and precise. Never shouty, never cheesy."
+  },
+  {
+   "id": "v4-tag",
+   "who": "narrator",
+   "voice": "alloy",
+   "gapBeforeMs": 0,
+   "text": "Hearsay. Hear it before your customers do.",
+   "direction": "Upbeat, charismatic host of a modern tech infomercial, the closing tagline, warm and confident, a small pause after 'Hearsay'. Never shouty, never cheesy."
+  }
+ ]
+}

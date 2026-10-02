@@ -1,0 +1,73 @@
+{
+ "id": "v4-how1",
+ "text": "Here's how. When someone speaks, only one step is your code: the server.",
+ "heard": "Here's how. When someone speaks, only one step is your code. The server.",
+ "duration": 4.170000076293945,
+ "words": [
+  {
+   "word": "Here's",
+   "start": 0,
+   "end": 0.36000001430511475
+  },
+  {
+   "word": "how.",
+   "start": 0.36000001430511475,
+   "end": 0.5600000023841858
+  },
+  {
+   "word": "When",
+   "start": 0.8399999737739563,
+   "end": 0.9800000190734863
+  },
+  {
+   "word": "someone",
+   "start": 0.9800000190734863,
+   "end": 1.2400000095367432
+  },
+  {
+   "word": "speaks,",
+   "start": 1.2400000095367432,
+   "end": 1.600000023841858
+  },
+  {
+   "word": "only",
+   "start": 1.8200000524520874,
+   "end": 2.0999999046325684
+  },
+  {
+   "word": "one",
+   "start": 2.0999999046325684,
+   "end": 2.4200000762939453
+  },
+  {
+   "word": "step",
+   "start": 2.4200000762939453,
+   "end": 2.5799999237060547
+  },
+  {
+   "word": "is",
+   "start": 2.5799999237060547,
+   "end": 2.740000009536743
+  },
+  {
+   "word": "your",
+   "start": 2.740000009536743,
+   "end": 2.9000000953674316
+  },
+  {
+   "word": "code:",
+   "start": 2.9000000953674316,
+   "end": 3.200000047683716
+  },
+  {
+   "word": "the",
+   "start": 3.5999999046325684,
+   "end": 3.7799999713897705
+  },
+  {
+   "word": "server.",
+   "start": 3.7799999713897705,
+   "end": 4.019999980926514
+  }
+ ]
+}

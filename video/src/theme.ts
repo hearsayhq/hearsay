@@ -5,8 +5,8 @@
 import { loadFont as loadInter } from '@remotion/google-fonts/Inter';
 import { loadFont as loadMono } from '@remotion/google-fonts/JetBrainsMono';
 
-export const sans = loadInter('normal', { weights: ['400', '500', '600', '800'], subsets: ['latin'] }).fontFamily;
-export const mono = loadMono('normal', { weights: ['400', '500'], subsets: ['latin'] }).fontFamily;
+export const sans = loadInter('normal', { weights: ['400', '500', '600', '700', '800', '900'], subsets: ['latin'] }).fontFamily;
+export const mono = loadMono('normal', { weights: ['400', '500', '700'], subsets: ['latin'] }).fontFamily;
 
 export const c = {
   ink: '#0A1020',
