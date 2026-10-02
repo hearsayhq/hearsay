@@ -1,0 +1,154 @@
+{
+ "id": "v4-cold",
+ "text": "Here's a grocery add-on. Ask for fifteen dollars of fruit: it hears fifty, asks, \"are you sure?\", and adds it. Say no at checkout: it places the order anyway.",
+ "heard": "Here's a grocery add-on. Ask for fifteen dollars of fruit. It hears fifty, asks, are you sure?, and adds it. Say no at checkout. It places the order anyway.",
+ "duration": 10.210000038146973,
+ "words": [
+  {
+   "word": "Here's",
+   "start": 0,
+   "end": 0.4000000059604645
+  },
+  {
+   "word": "a",
+   "start": 0.4000000059604645,
+   "end": 0.5600000023841858
+  },
+  {
+   "word": "grocery",
+   "start": 0.5600000023841858,
+   "end": 0.8799999952316284
+  },
+  {
+   "word": "add-on.",
+   "start": 0.8799999952316284,
+   "end": 2.0399999618530273,
+   "guessed": true
+  },
+  {
+   "word": "Ask",
+   "start": 2.0399999618530273,
+   "end": 2.059999942779541
+  },
+  {
+   "word": "for",
+   "start": 2.059999942779541,
+   "end": 2.240000009536743
+  },
+  {
+   "word": "fifteen",
+   "start": 2.240000009536743,
+   "end": 2.5999999046325684
+  },
+  {
+   "word": "dollars",
+   "start": 2.5999999046325684,
+   "end": 2.9000000953674316
+  },
+  {
+   "word": "of",
+   "start": 2.9000000953674316,
+   "end": 3.140000104904175
+  },
+  {
+   "word": "fruit:",
+   "start": 3.140000104904175,
+   "end": 3.359999895095825
+  },
+  {
+   "word": "it",
+   "start": 3.740000009536743,
+   "end": 3.8399999141693115
+  },
+  {
+   "word": "hears",
+   "start": 3.8399999141693115,
+   "end": 4.019999980926514
+  },
+  {
+   "word": "fifty,",
+   "start": 4.019999980926514,
+   "end": 4.460000038146973
+  },
+  {
+   "word": "asks,",
+   "start": 5.119999885559082,
+   "end": 5.159999847412109
+  },
+  {
+   "word": "\"are",
+   "start": 5.440000057220459,
+   "end": 5.5
+  },
+  {
+   "word": "you",
+   "start": 5.5,
+   "end": 5.739999771118164
+  },
+  {
+   "word": "sure?\",",
+   "start": 5.739999771118164,
+   "end": 6.239999771118164
+  },
+  {
+   "word": "and",
+   "start": 6.239999771118164,
+   "end": 6.519999980926514
+  },
+  {
+   "word": "adds",
+   "start": 6.519999980926514,
+   "end": 6.739999771118164
+  },
+  {
+   "word": "it.",
+   "start": 6.739999771118164,
+   "end": 7.239999771118164
+  },
+  {
+   "word": "Say",
+   "start": 7.579999923706055,
+   "end": 7.679999828338623
+  },
+  {
+   "word": "no",
+   "start": 7.679999828338623,
+   "end": 7.880000114440918
+  },
+  {
+   "word": "at",
+   "start": 7.880000114440918,
+   "end": 8.0600004196167
+  },
+  {
+   "word": "checkout:",
+   "start": 8.0600004196167,
+   "end": 8.359999656677246
+  },
+  {
+   "word": "it",
+   "start": 8.779999732971191,
+   "end": 8.920000076293945
+  },
+  {
+   "word": "places",
+   "start": 8.920000076293945,
+   "end": 9.199999809265137
+  },
+  {
+   "word": "the",
+   "start": 9.199999809265137,
+   "end": 9.539999961853027
+  },
+  {
+   "word": "order",
+   "start": 9.539999961853027,
+   "end": 9.65999984741211
+  },
+  {
+   "word": "anyway.",
+   "start": 9.65999984741211,
+   "end": 10.039999961853027
+  }
+ ]
+}

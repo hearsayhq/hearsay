@@ -1,0 +1,43 @@
+{
+ "id": "v4-tag",
+ "text": "Hearsay. Hear it before your customers do.",
+ "heard": "Hearsay. Hear it before your customers do.",
+ "duration": 2.799999952316284,
+ "words": [
+  {
+   "word": "Hearsay.",
+   "start": 0,
+   "end": 0.6000000238418579
+  },
+  {
+   "word": "Hear",
+   "start": 1.340000033378601,
+   "end": 1.3600000143051147
+  },
+  {
+   "word": "it",
+   "start": 1.3600000143051147,
+   "end": 1.5199999809265137
+  },
+  {
+   "word": "before",
+   "start": 1.5199999809265137,
+   "end": 1.7999999523162842
+  },
+  {
+   "word": "your",
+   "start": 1.7999999523162842,
+   "end": 2.0199999809265137
+  },
+  {
+   "word": "customers",
+   "start": 2.0199999809265137,
+   "end": 2.359999895095825
+  },
+  {
+   "word": "do.",
+   "start": 2.359999895095825,
+   "end": 2.700000047683716
+  }
+ ]
+}

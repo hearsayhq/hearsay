@@ -1,0 +1,123 @@
+{
+ "id": "v4-red2",
+ "text": "Fifty instead of fifteen, taken without reading it back. A no that placed the order anyway. Twenty errors. Exit one. The build fails.",
+ "heard": "Fifty instead of fifteen, taken without reading it back. A no that placed the order anyway. Twenty errors. Exit one. The build fails.",
+ "duration": 8.069999694824219,
+ "words": [
+  {
+   "word": "Fifty",
+   "start": 0,
+   "end": 0.4399999976158142
+  },
+  {
+   "word": "instead",
+   "start": 0.4399999976158142,
+   "end": 0.8799999952316284
+  },
+  {
+   "word": "of",
+   "start": 0.8799999952316284,
+   "end": 1.0800000429153442
+  },
+  {
+   "word": "fifteen,",
+   "start": 1.0800000429153442,
+   "end": 1.5399999618530273
+  },
+  {
+   "word": "taken",
+   "start": 1.9600000381469727,
+   "end": 2.059999942779541
+  },
+  {
+   "word": "without",
+   "start": 2.059999942779541,
+   "end": 2.359999895095825
+  },
+  {
+   "word": "reading",
+   "start": 2.359999895095825,
+   "end": 2.619999885559082
+  },
+  {
+   "word": "it",
+   "start": 2.619999885559082,
+   "end": 2.8399999141693115
+  },
+  {
+   "word": "back.",
+   "start": 2.8399999141693115,
+   "end": 3.0799999237060547
+  },
+  {
+   "word": "A",
+   "start": 3.4800000190734863,
+   "end": 3.5999999046325684
+  },
+  {
+   "word": "no",
+   "start": 3.5999999046325684,
+   "end": 3.7799999713897705
+  },
+  {
+   "word": "that",
+   "start": 3.7799999713897705,
+   "end": 3.9800000190734863
+  },
+  {
+   "word": "placed",
+   "start": 3.9800000190734863,
+   "end": 4.260000228881836
+  },
+  {
+   "word": "the",
+   "start": 4.260000228881836,
+   "end": 4.599999904632568
+  },
+  {
+   "word": "order",
+   "start": 4.599999904632568,
+   "end": 4.599999904632568
+  },
+  {
+   "word": "anyway.",
+   "start": 4.599999904632568,
+   "end": 5.019999980926514
+  },
+  {
+   "word": "Twenty",
+   "start": 5.480000019073486,
+   "end": 5.679999828338623
+  },
+  {
+   "word": "errors.",
+   "start": 5.679999828338623,
+   "end": 6.039999961853027
+  },
+  {
+   "word": "Exit",
+   "start": 6.480000019073486,
+   "end": 6.659999847412109
+  },
+  {
+   "word": "one.",
+   "start": 6.659999847412109,
+   "end": 6.960000038146973
+  },
+  {
+   "word": "The",
+   "start": 7.179999828338623,
+   "end": 7.360000133514404
+  },
+  {
+   "word": "build",
+   "start": 7.360000133514404,
+   "end": 7.539999961853027
+  },
+  {
+   "word": "fails.",
+   "start": 7.539999961853027,
+   "end": 7.860000133514404
+  }
+ ]
+}

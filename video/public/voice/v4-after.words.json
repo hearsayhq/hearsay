@@ -1,0 +1,94 @@
+{
+ "id": "v4-after",
+ "text": "The fixed build, same tests. The misheard fifty is refused, and the add-on says why. Zero errors.",
+ "heard": "The fixed build, same tests. The misheard fifty is refused, and the add-on says why. Zero errors.",
+ "duration": 6.989999771118164,
+ "words": [
+  {
+   "word": "The",
+   "start": 0,
+   "end": 0.30000001192092896
+  },
+  {
+   "word": "fixed",
+   "start": 0.30000001192092896,
+   "end": 0.5
+  },
+  {
+   "word": "build,",
+   "start": 0.5,
+   "end": 0.9200000166893005
+  },
+  {
+   "word": "same",
+   "start": 1.2400000095367432,
+   "end": 1.559999942779541
+  },
+  {
+   "word": "tests.",
+   "start": 1.559999942779541,
+   "end": 2.0399999618530273
+  },
+  {
+   "word": "The",
+   "start": 2.4800000190734863,
+   "end": 2.5799999237060547
+  },
+  {
+   "word": "misheard",
+   "start": 2.5799999237060547,
+   "end": 2.859999895095825
+  },
+  {
+   "word": "fifty",
+   "start": 2.859999895095825,
+   "end": 3.240000009536743
+  },
+  {
+   "word": "is",
+   "start": 3.240000009536743,
+   "end": 3.4800000190734863
+  },
+  {
+   "word": "refused,",
+   "start": 3.4800000190734863,
+   "end": 3.9000000953674316
+  },
+  {
+   "word": "and",
+   "start": 4.320000171661377,
+   "end": 4.380000114440918
+  },
+  {
+   "word": "the",
+   "start": 4.380000114440918,
+   "end": 4.639999866485596
+  },
+  {
+   "word": "add-on",
+   "start": 4.639999866485596,
+   "end": 4.840000152587891,
+   "guessed": true
+  },
+  {
+   "word": "says",
+   "start": 4.840000152587891,
+   "end": 5.079999923706055
+  },
+  {
+   "word": "why.",
+   "start": 5.079999923706055,
+   "end": 5.440000057220459
+  },
+  {
+   "word": "Zero",
+   "start": 6.099999904632568,
+   "end": 6.380000114440918
+  },
+  {
+   "word": "errors.",
+   "start": 6.380000114440918,
+   "end": 6.760000228881836
+  }
+ ]
+}

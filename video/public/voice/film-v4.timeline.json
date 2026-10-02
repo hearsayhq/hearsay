@@ -1,0 +1,134 @@
+{
+ "model": "gpt-4o-mini-tts",
+ "lengthSeconds": 128.615,
+ "lines": [
+  {
+   "id": "v4-cold",
+   "who": "narrator",
+   "text": "Here's a grocery add-on. Ask for fifteen dollars of fruit: it hears fifty, asks, \"are you sure?\", and adds it. Say no at checkout: it places the order anyway.",
+   "start": 0,
+   "end": 10.215,
+   "src": "voice/v4-cold.mp3"
+  },
+  {
+   "id": "v4-prob",
+   "who": "narrator",
+   "text": "In a chat window, this add-on looks fine. Out loud, it breaks. Numbers get misheard. Replies read out JSON. Lists run longer than anyone can remember. And money moves without a clear yes.",
+   "start": 10.215,
+   "end": 21.953,
+   "src": "voice/v4-prob.mp3"
+  },
+  {
+   "id": "v4-intro",
+   "who": "narrator",
+   "text": "This is Hearsay: preflight checks for voice add-ons. You write what your customers say. Hearsay plays it against your server, clean and misheard, and fails the build when it would go wrong out loud.",
+   "start": 21.953,
+   "end": 33.529,
+   "src": "voice/v4-intro.mp3"
+  },
+  {
+   "id": "v4-how1",
+   "who": "narrator",
+   "text": "Here's how. When someone speaks, only one step is your code: the server.",
+   "start": 33.529,
+   "end": 37.703,
+   "src": "voice/v4-how1.mp3"
+  },
+  {
+   "id": "v4-how2",
+   "who": "narrator",
+   "text": "Hearsay plays the rest, straight from your test case: the words, the mishearings, and the tool call the model would make. Then it checks what your server answers.",
+   "start": 37.703,
+   "end": 47.031,
+   "src": "voice/v4-how2.mp3"
+  },
+  {
+   "id": "v4-how3",
+   "who": "narrator",
+   "text": "No microphone. No model. No API keys. The same result every time, so it runs on every pull request.",
+   "start": 47.031,
+   "end": 53.856,
+   "src": "voice/v4-how3.mp3"
+  },
+  {
+   "id": "v4-rules",
+   "who": "narrator",
+   "text": "Every answer is graded by the rules Amazon published for add-ons: half a second per tool, short replies, no JSON, five options at most, and no payment without naming what and how much.",
+   "start": 53.856,
+   "end": 65.951,
+   "src": "voice/v4-rules.mp3"
+  },
+  {
+   "id": "v4-red1",
+   "who": "narrator",
+   "text": "Here's the real run on that add-on. One take, no cuts.",
+   "start": 65.951,
+   "end": 69.987,
+   "src": "voice/v4-red1.mp3"
+  },
+  {
+   "id": "v4-red2",
+   "who": "narrator",
+   "text": "Fifty instead of fifteen, taken without reading it back. A no that placed the order anyway. Twenty errors. Exit one. The build fails.",
+   "start": 69.987,
+   "end": 78.064,
+   "src": "voice/v4-red2.mp3"
+  },
+  {
+   "id": "v4-after",
+   "who": "narrator",
+   "text": "The fixed build, same tests. The misheard fifty is refused, and the add-on says why. Zero errors.",
+   "start": 78.064,
+   "end": 85.055,
+   "src": "voice/v4-after.mp3"
+  },
+  {
+   "id": "v4-ci",
+   "who": "narrator",
+   "text": "And it guards every pull request. This change let fifty dollars of fruit skip the budget. Hearsay caught it, and the check went red. One fix, and it's green.",
+   "start": 85.055,
+   "end": 94.248,
+   "src": "voice/v4-ci.mp3"
+  },
+  {
+   "id": "v4-more1",
+   "who": "narrator",
+   "text": "But wait, there's more. Hearsay is also an MCP server. Your coding agent runs it, fixes what it finds, and runs it again, until it's green.",
+   "start": 94.248,
+   "end": 102.729,
+   "src": "voice/v4-more1.mp3"
+  },
+  {
+   "id": "v4-more2",
+   "who": "narrator",
+   "text": "And it can't cheat: change a locked test, and the run fails.",
+   "start": 102.729,
+   "end": 106.718,
+   "src": "voice/v4-more2.mp3"
+  },
+  {
+   "id": "v4-proof",
+   "who": "narrator",
+   "text": "We measured it with coding agents. A suite alone made them stop at green, so Hearsay now shows what your suite doesn't cover. The result: zero defects left behind, and better on the rules nobody told them about.",
+   "start": 106.718,
+   "end": 118.555,
+   "src": "voice/v4-proof.mp3"
+  },
+  {
+   "id": "v4-offer",
+   "who": "narrator",
+   "text": "And the price? Zero. Hearsay is open source. No keys, no account. Clone it, install it, run it.",
+   "start": 118.555,
+   "end": 125.806,
+   "src": "voice/v4-offer.mp3"
+  },
+  {
+   "id": "v4-tag",
+   "who": "narrator",
+   "text": "Hearsay. Hear it before your customers do.",
+   "start": 125.806,
+   "end": 128.615,
+   "src": "voice/v4-tag.mp3"
+  }
+ ]
+}
