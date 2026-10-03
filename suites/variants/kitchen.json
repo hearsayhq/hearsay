@@ -1,36 +1,104 @@
 {
   "suite": "kitchen",
   "provenance": {
-    "voice": "polly:Joanna",
+    "voices": [
+      "polly:Joanna",
+      "polly:Matthew",
+      "polly:Amy",
+      "polly:Kajal"
+    ],
     "provider": "transcribe-streaming:en-US",
-    "recordedAt": "2026-10-03T10:43:17.193Z",
+    "recordedAt": "2026-10-03T11:05:51.320Z",
     "channel": "white noise at 20/10/5 dB SNR, 300–3400 Hz, 8 kHz"
   },
   "cases": {
     "start-pasta-timer": [
       {
-        "heard": "Set a pasta timer for 15 minutes.",
-        "snrDb": 20,
-        "seed": 1
+        "heard": "The pasta timer for 15 minutes.",
+        "voice": "polly:Joanna",
+        "snrDb": 5,
+        "seed": 3
       },
       {
-        "heard": "The pasta timer for 15 minutes.",
+        "heard": "Set it pass the timer for 15 minutes.",
+        "voice": "polly:Amy",
+        "snrDb": 5,
+        "seed": 3
+      },
+      {
+        "heard": "Set a faster timer for 15 minutes.",
+        "voice": "polly:Kajal",
         "snrDb": 5,
         "seed": 3
       }
     ],
-    "start-egg-timer": [
-      {
-        "heard": "Set an egg timer for 7 minutes.",
-        "snrDb": 20,
-        "seed": 1
-      }
-    ],
+    "start-egg-timer": [],
     "start-sauce-timer": [
       {
         "heard": "Start us off timer for 8 minutes.",
+        "voice": "polly:Joanna",
         "snrDb": 20,
         "seed": 1
+      },
+      {
+        "heard": "Start a short timer for 8 minutes.",
+        "voice": "polly:Amy",
+        "snrDb": 20,
+        "seed": 1
+      },
+      {
+        "heard": "Start a source timer for 8 minutes.",
+        "voice": "polly:Amy",
+        "snrDb": 10,
+        "seed": 2
+      }
+    ],
+    "list-timers": [
+      {
+        "heard": "How long is left on my time is.",
+        "voice": "polly:Joanna",
+        "snrDb": 5,
+        "seed": 3
+      },
+      {
+        "heard": "How long is left on my timer?",
+        "voice": "polly:Matthew",
+        "snrDb": 5,
+        "seed": 3
+      }
+    ],
+    "cancel-ambiguous": [
+      {
+        "heard": "canceled the timing.",
+        "voice": "polly:Joanna",
+        "snrDb": 5,
+        "seed": 3
+      },
+      {
+        "heard": "Cancel the timing.",
+        "voice": "polly:Matthew",
+        "snrDb": 5,
+        "seed": 3
+      },
+      {
+        "heard": "Has the timer",
+        "voice": "polly:Amy",
+        "snrDb": 5,
+        "seed": 3
+      }
+    ],
+    "recipe-step-out-of-range": [
+      {
+        "heard": "Reading step 40 of the recipe.",
+        "voice": "polly:Kajal",
+        "snrDb": 10,
+        "seed": 2
+      },
+      {
+        "heard": "Reing check copy of the recipe.",
+        "voice": "polly:Kajal",
+        "snrDb": 5,
+        "seed": 3
       }
     ]
   }

@@ -1,0 +1,40 @@
+{
+  "suite": "household-orders",
+  "provenance": {
+    "voices": [
+      "polly:Joanna",
+      "polly:Matthew",
+      "polly:Amy",
+      "polly:Kajal"
+    ],
+    "provider": "transcribe-streaming:en-US",
+    "recordedAt": "2026-10-03T11:07:58.399Z",
+    "channel": "white noise at 20/10/5 dB SNR, 300–3400 Hz, 8 kHz"
+  },
+  "cases": {
+    "grant-mandate": [],
+    "stage-milk": [],
+    "misheard-amount": [
+      {
+        "heard": "$15 of fruit.",
+        "voice": "polly:Matthew",
+        "snrDb": 5,
+        "seed": 3
+      },
+      {
+        "heard": "At $15 a seat.",
+        "voice": "polly:Amy",
+        "snrDb": 5,
+        "seed": 3
+      },
+      {
+        "heard": "At $15 of fruit.",
+        "voice": "polly:Kajal",
+        "snrDb": 5,
+        "seed": 3
+      }
+    ],
+    "out-of-scope-item": [],
+    "injected-gift-card": []
+  }
+}

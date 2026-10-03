@@ -104,16 +104,26 @@ and it refused step forty from the schema's bounds. Nova Lite recorded first and
 to the three kitchen timer cases (suite re-locked).
 
 Done 3 Oct, after the owner upgraded the account to the Paid Plan (friction log #9):
-`suites/variants/kitchen.json` from `hearsay gen-variants` (Polly Joanna → white noise at 20/10/5 dB
-SNR, 300–3400 Hz → Transcribe Streaming). Four mishearings for the three timer cases: numbers come
-back as digits ("Set an egg timer for 7 minutes."), a dropped word ("The pasta timer for 15
-minutes.") and "start a sauce timer" heard as "Start us off timer for 8 minutes."; a second
-recording heard the same four. Digits that keep the value change no argument, so scripted mode
-drops all four (no fake variants) and Kitchen stays 8 runs, 0 errors. The kitchen cassette was
-re-recorded with them (Nova 2 Lite, 33 model calls, 44k input tokens): on "us off" the model starts
-an unlabelled 8-minute timer. Replayed twice without AWS credentials: identical findings, the same
-2 of 14 runs failing as on 30 Sep. Cost of the day: about $0.15 (Transcribe bills at least 15 s per
-request).
+`suites/variants/*.json` for all three suites from `hearsay gen-variants`. First a measurement:
+the 15 distinct utterances in four Polly voices at 20/10/5/0 dB SNR, 240 transcriptions. Transcribe
+never confused a number (no fifteen ↔ fifty; numbers come back as digits), so the curated tables
+stay the stress test for the costly confusions. What it does get wrong is different: it drops the
+verb ("dim the bedroom" → "In the bedroom to 30%", 14 of 16), swaps nouns (sauce → "us off",
+"short", "source"; pasta → "faster") and loses items ("At $15 a seat."). Most of the variety came
+from the British and Indian English voices, hence four voices. Recorded: 18 mishearings for 14
+cases (the owner asked for `asr.roundtrip` on every case where a mishearing can change the action;
+suites re-locked); a second recording heard the same words. In scripted mode only the label swaps
+reach arguments, so Kitchen runs 11 times, 0 errors (it reads labels back); Smart Home and
+Household Orders keep their counts. The kitchen cassette was re-recorded with them (Nova 2 Lite,
+75 model calls): 6 of 23 runs fail, replayed twice without AWS credentials with identical
+findings. Two are the 30 Sep ones; four come from real mishearings: twice the label is lost
+without a word ("Timer set for eight minutes." after "short" and "us off"), "Has the timer" lists
+timers instead of cancelling, and "Reing check copy of the recipe." makes six calls and says
+nothing. Llm runs of Smart Home and Household Orders were recorded and not committed: Nova 2 Lite's
+own planning (an "added $50" without a call, a widened mandate) dominated them. Two fixes on the
+way: a number heard as digits is no edit (it reached no argument and passed as a read-back of
+"8"), and `asr.robust` counts a reply that states every changed argument value as read back
+(docs/05). Cost of the day: about $2.80, almost all Transcribe (at least 15 s billed per request).
 
 AWS cost of all planned recordings (estimate, 30 Sep; list prices in us-east-1 as known, to be
 checked on the pricing pages before the first run):

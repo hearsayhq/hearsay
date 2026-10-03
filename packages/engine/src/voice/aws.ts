@@ -19,7 +19,7 @@ export interface Stt {
 export class PollyTts implements Tts {
   readonly id: string;
   private client: PollyClient;
-  constructor(private voice = process.env.HEARSAY_POLLY_VOICE ?? 'Joanna', region = process.env.AWS_REGION ?? 'us-east-1') {
+  constructor(private voice = 'Joanna', region = process.env.AWS_REGION ?? 'us-east-1') {
     this.id = `polly:${voice}`;
     this.client = new PollyClient({ region });
   }

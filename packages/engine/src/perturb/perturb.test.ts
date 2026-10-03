@@ -44,6 +44,8 @@ describe('variantsFor', () => {
 
 describe('wordEdits', () => {
   it('finds the misheard words', () => expect(wordEdits('add fifteen dollars of fruit', 'add fifty dollars of fruit')).toEqual([{ from: 'fifteen', to: 'fifty' }]));
+  it('ignores numbers that are only written as digits', () =>
+    expect(wordEdits('start a sauce timer for eight minutes', 'Start us off timer for 8 minutes.')).toEqual([{ from: 'a sauce', to: 'us off' }]));
   it('drops a recorded variant that only writes the number as digits (scripted)', () =>
     expect(variantsFor('c', 'set an egg timer for seven minutes', ['asr.roundtrip'], { seed: 1, mode: 'scripted', args: { minutes: 7, label: 'egg' }, recorded: [{ heard: 'Set an egg timer for 7 minutes.' }] })).toHaveLength(1));
 });

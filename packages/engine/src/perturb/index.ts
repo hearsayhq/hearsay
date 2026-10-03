@@ -4,6 +4,7 @@
  * are kept, since the literal planner can only pass on what reaches its arguments.
  */
 import { applyEdits } from './args';
+import { spokenWords } from './numbers';
 import { pick, prng, seedFor } from './prng';
 import { RULES } from './rules';
 import { CLEAN, type Variant } from './types';
@@ -59,5 +60,6 @@ export function wordEdits(said: string, heard: string): Array<{ from: string; to
     else from.push(a[i++]!);
   }
   flush();
-  return edits.filter((e) => e.from && e.to);
+  // "eight" heard as "8" is no mishearing; such an edit would also pass as a read-back of "8".
+  return edits.filter((e) => e.from && e.to && spokenWords(e.from) !== spokenWords(e.to));
 }

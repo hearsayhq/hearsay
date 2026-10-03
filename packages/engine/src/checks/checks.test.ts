@@ -5,6 +5,7 @@ import { CHECKS } from '../catalog';
 import { SuiteSchema } from '../suite';
 import type { Trace, Turn } from '../trace';
 import { IMPLEMENTED } from './index';
+import { asrRobust } from './asr';
 import { latencyFirstAudio } from './latency';
 import { speakLength, speakNoStructuredDump } from './speak';
 
@@ -65,4 +66,22 @@ describe('latency.first_audio', () => {
 describe('registry', () => {
   it('implements exactly the checks the catalog marks implemented', () =>
     expect([...IMPLEMENTED].sort()).toEqual(CHECKS.filter((c) => c.status === 'implemented').map((c) => c.id).sort()));
+});
+
+describe('asr.robust: read back of what the call did', () => {
+  const call = (args: Record<string, unknown>, text: string) => ({ tool: 'timer_start', args, result: { text } });
+  const run = (heard: string, args: Record<string, unknown>, reply: string, cleanArgs?: Record<string, unknown>) => {
+    const t = { ...turn(reply), heard, toolCalls: [call(args, reply)] } as unknown as Turn;
+    const clean = { turns: cleanArgs ? [{ ...turn('Pasta timer set for fifteen minutes.'), toolCalls: [call(cleanArgs, 'Pasta timer set for fifteen minutes.')] }] : [turn('Which timer?')] } as unknown as Trace;
+    const edits = [{ from: 'a pasta', to: 'it pass the' }];
+    return sev(asrRobust.run({ ...ctx(t), trace: { orchestrator: 'llm', variant: 'asr.roundtrip#1', edits } as unknown as Trace, clean }));
+  };
+  it('passes a reply that states the changed value, though not the misheard words', () =>
+    expect(run('Set it pass the timer for 15 minutes.', { minutes: 15, label: 'pass' }, 'Pass timer set for fifteen minutes.', { minutes: 15, label: 'pasta' })).toEqual([]));
+  it('matches numbers in words and digits', () =>
+    expect(run('Reading step 40 of the recipe.', { minutes: 7 }, 'Step seven of seven.')).toEqual([]));
+  it('still fails a reply that hides the changed value', () =>
+    expect(run('Set it pass the timer for 15 minutes.', { minutes: 15, label: 'pass' }, 'Timer set for fifteen minutes.', { minutes: 15, label: 'pasta' })).toEqual(['asr.robust:error']));
+  it('still fails when the call only dropped a value', () =>
+    expect(run('Start a short timer for 8 minutes.', { minutes: 15 }, 'Timer set for fifteen minutes.', { minutes: 15, label: 'pasta' })).toEqual(['asr.robust:error']));
 });

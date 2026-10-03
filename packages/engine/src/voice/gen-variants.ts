@@ -1,10 +1,11 @@
 /**
- * `hearsay gen-variants` (FR-017): speak each asr.roundtrip case through TTS, a noisy
- * phone line and STT, and keep what was heard differently. The file is committed; runs
- * replay it (asr.roundtrip) and never call AWS.
+ * `hearsay gen-variants` (FR-017): speak each asr.roundtrip case in several voices through
+ * TTS, a noisy phone line and STT, and keep what was heard in other words. The file is
+ * committed; runs replay it (asr.roundtrip) and never call AWS.
  */
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
+import { spokenWords } from '../perturb/numbers';
 import { recordedPathFor, type RecordedVariants } from '../perturb/recorded';
 import type { Suite } from '../suite';
 import { phoneChannel } from './channel';
@@ -16,23 +17,26 @@ export const DEFAULT_TRIALS = [
   { snrDb: 5, seed: 3 },
 ];
 
-const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9' ]+/g, ' ').replace(/\s+/g, ' ').trim();
+/** US, US, British and Indian English: one US voice alone hears almost everything right. */
+export const DEFAULT_VOICES = ['Joanna', 'Matthew', 'Amy', 'Kajal'];
 
-export async function genVariants(suite: Suite, suitePath: string, tts: Tts, stt: Stt, trials = DEFAULT_TRIALS): Promise<{ path: string; file: RecordedVariants } | undefined> {
+export async function genVariants(suite: Suite, suitePath: string, voices: Tts[], stt: Stt, trials = DEFAULT_TRIALS): Promise<{ path: string; file: RecordedVariants } | undefined> {
   const roundtrip = suite.cases.filter((x) => x.fuzz.includes('asr.roundtrip'));
   if (!roundtrip.length) return undefined;
   const file: RecordedVariants = {
     suite: suite.suite,
-    provenance: { voice: tts.id, provider: stt.id, recordedAt: new Date().toISOString(), channel: `white noise at ${trials.map((t) => t.snrDb).join('/')} dB SNR, 300–3400 Hz, 8 kHz` },
+    provenance: { voices: voices.map((v) => v.id), provider: stt.id, recordedAt: new Date().toISOString(), channel: `white noise at ${trials.map((t) => t.snrDb).join('/')} dB SNR, 300–3400 Hz, 8 kHz` },
     cases: {},
   };
   for (const c of roundtrip) {
     const said = Array.isArray(c.say) ? c.say.at(-1)! : c.say;
-    const speech = await tts.synthesize(said);
     const heard: RecordedVariants['cases'][string] = [];
-    for (const t of trials) {
-      const text = await stt.transcribe(phoneChannel(speech, t));
-      if (text && norm(text) !== norm(said) && !heard.some((h) => norm(h.heard) === norm(text))) heard.push({ heard: text, snrDb: t.snrDb, seed: t.seed });
+    for (const tts of voices) {
+      const speech = await tts.synthesize(said);
+      for (const t of trials) {
+        const text = await stt.transcribe(phoneChannel(speech, t));
+        if (text && spokenWords(text) !== spokenWords(said) && !heard.some((h) => spokenWords(h.heard) === spokenWords(text))) heard.push({ heard: text, voice: tts.id, snrDb: t.snrDb, seed: t.seed });
+      }
     }
     file.cases[c.id] = heard;
   }

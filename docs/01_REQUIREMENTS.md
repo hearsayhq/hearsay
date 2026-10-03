@@ -26,7 +26,7 @@ new ideas go to docs/ROADMAP.md.
 | FR-015 | M | Seeded ASR perturbations on the utterance and on argument values, producing named variants (`asr.number_confusion#1`). Scripted mode runs only perturbations that change argument values. | M3 |
 | FR-016 | M | Trace capture: spans for asr, plan, tool, elicitation, speak. Tool and plan measured; asr and speak modeled in scripted and replay mode and marked as modeled (D-004). | M1 |
 | FR-018 | S | Holdout suites: `suites/<name>.holdout.yaml` (gitignored; in CI from a secret) add cases that run only with `hearsay run --holdout`. The report shows visible and holdout results apart. The MCP server and the skills never load or mention holdouts. | M3 |
-| FR-017 | S | `hearsay gen-variants`: Polly → noise and telephone band → Transcribe Streaming. Heard texts are committed with the suite and replayed as `asr.roundtrip` variants; CI never calls AWS. | M3 |
+| FR-017 | S | `hearsay gen-variants`: Polly in four voices (US, US, British, Indian English) → noise and telephone band → Transcribe Streaming. Heard texts that differ in words (not only in how numbers are written) are committed with the suite and replayed as `asr.roundtrip` variants; CI never calls AWS. | M3 |
 
 ## Checks and reporting
 

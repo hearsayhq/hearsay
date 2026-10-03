@@ -4,7 +4,7 @@
  * something else, or claiming success without an effect, is an error. The same reply to
  * different arguments ("Timer started." for fifteen and for fifty) counts as silent.
  */
-import { parseNumber } from '../perturb/numbers';
+import { parseNumber, spokenWords } from '../perturb/numbers';
 import { fire, type TurnCheck } from './types';
 
 const ASKS = /\?|\b(which|what|how many|how much|did you mean|say again|can you)\b/i;
@@ -14,6 +14,19 @@ function readsBack(spoken: string, heard: string): boolean {
   if (s.includes(heard.toLowerCase())) return true;
   const n = parseNumber(heard);
   return n !== undefined && new RegExp(`\\b${n}\\b`).test(s);
+}
+
+/**
+ * The reply states every value the call passed that the clean call did not ("Pass timer set
+ * for fifteen minutes." for label pass): a model, or a recorded mishearing, rarely misplaces
+ * just the one word an edit names. With no clean call, every value counts.
+ */
+function statesChangedValues(spoken: string, args: Record<string, unknown>, clean: Record<string, unknown> | undefined): boolean {
+  const values = Object.entries(args)
+    .filter(([k, v]) => !clean || JSON.stringify(clean[k]) !== JSON.stringify(v))
+    .flatMap(([, v]) => (typeof v === 'string' || typeof v === 'number' ? [spokenWords(String(v))] : []));
+  const said = ` ${spokenWords(spoken)} `;
+  return values.length > 0 && values.every((v) => v && said.includes(` ${v} `));
 }
 
 export const asrRobust: TurnCheck = {
@@ -39,7 +52,7 @@ export const asrRobust: TurnCheck = {
     const sameStructured = main.result.structuredContent !== undefined && JSON.stringify(main.result.structuredContent) === JSON.stringify(expected?.result.structuredContent);
     if (main.result.text === before && (sameArgs || sameStructured)) return [];
     if (main.result.isError && (main.result.errorCode || ASKS.test(main.result.text))) return []; // asked back or refused
-    if ((trace.edits ?? []).some((e) => readsBack(spoken, e.to))) return []; // read back
+    if ((trace.edits ?? []).some((e) => readsBack(spoken, e.to)) || statesChangedValues(spoken, main.args, expected?.args)) return []; // read back
     return [
       fire('asr.robust', 0, `heard "${heard}": ${main.tool} answered "${main.result.text.slice(0, 80)}" — a different result without saying what it heard`, {
         turnId,
