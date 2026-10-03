@@ -50,7 +50,8 @@ cases:
     expect:
       tool: timer_list
       spokenIncludes: [pasta, egg]
-    checks: [speak.lists]
+    fuzz: [asr.roundtrip]
+    checks: [speak.lists, asr.robust]
 
   - id: cancel-ambiguous
     say: cancel the timer
@@ -59,6 +60,8 @@ cases:
     expect:
       tool: timer_cancel
       spokenIncludes: [which]
+    fuzz: [asr.roundtrip]
+    checks: [asr.robust]
 
   # The recipe has six steps; "forty" gets a question back, not "MCP error -32602".
   - id: recipe-step-out-of-range
@@ -67,3 +70,5 @@ cases:
     expect:
       refusal: NO_SUCH_STEP
       spokenIncludes: [steps]
+    fuzz: [asr.roundtrip]
+    checks: [asr.robust]

@@ -27,7 +27,7 @@ suite.yaml ──► engine ─────────────────�
             checks/gen-variants)   timeline, findings by question
        exit code, JSON             mcp (@hearsayhq/mcp) ──► coding agents: lint, run, explain
 
-gen-variants (offline, AWS): utterance ─► Polly ─► noise + telephone band ─► Transcribe Streaming ─► variants file
+gen-variants (offline, AWS): utterance ─► Polly (4 voices) ─► noise + telephone band ─► Transcribe Streaming ─► variants file
 ```
 
 ## Packages
@@ -106,7 +106,8 @@ Chosen for the requirements, not by habit:
   others; the documented AWS integration for the AWS Builder mini challenge.
 - **Amazon Polly + Amazon Transcribe Streaming** for `gen-variants` only. Streaming takes PCM
   directly, so no S3 bucket is needed. Noise and the telephone band (300–3400 Hz, 8 kHz) are
-  pure TypeScript DSP, seeded.
+  pure TypeScript DSP, seeded. Voices: Joanna, Matthew, Amy and Kajal by default
+  (`HEARSAY_POLLY_VOICES` overrides); one US voice alone was heard almost always right (3 Oct).
 - **Browser speech synthesis** for the console's reply voice. No microphone input (cut, ROADMAP).
 
 ## Distribution

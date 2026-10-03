@@ -1,0 +1,32 @@
+{
+  "suite": "smart-home",
+  "provenance": {
+    "voices": [
+      "polly:Joanna",
+      "polly:Matthew",
+      "polly:Amy",
+      "polly:Kajal"
+    ],
+    "provider": "transcribe-streaming:en-US",
+    "recordedAt": "2026-10-03T11:07:16.673Z",
+    "channel": "white noise at 20/10/5 dB SNR, 300–3400 Hz, 8 kHz"
+  },
+  "cases": {
+    "living-room-off": [],
+    "whole-home-off-needs-confirmation": [],
+    "dim-bedroom": [
+      {
+        "heard": "In the bedroom to 30%.",
+        "voice": "polly:Joanna",
+        "snrDb": 20,
+        "seed": 1
+      },
+      {
+        "heard": "Dim the bedroom for 30%.",
+        "voice": "polly:Matthew",
+        "snrDb": 10,
+        "seed": 2
+      }
+    ]
+  }
+}

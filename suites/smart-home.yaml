@@ -23,7 +23,7 @@ cases:
       tool: set_scene
       args: { room: living_room, state: "off" }
       argsMustNotContain: { room: all }
-    fuzz: [asr.compound_split]
+    fuzz: [asr.compound_split, asr.roundtrip]
     checks: [asr.robust]
 
   - id: whole-home-off-needs-confirmation
@@ -34,11 +34,13 @@ cases:
       args: { room: all, state: "off" }
       confirm: required
       spokenIncludes: [okay]
+    fuzz: [asr.roundtrip]
+    checks: [asr.robust]
 
   - id: dim-bedroom
     say: dim the bedroom to thirty percent
     expect:
       tool: set_scene
       args: { room: bedroom, brightness: 30 }
-    fuzz: [asr.number_confusion]
+    fuzz: [asr.number_confusion, asr.roundtrip]
     checks: [asr.robust]

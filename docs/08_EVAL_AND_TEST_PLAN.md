@@ -42,8 +42,8 @@ finding asserted by id and severity.
 ## Determinism
 
 - Perturbations use a seeded PRNG; the seed is recorded in the report.
-- `asr.roundtrip` variants come from a committed file with provenance (voice, noise seed, provider,
-  date); runs never call AWS.
+- `asr.roundtrip` variants come from a committed file with provenance (voice per entry, noise
+  seed, provider, date); runs never call AWS.
 - Replay compares request hashes; a mismatch is a hard error naming the first differing message,
   never a silent live call.
 - Latency fixtures sit far from thresholds (1100 ms vs the 500 ms tool limit; < 50 ms for passing

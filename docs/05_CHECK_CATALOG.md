@@ -49,7 +49,9 @@ decides. `catalog.test.ts` fails if an id exists in code but not here.
   same effect → pass (the same reply to the same arguments, or to arguments the server
   normalised to the same `structuredContent`; the same reply to different arguments, such as
   "Timer started." for fifteen and for fifty minutes, hides what was heard and does not count); a question back or an actionable refusal → pass; a different effect whose
-  spoken reply states the heard value (read back: "Pasta timer set for fifty minutes") → pass.
+  spoken reply states the heard value (read back: "Pasta timer set for fifty minutes"), or every
+  argument value that differs from the clean call ("Pass timer set for fifteen minutes." for a
+  label heard as "pass"; numbers count in words or digits) → pass.
   A different effect without read-back, or a success reply with no effect → **error**, evidence
   is the heard text, the calls and the effect diff. In scripted mode the stand-in planner is
   literal: it passes what it heard as argument values (docs/03 §Variants). Money is judged by
@@ -238,4 +240,4 @@ argument values run (docs/03 §Variants).
 | `asr.homophones` | yes | Curated table: for/four, two/to/too, eight/ate, right/write, won/one. |
 | `asr.compound_split` | yes | Split or merge known compounds: living room/livingroom, bedroom/bed room. |
 | `asr.self_correction` | no | "X, no, Y" where Y is the intended value; the expected call uses Y. Tests the planner, so llm and replay only. |
-| `asr.roundtrip` | yes | Recorded by `hearsay gen-variants`: Polly speaks the utterance, noise and a telephone band are added, Transcribe hears it. The heard texts are committed with the suite; runs only replay them. |
+| `asr.roundtrip` | yes | Recorded by `hearsay gen-variants`: Polly speaks the utterance in four voices, noise and a telephone band are added, Transcribe hears it. Texts that differ only in how numbers are written ("7", "$15", "30%") are not kept. The heard texts are committed with the suite; runs only replay them. |

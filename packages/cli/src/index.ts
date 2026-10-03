@@ -14,7 +14,7 @@ import { existsSync } from 'node:fs';
 import { readdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
-import { CHECKS, ConnectError, IMPLEMENTED, PollyTts, serveConsole, TranscribeStt, genVariants, loadHoldout, PERTURBATIONS, QUESTIONS, QUESTION_ORDER, RecordingProvider, ReplayProvider, cassetteEntries, cassettePathFor, ensureServer, exitCodeFor, lintServer, loadCassette, loadSuite, lockSuites, providerFromEnv, runSuite, saveCassette, writeReport, type Cassette, type ModelProvider } from '@hearsayhq/engine';
+import { CHECKS, ConnectError, DEFAULT_VOICES, IMPLEMENTED, PollyTts, serveConsole, TranscribeStt, genVariants, loadHoldout, PERTURBATIONS, QUESTIONS, QUESTION_ORDER, RecordingProvider, ReplayProvider, cassetteEntries, cassettePathFor, ensureServer, exitCodeFor, lintServer, loadCassette, loadSuite, lockSuites, providerFromEnv, runSuite, saveCassette, writeReport, type Cassette, type ModelProvider } from '@hearsayhq/engine';
 import { printReport } from './print';
 
 const [cmd, ...args] = process.argv.slice(2);
@@ -159,12 +159,12 @@ async function lock(argv: string[]): Promise<number> {
 
 async function genVariantsCmd(files: string[]): Promise<number> {
   if (!files.length) return usage();
-  const tts = new PollyTts();
+  const voices = (process.env.HEARSAY_POLLY_VOICES ?? DEFAULT_VOICES.join(',')).split(',').map((v) => new PollyTts(v.trim()));
   const stt = new TranscribeStt();
   for (const f of files) {
     const suite = await loadSuite(f);
     try {
-      const out = await genVariants(suite, f, tts, stt);
+      const out = await genVariants(suite, f, voices, stt);
       if (!out) {
         console.log(`${suite.suite}: no case lists asr.roundtrip in fuzz; nothing to record`);
         continue;

@@ -1,8 +1,8 @@
 {
   "version": 1,
   "suites": {
-    "household-orders.yaml": "sha256:4421cb80061b93def61da2b63aff5ffcb852db9b91211bddb9df993fcacbb21e",
-    "kitchen.yaml": "sha256:ac9161c03a5dc1bb84c5ce39b6135b2821428eb2c13da7197b74a86d48642867",
-    "smart-home.yaml": "sha256:e015bc6c4df858495320b5b2e55d5964897b1a812eae6ebd5226a3276319d482"
+    "household-orders.yaml": "sha256:abbb62c605efaeee9c65b3d853cbd049191320a8275e2ab0531b1fd768989b3e",
+    "kitchen.yaml": "sha256:1f3de181e241ee4e859737bac0028acdcbccba5a8ba8817ad494336f4a51fdcd",
+    "smart-home.yaml": "sha256:99d0917f6d4fdf78f4a936ba3d15505b9f50713278970f47d2f35d9bc36c4753"
   }
 }

@@ -7,8 +7,8 @@ import { dirname, join } from 'node:path';
 
 export interface RecordedVariants {
   suite: string;
-  provenance: { voice: string; provider: string; recordedAt: string; channel: string };
-  cases: Record<string, Array<{ heard: string; snrDb: number; seed: number }>>;
+  provenance: { voices: string[]; provider: string; recordedAt: string; channel: string };
+  cases: Record<string, Array<{ heard: string; voice: string; snrDb: number; seed: number }>>;
 }
 
 export const recordedPathFor = (suitePath: string, suiteName: string) => join(dirname(suitePath), 'variants', `${suiteName}.json`);
