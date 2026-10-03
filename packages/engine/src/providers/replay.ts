@@ -72,7 +72,9 @@ function describeMiss(req: ModelRequest, recorded: ModelRequest[]): string {
   const i = best.common;
   const got = JSON.stringify(req.messages[i] ?? null).slice(0, 160);
   const want = JSON.stringify(best.other.messages[i] ?? null).slice(0, 160);
-  return `Replay: message ${i} differs from the closest recording.\n  now:      ${got}\n  recorded: ${want}\nThe server's replies changed since recording; re-record with --record.`;
+  const heard = req.messages[i]?.role === 'user' && req.messages[i]!.content.some((c) => c.type === 'text');
+  const cause = heard ? 'What was heard changed since recording (the suite or its variants file)' : "The server's replies changed since recording";
+  return `Replay: message ${i} differs from the closest recording.\n  now:      ${got}\n  recorded: ${want}\n${cause}; re-record with --record.`;
 }
 
 export async function loadCassette(path: string): Promise<Cassette> {

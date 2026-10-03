@@ -11,6 +11,7 @@ describe('applyEdits (the literal planner)', () => {
   it('carries a split compound into a string', () => expect(applyEdits({ room: 'living_room', state: 'off' }, [{ from: 'living room', to: 'livingroom' }])).toEqual({ args: { room: 'livingroom', state: 'off' }, changed: true }));
   it('drops a number heard as a word', () => expect(applyEdits({ sku: 'sku-milk', quantity: 2 }, [{ from: 'two', to: 'to' }])).toEqual({ args: { sku: 'sku-milk' }, changed: true }));
   it('leaves unrelated arguments alone', () => expect(applyEdits({ minutes: 12, label: 'pasta' }, [{ from: 'for', to: 'four' }]).changed).toBe(false));
+  it('keeps a number heard as digits', () => expect(applyEdits({ minutes: 7, label: 'egg' }, [{ from: 'seven', to: '7' }])).toEqual({ args: { minutes: 7, label: 'egg' }, changed: false }));
 });
 
 describe('variantsFor', () => {
@@ -43,4 +44,6 @@ describe('variantsFor', () => {
 
 describe('wordEdits', () => {
   it('finds the misheard words', () => expect(wordEdits('add fifteen dollars of fruit', 'add fifty dollars of fruit')).toEqual([{ from: 'fifteen', to: 'fifty' }]));
+  it('drops a recorded variant that only writes the number as digits (scripted)', () =>
+    expect(variantsFor('c', 'set an egg timer for seven minutes', ['asr.roundtrip'], { seed: 1, mode: 'scripted', args: { minutes: 7, label: 'egg' }, recorded: [{ heard: 'Set an egg timer for 7 minutes.' }] })).toHaveLength(1));
 });

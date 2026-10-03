@@ -1,0 +1,37 @@
+{
+  "suite": "kitchen",
+  "provenance": {
+    "voice": "polly:Joanna",
+    "provider": "transcribe-streaming:en-US",
+    "recordedAt": "2026-10-03T10:43:17.193Z",
+    "channel": "white noise at 20/10/5 dB SNR, 300–3400 Hz, 8 kHz"
+  },
+  "cases": {
+    "start-pasta-timer": [
+      {
+        "heard": "Set a pasta timer for 15 minutes.",
+        "snrDb": 20,
+        "seed": 1
+      },
+      {
+        "heard": "The pasta timer for 15 minutes.",
+        "snrDb": 5,
+        "seed": 3
+      }
+    ],
+    "start-egg-timer": [
+      {
+        "heard": "Set an egg timer for 7 minutes.",
+        "snrDb": 20,
+        "seed": 1
+      }
+    ],
+    "start-sauce-timer": [
+      {
+        "heard": "Start us off timer for 8 minutes.",
+        "snrDb": 20,
+        "seed": 1
+      }
+    ]
+  }
+}
