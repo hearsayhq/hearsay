@@ -82,6 +82,17 @@ describe('asr.robust: read back of what the call did', () => {
     expect(run('Reading step 40 of the recipe.', { minutes: 7 }, 'Step seven of seven.')).toEqual([]));
   it('still fails a reply that hides the changed value', () =>
     expect(run('Set it pass the timer for 15 minutes.', { minutes: 15, label: 'pass' }, 'Timer set for fifteen minutes.', { minutes: 15, label: 'pasta' })).toEqual(['asr.robust:error']));
+  it('passes reading something else, and fails it in silence', () => {
+    const lists = (reply: string) => {
+      const t = { ...turn(reply), heard: 'Has the timer', toolCalls: [{ tool: 'timer_list', args: {}, result: { text: 'Two timers.' } }] } as unknown as Turn;
+      const clean = { turns: [{ ...turn('Which one?'), toolCalls: [call({}, 'Which timer?')].map((c) => ({ ...c, tool: 'timer_cancel' })) }] } as unknown as Trace;
+      const readOnly = [...tools, { name: 'timer_list', inputSchema: { type: 'object' }, annotations: { readOnlyHint: true } }] as Tool[];
+      return sev(asrRobust.run({ ...ctx(t), tools: readOnly, trace: { orchestrator: 'llm', variant: 'asr.roundtrip#2' } as unknown as Trace, clean }));
+    };
+    expect(lists('You have two timers, egg and pasta.')).toEqual([]);
+    expect(lists('')).toEqual(['asr.robust:error']);
+    expect(asrRobust.run({ ...ctx({ ...turn(''), heard: 'Has the timer', toolCalls: [{ tool: 'timer_list', args: {}, result: { text: 'Two timers.' } }] } as unknown as Turn), trace: { orchestrator: 'llm', variant: 'asr.roundtrip#2' } as unknown as Trace, clean: { turns: [] } as unknown as Trace })[0]?.message).toMatch(/then said nothing/);
+  });
   it('still fails when the call only dropped a value', () =>
     expect(run('Start a short timer for 8 minutes.', { minutes: 15 }, 'Timer set for fifteen minutes.', { minutes: 15, label: 'pasta' })).toEqual(['asr.robust:error']));
 });

@@ -1,8 +1,14 @@
 {
   "version": 1,
   "suites": {
+    "cassettes/household-orders.json": "absent",
+    "cassettes/kitchen.json": "sha256:9aa48d8c993cbdc5a19c0bb5e9497eaa733f4f4f484ebcc8cbbf1262e605f938",
+    "cassettes/smart-home.json": "absent",
     "household-orders.yaml": "sha256:abbb62c605efaeee9c65b3d853cbd049191320a8275e2ab0531b1fd768989b3e",
     "kitchen.yaml": "sha256:1f3de181e241ee4e859737bac0028acdcbccba5a8ba8817ad494336f4a51fdcd",
-    "smart-home.yaml": "sha256:99d0917f6d4fdf78f4a936ba3d15505b9f50713278970f47d2f35d9bc36c4753"
+    "smart-home.yaml": "sha256:99d0917f6d4fdf78f4a936ba3d15505b9f50713278970f47d2f35d9bc36c4753",
+    "variants/household-orders.json": "sha256:6ef9c26adf12b6794fa2bc4d87b48910d789573132975d3d84987663a2d1dd0b",
+    "variants/kitchen.json": "sha256:919f719a0794eb76f96d9eb1924c9f1086af680241131576c049a9fb58b2e866",
+    "variants/smart-home.json": "sha256:d0cc5a4134d75a7f96e8f2a896b312e1d7880ae0e2d1f9035272043070ba9cab"
   }
 }

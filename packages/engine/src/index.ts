@@ -15,6 +15,7 @@ export { ConsoleSession, LIVE_CHECKS, type ConsoleEvent } from './console/sessio
 export { nearestCase, nearestCasePlanner, similarity } from './console/planner';
 export { genVariants, DEFAULT_TRIALS, DEFAULT_VOICES } from './voice/gen-variants';
 export { spokenWords } from './perturb/numbers';
+export { readRecorded, staleCases, recordedPathFor, type RecordedVariants } from './perturb/recorded';
 export { PollyTts, TranscribeStt, type Tts, type Stt } from './voice/aws';
 export { phoneChannel } from './voice/channel';
 export { RecordingProvider, ReplayProvider, ReplayMismatch, cassetteEntries, hashRequest, loadCassette, saveCassette, cassettePathFor } from './providers/replay';

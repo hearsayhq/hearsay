@@ -9,9 +9,11 @@ export const suiteIntegrity: ServerCheck = {
     if (!suitePath) return [];
     const r = await checkSuiteIntegrity(suitePath);
     if (r.state !== 'changed') return [];
+    const file = relative(process.cwd(), r.file) || r.file;
+    const what = r.actual === 'absent' ? 'was removed' : r.expected === 'absent' ? 'was added' : 'changed';
     return [
-      fire('suite.integrity', 0, `${relative(process.cwd(), suitePath) || suitePath} changed since it was locked; this run cannot count as green`, {
-        evidence: { suite: suitePath, lock: r.lockPath, expected: r.expected, actual: r.actual },
+      fire('suite.integrity', 0, `${file} ${what} since it was locked; this run cannot count as green`, {
+        evidence: { suite: suitePath, file: r.file, lock: r.lockPath, expected: r.expected, actual: r.actual },
         hint: 'Fix the server, not the suite. A suite change goes through a normal pull request, with `hearsay lock` in the same commit.',
       }),
     ];

@@ -168,7 +168,7 @@ export async function runSuite(suiteIn: Suite, opts: RunOptions = {}): Promise<R
   let firstServer: Trace['server'] | undefined;
 
   const seed = opts.seed ?? 1;
-  const recorded = opts.suitePath ? await loadRecorded(opts.suitePath, suite.suite) : {};
+  const recorded = opts.suitePath ? await loadRecorded(opts.suitePath, suite) : {};
 
   for (const c of selected) {
     const said = Array.isArray(c.say) ? c.say : [c.say];

@@ -29,8 +29,9 @@ decides. `catalog.test.ts` fails if an id exists in code but not here.
 
 ## Can it connect?
 
-- `suite.integrity` — Always on. If `suites/.hearsay-lock` exists, every suite in the run is hashed
-  and compared; a locked suite whose content changed since `hearsay lock`: **error**. A run that
+- `suite.integrity` — Always on. If `suites/.hearsay-lock` exists, every suite in the run and its
+  recordings (variants file, cassette) are hashed and compared; a locked file that changed,
+  appeared or disappeared since `hearsay lock`: **error**. A run that
   changed its own expectations is never green; legitimate changes go through normal pull requests
   (docs/03 §Holdouts and the lock).
 
@@ -51,7 +52,9 @@ decides. `catalog.test.ts` fails if an id exists in code but not here.
   "Timer started." for fifteen and for fifty minutes, hides what was heard and does not count); a question back or an actionable refusal → pass; a different effect whose
   spoken reply states the heard value (read back: "Pasta timer set for fifty minutes"), or every
   argument value that differs from the clean call ("Pass timer set for fifteen minutes." for a
-  label heard as "pass"; numbers count in words or digits) → pass.
+  label heard as "pass"; numbers count in words or digits) → pass. Only reading something else
+  (a different, `readOnlyHint` tool: "Has the timer" lists the timers) → pass, nothing happened
+  and the person heard the answer; calls followed by silence → **error**.
   A different effect without read-back, or a success reply with no effect → **error**, evidence
   is the heard text, the calls and the effect diff. In scripted mode the stand-in planner is
   literal: it passes what it heard as argument values (docs/03 §Variants). Money is judged by
