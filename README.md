@@ -126,6 +126,32 @@ need review:
 /suites/ @your-team
 ```
 
+## Demo: run what the video shows
+
+Every product scene in the video is a real run, recorded from a fresh clone at `9b4acdd`
+([docs/09](docs/09_DEMO_AND_SUBMISSION.md) §Proof of function). Runs are scripted with seed 1, so
+the counts are the same on every machine, with no API keys.
+
+```sh
+git clone https://github.com/hearsayhq/hearsay.git && cd hearsay
+git checkout 9b4acdd
+npm ci
+```
+
+| Scene | Commands | What the video shows |
+|---|---|---|
+| A real run (uncut) | `HEARSAY_FIXED=0 npm run server:orders &` then `npm run hearsay -- run suites/household-orders.yaml` | 20 errors · 16 warnings · 8 of 10 runs failed, exit 1 |
+| Fixed | `kill %1`, `HEARSAY_FIXED=1 npm run server:orders &`, the same run | 0 errors · 9 warnings · 0 of 10 runs failed, exit 0 |
+| In CI | [pull request #27](https://github.com/hearsayhq/hearsay/pull/27), check `hearsay / voice`: `gh run view 36779993236`, `gh run view 36780493038` | red on `consent.misheard_amount`, green after the fix commit |
+| Locked suite | `sed -i '' 's/minutes: 15, label: pasta/minutes: 50, label: pasta/' suites/kitchen.yaml` (Linux: `sed -i`), then `npm run hearsay -- run suites/kitchen.yaml`; undo with `git checkout suites/kitchen.yaml` | `suite.integrity` error, exit 1 |
+| Coding agent | `scripts/agent-loop.sh` (needs `claude` on PATH; one agent run on your account) | Smart Home RED · 11 errors → GREEN, only `src/server.ts` changed, suites untouched |
+| Measured | [docs/15](docs/15_EXPERIMENT.md); `node scripts/experiment.mjs --dry-run` judges the untouched flawed servers for free | 0 of 36 against 11 of 27 agent runs with errors left |
+| Try it | the clone above, then `npm run hearsay -- run suites/kitchen.yaml` | 0 errors · 1 warning · 0 of 8 runs failed, exit 0 |
+
+The recordings themselves: `HEARSAY_DIR=<the clone> vhs video/tapes/orders-flawed-4k.tape` (and
+`orders-fixed-4k`, `ci-pr27-4k`, `cheat-4k`), `CLONE_PARENT=<an empty folder> vhs
+video/tapes/clone-4k.tape`; the film is a Remotion project in `video/` (render steps in docs/09).
+
 ## Layout
 
 ```
