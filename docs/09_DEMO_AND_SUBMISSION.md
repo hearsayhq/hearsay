@@ -2,30 +2,36 @@
 
 ## Video (English, public YouTube or Vimeo, under 3:00)
 
-Script v3 (owner, 30 Sep), voice-first. Corrected against the runs where the draft differed from
-what the builds do (rule 7 below: the script follows the runs). Voices: OpenAI gpt-4o-mini-tts,
-directed per line (`video/voice/film.json`); rendered with Remotion in `video/`.
+Film v4, the infomercial cut (approved by the owner, 3 Oct): 2:36, rendered at 3840×2160 and
+60 fps with Remotion (`video/src/film4/`, composition `Film4`). One narrator explains; there are
+no character voices and no B-roll. Voice: OpenAI gpt-4o-mini-tts, voice alloy, every line a
+whole take (`video/voice/film-v4.json`); word timings from whisper (`video/voice/align.mjs`) put
+captions and motion on the spoken word. One camera travels through one world. The real runs are
+4K VHS tapes (`video/tapes/*-4k.tape`) at main `9b4acdd`, plus the recorded agent session.
 
-| Time | Picture | Sound |
+| Time | Picture | Narration |
 |---|---|---|
-| 0:00 cold open | Generated still (B-roll): warm evening kitchen, groceries, an unbranded speaker with a small front LED (no light ring), slow push-in. Overlays from a real run of the flawed build ($40 permission): heard "add fifty dollars of fruit"; "order placed · $50.00" | CUSTOMER: Add fifteen dollars of fruit. · ADD-ON: Are you sure? · CUSTOMER: Yes. · ADD-ON: Added. · CUSTOMER: Place the order. · ADD-ON: Are you sure? · CUSTOMER: No! · ADD-ON: Order placed: fifty dollars of fruit, fifty dollars. |
-| 0:10 intro | Card, text builds line by line | NARRATOR: That add-on works perfectly in a chat window. Over twenty thousand people signed up for this hackathon. Somebody has to check all of that. That's you. So I built something for you. |
-| 0:22 what | Card: "Hearsay: preflight checks for Alexa+ MCP servers" | NARRATOR: This is Hearsay. You write what your customers say. Hearsay plays it against your add-on, clean and misheard, and fails the build when it would go wrong out loud. |
-| 0:33 red | Tape (real run, uncut): prompt with branch and short SHA, `date`, `HEARSAY_FIXED=0 npm run server:orders &`, `npm run hearsay -- run suites/household-orders.yaml` against the flawed build; output grouped by the four questions; exit 1. Corner: "real run · uncut · <sha> · <date>". Highlight `consent.misheard_amount`, `consent.decline_holds` (Amazon requirement). Then the rules: 500 ms per tool · replies under 30 s · no JSON read aloud · at most 5 options · no payment without a question that names what and how much. Then the real GitHub Actions log of pull request #27: `hearsay / voice`, "Process completed with exit code 1", run URL | NARRATOR: Same add-on, now under Hearsay. Fifty instead of fifteen, and nobody asked. A "no" that placed the order anyway. Every finding cites the rule it breaks, and most are Amazon's own requirements for add-ons. Twenty errors. The pull request fails. |
-| 0:54 coding agent | The recorded Claude Code session (clip `m2b-agent-loop`, 4×, labelled): `hearsay_run` red → edits in `src/` → green. Tape: an expectation edited → `suite.integrity` error | NARRATOR: You don't even have to fix it yourself. Hearsay is also an MCP server. Your coding agent runs it, fixes what it finds, and checks again. And it can't cheat. The suite is locked, and some cases it never gets to see. |
-| 1:12 green | Generated still: the same kitchen, calm daylight (≤3 s), then a Playwright recording of the console on the fixed build; host dialogs. Then the Actions log of the fix commit on pull request #27: `hearsay / voice` ✓, run URL | NARRATOR: Same tests, fixed build. · CUSTOMER: You can reorder groceries up to forty dollars today. · [dialog: Allow me to reorder milk, eggs, bread, fruit, and oat milk, up to forty dollars in total, for today? → Allow] · CUSTOMER: Add fifteen dollars of fruit. [heard: fifty] · ADD-ON: That would go over the total budget you gave me. You can add less, or give me a bigger budget. · CUSTOMER: Add two cartons of milk. · ADD-ON: Added two cartons of milk. Your cart is seven dollars and forty cents. · CUSTOMER: Place the order. · ADD-ON: Place the order: two cartons of milk, seven dollars and forty cents? · CUSTOMER: Not yet. · ADD-ON: Okay, I did not place the order. Your cart is still there. · NARRATOR: Grant once, act within the limit, and money only moves after a yes that names what and how much. |
-| 1:58 how | Diagram: speech → [Amazon: speech recognition + the model] → your tool; Hearsay replaces the bracket with your test cases and their mishearings | NARRATOR: Hearsay stands in for the parts Amazon runs, speech recognition and the model, straight from your test cases. No microphone, no API keys, the same result every time. So it runs on every pull request. |
-| 2:15 proof | Two bars (docs/15): runs that ended with visible errors, 0 of 36 with Hearsay · 11 of 27 without; unseen cases: level with a precise prompt (83.7 % against 82.9 %). Footnote: 3 runs per arm · unseen cases written by the author of the flaws · of the four Hearsay arms in the 36, three did worse on unseen cases than the precise prompt; only the current one (coverage and review) is level | NARRATOR: We measured it with coding agents. A suite alone made them stop at green, so Hearsay now shows what your suite doesn't cover. Now they leave zero defects behind, and do better on the rules nobody told them about. |
-| 2:35 close | Tape (real run, one take): fresh clone → `npm ci` (2×, labelled) → `npm run hearsay -- run suites/kitchen.yaml` → "0 errors · 1 warning · 0 of 8 runs failed", exit 0. End card over an animated background: hearsayhq/hearsay · npx @hearsayhq/cli · "Unofficial. Not affiliated with or endorsed by Amazon." · "Voices and B-roll are AI-generated." · "Reproduce this video: see README → Demo" | NARRATOR: Everything you saw is a real run, and you can repeat it with one command. Hearsay is open source. Point it at your add-on, before your customers do. |
+| 0:00 what it is | A drop of light lands and becomes the HEARSAY wordmark; starburst "NEW for Alexa+ MCP servers"; the real test case `misheard-amount` of `suites/household-orders.yaml`, its clean and misheard variants (`amountUsd: 15` / `50`); stamp "Build fails, exit 1" | This is Hearsay: preflight checks for voice add-ons. You write what your customers say. Hearsay plays it against your server, clean and misheard, and fails the build when it would go wrong out loud. |
+| 0:12 the problem | A chat window ("looks fine") turns into a voice and cracks; four cards: a number heard wrong (fifteen → fifty), a reply that reads out JSON, a list too long to remember, a no that still places the order | In a chat window, add-ons look fine. Out loud, they break: a number heard wrong, a reply that reads out JSON, a list too long to remember, a no that still places the order. |
+| 0:24 how it works | Four steps: speech → text, model picks a tool, your server, reply spoken; "Amazon" under three, "your code" under the server. Hearsay's frame over the first two (said/heard, the tool call `orders_stage_cart { amountUsd: 50 }`) and over the last ("Added." checked). Stamps: no microphone, no model, no API keys; three identical runs; `hearsay / voice` on every pull request | Here's how. When someone speaks, only one step is your code: the server. Hearsay plays the rest, straight from your test case: the words, the mishearings, and the tool call the model would make. Then it checks what your server answers. No microphone. No model. No API keys. The same result every time, so it runs on every pull request. |
+| 0:45 the rules | Five tiles, each with the check that tests it, all sourced `amazon-fr`: ≤ 500 ms (`latency.tool`), < 30 s (`speak.length`), no JSON (`speak.no_structured_dump`), ≤ 5 options (`speak.lists`), what + how much (`consent.states_details`), with the fixed build's real question "Place the order: two cartons of milk, seven dollars and forty cents?" | Every answer is graded by the rules Amazon published for add-ons: half a second per tool, short replies, no JSON, five options at most, and no payment without naming what and how much. |
+| 0:58 a real run | Tape `orders-flawed-4k`, uncut, real time: prompt with branch and SHA, `date`, `HEARSAY_FIXED=0 npm run server:orders &`, the run; the camera moves to `consent.misheard_amount`, `consent.decline_holds`, "20 errors · 16 warnings · 0 info · 8 of 10 runs failed", exit 1; stamps "Exit 1", "Build fails" | Here's a real run, on a grocery add-on. One take, no cuts. · Fifty instead of fifteen, taken without reading it back. A no that placed the order anyway. Twenty errors. Exit one. The build fails. |
+| 1:16 fixed | The window flips to tape `orders-fixed-4k`: `HEARSAY_FIXED=1`, same suite; the fixed build's real reply to the misheard fifty ("That would go over the total budget you gave me. You can add less, or give me a bigger budget."); "0 errors · 9 warnings · 0 info · 0 of 10 runs failed", exit 0; chips BEFORE · 20 errors · exit 1 / AFTER · 0 errors · exit 0 | The fixed build, same tests. · The misheard fifty is refused, and the add-on says why. · Zero errors. |
+| 1:27 in CI | Tape `ci-pr27-4k`: `gh run view` of pull request #27's `hearsay / voice`, red (failed step, "Process completed with exit code 1", run URL), the failing line `consent.misheard_amount`, then green after the fix commit (run URL); notes with the PR title and the one-line fix (57e680a); seal "As seen in CI" | And it guards every pull request. This change let fifty dollars of fruit skip the budget. · Hearsay caught it, and the check went red. · One fix, and it's green. |
+| 1:44 coding agents | Starburst "But wait — there's more!"; the recorded Claude Code session (`scripts/agent-loop.sh`, 10×, labelled): RED · 11 errors → fixes in `src/server.ts` → GREEN, suites untouched | But wait, there's more. Hearsay is also an MCP server. Your coding agent runs it, fixes what it finds, and runs it again, until it's green. |
+| 1:54 locked suite | Tape `cheat-4k`: an expectation in the locked Kitchen suite edited from 15 to 50 → `suite.integrity` error, exit 1; stamp "Nice try" | And it can't cheat: change a locked test, · and the run fails. |
+| 2:03 measured | docs/15: a suite alone stopped agents at green (68 % against 83 % on unseen cases); a real coverage warning; 0 of 36 against 11 of 27 agent runs that ended with errors left; rules the prompt never named 37/45 against 28/45; fine print with the limits | We measured it with coding agents. A suite alone made them stop at green, so Hearsay now shows what your suite doesn't cover. The result: zero defects left behind, and better on the rules nobody told them about. |
+| 2:15 try it | Price tag "$ ???" → "$0"; open source, MIT, no API keys, no account; tape `clone-4k`: fresh clone, install at 2× (labelled), the Kitchen run at real time, "0 errors · 1 warning · 0 info · 0 of 8 runs failed", exit 0; tagline; end card: github.com/hearsayhq/hearsay · `npx @hearsayhq/cli` · "Your coding agent is standing by." · seal "As seen in CI" | And the price? Zero. Hearsay is open source. No keys, no account. Clone it, install it, run it. · Hearsay. Hear it before your customers do. |
 
-Corrections to the draft (30 Sep), all from runs: the flawed build answers "Are you sure?" before
-adding, handles a "no" while adding correctly, and places the order after a "no" at checkout
-("Order placed: fifty dollars of fruit, fifty dollars."), so the cold open shows that, with $50.00
-rather than $57.40; the add-on's lines are its real, full sentences; commands are
-`npm run hearsay -- …` in the repo (`npx hearsay` is an unrelated package, and `npx @hearsayhq/cli`
-exists only after publishing); Kitchen ends with one coverage warning, not "no findings"; the
-proof bars say what "defects" counts; the B-roll speaker has no light ring. Sora's API was shut
-down on 24 Sep 2026, so the B-roll is stills from OpenAI's image model with a slow push-in.
+Fine print along the bottom of every scene names the tape, the commit and the limits; the first
+and the last scene say "Unofficial. Not affiliated with or endorsed by Amazon." and "Narration is
+AI-generated." CI is shown with `gh` in a recorded terminal: the Actions run of pull request #27,
+its failing log line and both run URLs, so no browser login is needed.
+
+Changes from v3 (owner, 2–3 Oct): no skit and no character voices; the film opens with what
+Hearsay is; the problem is four situations, not a narrated example; whole takes only, so nothing
+is cut inside a sentence; no B-roll; colored gradients and a technical layer (grid, chapter
+labels, progress).
 
 ### Proof of function (required for the video)
 
@@ -38,15 +44,20 @@ down on 24 Sep 2026, so the B-roll is stills from OpenAI's image model with a sl
    submission; its link goes into the Devpost description and the README.
 4. Speed-ups only for installs and the agent loop, always labelled ("2×", "4×"). Results are never
    sped up or cut.
-5. A README section "Demo: reproduce this video" lists the exact commands and the commit SHA for
-   every scene (suites, flawed and fixed servers, seed).
+5. A README section "Demo: run what the video shows" lists the exact commands and the commit SHA
+   for every scene (suites, flawed and fixed servers, seed), so a judge gets the same numbers.
 6. Generated clips (B-roll) never show product output. Product scenes are real recordings only.
 7. Before rendering, the numbers in the video (error counts, exit codes) are taken from the actual
    runs, not from the script. If "Twenty errors" no longer holds, the sentence changes, not the run.
 
 Production notes: subtitles from second 0; the narration never says the wake word, "Alexa+" only
-on screen; 21,798 is the whole hackathon's Devpost count on 30 Sep; no music or material without
-rights (sound from the owner's Splice licence).
+on screen. Music and effects are synthesised by `video/sound/make-sound.mjs` (no samples, nothing
+to license) and duck under the voice; the final mix is −14 LUFS. Rebuild from `video/`:
+`node sound/make-sound.mjs`, then `npx remotion render src/index.ts Film4 out/hearsay-v4-4k.mp4
+--scale=2 --crf=14 --x264-preset=slow --jpeg-quality=100 --color-space=bt709`, then
+`ffmpeg -i out/hearsay-v4-4k.mp4 -c:v copy -af "volume=2.8dB,alimiter=limit=0.85:level=disabled"
+-c:a aac -b:a 256k out/hearsay-v4-4k-final.mp4`. The tapes go into `public/clips/v4/`
+(see README → Demo).
 
 ## Clips per gate
 
