@@ -41,9 +41,11 @@ to it, in CI, without a login.
   `looseInt`, `confirm`, `VerbalTokens`, `withMandate`, `serveMcp`.
 - **Console:** talk to a server in the browser, hear the reply, answer its confirmation in a
   host dialog, and watch the timeline and findings per turn.
-- **AWS:** Amazon Bedrock (Converse) drives the llm orchestrator and records replay cassettes;
+- **AWS:** Amazon Bedrock (Converse) drives the llm orchestrator and records replay cassettes.
   Amazon Polly and Amazon Transcribe record real mishearings over a telephone-band channel
-  (`gen-variants`). *(Fill in once the recordings exist.)*
+  (`gen-variants`). On Kitchen, Transcribe heard 'start a sauce timer for eight minutes' as
+  'Start us off timer for 8 minutes.' The heard texts are committed and replayed, so CI never
+  calls AWS.
 
 ## How we built it
 

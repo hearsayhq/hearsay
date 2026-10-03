@@ -52,8 +52,11 @@ summarises. AWS entries wait for access (D-020) and are filled in when the runs 
 
 ## Amazon Polly and Amazon Transcribe Streaming
 
-- **Used for:** `gen-variants`, recorded mishearings over a telephone-band channel. *Pending
-  access.*
+- **Used for:** `gen-variants`, recorded mishearings over a telephone-band channel.
+- **Worked:** Transcribe Streaming took 8 kHz audio directly, with no S3 bucket and no setup
+  beyond IAM; two recordings heard the same words.
+- **Needs work:** Transcribe is Paid-Plan-only for new accounts, and the console only says the key
+  'needs a subscription' (friction log #9).
 
 ## Claude Code (headless) as the coding agent in the loop
 
