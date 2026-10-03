@@ -149,10 +149,13 @@ No hosting and no VM are needed. Judges run the repo locally (hackathon FAQ).
 |---|---|---|---|
 | `validate <suite...>` | all valid | any invalid | usage |
 | `checks` | always | — | — |
-| `run <suite...> [--only id] [--failed] [--holdout] [--orchestrator m] [--record] [--verbose]` | no error findings | error findings | usage / cannot connect |
+| `run <suite...> [--only id] [--holdout] [--orchestrator m] [--record] [--seed n] [--no-start] [--verbose]` | no error findings | error findings | usage / cannot connect |
 | `lock [suite...]` | lock written | — | usage |
 | `lint <url>` | no error findings | error findings | usage / cannot connect |
-| `gen-variants <suite...>` | variants written | provider error | usage / no AWS credentials |
+| `gen-variants <suite...> [--all]` | variants written (new or changed sentences only) | provider error | usage / no AWS credentials |
 | `serve [--port 4100]` | runs until stopped | — | usage |
+
+`--help` after any command prints its usage. `validate` and `lock` name cases whose recorded
+mishearings belong to an earlier sentence (runs skip them).
 
 `hearsay-mcp` (`npm run mcp`): stdio by default, `--http --port 4199` for Streamable HTTP, `--cwd` for the project root.

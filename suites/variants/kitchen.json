@@ -11,6 +11,14 @@
     "recordedAt": "2026-10-03T11:05:51.320Z",
     "channel": "white noise at 20/10/5 dB SNR, 300–3400 Hz, 8 kHz"
   },
+  "said": {
+    "start-pasta-timer": "set a pasta timer for fifteen minutes",
+    "start-egg-timer": "set an egg timer for seven minutes",
+    "start-sauce-timer": "start a sauce timer for eight minutes",
+    "list-timers": "how long is left on my timers",
+    "cancel-ambiguous": "cancel the timer",
+    "recipe-step-out-of-range": "read me step forty of the recipe"
+  },
   "cases": {
     "start-pasta-timer": [
       {

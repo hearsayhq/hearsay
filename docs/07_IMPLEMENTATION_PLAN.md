@@ -124,6 +124,10 @@ own planning (an "added $50" without a call, a widened mandate) dominated them. 
 way: a number heard as digits is no edit (it reached no argument and passed as a read-back of
 "8"), and `asr.robust` counts a reply that states every changed argument value as read back
 (docs/05). Cost of the day: about $2.80, almost all Transcribe (at least 15 s billed per request).
+Then, on the owner's OK: the lock covers each suite's recordings (a deleted variants file is red);
+`asr.robust` passes a misheard request that only reads something else and fails calls followed by
+silence, so the kitchen replay fails 5 of 23; `gen-variants` speaks only new or changed sentences
+and runs skip a recording made for another sentence; `--help` on every command.
 
 AWS cost of all planned recordings (estimate, 30 Sep; list prices in us-east-1 as known, to be
 checked on the pricing pages before the first run):

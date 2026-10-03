@@ -31,7 +31,7 @@ function statesChangedValues(spoken: string, args: Record<string, unknown>, clea
 
 export const asrRobust: TurnCheck = {
   id: 'asr.robust',
-  run({ trace, turns, clean }) {
+  run({ trace, turns, clean, tools }) {
     if (trace.variant === 'clean' || !clean) return [];
     const heard = turns.at(-1)?.heard ?? '';
     const turnId = turns.at(-1)?.id;
@@ -41,7 +41,13 @@ export const asrRobust: TurnCheck = {
     const hint = 'Normalise what could be misheard (looseEnum() with synonyms), ask back when unsure, and read values back with speak().';
 
     if (!calls.length) return ASKS.test(spoken) ? [] : [fire('asr.robust', 0, `heard "${heard}": no tool was called and nothing was asked`, { turnId, evidence: { heard, spoken }, hint })];
+    const named = [...new Set(calls.map((c) => c.tool))].map((t) => ((n) => (n > 1 ? `${t} ${n}×` : t))(calls.filter((c) => c.tool === t).length)).join(', ');
+    if (!spoken.trim()) return [fire('asr.robust', 0, `heard "${heard}": called ${named}, then said nothing`, { turnId, evidence: { heard, calls: calls.map((c) => ({ tool: c.tool, args: c.args })) }, hint })];
     const expected = cleanCalls[0];
+    // Only read something else ("Has the timer" lists the timers): nothing happened, and the
+    // person heard the answer. Reading the same tool with other values still needs read-back.
+    const readOnly = (name: string) => tools.find((t) => t.name === name)?.annotations?.readOnlyHint === true;
+    if (calls.every((c) => readOnly(c.tool) && c.tool !== expected?.tool)) return [];
     const main = expected ? calls.find((c) => c.tool === expected.tool) : calls[0];
     if (!main) return [fire('asr.robust', 0, `heard "${heard}": called ${calls.map((c) => c.tool).join(', ')} instead of ${expected!.tool}`, { turnId, evidence: { heard, calls: calls.map((c) => c.tool) }, hint })];
     const before = expected?.result.text ?? '';

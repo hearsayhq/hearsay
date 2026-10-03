@@ -2,7 +2,7 @@ import { mkdtemp, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { loadRecorded } from '../perturb/recorded';
+import { loadRecorded, readRecorded, staleCases } from '../perturb/recorded';
 import { variantsFor } from '../perturb/index';
 import { SuiteSchema } from '../suite';
 import type { Stt, Tts } from './aws';
@@ -52,7 +52,7 @@ describe('gen-variants (fake TTS and STT, no AWS)', () => {
     expect(file.cases.off).toEqual([{ heard: 'turn off everything in the livingroom', voice: 'fake-tts', snrDb: 10, seed: 2 }]);
     expect(file.provenance).toMatchObject({ voices: ['fake-tts'], provider: 'fake-stt' });
 
-    const recorded = await loadRecorded(suitePath, 'home');
+    const recorded = await loadRecorded(suitePath, suite);
     const vs = variantsFor('off', 'turn off everything in the living room', ['asr.roundtrip'], { seed: 1, mode: 'scripted', args: { room: 'living_room' }, recorded: recorded.off! });
     expect(vs.map((v) => v.id)).toEqual(['clean', 'asr.roundtrip#1']);
   });
@@ -69,5 +69,25 @@ describe('gen-variants (fake TTS and STT, no AWS)', () => {
     const { file } = (await genVariants(suite, suitePath, voices, byVoice))!;
     expect(file.cases.sauce).toEqual([{ heard: 'Start a source timer for 8 minutes.', voice: 'b', snrDb: 20, seed: 1 }]);
     expect(file.provenance.voices).toEqual(['a', 'b']);
+  });
+
+  it('speaks only new or changed sentences, and runs skip a recording made for another sentence', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'hearsay-gen-'));
+    const suitePath = join(dir, 'kitchen.yaml');
+    const suiteSaying = (say: string) => SuiteSchema.parse({ suite: 'kitchen', server: { url: 'http://localhost:1/mcp' }, cases: [{ id: 'egg', say, expect: { tool: 'timer_start' }, fuzz: ['asr.roundtrip'] }] });
+    let spoken = 0;
+    const voice: Tts = { id: 'v', synthesize: async () => (spoken++, tone(1600)) };
+    const misheard: Stt = { id: 'fake-stt', transcribe: async () => 'set an x timer' };
+
+    await genVariants(suiteSaying('set an egg timer'), suitePath, [voice], misheard);
+    expect(spoken).toBe(1);
+    expect((await genVariants(suiteSaying('set an egg timer'), suitePath, [voice], misheard))!.recorded).toEqual([]);
+    expect(spoken).toBe(1);
+
+    const changed = suiteSaying('set a boiled egg timer');
+    expect(staleCases(await readRecorded(suitePath, 'kitchen'), changed)).toEqual(['egg']);
+    expect(await loadRecorded(suitePath, changed)).toEqual({});
+    expect((await genVariants(changed, suitePath, [voice], misheard))!.recorded).toEqual(['egg']);
+    expect(await loadRecorded(suitePath, changed)).toEqual({ egg: [expect.objectContaining({ heard: 'set an x timer' })] });
   });
 });

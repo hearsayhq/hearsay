@@ -14,12 +14,33 @@ import { existsSync } from 'node:fs';
 import { readdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
-import { CHECKS, ConnectError, DEFAULT_VOICES, IMPLEMENTED, PollyTts, serveConsole, TranscribeStt, genVariants, loadHoldout, PERTURBATIONS, QUESTIONS, QUESTION_ORDER, RecordingProvider, ReplayProvider, cassetteEntries, cassettePathFor, ensureServer, exitCodeFor, lintServer, loadCassette, loadSuite, lockSuites, providerFromEnv, runSuite, saveCassette, writeReport, type Cassette, type ModelProvider } from '@hearsayhq/engine';
+import { CHECKS, ConnectError, DEFAULT_VOICES, IMPLEMENTED, readRecorded, staleCases, PollyTts, serveConsole, TranscribeStt, genVariants, loadHoldout, PERTURBATIONS, QUESTIONS, QUESTION_ORDER, RecordingProvider, ReplayProvider, cassetteEntries, cassettePathFor, ensureServer, exitCodeFor, lintServer, loadCassette, loadSuite, lockSuites, providerFromEnv, runSuite, saveCassette, writeReport, type Cassette, type ModelProvider } from '@hearsayhq/engine';
 import { printReport } from './print';
 
 const [cmd, ...args] = process.argv.slice(2);
 
+const HELP: Record<string, string> = {
+  validate: 'validate <suite...>                 check suite files',
+  checks: 'checks                              the catalog by question, with thresholds and sources',
+  run: 'run <suite...> [--only id] [--holdout] [--orchestrator scripted|llm|replay] [--record] [--seed n] [--no-start] [-v]',
+  lint: 'lint <url> [-v]                     lint a running MCP server',
+  lock: 'lock [suite...]                     lock suites and their recordings into suites/.hearsay-lock',
+  'gen-variants': 'gen-variants <suite...> [--all]     record mishearings (Polly → phone line → Transcribe; AWS); new or changed sentences only',
+  serve: 'serve [--port 4100]                 the console',
+};
+
+/** Recordings made for a sentence the case no longer says; runs skip them. */
+async function warnStale(file: string, suite: Awaited<ReturnType<typeof loadSuite>>): Promise<void> {
+  const stale = staleCases(await readRecorded(file, suite.suite), suite);
+  if (stale.length) console.error(`note ${file}: recorded mishearings for ${stale.join(', ')} belong to an earlier sentence and are skipped; run hearsay gen-variants ${file}`);
+}
+
 async function main(): Promise<number> {
+  if (!cmd || cmd === 'help' || cmd === '--help' || cmd === '-h' || args.includes('--help') || args.includes('-h')) {
+    const lines = HELP[cmd ?? ''] ? [HELP[cmd!]!] : Object.values(HELP);
+    console.log(lines.map((l) => `hearsay ${l}`).join('\n'));
+    return cmd && !HELP[cmd] && !['help', '--help', '-h'].includes(cmd) ? 2 : 0;
+  }
   switch (cmd) {
     case 'validate': {
       if (!args.length) return usage();
@@ -34,6 +55,7 @@ async function main(): Promise<number> {
           }
           const s = await loadSuite(f);
           console.log(`ok   ${f}  (${s.suite}: ${s.cases.length} cases, ${s.orchestrator})`);
+          await warnStale(f, s);
         } catch (e) {
           bad++;
           console.error(`FAIL ${(e as Error).message}`);
@@ -134,7 +156,7 @@ async function run(argv: string[]): Promise<number> {
       if (cassette) {
         const path = cassettePathFor(file, suite.suite);
         await saveCassette(path, cassette);
-        console.error(`recorded ${cassetteEntries(cassette).length} model calls to ${path}`);
+        console.error(`recorded ${cassetteEntries(cassette).length} model calls to ${path}; the recording is locked with the suite: review it, then run hearsay lock`);
       }
       const path = await writeReport(report);
       printReport(report, path, values.verbose);
@@ -151,27 +173,30 @@ async function run(argv: string[]): Promise<number> {
 
 async function lock(argv: string[]): Promise<number> {
   const files = argv.length ? argv : (await readdir('suites')).filter((f) => f.endsWith('.yaml') && !f.endsWith('.holdout.yaml')).map((f) => join('suites', f));
-  for (const f of files) await loadSuite(f); // never lock an invalid suite
+  for (const f of files) await warnStale(f, await loadSuite(f)); // never lock an invalid suite
   const path = await lockSuites(files);
   console.log(`locked ${files.length} suite${files.length === 1 ? '' : 's'} in ${path}`);
   return 0;
 }
 
-async function genVariantsCmd(files: string[]): Promise<number> {
+async function genVariantsCmd(argv: string[]): Promise<number> {
+  const { values, positionals: files } = parseArgs({ args: argv, allowPositionals: true, options: { all: { type: 'boolean' } } });
   if (!files.length) return usage();
   const voices = (process.env.HEARSAY_POLLY_VOICES ?? DEFAULT_VOICES.join(',')).split(',').map((v) => new PollyTts(v.trim()));
   const stt = new TranscribeStt();
   for (const f of files) {
     const suite = await loadSuite(f);
     try {
-      const out = await genVariants(suite, f, voices, stt);
+      const out = await genVariants(suite, f, voices, stt, { all: values.all ?? false });
       if (!out) {
         console.log(`${suite.suite}: no case lists asr.roundtrip in fuzz; nothing to record`);
         continue;
       }
-      const { path, file } = out;
+      const { path, file, recorded } = out;
       const n = Object.values(file.cases).reduce((s, v) => s + v.length, 0);
-      console.log(`${suite.suite}: ${n} mishearings for ${Object.keys(file.cases).length} cases → ${path}`);
+      const kept = Object.keys(file.cases).length - recorded.length;
+      console.log(`${suite.suite}: ${n} mishearings for ${Object.keys(file.cases).length} cases → ${path} (spoken: ${recorded.length}, kept: ${kept})`);
+      if (recorded.length) console.log(`  the recordings are locked with the suite: review the file, then run hearsay lock`);
     } catch (e) {
       console.error(`gen-variants needs AWS credentials with Polly and Transcribe access (docs/04): ${(e as Error).message}`);
       return 2;
@@ -196,8 +221,12 @@ async function lint(argv: string[]): Promise<number> {
 }
 
 function usage(): number {
-  console.error('usage: hearsay <validate|checks|run|lint|lock|gen-variants|serve> [...]');
+  console.error(`usage: hearsay ${HELP[cmd!] ?? '<validate|checks|run|lint|lock|gen-variants|serve> [...]  (hearsay --help)'}`);
   return 2;
 }
 
-process.exitCode = await main();
+process.exitCode = await main().catch((e: Error & { code?: string }) => {
+  if (e.code !== 'ERR_PARSE_ARGS_UNKNOWN_OPTION' && e.code !== 'ERR_PARSE_ARGS_INVALID_OPTION_VALUE') throw e;
+  console.error(`${e.message.split('.')[0]}.\nhearsay ${HELP[cmd!] ?? Object.values(HELP).join('\nhearsay ')}`);
+  return 2;
+});

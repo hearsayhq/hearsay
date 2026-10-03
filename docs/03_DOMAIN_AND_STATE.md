@@ -74,9 +74,11 @@ engine declare no elicitation capability.
   `hearsay run --holdout` loads them; their results carry `holdout: true` and are counted apart in
   the report. The MCP server and the skills never load or mention them, so an agent fixing a
   server cannot fit the fix to them.
-- **Lock.** `hearsay lock` writes `suites/.hearsay-lock`: one SHA-256 per suite file. Every run
-  compares; a locked suite whose content changed is a `suite.integrity` error, so a run that
-  changed its own expectations cannot be green. The lock is committed, so a changed lock shows in
+- **Lock.** `hearsay lock` writes `suites/.hearsay-lock`: one SHA-256 per suite file and per
+  recording that belongs to it (`variants/<suite>.json`, `cassettes/<suite>.json`, or `absent`).
+  Every run compares; a locked suite or recording that changed, appeared or disappeared is a
+  `suite.integrity` error, so a run that changed its own expectations, or dropped recorded
+  mishearings, cannot be green. The lock is committed, so a changed lock shows in
   the pull request.
 - **Legitimate changes** to suites go through normal pull requests. A CODEOWNERS entry on
   `suites/` and `suites/.hearsay-lock` makes them need an owner's review. No tool changes suites,

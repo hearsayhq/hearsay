@@ -71,6 +71,19 @@ npx @hearsayhq/cli serve                 # the console on http://localhost:4100
 npx @hearsayhq/cli lock                  # protect your suites (below)
 ```
 
+**Your own words, misheard (optional, needs AWS).** The built-in mishearings are a small curated
+set aimed at what costs money (fifteen ↔ fifty, homophones, split compounds); Hearsay checks
+behaviour (read back, ask, confirm), so one probe stands for many mishearings. What it cannot know
+is your vocabulary: product names, labels, places. `hearsay gen-variants` has Polly speak your
+suite's sentences in four voices over a noisy phone line into Amazon Transcribe and commits what
+came back in other words; every later run replays the file without AWS. In our suites it heard
+"sauce timer" as "source timer" and "dim the bedroom" as "In the bedroom". Run it when sentences
+are added or changed; it only speaks those (cents each), then `hearsay lock`.
+
+```sh
+AWS_PROFILE=<yours> npx @hearsayhq/cli gen-variants suites/*.yaml   # Polly + Transcribe Streaming
+```
+
 In CI (GitHub Actions), on every pull request:
 
 ```yaml
@@ -117,9 +130,10 @@ Skills: `write-hearsay-suite` drafts a new suite from the tool list, with expect
 would have, never what the server happens to do; the owner reviews and locks it.
 `fix-hearsay-findings` changes server code until the suite is green and never touches suites.
 
-**Protect your suites.** `npm run hearsay -- lock` hashes them into `suites/.hearsay-lock`; commit
-it. A run whose suites changed since is red (`suite.integrity`), so an agent cannot make itself
-green by editing expectations. Suite changes go through normal pull requests; optionally make them
+**Protect your suites.** `npm run hearsay -- lock` hashes them and their recordings into
+`suites/.hearsay-lock`; commit it. A run whose suites or recordings changed since is red
+(`suite.integrity`), so an agent cannot make itself green by editing expectations or deleting
+recorded mishearings. Suite changes go through normal pull requests; optionally make them
 need review:
 
 ```

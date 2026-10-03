@@ -1,4 +1,4 @@
-import { mkdtemp, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -19,6 +19,23 @@ describe('suite lock and suite.integrity', () => {
     await writeFile(suite, 'expect:\n  spokenIncludes: []\n'); // an agent "fixing" the test
     const [f] = await suiteIntegrity.run(ctx(suite));
     expect(f).toMatchObject({ checkId: 'suite.integrity', severity: 'error', question: 'connect', source: { kind: 'hearsay' } });
+  });
+
+  it('locks the recordings with the suite: a deleted variants file or a new cassette is red', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'hearsay-lock-'));
+    const suite = join(dir, 'kitchen.yaml');
+    await writeFile(suite, 'suite: kitchen\n');
+    await mkdir(join(dir, 'variants'));
+    await writeFile(join(dir, 'variants', 'kitchen.json'), '{"cases":{}}\n');
+    await lockSuites([suite]);
+    expect(await suiteIntegrity.run(ctx(suite))).toEqual([]);
+
+    await rm(join(dir, 'variants', 'kitchen.json'));
+    expect((await suiteIntegrity.run(ctx(suite)))[0]?.message).toMatch(/variants\/kitchen\.json was removed/);
+    await writeFile(join(dir, 'variants', 'kitchen.json'), '{"cases":{}}\n');
+    await mkdir(join(dir, 'cassettes'));
+    await writeFile(join(dir, 'cassettes', 'kitchen.json'), '{}\n');
+    expect((await suiteIntegrity.run(ctx(suite)))[0]?.message).toMatch(/cassettes\/kitchen\.json was added/);
   });
 
   it('ignores suites that were never locked', async () => {
