@@ -4,7 +4,7 @@
  */
 import { interpolate } from 'remotion';
 import { CLIPS, CLIP_AT, cue, INSTALL_SPEED } from './plan';
-import { C, Chip, Icon, Mark, mono, Pop, ramp, Rec, RecLabel, sans, sec, squash, stick, TermWindow, track, useF } from './kit';
+import { C, Chip, GRAD, GRAD_TEXT, Icon, Mark, mono, Pop, ramp, Rec, RecLabel, sans, sec, squash, stick, TermWindow, track, useF } from './kit';
 import { Seal } from './Demo';
 
 const W = (scene: string) => (line: string, i: number) => cue(scene, line, i);
@@ -42,9 +42,9 @@ export function Offer() {
             <div style={{ position: 'absolute', left: -230, top: 300 * drop, width: 460, height: 250, perspective: 1200 }}>
               <div style={{ position: 'absolute', inset: 0, transform: `rotateY(${flip}deg)`, transformStyle: 'preserve-3d' }}>
                 {[0, 1].map((side) => (
-                  <div key={side} style={{ position: 'absolute', inset: 0, backfaceVisibility: 'hidden', transform: side ? 'rotateY(180deg)' : undefined, borderRadius: 30, background: side ? C.amber : '#1a2540', border: `3px solid ${C.amber}`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 40px 90px rgba(0,0,0,0.5)' }}>
+                  <div key={side} style={{ position: 'absolute', inset: 0, backfaceVisibility: 'hidden', transform: side ? 'rotateY(180deg)' : undefined, borderRadius: 30, background: side ? GRAD : 'rgba(14,16,32,0.92)', border: side ? 'none' : '3px solid #FF8A6B', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 40px 90px rgba(0,0,0,0.5)' }}>
                     <div style={{ position: 'absolute', top: 22, left: '50%', width: 26, height: 26, marginLeft: -13, borderRadius: 13, background: C.ink, border: '3px solid rgba(255,255,255,0.4)' }} />
-                    <div style={{ fontFamily: sans, fontSize: side ? 150 : 110, fontWeight: 900, color: side ? C.ink : C.amber, marginTop: 30, letterSpacing: -4 }}>{side ? '$0' : '$ ???'}</div>
+                    <div style={{ fontFamily: sans, fontSize: side ? 150 : 110, fontWeight: 900, color: side ? '#0b0d18' : '#FF9A6B', marginTop: 30, letterSpacing: -4 }}>{side ? '$0' : '$ ???'}</div>
                   </div>
                 ))}
               </div>
@@ -90,7 +90,7 @@ function Sticky({ at, crossed, children }: { at: number; crossed?: boolean; chil
   const fr = useF();
   const { k, sx, sy } = squash(fr, at);
   return (
-    <div style={{ position: 'relative', transform: `scale(${k * sx},${k * sy}) rotate(${(1 - k) * 12}deg)`, display: 'flex', alignItems: 'center', gap: 12, fontFamily: sans, fontSize: 34, fontWeight: 800, color: C.text, padding: '14px 28px', borderRadius: 18, background: 'rgba(16,26,48,0.96)', border: `2px solid ${crossed ? C.red : C.green}` }}>
+    <div style={{ position: 'relative', transform: `scale(${k * sx},${k * sy}) rotate(${(1 - k) * 12}deg)`, display: 'flex', alignItems: 'center', gap: 12, fontFamily: sans, fontSize: 34, fontWeight: 800, color: C.text, padding: '14px 28px', borderRadius: 18, background: 'rgba(12,15,30,0.62)', border: `2px solid ${crossed ? C.red : C.green}` }}>
       {children}
     </div>
   );
@@ -115,13 +115,13 @@ function Tagline({ at }: { at: number }) {
             return <span key={i} style={{ display: 'inline-block', fontFamily: sans, fontSize: 230, fontWeight: 900, letterSpacing: -6, color: C.text, transform: `translateY(${(1 - k) * -260}px) scale(${sx},${sy})`, transformOrigin: 'bottom' }}>{ch}</span>;
           })}
         </div>
-        <div style={{ position: 'absolute', left: '50%', bottom: -14, height: 18, borderRadius: 9, background: C.amber, width: `${100 * stick(fr, at + 4, { damping: 18 })}%`, transform: 'translateX(-50%)', boxShadow: '0 0 50px rgba(255,170,43,0.6)' }} />
+        <div style={{ position: 'absolute', left: '50%', bottom: -14, height: 18, borderRadius: 9, background: GRAD, width: `${100 * stick(fr, at + 4, { damping: 18 })}%`, transform: 'translateX(-50%)', boxShadow: '0 0 60px rgba(255,94,138,0.55)' }} />
       </div>
       <div style={{ position: 'absolute', left: 0, right: 0, top: interpolate(rise, [0, 1], [610, 400]), display: 'flex', justifyContent: 'center', gap: 18 }}>
         {words.map((x, i) => {
           const a = w('tag', i + 1) - 2;
           const k = fr >= a ? stick(fr, a) : 0;
-          return <span key={x} style={{ display: 'inline-block', fontFamily: sans, fontSize: 64, fontWeight: 800, color: i === 4 ? C.amber : C.text, opacity: Math.min(1, k * 2), transform: `translateY(${(1 - k) * 40}px)` }}>{x}</span>;
+          return <span key={x} style={{ display: 'inline-block', fontFamily: sans, fontSize: 64, fontWeight: 800, color: C.text, ...(i === 4 ? GRAD_TEXT : {}), opacity: Math.min(1, k * 2), transform: `translateY(${(1 - k) * 40}px)` }}>{x}</span>;
         })}
       </div>
       {fr >= card ? (

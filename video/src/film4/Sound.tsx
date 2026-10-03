@@ -10,40 +10,38 @@ const S = (name: string) => f(sceneStart(name));
 const cues: Array<[string, number, number]> = [];
 const at = (name: string, frame: number, volume: number) => cues.push([name, frame, volume]);
 
-// The big hits.
-at('boom', 0, 0.7);
-at('boom', word('intro', 2) - 3, 0.85);
-at('riser', word('intro', 2) - f(1.95), 0.55);
-at('boom', word('more1', 0) - 2, 0.8);
-at('riser', word('more1', 0) - f(1.95), 0.55);
-at('boom', word('tag', 0) - 4, 0.7);
+// The big hits. Effects sit well under the voice: they punctuate, they never compete.
+at('boom', 0, 0.28);
+at('boom', word('intro', 2) - 3, 0.3);
+at('riser', word('intro', 2) - f(1.5), 0.12);
+at('boom', word('more1', 0) - 2, 0.3);
+at('riser', word('more1', 0) - f(1.95), 0.16);
+at('boom', word('tag', 0) - 4, 0.26);
 // The camera travelling between scenes (the flip to the fixed build is quieter).
-for (const s of SCENES.slice(1)) at('whoosh', S(s.name) - 22, s.name === 'after' ? 0.22 : 0.38);
-// Stamps, with a buzz when something fails.
+for (const s of SCENES.slice(1)) at('whoosh', S(s.name) - 22, s.name === 'after' ? 0.07 : 0.11);
+// Stamps, with a soft buzz when something fails.
 for (const [frame, fail] of [
-  [word('cold', 27), true], [word('prob', 6), false], [word('intro', 24) + 6, true],
+  [word('why', 6), false], [word('intro', 24) + 6, true],
   [word('how3', 1) - 4, false], [word('how3', 3) - 4, false], [word('how3', 6) - 6, false],
-  [word('red2', 18) - 2, false], [word('red2', 20) + 8, true], [word('after', 15) + 2, false],
-  [S('more') + f(CLIP_AT.agent) + Math.round((59.4 / AGENT_SPEED) * 60), false], [word('more2', 8) + 4, true],
+  [word('red2', 18) - 2, false], [word('red2', 20) + 8, true], [word('after3', 0) + 2, false],
+  [S('more') + f(CLIP_AT.agent) + Math.round((59.4 / AGENT_SPEED) * 60), false], [word('cheat2', 0) + 4, true],
 ] as Array<[number, boolean]>) {
-  at('stamp', frame, 0.6);
-  if (fail) at('buzz', frame + 2, 0.32);
+  at('stamp', frame, 0.18);
+  if (fail) at('buzz', frame + 2, 0.07);
 }
 // Green moments.
-at('chime', word('after', 15) + 4, 0.45);
-at('chime', S('ci') + f(CLIP_AT.ci + CLIPS.ci.green) + 6, 0.45);
-at('chime', S('more') + f(CLIP_AT.agent) + Math.round((CLIPS.agent.green / AGENT_SPEED) * 60), 0.35);
+at('chime', word('after3', 0) + 4, 0.14);
+at('chime', S('ci') + f(CLIP_AT.ci + CLIPS.ci.green) + 6, 0.14);
+at('chime', S('more') + f(CLIP_AT.agent) + Math.round((CLIPS.agent.green / AGENT_SPEED) * 60), 0.11);
 const fast = CLIPS.clone.installed / INSTALL_SPEED;
-at('chime', S('offer') + f(CLIP_AT.clone + fast + (CLIPS.clone.output - CLIPS.clone.installed)) + 10, 0.4);
+at('chime', S('offer') + f(CLIP_AT.clone + fast + (CLIPS.clone.output - CLIPS.clone.installed)) + 10, 0.12);
 // The price.
-at('swing', S('offer') + 2, 0.45);
-at('kaching', word('offer', 3) - 4, 0.6);
+at('swing', S('offer') + 2, 0.12);
+at('kaching', word('offer', 3) - 4, 0.2);
 // Sticky things landing.
-for (const w of [word('cold', 6) - 6, word('cold', 11) - 2, word('cold', 14), word('cold', 18), word('cold', 20), word('cold', 21) + 4, word('cold', 25)]) at('pop', w, 0.22);
-for (const i of [12, 15, 19, 27]) at('pop', word('prob', i) + 14, 0.25);
-for (const i of [11, 16, 18, 20, 26]) at('pop', word('rules', i) + 2, 0.25);
-for (const i of [0, 3]) at('pop', word('how1', 3) + i * 7, 0.18);
-for (const i of [4, 10]) at('pop', word('more1', i) + 2, 0.22);
+for (const i of [12, 16, 22, 28]) at('pop', word('why', i) + 14, 0.07);
+for (const i of [11, 16, 18, 20, 26]) at('pop', word('rules', i) + 2, 0.07);
+for (const i of [4, 10]) at('pop', word('more1', i) + 2, 0.06);
 
 /** Narration on or off, per frame, smoothed: the bed sits lower whenever someone speaks. */
 const DUCK = (() => {

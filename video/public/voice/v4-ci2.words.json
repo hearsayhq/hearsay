@@ -1,0 +1,48 @@
+{
+ "id": "v4-ci2",
+ "text": "Hearsay caught it, and the check went red.",
+ "heard": "Hearsay caught it, and the check went red.",
+ "duration": 2.75,
+ "words": [
+  {
+   "word": "Hearsay",
+   "start": 0,
+   "end": 0.5199999809265137
+  },
+  {
+   "word": "caught",
+   "start": 0.5199999809265137,
+   "end": 0.8199999928474426
+  },
+  {
+   "word": "it,",
+   "start": 0.8199999928474426,
+   "end": 1.2599999904632568
+  },
+  {
+   "word": "and",
+   "start": 1.399999976158142,
+   "end": 1.5
+  },
+  {
+   "word": "the",
+   "start": 1.5,
+   "end": 1.659999966621399
+  },
+  {
+   "word": "check",
+   "start": 1.659999966621399,
+   "end": 1.9600000381469727
+  },
+  {
+   "word": "went",
+   "start": 1.9600000381469727,
+   "end": 2.319999933242798
+  },
+  {
+   "word": "red.",
+   "start": 2.319999933242798,
+   "end": 2.5999999046325684
+  }
+ ]
+}
