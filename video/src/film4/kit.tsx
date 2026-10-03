@@ -8,6 +8,14 @@ import { Easing, Freeze, interpolate, OffthreadVideo, spring, staticFile, useCur
 import { c, FPS, mono, sans } from '../theme';
 
 export const C = { ...c, blue: '#8EA2FF', blueSoft: 'rgba(142,162,255,0.14)', redSoft: 'rgba(255,94,91,0.16)', greenSoft: 'rgba(61,220,151,0.14)', ink0: '#060A14' } as const;
+
+/** The gradient of the brand: amber into pink into violet. */
+export const GRAD = 'linear-gradient(90deg, #FFB23F 0%, #FF5E8A 52%, #8B6BFF 100%)';
+export const GRAD_TEXT: CSSProperties = { backgroundImage: GRAD, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' };
+/** The voice as a sphere of light. */
+export const ORB = 'radial-gradient(circle at 34% 28%, #FFE1B0 0%, #FFB23F 30%, #FF5E8A 66%, #8B6BFF 100%)';
+/** Tinted glass over the gradients. */
+export const GLASS: CSSProperties = { background: 'rgba(12,15,30,0.62)', border: '1px solid rgba(255,255,255,0.14)', boxShadow: '0 30px 80px rgba(0,0,0,0.40), inset 0 1px 0 rgba(255,255,255,0.10)' };
 export { mono, sans };
 export const clamp = { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' } as const;
 export const OUT = Easing.bezier(0.22, 1, 0.36, 1);
@@ -59,7 +67,7 @@ export function Stamp({ at, x, y, text, color = C.red, size = 64, rot = -8, sub,
   return (
     <div style={{ position: 'absolute', left: x, top: y, transform: `translate(-50%,-50%) rotate(${rot}deg) scale(${s * (1 - gone * 0.4)})`, opacity: Math.min(1, k * 2) * (1 - gone), zIndex: 30 }}>
       <div style={{ position: 'absolute', inset: -14, border: `3px solid ${color}`, borderRadius: 18, opacity: (1 - ring) * 0.7, transform: `scale(${1 + ring * 0.35})` }} />
-      <div style={{ fontFamily: sans, fontWeight: 900, fontSize: size, letterSpacing: size * 0.02, color, border: `${Math.max(4, size / 12)}px solid ${color}`, borderRadius: 14, padding: `${size * 0.08}px ${size * 0.28}px`, background: 'rgba(6,10,20,0.82)', whiteSpace: 'nowrap', textTransform: 'uppercase', lineHeight: 1.05, boxShadow: `0 0 60px ${color}44` }}>
+      <div style={{ fontFamily: sans, fontWeight: 900, fontSize: size, letterSpacing: size * 0.02, color, border: `${Math.max(4, size / 12)}px solid ${color}`, borderRadius: 14, padding: `${size * 0.08}px ${size * 0.28}px`, background: 'rgba(8,10,22,0.80)', whiteSpace: 'nowrap', textTransform: 'uppercase', lineHeight: 1.05, boxShadow: `0 0 60px ${color}44` }}>
         {text}
         {sub ? <div style={{ fontSize: size * 0.3, fontWeight: 700, letterSpacing: 1, textTransform: 'none', opacity: 0.9, marginTop: 4 }}>{sub}</div> : null}
       </div>
@@ -69,11 +77,11 @@ export function Stamp({ at, x, y, text, color = C.red, size = 64, rot = -8, sub,
 
 /** A small rounded label. */
 export const Chip = ({ children, tint = C.amber, solid = false, style }: { children: ReactNode; tint?: string; solid?: boolean; style?: CSSProperties }) => (
-  <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, fontFamily: mono, fontSize: 22, fontWeight: 500, color: solid ? C.ink : tint, background: solid ? tint : 'rgba(6,10,20,0.86)', border: `1.5px solid ${tint}`, borderRadius: 999, padding: '8px 18px', whiteSpace: 'nowrap', ...style }}>{children}</div>
+  <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, fontFamily: mono, fontSize: 22, fontWeight: 500, color: solid ? C.ink : tint, background: solid ? tint : 'rgba(10,13,26,0.72)', border: `1.5px solid ${tint}`, borderRadius: 999, padding: '8px 18px', whiteSpace: 'nowrap', ...style }}>{children}</div>
 );
 
 /** An infomercial starburst. */
-export function Starburst({ size, points = 20, inner = 0.8, fill = C.amber, spin = 0, children, style }: { size: number; points?: number; inner?: number; fill?: string; spin?: number; children?: ReactNode; style?: CSSProperties }) {
+export function Starburst({ size, points = 20, inner = 0.8, fill = C.amber, spin = 0, children, style }: { size: number; points?: number; inner?: number; fill?: string | 'grad'; spin?: number; children?: ReactNode; style?: CSSProperties }) {
   const pts: string[] = [];
   for (let i = 0; i < points * 2; i++) {
     const r = i % 2 === 0 ? 50 : 50 * inner;
@@ -82,7 +90,10 @@ export function Starburst({ size, points = 20, inner = 0.8, fill = C.amber, spin
   }
   return (
     <div style={{ position: 'relative', width: size, height: size, ...style }}>
-      <svg viewBox="0 0 100 100" style={{ position: 'absolute', inset: 0, transform: `rotate(${spin}deg)`, filter: `drop-shadow(0 10px 30px ${fill}55)` }}><polygon points={pts.join(' ')} fill={fill} /></svg>
+      <svg viewBox="0 0 100 100" style={{ position: 'absolute', inset: 0, transform: `rotate(${spin}deg)`, filter: `drop-shadow(0 10px 30px ${fill === 'grad' ? '#FF5E8A' : fill}55)` }}>
+        <defs><linearGradient id="burst" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#FFB23F" /><stop offset="0.55" stopColor="#FF5E8A" /><stop offset="1" stopColor="#8B6BFF" /></linearGradient></defs>
+        <polygon points={pts.join(' ')} fill={fill === 'grad' ? 'url(#burst)' : fill} />
+      </svg>
       <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>{children}</div>
     </div>
   );
@@ -178,8 +189,8 @@ export function Mark({ at, x, y, w, h, color = C.amber, out }: { at: number; x: 
 /** A terminal window: title bar and a recording inside. */
 export function TermWindow({ title, w, h, children, glow = C.amber, style }: { title: string; w: number; h: number; children: ReactNode; glow?: string; style?: CSSProperties }) {
   return (
-    <div style={{ position: 'absolute', width: w, height: h + 44, borderRadius: 18, overflow: 'hidden', background: '#0a1020', border: '1.5px solid rgba(255,255,255,0.16)', boxShadow: `0 60px 160px rgba(0,0,0,0.65), 0 0 120px ${glow}22`, ...style }}>
-      <div style={{ height: 44, display: 'flex', alignItems: 'center', gap: 9, padding: '0 18px', background: '#121a2c', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+    <div style={{ position: 'absolute', width: w, height: h + 44, borderRadius: 18, overflow: 'hidden', background: '#0a1020', border: '1px solid rgba(255,255,255,0.20)', boxShadow: `0 60px 160px rgba(0,0,0,0.6), 0 0 140px ${glow}33, inset 0 1px 0 rgba(255,255,255,0.12)`, ...style }}>
+      <div style={{ height: 44, display: 'flex', alignItems: 'center', gap: 9, padding: '0 18px', background: 'linear-gradient(180deg, #161d33, #10162a)', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
         {['#ff5f57', '#febc2e', '#28c840'].map((col) => <span key={col} style={{ width: 13, height: 13, borderRadius: 7, background: col }} />)}
         <span style={{ margin: '0 auto', fontFamily: mono, fontSize: 17, color: '#8b949e' }}>{title}</span>
         <span style={{ width: 60 }} />
@@ -191,5 +202,5 @@ export function TermWindow({ title, w, h, children, glow = C.amber, style }: { t
 
 /** A label on screen that names what a recording shows: speed, take, source. */
 export const RecLabel = ({ children, tint = C.text, style }: { children: ReactNode; tint?: string; style?: CSSProperties }) => (
-  <div style={{ position: 'absolute', fontFamily: mono, fontSize: 19, fontWeight: 500, letterSpacing: 1, color: tint, background: 'rgba(6,10,20,0.88)', border: `1.5px solid ${tint}88`, borderRadius: 8, padding: '6px 12px', textTransform: 'uppercase', whiteSpace: 'nowrap', ...style }}>{children}</div>
+  <div style={{ position: 'absolute', fontFamily: mono, fontSize: 19, fontWeight: 500, letterSpacing: 1, color: tint, background: 'rgba(10,13,26,0.80)', border: `1.5px solid ${tint}88`, borderRadius: 8, padding: '6px 12px', textTransform: 'uppercase', whiteSpace: 'nowrap', ...style }}>{children}</div>
 );

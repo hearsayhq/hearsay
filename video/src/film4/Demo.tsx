@@ -20,7 +20,7 @@ function Flip({ deg, children }: { deg: number; children: ReactNode }) {
 export function Note({ at, x, y, tint = C.amber, rot = -2, width, children, out }: { at: number; x: number; y: number; tint?: string; rot?: number; width?: number; children: ReactNode; out?: number }) {
   return (
     <Pop at={at} x={x} y={y} rot={rot} out={out}>
-      <div style={{ width, fontFamily: sans, fontSize: 30, fontWeight: 700, color: C.text, padding: '16px 24px', borderRadius: 18, background: 'rgba(8,13,26,0.95)', border: `2px solid ${tint}`, boxShadow: `0 24px 60px rgba(0,0,0,0.55), 0 0 40px ${tint}33`, lineHeight: 1.3 }}>{children}</div>
+      <div style={{ width, fontFamily: sans, fontSize: 30, fontWeight: 700, color: C.text, padding: '16px 24px', borderRadius: 18, background: 'rgba(10,13,26,0.84)', border: `2px solid ${tint}`, boxShadow: `0 24px 60px rgba(0,0,0,0.55), 0 0 40px ${tint}33`, lineHeight: 1.3 }}>{children}</div>
     </Pop>
   );
 }
@@ -97,30 +97,30 @@ export function After() {
     [sec(4.0), { x: 20, y: 20, w: 1900 }],
     [out, { x: 20, y: 20, w: 1900 }],
     [out + 18, { x: 0, y: 200, w: 2700 }],
-    [w('after', 15) + 4, { x: 0, y: 200, w: 2700 }],
-    [w('after', 15) + 30, { x: 0, y: 960 - h(1800) / 2, w: 1800 }],
+    [w('after3', 0) + 4, { x: 0, y: 200, w: 2700 }],
+    [w('after3', 0) + 30, { x: 0, y: 960 - h(1800) / 2, w: 1800 }],
   ]);
   const flip = fr < 0 ? -90 : ramp(fr, 0, 16, -90, 0);
   return (
     <Flip deg={flip}>
       <div style={{ position: 'absolute', inset: 0 }}>
         <Pop at={8} x={520} y={40} rot={-2}><Chip tint={C.red} solid style={{ fontFamily: sans, fontWeight: 800, fontSize: 22 }}>BEFORE · 20 errors · exit 1</Chip></Pop>
-        <Pop at={w('after', 15)} x={1400} y={40} rot={2}><Chip tint={C.green} solid style={{ fontFamily: sans, fontWeight: 800, fontSize: 22 }}>AFTER · 0 errors · exit 0</Chip></Pop>
+        <Pop at={w('after3', 0)} x={1400} y={40} rot={2}><Chip tint={C.green} solid style={{ fontFamily: sans, fontWeight: 800, fontSize: 22 }}>AFTER · 0 errors · exit 0</Chip></Pop>
         <TermWindow title="hearsay — bash — the fixed build, same suite" w={WIN.w} h={WIN.h} glow={C.green} style={{ left: WIN.x, top: WIN.y }}>
           <Rec clip={CLIPS.fixed} t={t} view={view} vw={WIN.w} vh={WIN.h}>
             <Mark at={sec(2.2)} x={1984} y={78} w={330} h={30} color={C.green} out={out - 10} />
-            <Mark at={w('after', 15) + 4} x={70} y={925} w={1000} h={26} color={C.green} />
-            <Mark at={w('after', 16) + 6} x={70} y={997} w={118} h={26} color={C.green} />
+            <Mark at={w('after3', 0) + 4} x={70} y={925} w={1000} h={26} color={C.green} />
+            <Mark at={w('after3', 1) + 6} x={70} y={997} w={118} h={26} color={C.green} />
           </Rec>
         </TermWindow>
-        <Note at={sec(2.3)} x={1300} y={560} tint={C.green} rot={2} out={w('after', 6) - 6}>HEARSAY_FIXED=1 · the fixed build</Note>
-        <Note at={w('after', 6)} x={1330} y={610} tint={C.green} rot={-1.5} width={700} out={out - 4}>
+        <Note at={sec(2.3)} x={1300} y={560} tint={C.green} rot={2} out={w('after2', 1) - 6}>HEARSAY_FIXED=1 · the fixed build</Note>
+        <Note at={w('after2', 1)} x={1330} y={610} tint={C.green} rot={-1.5} width={700} out={out - 4}>
           <div style={{ fontFamily: mono, fontSize: 18, color: C.amber, marginBottom: 8 }}>HEARD “ADD FIFTY DOLLARS OF FRUIT”</div>
           “That would go over the total budget you gave me. You can add less, or give me a bigger budget.”
           <div style={{ fontFamily: mono, fontSize: 16, color: C.green, marginTop: 10 }}>REAL REPLY · FIXED BUILD</div>
           <div style={{ fontFamily: sans, fontSize: 22, color: C.muted, marginTop: 10 }}>flawed build: <span style={{ textDecoration: 'line-through', color: '#FFB4B2' }}>“Added.”</span></div>
         </Note>
-        <Stamp at={w('after', 15) + 2} x={1360} y={760} text="Zero errors" color={C.green} size={90} rot={-6} />
+        <Stamp at={w('after3', 0) + 2} x={1360} y={760} text="Zero errors" color={C.green} size={90} rot={-6} />
       </div>
     </Flip>
   );
@@ -151,7 +151,7 @@ export function Ci() {
         </Rec>
       </TermWindow>
       <RecLabel style={{ left: CIW.x, top: 22 }}>real CI · read from GitHub with gh</RecLabel>
-      <Note at={w('ci', 1)} x={330} y={150} rot={-3} width={500} tint={C.blue}>
+      <Note at={w('ci1', 1)} x={330} y={150} rot={-3} width={500} tint={C.blue}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: mono, fontSize: 18, color: C.blue, marginBottom: 8 }}><Icon name="pr" size={22} color={C.blue} /> PULL REQUEST #27 · f7725be</div>
         Check the budget for counted items only
       </Note>
@@ -163,7 +163,7 @@ export function Ci() {
         <div style={{ fontFamily: mono, fontSize: 20, color: C.amber, marginBottom: 6 }}>consent.misheard_amount</div>
         heard “add <b style={{ color: '#FFB4B2' }}>fifty</b> dollars of fruit”, and took it
       </Note>
-      <Note at={w('ci', 24) - 2} x={320} y={725} rot={1.5} width={560} tint={C.blue}>
+      <Note at={w('ci3', 0) - 2} x={320} y={725} rot={1.5} width={560} tint={C.blue}>
         <div style={{ fontFamily: mono, fontSize: 18, color: C.blue, marginBottom: 8 }}>57e680a · the fix</div>
         <div style={{ fontFamily: mono, fontSize: 15.5, lineHeight: 1.5, whiteSpace: 'nowrap' }}>
           <div style={{ color: '#ff8a80' }}>- ...(quantity !== undefined ? {'{ amountMinor }'} : {'{}'})</div>

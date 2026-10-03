@@ -5,7 +5,7 @@
 import type { ReactNode } from 'react';
 import { interpolate } from 'remotion';
 import { cue } from './plan';
-import { C, Chip, Icon, mono, Pop, ramp, sans, squash, Stamp, stick, useF } from './kit';
+import { C, Chip, GRAD, GRAD_TEXT, Icon, mono, Pop, ramp, sans, squash, Stamp, stick, useF } from './kit';
 import { Melt } from './Open';
 
 const W = (scene: string) => (line: string, i: number) => cue(scene, line, i);
@@ -28,7 +28,7 @@ function Station({ i, at, dim, glow, children }: { i: number; at: number; dim: n
   const h = server ? 280 : 240;
   const tint = server ? C.blue : C.text;
   return (
-    <div style={{ position: 'absolute', left: s.x - w / 2, top: Y - h / 2, width: w, height: h, borderRadius: 28, background: server ? 'rgba(142,162,255,0.12)' : 'rgba(16,26,48,0.95)', border: `2px solid ${server ? C.blue : 'rgba(255,255,255,0.16)'}`, transform: `translateY(${(1 - k) * 60}px) scale(${sx * (1 + glow * 0.06)},${sy * (1 + glow * 0.06)})`, opacity: Math.min(1, k * 2.5) * (1 - dim * 0.62), boxShadow: glow > 0 ? `0 0 ${90 * glow}px ${C.blue}88` : '0 30px 70px rgba(0,0,0,0.45)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, textAlign: 'center', padding: 20 }}>
+    <div style={{ position: 'absolute', left: s.x - w / 2, top: Y - h / 2, width: w, height: h, borderRadius: 28, background: server ? 'rgba(142,162,255,0.12)' : 'rgba(12,15,30,0.62)', border: `2px solid ${server ? C.blue : 'rgba(255,255,255,0.16)'}`, transform: `translateY(${(1 - k) * 60}px) scale(${sx * (1 + glow * 0.06)},${sy * (1 + glow * 0.06)})`, opacity: Math.min(1, k * 2.5) * (1 - dim * 0.62), boxShadow: glow > 0 ? `0 0 ${90 * glow}px ${C.blue}88` : '0 30px 70px rgba(0,0,0,0.45)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, textAlign: 'center', padding: 20 }}>
       {children ?? (
         <>
           <Icon name={s.icon} size={64} color={tint} />
@@ -47,8 +47,11 @@ function Sleeve({ at, x0, x1, label }: { at: number; x0: number; x1: number; lab
   const w = (x1 - x0) * k;
   return (
     <>
-      <div style={{ position: 'absolute', left: x0, top: Y - 175, width: w, height: 350, borderRadius: 36, background: 'linear-gradient(180deg, rgba(255,170,43,0.20), rgba(255,170,43,0.07))', border: `2.5px solid ${C.amber}`, boxShadow: '0 0 80px rgba(255,170,43,0.25), inset 0 0 60px rgba(255,170,43,0.12)', backdropFilter: 'blur(2px)' }} />
-      <div style={{ position: 'absolute', left: x0 + (x1 - x0) / 2, top: Y - 175, transform: `translate(-50%,-50%) scale(${k})` }}><Chip tint={C.amber} solid style={{ fontFamily: sans, fontWeight: 800, fontSize: 24 }}>{label}</Chip></div>
+      <svg style={{ position: 'absolute', left: x0 - 4, top: Y - 179, overflow: 'visible' }} width={w + 8} height={358}>
+        <defs><linearGradient id={`sleeve${x0}`} x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#FFB23F" /><stop offset="0.52" stopColor="#FF5E8A" /><stop offset="1" stopColor="#8B6BFF" /></linearGradient></defs>
+        <rect x={4} y={4} width={Math.max(0, w)} height={350} rx={36} fill="rgba(255,120,140,0.07)" stroke={`url(#sleeve${x0})`} strokeWidth={3} style={{ filter: 'drop-shadow(0 0 30px rgba(255,94,138,0.35))' }} />
+      </svg>
+      <div style={{ position: 'absolute', left: x0 + (x1 - x0) / 2, top: Y - 175, transform: `translate(-50%,-50%) scale(${k})` }}><div style={{ fontFamily: sans, fontWeight: 800, fontSize: 24, color: '#0b0d18', background: GRAD, borderRadius: 999, padding: '8px 20px', whiteSpace: 'nowrap' }}>{label}</div></div>
     </>
   );
 }
@@ -109,7 +112,7 @@ export function How() {
       <Sleeve at={plays} x0={70} x1={890} label="Hearsay plays this" />
       <Sleeve at={checks} x0={1460} x1={1840} label="Hearsay checks this" />
       <Pop at={w('how2', 4)} x={480} y={150} out={stampsOut}>
-        <div style={{ fontFamily: mono, fontSize: 22, color: C.text, background: 'rgba(12,19,36,0.96)', border: '1.5px solid rgba(255,255,255,0.16)', borderRadius: 16, padding: '12px 20px', whiteSpace: 'pre', lineHeight: 1.5 }}>
+        <div style={{ fontFamily: mono, fontSize: 22, color: C.text, background: 'rgba(10,13,26,0.72)', border: '1.5px solid rgba(255,255,255,0.16)', borderRadius: 16, padding: '12px 20px', whiteSpace: 'pre', lineHeight: 1.5 }}>
           <span style={{ color: '#7c9bff' }}>say: </span><span style={{ color: C.amber }}>add fifteen dollars of fruit</span>{'\n'}<span style={{ color: '#7c9bff' }}>fuzz: </span>[asr.number_confusion]
         </div>
       </Pop>
@@ -120,7 +123,7 @@ export function How() {
       <Stamp at={w('how3', 6) - 6} x={1400} y={760} text="No API keys" color={C.amber} size={46} rot={-4} out={stampsOut} />
       <Same at={w('how3', 8)} out={w('how3', 14) - 6} />
       <Pop at={w('how3', 14) - 2} x={960} y={770}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 22, padding: '20px 30px', borderRadius: 20, background: 'rgba(16,26,48,0.96)', border: '1.5px solid rgba(255,255,255,0.18)', boxShadow: '0 30px 70px rgba(0,0,0,0.5)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 22, padding: '20px 30px', borderRadius: 20, background: 'rgba(12,15,30,0.62)', border: '1.5px solid rgba(255,255,255,0.18)', boxShadow: '0 30px 70px rgba(0,0,0,0.5)' }}>
           <Icon name="pr" size={44} color={C.text} />
           <div style={{ fontFamily: mono, fontSize: 30, color: C.text }}>hearsay / voice</div>
           <Chip tint={C.amber} style={{ fontFamily: sans, fontSize: 22 }}>on every pull request</Chip>
@@ -143,7 +146,7 @@ function Same({ at, out }: { at: number; out: number }) {
         return (
           <div key={r} style={{ display: 'flex', alignItems: 'center', gap: 26 }}>
             {r ? <div style={{ fontFamily: sans, fontSize: 56, fontWeight: 900, color: C.amber, opacity: k }}>=</div> : null}
-            <div style={{ transform: `scale(${k})`, padding: '16px 22px', borderRadius: 18, background: 'rgba(16,26,48,0.96)', border: '1.5px solid rgba(255,255,255,0.16)' }}>
+            <div style={{ transform: `scale(${k})`, padding: '16px 22px', borderRadius: 18, background: 'rgba(12,15,30,0.62)', border: '1.5px solid rgba(255,255,255,0.16)' }}>
               <div style={{ fontFamily: mono, fontSize: 18, color: C.muted, marginBottom: 10 }}>RUN {r + 1}</div>
               <div style={{ display: 'flex', alignItems: 'flex-end', gap: 5, height: 56 }}>{bars.map((b, i) => <div key={i} style={{ width: 10, height: b * 4, borderRadius: 3, background: C.amber }} />)}</div>
             </div>
@@ -169,7 +172,7 @@ export function Rules() {
   return (
     <div style={{ position: 'absolute', inset: 0 }}>
       <Pop at={w('rules', 0)} x={960} y={110}><div style={{ fontFamily: sans, fontSize: 36, fontWeight: 600, color: C.muted, whiteSpace: 'nowrap' }}>Every answer is graded by</div></Pop>
-      <Pop at={w('rules', 6)} x={960} y={190}><div style={{ fontFamily: sans, fontSize: 72, fontWeight: 900, color: C.text, whiteSpace: 'nowrap', letterSpacing: -1 }}>Amazon’s published rules for add-ons</div></Pop>
+      <Pop at={w('rules', 6)} x={960} y={190}><div style={{ fontFamily: sans, fontSize: 72, fontWeight: 900, color: C.text, whiteSpace: 'nowrap', letterSpacing: -1 }}>Amazon’s <span style={GRAD_TEXT}>published rules</span> for add-ons</div></Pop>
       <Pop at={w('rules', 8) + 4} x={960} y={275}><Chip tint={C.amber}>every finding names its source: amazon-fr</Chip></Pop>
       {RULES.map((r, i) => {
         const at = w('rules', r.word) - 3;
@@ -177,7 +180,7 @@ export function Rules() {
         const { k, sx, sy } = squash(fr, at, 2);
         const x = 100 + i * 352;
         return (
-          <div key={r.id} style={{ position: 'absolute', left: x, top: 350, width: 332, height: 390, transform: `translateY(${(1 - k) * 300}px) rotate(${(1 - k) * (i % 2 ? 8 : -8)}deg) scale(${sx},${sy})`, transformOrigin: 'bottom center', borderRadius: 26, background: 'rgba(16,26,48,0.96)', border: '1.5px solid rgba(255,170,43,0.45)', boxShadow: '0 30px 70px rgba(0,0,0,0.45)', padding: '34px 26px', display: 'flex', flexDirection: 'column' }}>
+          <div key={r.id} style={{ position: 'absolute', left: x, top: 350, width: 332, height: 390, transform: `translateY(${(1 - k) * 300}px) rotate(${(1 - k) * (i % 2 ? 8 : -8)}deg) scale(${sx},${sy})`, transformOrigin: 'bottom center', borderRadius: 26, background: 'rgba(12,15,30,0.62)', border: '1.5px solid rgba(255,170,43,0.45)', boxShadow: '0 30px 70px rgba(0,0,0,0.45)', padding: '34px 26px', display: 'flex', flexDirection: 'column' }}>
             <div style={{ fontFamily: sans, fontWeight: 900, color: C.amber, lineHeight: 1, minHeight: 100, letterSpacing: -1, display: 'flex', alignItems: 'baseline', gap: 4, flexWrap: r.big ? 'nowrap' : 'wrap' }}>
               {r.pre ? <span style={{ fontSize: 44 }}>{r.pre}</span> : null}
               {r.big ? <span style={{ fontSize: 84 }}>{r.big}</span> : null}

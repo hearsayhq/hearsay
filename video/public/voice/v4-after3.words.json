@@ -1,0 +1,18 @@
+{
+ "id": "v4-after3",
+ "text": "Zero errors.",
+ "heard": "Zero errors.",
+ "duration": 1.2000000476837158,
+ "words": [
+  {
+   "word": "Zero",
+   "start": 0,
+   "end": 0.5199999809265137
+  },
+  {
+   "word": "errors.",
+   "start": 0.5199999809265137,
+   "end": 1.0399999618530273
+  }
+ ]
+}

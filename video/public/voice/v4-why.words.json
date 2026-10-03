@@ -1,0 +1,179 @@
+{
+ "id": "v4-why",
+ "text": "In a chat window, add-ons look fine. Out loud, they break: a number heard wrong, a reply that reads out JSON, a list too long to remember, a no that still places the order.",
+ "heard": "In a chat window, add-ons look fine. Out loud, they break, a number heard wrong, a reply that reads out JSON, a list too long to remember, a no that still places the order.",
+ "duration": 10.65999984741211,
+ "words": [
+  {
+   "word": "In",
+   "start": 0,
+   "end": 0.11999999731779099
+  },
+  {
+   "word": "a",
+   "start": 0.11999999731779099,
+   "end": 0.3400000035762787
+  },
+  {
+   "word": "chat",
+   "start": 0.3400000035762787,
+   "end": 0.5400000214576721
+  },
+  {
+   "word": "window,",
+   "start": 0.5400000214576721,
+   "end": 0.8999999761581421
+  },
+  {
+   "word": "add-ons",
+   "start": 0.8999999761581421,
+   "end": 1.440000057220459,
+   "guessed": true
+  },
+  {
+   "word": "look",
+   "start": 1.440000057220459,
+   "end": 1.7200000286102295
+  },
+  {
+   "word": "fine.",
+   "start": 1.7200000286102295,
+   "end": 2.0799999237060547
+  },
+  {
+   "word": "Out",
+   "start": 2.7200000286102295,
+   "end": 2.799999952316284
+  },
+  {
+   "word": "loud,",
+   "start": 2.799999952316284,
+   "end": 2.9800000190734863
+  },
+  {
+   "word": "they",
+   "start": 3.0399999618530273,
+   "end": 3.180000066757202
+  },
+  {
+   "word": "break:",
+   "start": 3.180000066757202,
+   "end": 3.4600000381469727
+  },
+  {
+   "word": "a",
+   "start": 3.680000066757202,
+   "end": 3.9200000762939453
+  },
+  {
+   "word": "number",
+   "start": 3.9200000762939453,
+   "end": 4.139999866485596
+  },
+  {
+   "word": "heard",
+   "start": 4.139999866485596,
+   "end": 4.420000076293945
+  },
+  {
+   "word": "wrong,",
+   "start": 4.420000076293945,
+   "end": 4.71999979019165
+  },
+  {
+   "word": "a",
+   "start": 5.059999942779541,
+   "end": 5.199999809265137
+  },
+  {
+   "word": "reply",
+   "start": 5.199999809265137,
+   "end": 5.480000019073486
+  },
+  {
+   "word": "that",
+   "start": 5.480000019073486,
+   "end": 5.71999979019165
+  },
+  {
+   "word": "reads",
+   "start": 5.71999979019165,
+   "end": 5.920000076293945
+  },
+  {
+   "word": "out",
+   "start": 5.920000076293945,
+   "end": 6.179999828338623
+  },
+  {
+   "word": "JSON,",
+   "start": 6.179999828338623,
+   "end": 6.539999961853027
+  },
+  {
+   "word": "a",
+   "start": 6.960000038146973,
+   "end": 7.159999847412109
+  },
+  {
+   "word": "list",
+   "start": 7.159999847412109,
+   "end": 7.360000133514404
+  },
+  {
+   "word": "too",
+   "start": 7.360000133514404,
+   "end": 7.659999847412109
+  },
+  {
+   "word": "long",
+   "start": 7.659999847412109,
+   "end": 7.840000152587891
+  },
+  {
+   "word": "to",
+   "start": 7.920000076293945,
+   "end": 8.399999618530273
+  },
+  {
+   "word": "remember,",
+   "start": 8.399999618530273,
+   "end": 8.399999618530273
+  },
+  {
+   "word": "a",
+   "start": 8.859999656677246,
+   "end": 9.079999923706055
+  },
+  {
+   "word": "no",
+   "start": 9.079999923706055,
+   "end": 9.239999771118164
+  },
+  {
+   "word": "that",
+   "start": 9.239999771118164,
+   "end": 9.5
+  },
+  {
+   "word": "still",
+   "start": 9.5,
+   "end": 9.800000190734863
+  },
+  {
+   "word": "places",
+   "start": 9.800000190734863,
+   "end": 10.020000457763672
+  },
+  {
+   "word": "the",
+   "start": 10.020000457763672,
+   "end": 10.319999694824219
+  },
+  {
+   "word": "order.",
+   "start": 10.319999694824219,
+   "end": 10.520000457763672
+  }
+ ]
+}

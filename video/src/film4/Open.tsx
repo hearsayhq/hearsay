@@ -1,16 +1,13 @@
 /**
- * The first three scenes: what goes wrong (real replies of the flawed build), why a chat window
- * hides it, and Hearsay, introduced from a real test case of suites/household-orders.yaml.
+ * The first two scenes: what Hearsay is, shown with a real test case of
+ * suites/household-orders.yaml, and why voice needs it: four ways add-ons break out loud.
  */
 import type { ReactNode } from 'react';
 import { interpolate } from 'remotion';
 import { cue, sceneFrames } from './plan';
-import { ANCHOR } from './world';
-import { C, Chip, clamp, Icon, mono, Pop, ramp, sans, squash, Stamp, Starburst, stick, useF } from './kit';
+import { C, Chip, clamp, GLASS, GRAD, GRAD_TEXT, Icon, mono, ORB, Pop, ramp, sans, squash, Stamp, Starburst, stick, useF } from './kit';
 
 const W = (scene: string) => (line: string, i: number) => cue(scene, line, i);
-/** Where a point of scene `a` sits in scene `b`'s own coordinates. */
-export const carried = (a: string, b: string, [x, y]: [number, number]): [number, number] => [x - (ANCHOR[b]![0] - ANCHOR[a]![0]), y - (ANCHOR[b]![1] - ANCHOR[a]![1])];
 
 /** A word that melts into another one: "fifteen" drips away, "fifty" rises. */
 export function Melt({ from, to, at, size = 44, color = C.text, toColor = C.red, weight = 700 }: { from: string; to: string; at: number; size?: number; color?: string; toColor?: string; weight?: number }) {
@@ -27,79 +24,6 @@ export function Melt({ from, to, at, size = 44, color = C.text, toColor = C.red,
   );
 }
 
-/** The add-on as a voice: an amber orb with satellites that burst out when it replies. */
-function Orb({ x, y, r, beats, tint = C.amber }: { x: number; y: number; r: number; beats: number[]; tint?: string }) {
-  const fr = useF();
-  const last = beats.filter((b) => b <= fr).pop();
-  const kick = last === undefined ? 0 : Math.exp(-(fr - last) / 14) * Math.sin((fr - last) / 3.2);
-  const breathe = Math.sin(fr / 22) * 0.03;
-  const sats = Array.from({ length: 6 }, (_, i) => {
-    const a = (i / 6) * Math.PI * 2 + fr / 70;
-    const d = r * (1.12 + 0.5 * Math.abs(kick) + 0.1 * Math.sin(fr / 13 + i));
-    return { x: Math.cos(a) * d, y: Math.sin(a) * d, s: r * (0.2 + 0.07 * Math.sin(fr / 17 + i * 2)) };
-  });
-  return (
-    <div style={{ position: 'absolute', left: x - r * 2, top: y - r * 2, width: r * 4, height: r * 4, filter: 'url(#goo)', transform: `scale(${stick(fr, 0, { damping: 9, stiffness: 160 })})` }}>
-      <div style={{ position: 'absolute', left: r, top: r, width: r * 2, height: r * 2, borderRadius: '50%', background: `radial-gradient(circle at 35% 30%, #FFD58A, ${tint} 55%, #C9741A)`, transform: `scale(${1 + breathe + kick * 0.12})` }} />
-      {sats.map((s, i) => <div key={i} style={{ position: 'absolute', left: r * 2 + s.x - s.s, top: r * 2 + s.y - s.s, width: s.s * 2, height: s.s * 2, borderRadius: '50%', background: tint }} />)}
-    </div>
-  );
-}
-
-/** One line of the conversation: who, then what. */
-function Row({ y, at, who, children, tone = 'addon', out }: { y: number; at: number; who: string; children: ReactNode; tone?: 'said' | 'addon'; out?: number }) {
-  const fr = useF();
-  if (fr < at) return null;
-  const { k, sx, sy } = squash(fr, at);
-  const o = out === undefined ? 1 : ramp(fr, out, out + 12, 1, 0);
-  const said = tone === 'said';
-  return (
-    <div style={{ position: 'absolute', left: 520, top: y, transformOrigin: 'left center', transform: `translateX(${(1 - k) * 90}px) scale(${sx},${sy})`, opacity: Math.min(1, k * 2.5) * o, display: 'flex', alignItems: 'center', gap: 20 }}>
-      <div style={{ fontFamily: mono, fontSize: 18, letterSpacing: 2, color: said ? C.amber : C.muted, width: 110, textAlign: 'right', textTransform: 'uppercase' }}>{who}</div>
-      <div style={{ fontFamily: sans, fontSize: 38, fontWeight: 600, color: C.text, padding: '12px 26px', borderRadius: 22, background: said ? 'rgba(255,170,43,0.10)' : 'rgba(255,255,255,0.06)', border: `1.5px solid ${said ? 'rgba(255,170,43,0.55)' : 'rgba(255,255,255,0.16)'}`, whiteSpace: 'nowrap' }}>{children}</div>
-    </div>
-  );
-}
-
-export function Cold() {
-  const fr = useF();
-  const w = W('cold');
-  const D = sceneFrames('cold');
-  const replies = [w('cold', 14), w('cold', 18), w('cold', 21) + 8, w('cold', 25)];
-  const shake = fr > w('cold', 27) ? Math.exp(-(fr - w('cold', 27)) / 6) * Math.sin(fr * 2.4) * 10 : 0;
-  const leave = D - 26;
-  const gather = ramp(fr, leave, D, 0, 1);
-  const rowsOut = leave;
-  return (
-    <div style={{ position: 'absolute', inset: 0, transform: `translate(${shake}px, ${shake * 0.4}px)` }}>
-      <Shock />
-      <Orb x={290} y={420} r={84} beats={replies} />
-      <Pop at={w('cold', 1)} x={290} y={620}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontFamily: sans, fontSize: 38, fontWeight: 800, color: C.text }}>A grocery add-on</div>
-          <div style={{ marginTop: 12 }}><Chip tint={C.red}>flawed build</Chip></div>
-        </div>
-      </Pop>
-      <Row y={110} at={w('cold', 6) - 6} who="said" tone="said" out={rowsOut}>add <span style={{ color: C.amber }}>fifteen</span> dollars of fruit</Row>
-      {fr >= w('cold', 11) - 2 ? (
-        <Row y={210} at={w('cold', 11) - 2} who="heard" tone="said" out={rowsOut}>add <Melt from="fifteen" to="fifty" at={w('cold', 12) - 4} size={40} color={C.amber} /> dollars of fruit</Row>
-      ) : null}
-      <Row y={330} at={w('cold', 14)} who="add-on" out={rowsOut}>Are you sure?</Row>
-      <Row y={430} at={w('cold', 18)} who="add-on" out={rowsOut}>Added.</Row>
-      <Row y={570} at={w('cold', 20)} who="said" tone="said" out={rowsOut}>okay, place the order</Row>
-      <Row y={670} at={w('cold', 21) + 4} who="add-on" out={rowsOut}>Are you sure? <span style={{ marginLeft: 18, fontFamily: sans, fontSize: 30, fontWeight: 800, color: C.ink, background: C.red, padding: '6px 22px', borderRadius: 12 }}>No</span></Row>
-      <Row y={790} at={w('cold', 25)} who="add-on" out={rowsOut}><span style={{ color: '#FFD3D2', fontSize: 34 }}>Order placed: two cartons of milk, seven dollars and forty cents.</span></Row>
-      <Stamp at={w('cold', 27)} x={1440} y={470} text="Order placed" sub="after a “No”" size={72} rot={-7} />
-      {fr >= leave ? (
-        <div style={{ position: 'absolute', left: 1180 - 330, top: 470 - 210, width: 660, height: 420, borderRadius: 28, background: C.ink2, border: '1.5px solid rgba(255,255,255,0.18)', opacity: gather, transform: `scale(${0.6 + 0.4 * gather})` }} />
-      ) : null}
-      <Pop at={w('cold', 3)} x={290} y={730} out={leave}>
-        <div style={{ fontFamily: mono, fontSize: 16, color: C.muted, letterSpacing: 1, textAlign: 'center', lineHeight: 1.5 }}>REAL REPLIES, WORD FOR WORD<br />suites/household-orders.yaml</div>
-      </Pop>
-    </div>
-  );
-}
-
 /** Frame one: a drop of sound hits and rings out. */
 function Shock() {
   const fr = useF();
@@ -109,7 +33,7 @@ function Shock() {
     <>
       {rings.map((d) => {
         const p = ramp(fr, d, d + 46);
-        return <div key={d} style={{ position: 'absolute', left: 290 - 600 * p, top: 420 - 600 * p, width: 1200 * p, height: 1200 * p, borderRadius: '50%', border: `${3 + 6 * (1 - p)}px solid rgba(255,170,43,${0.6 * (1 - p)})` }} />;
+        return <div key={d} style={{ position: 'absolute', left: 960 - 700 * p, top: 430 - 700 * p, width: 1400 * p, height: 1400 * p, borderRadius: '50%', border: `${3 + 6 * (1 - p)}px solid rgba(255,140,120,${0.55 * (1 - p)})` }} />;
       })}
     </>
   );
@@ -117,9 +41,9 @@ function Shock() {
 
 const CARDS = [
   { x: 440, y: 250, word: 12, rot: -4 },
-  { x: 1480, y: 250, word: 15, rot: 3 },
-  { x: 440, y: 720, word: 19, rot: 3 },
-  { x: 1480, y: 720, word: 27, rot: -3 },
+  { x: 1480, y: 250, word: 16, rot: 3 },
+  { x: 440, y: 720, word: 22, rot: 3 },
+  { x: 1480, y: 720, word: 28, rot: -3 },
 ] as const;
 const LIST = ['milk', 'eggs', 'bread', 'fruit', 'oat milk', 'butter', 'rice', 'tea', 'jam', 'flour', 'soap', 'coffee'];
 
@@ -127,7 +51,7 @@ function Card({ i, children, label }: { i: number; children: ReactNode; label: s
   const fr = useF();
   const w = W('prob');
   const card = CARDS[i]!;
-  const at = w('prob', card.word) + 6;
+  const at = w('why', card.word) + 6;
   const D = sceneFrames('prob');
   const suck = ramp(fr, D - 34 + i * 3, D - 12 + i * 3, 0, 1, (t) => t * t);
   if (fr < at || suck >= 1) return null;
@@ -135,7 +59,7 @@ function Card({ i, children, label }: { i: number; children: ReactNode; label: s
   const x = interpolate(k, [0, 1], [960, card.x], clamp) * (1 - suck) + 960 * suck;
   const y = interpolate(k, [0, 1], [470, card.y], clamp) * (1 - suck) + 470 * suck;
   return (
-    <div style={{ position: 'absolute', left: x, top: y, transform: `translate(-50%,-50%) rotate(${card.rot * k}deg) scale(${(0.2 + 0.8 * k) * sx * (1 - suck)},${(0.2 + 0.8 * k) * sy * (1 - suck)})`, width: 600, padding: '28px 32px', borderRadius: 26, background: 'rgba(16,26,48,0.94)', border: '1.5px solid rgba(255,94,91,0.55)', boxShadow: '0 30px 80px rgba(0,0,0,0.5)' }}>
+    <div style={{ position: 'absolute', left: x, top: y, transform: `translate(-50%,-50%) rotate(${card.rot * k}deg) scale(${(0.2 + 0.8 * k) * sx * (1 - suck)},${(0.2 + 0.8 * k) * sy * (1 - suck)})`, width: 600, padding: '28px 32px', borderRadius: 26, ...GLASS, border: '1.5px solid rgba(255,120,120,0.45)' }}>
       <div style={{ minHeight: 110, display: 'flex', alignItems: 'center' }}>{children}</div>
       <div style={{ marginTop: 14, fontFamily: sans, fontSize: 30, fontWeight: 800, color: C.text }}>{label}</div>
     </div>
@@ -144,29 +68,25 @@ function Card({ i, children, label }: { i: number; children: ReactNode; label: s
 
 export function Prob() {
   const fr = useF();
-  const w = W('prob');
+  const w = (i: number) => cue('prob', 'why', i);
   const D = sceneFrames('prob');
-  // The conversation from the cold open arrives as a chat window, then turns into a voice.
-  const [cx, cy] = carried('cold', 'prob', [1180, 470]);
-  const arrive = stick(fr, -18, { damping: 14, stiffness: 120 });
-  const winX = interpolate(arrive, [0, 1], [cx, 960]);
-  const winY = interpolate(arrive, [0, 1], [cy, 470]);
-  const loud = ramp(fr, w('prob', 8), w('prob', 8) + 20);
-  const crack = fr >= w('prob', 11);
-  const crackK = ramp(fr, w('prob', 11), w('prob', 11) + 10);
-  const shake = crack ? Math.exp(-(fr - w('prob', 11)) / 7) * Math.sin(fr * 2.2) * 9 : 0;
+  const enter = stick(fr, -10, { damping: 15, stiffness: 140 });
+  const loud = ramp(fr, w(7), w(7) + 20);
+  const crack = fr >= w(10);
+  const crackK = ramp(fr, w(10), w(10) + 10);
+  const shake = crack ? Math.exp(-(fr - w(10)) / 7) * Math.sin(fr * 2.2) * 9 : 0;
   const ww = interpolate(loud, [0, 1], [660, 250]);
   const hh = interpolate(loud, [0, 1], [420, 250]);
   const swallow = ramp(fr, D - 30, D - 4, 0, 1);
   const lines = [
-    { who: 'you typed', text: 'Add $15 of fruit', at: w('prob', 2) },
-    { who: 'add-on', text: 'Added.', at: w('prob', 3) + 10 },
+    { who: 'you typed', text: 'Add $15 of fruit', at: w(2) },
+    { who: 'add-on', text: 'Added $15 of fruit.', at: w(3) + 10 },
   ];
   return (
     <div style={{ position: 'absolute', inset: 0 }}>
-      <div style={{ position: 'absolute', left: winX + shake - ww / 2, top: winY - hh / 2, width: ww, height: hh, borderRadius: interpolate(loud, [0, 1], [28, 125]), background: loud > 0 ? `radial-gradient(circle at 35% 30%, #FFD58A, ${C.amber} ${55 + 0 * loud}%, #C9741A)` : C.ink2, border: `1.5px solid ${loud > 0.5 ? 'transparent' : 'rgba(255,255,255,0.18)'}`, boxShadow: loud > 0.5 ? `0 0 ${80 + 60 * swallow}px rgba(255,170,43,0.5)` : '0 40px 100px rgba(0,0,0,0.5)', overflow: 'hidden', transform: `scale(${1 + swallow * 0.35})` }}>
-        <div style={{ opacity: 1 - ramp(fr, w('prob', 8) - 4, w('prob', 8) + 6), padding: 30 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: mono, fontSize: 18, color: C.muted, marginBottom: 26 }}>CHAT WINDOW</div>
+      <div style={{ position: 'absolute', left: 960 + shake - ww / 2, top: 470 - hh / 2, width: ww, height: hh, borderRadius: interpolate(loud, [0, 1], [28, 125]), ...(loud > 0 ? { background: ORB } : GLASS), border: `1.5px solid ${loud > 0.5 ? 'transparent' : 'rgba(255,255,255,0.18)'}`, boxShadow: loud > 0.5 ? `0 0 ${80 + 60 * swallow}px rgba(255,120,110,0.55)` : '0 40px 100px rgba(0,0,0,0.45)', overflow: 'hidden', transform: `scale(${(0.7 + 0.3 * enter) * (1 + swallow * 0.35)})`, opacity: Math.min(1, enter * 2) }}>
+        <div style={{ opacity: 1 - ramp(fr, w(7) - 4, w(7) + 6), padding: 30 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: mono, fontSize: 18, color: C.muted, marginBottom: 26, letterSpacing: 2 }}>CHAT WINDOW</div>
           {lines.map((l) => fr >= l.at ? (
             <div key={l.text} style={{ display: 'flex', justifyContent: l.who === 'add-on' ? 'flex-start' : 'flex-end', marginBottom: 18, opacity: ramp(fr, l.at, l.at + 8) }}>
               <div style={{ fontFamily: sans, fontSize: 34, fontWeight: 600, color: C.text, padding: '12px 22px', borderRadius: 18, background: l.who === 'add-on' ? 'rgba(255,255,255,0.08)' : 'rgba(142,162,255,0.22)' }}>{l.text}</div>
@@ -175,35 +95,33 @@ export function Prob() {
         </div>
         {crack ? (
           <svg viewBox="0 0 250 250" style={{ position: 'absolute', inset: 0, opacity: crackK }}>
-            <path d="M125 10 L112 80 L140 118 L104 168 L126 240 M140 118 L205 104 M112 80 L52 66 M104 168 L40 190" stroke="#3a1206" strokeWidth={5} fill="none" strokeDasharray={600} strokeDashoffset={600 * (1 - crackK)} />
+            <path d="M125 10 L112 80 L140 118 L104 168 L126 240 M140 118 L205 104 M112 80 L52 66 M104 168 L40 190" stroke="#2a0a14" strokeWidth={5} fill="none" strokeDasharray={600} strokeDashoffset={600 * (1 - crackK)} />
           </svg>
         ) : null}
       </div>
-      <Stamp at={w('prob', 6)} x={1260} y={250} text="Looks fine" color={C.green} size={54} rot={6} out={w('prob', 8)} />
-      <Pop at={w('prob', 8)} x={960} y={470 + 185} out={w('prob', 12) - 2}>
+      <Stamp at={w(6)} x={1260} y={250} text="Looks fine" color={C.green} size={54} rot={6} out={w(7)} />
+      <Pop at={w(7)} x={960} y={470 + 185} out={w(12) - 2}>
         <div style={{ fontFamily: sans, fontSize: 56, fontWeight: 900, color: C.text }}>Out loud…</div>
       </Pop>
-      <Card i={0} label="Numbers get misheard">
+      <Card i={0} label="A number heard wrong">
         <div>
           <div style={{ fontFamily: mono, fontSize: 20, color: C.muted, marginBottom: 6 }}>SAID fifteen · HEARD</div>
-          <div style={{ fontFamily: sans, fontSize: 64, fontWeight: 800, color: C.text }}><Melt from="fifteen" to="fifty" at={w('prob', 14)} size={64} color={C.text} weight={800} /></div>
+          <div style={{ fontFamily: sans, fontSize: 64, fontWeight: 800, color: C.text }}><Melt from="fifteen" to="fifty" at={w(13)} size={64} color={C.text} weight={800} /></div>
         </div>
       </Card>
-      <Card i={1} label="Replies read out JSON">
+      <Card i={1} label="A reply that reads out JSON">
         <div style={{ fontFamily: mono, fontSize: 30, color: '#FFB4B2', lineHeight: 1.35 }}>{'{"sku":"sku-fruit",'}<br />{' "amountUsd":50}'}</div>
       </Card>
-      <Card i={2} label="Lists too long to remember">
+      <Card i={2} label="A list too long to remember">
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-          {LIST.slice(0, Math.min(LIST.length, 1 + Math.floor(Math.max(0, fr - w('prob', 19)) / 4))).map((x) => <span key={x} style={{ fontFamily: sans, fontSize: 22, fontWeight: 600, color: C.text, background: 'rgba(255,255,255,0.08)', padding: '4px 12px', borderRadius: 999 }}>{x}</span>)}
+          {LIST.slice(0, Math.min(LIST.length, 1 + Math.floor(Math.max(0, fr - w(22)) / 4))).map((x) => <span key={x} style={{ fontFamily: sans, fontSize: 22, fontWeight: 600, color: C.text, background: 'rgba(255,255,255,0.08)', padding: '4px 12px', borderRadius: 999 }}>{x}</span>)}
         </div>
       </Card>
-      <Card i={3} label="Money moves without a clear yes">
-        <div style={{ display: 'flex', alignItems: 'center', gap: 22, fontFamily: sans, fontSize: 44, fontWeight: 800, color: C.text }}>
-          <span style={{ width: 84, height: 84, borderRadius: '50%', background: C.amber, color: C.ink, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 52 }}>$</span>
+      <Card i={3} label="A no that still places the order">
+        <div style={{ display: 'flex', alignItems: 'center', gap: 20, fontFamily: sans, fontSize: 40, fontWeight: 800, color: C.text }}>
+          <span style={{ fontSize: 30, color: C.ink, background: C.red, padding: '6px 22px', borderRadius: 12 }}>No</span>
           <span style={{ color: C.muted }}>→</span>
-          <span style={{ textDecoration: 'line-through', color: C.muted }}>yes?</span>
-          <span style={{ color: C.muted }}>→</span>
-          <span style={{ color: '#FFB4B2' }}>paid</span>
+          <span style={{ color: '#FFB4B2' }}>order placed</span>
         </div>
       </Card>
     </div>
@@ -216,11 +134,10 @@ export function Intro() {
   const fr = useF();
   const w = W('intro');
   const hit = w('intro', 2) - 3;
-  // The voice from the last scene arrives and becomes the word.
-  const [ox, oy] = carried('prob', 'intro', [960, 470]);
-  const arrive = stick(fr, -16, { damping: 15, stiffness: 110 });
-  const orbX = interpolate(arrive, [0, 1], [ox, 960]);
-  const orbY = interpolate(arrive, [0, 1], [oy, 430]);
+  // A drop of sound lands on frame one and becomes the word.
+  const arrive = stick(fr, 0, { damping: 9, stiffness: 170 });
+  const orbX = 960;
+  const orbY = 430;
   const flat = ramp(fr, hit - 6, hit + 6);
   const shrink = stick(fr, w('intro', 8) - 4, { damping: 16, stiffness: 150 });
   // The wordmark moves to the corner when the test case comes in.
@@ -228,8 +145,9 @@ export function Intro() {
   const tag = ['Preflight', 'checks', 'for', 'voice', 'add-ons'];
   return (
     <div style={{ position: 'absolute', inset: 0 }}>
-      {fr < hit + 8 ? (
-        <div style={{ position: 'absolute', left: orbX - interpolate(flat, [0, 1], [125 * (1 + 0.04 * Math.sin(fr / 5)), 460]), top: orbY - interpolate(flat, [0, 1], [125, 8]) + flat * 130, width: interpolate(flat, [0, 1], [250 * (1 + 0.04 * Math.sin(fr / 5)), 920]), height: interpolate(flat, [0, 1], [250, 16]), borderRadius: 125, background: `radial-gradient(circle at 35% 30%, #FFD58A, ${C.amber} 55%, #C9741A)`, boxShadow: '0 0 120px rgba(255,170,43,0.5)' }} />
+      <Shock />
+      {fr < hit + 8 && fr >= 0 ? (
+        <div style={{ position: 'absolute', left: orbX - interpolate(flat, [0, 1], [125 * (1 + 0.04 * Math.sin(fr / 5)), 460]), top: orbY - interpolate(flat, [0, 1], [125, 8]) + flat * 130, width: interpolate(flat, [0, 1], [250 * (1 + 0.04 * Math.sin(fr / 5)), 920]), height: interpolate(flat, [0, 1], [250, 16]), borderRadius: 125, background: ORB, boxShadow: '0 0 120px rgba(255,110,140,0.5)', transform: `scale(${arrive})` }} />
       ) : null}
       <div style={{ position: 'absolute', left: mark.x, top: mark.y, transform: `translate(-50%,-50%) scale(${mark.s})` }}>
         <div style={{ position: 'relative', display: 'flex' }}>
@@ -240,11 +158,11 @@ export function Intro() {
             return <span key={i} style={{ display: 'inline-block', fontFamily: sans, fontSize: 230, fontWeight: 900, letterSpacing: -6, color: C.text, transform: `translateY(${(1 - k) * -260}px) rotate(${(1 - k) * (i % 2 ? 14 : -14)}deg) scale(${sx},${sy})`, transformOrigin: 'bottom' }}>{ch}</span>;
           })}
         </div>
-        {fr >= hit ? <div style={{ position: 'absolute', left: '50%', bottom: -14, height: 18, borderRadius: 9, background: C.amber, width: `${100 * stick(fr, hit, { damping: 18 })}%`, transform: 'translateX(-50%)', boxShadow: '0 0 50px rgba(255,170,43,0.6)' }} /> : null}
+        {fr >= hit ? <div style={{ position: 'absolute', left: '50%', bottom: -14, height: 18, borderRadius: 9, background: GRAD, width: `${100 * stick(fr, hit, { damping: 18 })}%`, transform: 'translateX(-50%)', boxShadow: '0 0 60px rgba(255,94,138,0.55)' }} /> : null}
       </div>
       {fr >= hit + 10 && fr < w('intro', 8) + 20 ? (
         <div style={{ position: 'absolute', left: 1590, top: 205, transform: `translate(-50%,-50%) scale(${stick(fr, hit + 10) * (1 - ramp(fr, w('intro', 8) - 4, w('intro', 8) + 12))})` }}>
-          <Starburst size={270} spin={fr * 0.25} points={22}>
+          <Starburst size={270} spin={fr * 0.25} points={22} fill="grad">
             <div style={{ fontFamily: sans, fontSize: 70, fontWeight: 900, color: C.ink, lineHeight: 0.9 }}>NEW</div>
             <div style={{ fontFamily: sans, fontSize: 19, fontWeight: 800, color: C.ink, marginTop: 6, lineHeight: 1.15 }}>for Alexa+<br />MCP servers</div>
           </Starburst>
@@ -255,7 +173,7 @@ export function Intro() {
           {tag.map((t, i) => {
             const at = w('intro', 3 + i) - 2;
             const k = fr >= at ? stick(fr, at) : 0;
-            return <span key={t} style={{ fontFamily: sans, fontSize: 60, fontWeight: 700, color: i === 3 ? C.amber : C.text, opacity: Math.min(1, k * 2), transform: `translateY(${(1 - k) * 40}px)`, display: 'inline-block' }}>{t}</span>;
+            return <span key={t} style={{ fontFamily: sans, fontSize: 60, fontWeight: 700, color: C.text, ...(i === 3 ? GRAD_TEXT : {}), opacity: Math.min(1, k * 2), transform: `translateY(${(1 - k) * 40}px)`, display: 'inline-block' }}>{t}</span>;
           })}
         </div>
       ) : null}
@@ -290,7 +208,7 @@ function TestCase() {
   const fail = w('intro', 24);
   return (
     <>
-      <div style={{ position: 'absolute', left: 100, top: 210, width: 1190, transform: `translateX(${(1 - k) * -700}px) rotate(${(1 - k) * -4}deg)`, opacity: Math.min(1, k * 2), borderRadius: 22, background: 'rgba(12,19,36,0.96)', border: '1.5px solid rgba(255,255,255,0.16)', boxShadow: '0 40px 100px rgba(0,0,0,0.5)', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', left: 100, top: 210, width: 1190, transform: `translateX(${(1 - k) * -700}px) rotate(${(1 - k) * -4}deg)`, opacity: Math.min(1, k * 2), borderRadius: 22, ...GLASS, background: 'rgba(10,13,26,0.78)', overflow: 'hidden' }}>
         <div style={{ padding: '12px 22px', fontFamily: mono, fontSize: 18, color: C.muted, background: 'rgba(255,255,255,0.04)', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>suites/household-orders.yaml</div>
         <div style={{ padding: '18px 24px', fontFamily: mono, fontSize: 23, lineHeight: 1.55 }}>
           {CASE.map(([key, val], i) => {
@@ -304,7 +222,7 @@ function TestCase() {
         </div>
       </div>
       <Pop at={server - 10} x={1610} y={420}>
-        <div style={{ width: 330, height: 250, borderRadius: 26, background: 'rgba(142,162,255,0.12)', border: `2px solid ${C.blue}`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 14, boxShadow: fr >= server + 4 ? `0 0 ${60 * Math.exp(-(fr - server - 4) / 20)}px ${C.blue}` : undefined }}>
+        <div style={{ width: 330, height: 250, borderRadius: 26, background: 'rgba(110,130,255,0.16)', border: `2px solid ${C.blue}`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 14, boxShadow: fr >= server + 4 ? `0 0 ${60 * Math.exp(-(fr - server - 4) / 20)}px ${C.blue}` : undefined }}>
           <Icon name="server" size={72} color={C.blue} />
           <div style={{ fontFamily: sans, fontSize: 34, fontWeight: 800, color: C.text }}>your server</div>
           <Chip tint={C.blue} style={{ fontSize: 18, padding: '4px 12px' }}>MCP</Chip>

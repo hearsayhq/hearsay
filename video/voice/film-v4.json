@@ -1,24 +1,8 @@
 {
- "about": "Film v4, the infomercial cut: one narrator explains what happens, no character voices. Every reply quoted on screen is word for word from the Household Orders runs in video/tapes (flawed: reports of household-flawed.tape; fixed: household-fixed.tape); numbers from the same runs and from PR #27's CI.",
+ "about": "Film v4, the infomercial cut: one narrator explains, whole takes only (no cuts inside a sentence). Replies quoted on screen are word for word from the Household Orders runs in video/tapes; numbers from the same runs and from PR #27's CI.",
  "model": "gpt-4o-mini-tts",
  "tempo": 1.1,
  "lines": [
-  {
-   "id": "v4-cold",
-   "who": "narrator",
-   "voice": "alloy",
-   "gapBeforeMs": 0,
-   "text": "Here's a grocery add-on. Ask for fifteen dollars of fruit: it hears fifty, asks, \"are you sure?\", and adds it. Say no at checkout: it places the order anyway.",
-   "direction": "Upbeat, charismatic host of a modern tech infomercial, explaining what we see. Fast, crisp and precise, a smile in the voice. A little deadpan on 'it places the order anyway'. Never shouty, never cheesy."
-  },
-  {
-   "id": "v4-prob",
-   "who": "narrator",
-   "voice": "alloy",
-   "gapBeforeMs": 0,
-   "text": "In a chat window, this add-on looks fine. Out loud, it breaks. Numbers get misheard. Replies read out JSON. Lists run longer than anyone can remember. And money moves without a clear yes.",
-   "direction": "Upbeat, charismatic host of a modern tech infomercial, explaining a problem. Fast, crisp and precise, punchy rhythm on each short sentence. Never shouty, never cheesy."
-  },
   {
    "id": "v4-intro",
    "who": "narrator",
@@ -26,6 +10,14 @@
    "gapBeforeMs": 0,
    "text": "This is Hearsay: preflight checks for voice add-ons. You write what your customers say. Hearsay plays it against your server, clean and misheard, and fails the build when it would go wrong out loud.",
    "direction": "Upbeat, charismatic host of a modern tech infomercial, introducing the product with pride. Fast, crisp and precise, a smile in the voice, clear emphasis on 'Hearsay'. Never shouty, never cheesy."
+  },
+  {
+   "id": "v4-why",
+   "who": "narrator",
+   "voice": "alloy",
+   "gapBeforeMs": 0,
+   "text": "In a chat window, add-ons look fine. Out loud, they break: a number heard wrong, a reply that reads out JSON, a list too long to remember, a no that still places the order.",
+   "direction": "Upbeat, charismatic host of a modern tech infomercial, explaining a problem with a light touch, a short beat between the four examples. Fast, crisp and precise. Never shouty, never cheesy."
   },
   {
    "id": "v4-how1",
@@ -60,11 +52,11 @@
    "direction": "Upbeat, charismatic host of a modern tech infomercial, running through a checklist. Fast, crisp and precise, a light beat between the items. Never shouty, never cheesy."
   },
   {
-   "id": "v4-red1",
+   "id": "v4-run",
    "who": "narrator",
    "voice": "alloy",
    "gapBeforeMs": 0,
-   "text": "Here's the real run on that add-on. One take, no cuts.",
+   "text": "Here's a real run, on a grocery add-on. One take, no cuts.",
    "direction": "Upbeat, charismatic host of a modern tech infomercial, starting a live demo. Fast, crisp and precise. Never shouty, never cheesy."
   },
   {
@@ -76,20 +68,52 @@
    "direction": "Upbeat, charismatic host of a modern tech infomercial, calling out results of a live demo. Fast, crisp and precise, punchy on the numbers. Never shouty, never cheesy."
   },
   {
-   "id": "v4-after",
+   "id": "v4-after1",
    "who": "narrator",
    "voice": "alloy",
    "gapBeforeMs": 0,
-   "text": "The fixed build, same tests. The misheard fifty is refused, and the add-on says why. Zero errors.",
-   "direction": "Upbeat, charismatic host of a modern tech infomercial, showing the after shot. Fast, crisp and precise, satisfied on 'Zero errors'. Never shouty, never cheesy."
+   "text": "The fixed build, same tests.",
+   "direction": "Upbeat, charismatic host of a modern tech infomercial, showing the after shot. Fast, crisp and precise. Never shouty, never cheesy."
   },
   {
-   "id": "v4-ci",
+   "id": "v4-after2",
    "who": "narrator",
    "voice": "alloy",
    "gapBeforeMs": 0,
-   "text": "And it guards every pull request. This change let fifty dollars of fruit skip the budget. Hearsay caught it, and the check went red. One fix, and it's green.",
+   "text": "The misheard fifty is refused, and the add-on says why.",
+   "direction": "Upbeat, charismatic host of a modern tech infomercial, explaining, pleased. Fast, crisp and precise. Never shouty, never cheesy."
+  },
+  {
+   "id": "v4-after3",
+   "who": "narrator",
+   "voice": "alloy",
+   "gapBeforeMs": 0,
+   "text": "Zero errors.",
+   "direction": "Upbeat, charismatic host of a modern tech infomercial, satisfied, a small smile. Fast, crisp and precise. Never shouty, never cheesy."
+  },
+  {
+   "id": "v4-ci1",
+   "who": "narrator",
+   "voice": "alloy",
+   "gapBeforeMs": 0,
+   "text": "And it guards every pull request. This change let fifty dollars of fruit skip the budget.",
    "direction": "Upbeat, charismatic host of a modern tech infomercial, explaining a real example. Fast, crisp and precise. Never shouty, never cheesy."
+  },
+  {
+   "id": "v4-ci2",
+   "who": "narrator",
+   "voice": "alloy",
+   "gapBeforeMs": 0,
+   "text": "Hearsay caught it, and the check went red.",
+   "direction": "Upbeat, charismatic host of a modern tech infomercial, a satisfied, matter-of-fact beat. Fast, crisp and precise. Never shouty, never cheesy."
+  },
+  {
+   "id": "v4-ci3",
+   "who": "narrator",
+   "voice": "alloy",
+   "gapBeforeMs": 0,
+   "text": "One fix, and it's green.",
+   "direction": "Upbeat, charismatic host of a modern tech infomercial, a light, happy payoff. Fast, crisp and precise. Never shouty, never cheesy."
   },
   {
    "id": "v4-more1",
@@ -100,12 +124,20 @@
    "direction": "Upbeat, charismatic host of a modern tech infomercial, with a playful wink on 'But wait, there's more', then explaining. Fast, crisp and precise. Never shouty, never cheesy."
   },
   {
-   "id": "v4-more2",
+   "id": "v4-cheat1",
    "who": "narrator",
    "voice": "alloy",
    "gapBeforeMs": 0,
-   "text": "And it can't cheat: change a locked test, and the run fails.",
-   "direction": "Upbeat, charismatic host of a modern tech infomercial, a confident aside. Fast, crisp and precise. Never shouty, never cheesy."
+   "text": "And it can't cheat: change a locked test,",
+   "direction": "Upbeat, charismatic host of a modern tech infomercial, a confident aside, the sentence continues after a pause. Fast, crisp and precise. Never shouty, never cheesy."
+  },
+  {
+   "id": "v4-cheat2",
+   "who": "narrator",
+   "voice": "alloy",
+   "gapBeforeMs": 0,
+   "text": "and the run fails.",
+   "direction": "Upbeat, charismatic host of a modern tech infomercial, finishing the sentence with a wink. Fast, crisp and precise. Never shouty, never cheesy."
   },
   {
    "id": "v4-proof",

@@ -1,30 +1,34 @@
 /**
- * Film v4's clock, the infomercial cut: one narrator, every line cut from its take at word
- * boundaries (whisper word timings, voice/align.mjs) and placed on what happens on screen: the
- * tapes' measured events, the scene's own beats. Scenes are listed with their length; every
+ * Film v4's clock, the infomercial cut: one narrator, every line a whole take (no cuts inside a
+ * sentence), placed on what happens on screen: the tapes' measured events, the scene's own beats.
+ * Word timings come from whisper (voice/align.mjs). Scenes are listed with their length; every
  * placement is in seconds from the scene's start.
  */
 import { FPS } from '../theme';
-import cold from '../../public/voice/v4-cold.words.json';
-import prob from '../../public/voice/v4-prob.words.json';
 import intro from '../../public/voice/v4-intro.words.json';
+import why from '../../public/voice/v4-why.words.json';
 import how1 from '../../public/voice/v4-how1.words.json';
 import how2 from '../../public/voice/v4-how2.words.json';
 import how3 from '../../public/voice/v4-how3.words.json';
 import rules from '../../public/voice/v4-rules.words.json';
-import red1 from '../../public/voice/v4-red1.words.json';
+import run from '../../public/voice/v4-run.words.json';
 import red2 from '../../public/voice/v4-red2.words.json';
-import after from '../../public/voice/v4-after.words.json';
-import ci from '../../public/voice/v4-ci.words.json';
+import after1 from '../../public/voice/v4-after1.words.json';
+import after2 from '../../public/voice/v4-after2.words.json';
+import after3 from '../../public/voice/v4-after3.words.json';
+import ci1 from '../../public/voice/v4-ci1.words.json';
+import ci2 from '../../public/voice/v4-ci2.words.json';
+import ci3 from '../../public/voice/v4-ci3.words.json';
 import more1 from '../../public/voice/v4-more1.words.json';
-import more2 from '../../public/voice/v4-more2.words.json';
+import cheat1 from '../../public/voice/v4-cheat1.words.json';
+import cheat2 from '../../public/voice/v4-cheat2.words.json';
 import proof from '../../public/voice/v4-proof.words.json';
 import offer from '../../public/voice/v4-offer.words.json';
 import tag from '../../public/voice/v4-tag.words.json';
 
 type Take = { id: string; duration: number; words: Array<{ word: string; start: number; end: number }> };
 const TAKES: Record<string, Take> = Object.fromEntries(
-  [cold, prob, intro, how1, how2, how3, rules, red1, red2, after, ci, more1, more2, proof, offer, tag].map((t) => [t.id.replace('v4-', ''), t as Take]),
+  [intro, why, how1, how2, how3, rules, run, red2, after1, after2, after3, ci1, ci2, ci3, more1, cheat1, cheat2, proof, offer, tag].map((t) => [t.id.replace('v4-', ''), t as Take]),
 );
 
 /** The real recordings (public/clips/v4, from video/tapes/*-4k.tape and the agent-loop cast). */
@@ -43,19 +47,18 @@ type Scene = { name: string; seconds: number; segs: Seg[] };
 const S = (line: string, at: number, from?: number, to?: number): Seg => ({ line, at, ...(from !== undefined ? { from } : {}), ...(to !== undefined ? { to } : {}) });
 
 export const SCENES: Scene[] = [
-  { name: 'cold', seconds: 10.85, segs: [S('cold', 0.45)] },
-  { name: 'prob', seconds: 12.15, segs: [S('prob', 0.2)] },
-  { name: 'intro', seconds: 12.25, segs: [S('intro', 0.55)] },
+  { name: 'intro', seconds: 12.5, segs: [S('intro', 0.7)] },
+  { name: 'prob', seconds: 11.4, segs: [S('why', 0.3)] },
   { name: 'how', seconds: 21.35, segs: [S('how1', 0.2), S('how2', 4.7), S('how3', 14.4)] },
   { name: 'rules', seconds: 12.5, segs: [S('rules', 0.25)] },
   // The flawed run, uncut: the clip starts at 0.15, its output lands at 0.15 + 9.6.
-  { name: 'red', seconds: 18.3, segs: [S('red1', 0.4, 0, 7), S('red1', 5.5, 7), S('red2', 9.95)] },
-  { name: 'after', seconds: 11.0, segs: [S('after', 0.35, 0, 5), S('after', 4.5, 5, 15), S('after', 9.15, 15)] },
-  { name: 'ci', seconds: 16.7, segs: [S('ci', 0.15, 0, 6), S('ci', 2.25, 6, 16), S('ci', 6.35, 16, 24), S('ci', 11.6, 24, 26), S('ci', 15.6, 26)] },
-  { name: 'more', seconds: 10.4, segs: [S('more1', 0.1, 0, 4), S('more1', 2.15, 4)] },
-  { name: 'cheat', seconds: 8.7, segs: [S('more2', 0.25, 0, 4), S('more2', 1.5, 4, 8), S('more2', 7.55, 8)] },
+  { name: 'red', seconds: 18.3, segs: [S('run', 0.4), S('red2', 9.95)] },
+  { name: 'after', seconds: 11.0, segs: [S('after1', 0.35), S('after2', 4.3), S('after3', 9.15)] },
+  { name: 'ci', seconds: 16.7, segs: [S('ci1', 0.15), S('ci2', 6.35), S('ci3', 14.15)] },
+  { name: 'more', seconds: 10.4, segs: [S('more1', 0.1)] },
+  { name: 'cheat', seconds: 8.7, segs: [S('cheat1', 0.25), S('cheat2', 7.1)] },
   { name: 'proof', seconds: 12.4, segs: [S('proof', 0.25)] },
-  { name: 'offer', seconds: 21.0, segs: [S('offer', 0.15, 0, 4), S('offer', 2.3, 4, 12), S('offer', 5.55, 12), S('tag', 15.7)] },
+  { name: 'offer', seconds: 21.0, segs: [S('offer', 0.15), S('tag', 15.7)] },
 ];
 
 /** Where each clip starts in its scene, and how fast it plays (installs and the agent loop only). */

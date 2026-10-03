@@ -1,133 +1,165 @@
 {
  "model": "gpt-4o-mini-tts",
- "lengthSeconds": 128.615,
+ "lengthSeconds": 120.687,
  "lines": [
-  {
-   "id": "v4-cold",
-   "who": "narrator",
-   "text": "Here's a grocery add-on. Ask for fifteen dollars of fruit: it hears fifty, asks, \"are you sure?\", and adds it. Say no at checkout: it places the order anyway.",
-   "start": 0,
-   "end": 10.215,
-   "src": "voice/v4-cold.mp3"
-  },
-  {
-   "id": "v4-prob",
-   "who": "narrator",
-   "text": "In a chat window, this add-on looks fine. Out loud, it breaks. Numbers get misheard. Replies read out JSON. Lists run longer than anyone can remember. And money moves without a clear yes.",
-   "start": 10.215,
-   "end": 21.953,
-   "src": "voice/v4-prob.mp3"
-  },
   {
    "id": "v4-intro",
    "who": "narrator",
    "text": "This is Hearsay: preflight checks for voice add-ons. You write what your customers say. Hearsay plays it against your server, clean and misheard, and fails the build when it would go wrong out loud.",
-   "start": 21.953,
-   "end": 33.529,
+   "start": 0,
+   "end": 11.576,
    "src": "voice/v4-intro.mp3"
+  },
+  {
+   "id": "v4-why",
+   "who": "narrator",
+   "text": "In a chat window, add-ons look fine. Out loud, they break: a number heard wrong, a reply that reads out JSON, a list too long to remember, a no that still places the order.",
+   "start": 11.576,
+   "end": 22.246,
+   "src": "voice/v4-why.mp3"
   },
   {
    "id": "v4-how1",
    "who": "narrator",
    "text": "Here's how. When someone speaks, only one step is your code: the server.",
-   "start": 33.529,
-   "end": 37.703,
+   "start": 22.246,
+   "end": 26.419,
    "src": "voice/v4-how1.mp3"
   },
   {
    "id": "v4-how2",
    "who": "narrator",
    "text": "Hearsay plays the rest, straight from your test case: the words, the mishearings, and the tool call the model would make. Then it checks what your server answers.",
-   "start": 37.703,
-   "end": 47.031,
+   "start": 26.419,
+   "end": 35.748,
    "src": "voice/v4-how2.mp3"
   },
   {
    "id": "v4-how3",
    "who": "narrator",
    "text": "No microphone. No model. No API keys. The same result every time, so it runs on every pull request.",
-   "start": 47.031,
-   "end": 53.856,
+   "start": 35.748,
+   "end": 42.573,
    "src": "voice/v4-how3.mp3"
   },
   {
    "id": "v4-rules",
    "who": "narrator",
    "text": "Every answer is graded by the rules Amazon published for add-ons: half a second per tool, short replies, no JSON, five options at most, and no payment without naming what and how much.",
-   "start": 53.856,
-   "end": 65.951,
+   "start": 42.573,
+   "end": 54.668,
    "src": "voice/v4-rules.mp3"
   },
   {
-   "id": "v4-red1",
+   "id": "v4-run",
    "who": "narrator",
-   "text": "Here's the real run on that add-on. One take, no cuts.",
-   "start": 65.951,
-   "end": 69.987,
-   "src": "voice/v4-red1.mp3"
+   "text": "Here's a real run, on a grocery add-on. One take, no cuts.",
+   "start": 54.668,
+   "end": 59.373,
+   "src": "voice/v4-run.mp3"
   },
   {
    "id": "v4-red2",
    "who": "narrator",
    "text": "Fifty instead of fifteen, taken without reading it back. A no that placed the order anyway. Twenty errors. Exit one. The build fails.",
-   "start": 69.987,
-   "end": 78.064,
+   "start": 59.373,
+   "end": 67.45,
    "src": "voice/v4-red2.mp3"
   },
   {
-   "id": "v4-after",
+   "id": "v4-after1",
    "who": "narrator",
-   "text": "The fixed build, same tests. The misheard fifty is refused, and the add-on says why. Zero errors.",
-   "start": 78.064,
-   "end": 85.055,
-   "src": "voice/v4-after.mp3"
+   "text": "The fixed build, same tests.",
+   "start": 67.45,
+   "end": 69.868,
+   "src": "voice/v4-after1.mp3"
   },
   {
-   "id": "v4-ci",
+   "id": "v4-after2",
    "who": "narrator",
-   "text": "And it guards every pull request. This change let fifty dollars of fruit skip the budget. Hearsay caught it, and the check went red. One fix, and it's green.",
-   "start": 85.055,
-   "end": 94.248,
-   "src": "voice/v4-ci.mp3"
+   "text": "The misheard fifty is refused, and the add-on says why.",
+   "start": 69.868,
+   "end": 74.45,
+   "src": "voice/v4-after2.mp3"
+  },
+  {
+   "id": "v4-after3",
+   "who": "narrator",
+   "text": "Zero errors.",
+   "start": 74.45,
+   "end": 75.653,
+   "src": "voice/v4-after3.mp3"
+  },
+  {
+   "id": "v4-ci1",
+   "who": "narrator",
+   "text": "And it guards every pull request. This change let fifty dollars of fruit skip the budget.",
+   "start": 75.653,
+   "end": 80.976,
+   "src": "voice/v4-ci1.mp3"
+  },
+  {
+   "id": "v4-ci2",
+   "who": "narrator",
+   "text": "Hearsay caught it, and the check went red.",
+   "start": 80.976,
+   "end": 83.726,
+   "src": "voice/v4-ci2.mp3"
+  },
+  {
+   "id": "v4-ci3",
+   "who": "narrator",
+   "text": "One fix, and it's green.",
+   "start": 83.726,
+   "end": 85.531,
+   "src": "voice/v4-ci3.mp3"
   },
   {
    "id": "v4-more1",
    "who": "narrator",
    "text": "But wait, there's more. Hearsay is also an MCP server. Your coding agent runs it, fixes what it finds, and runs it again, until it's green.",
-   "start": 94.248,
-   "end": 102.729,
+   "start": 85.531,
+   "end": 94.011,
    "src": "voice/v4-more1.mp3"
   },
   {
-   "id": "v4-more2",
+   "id": "v4-cheat1",
    "who": "narrator",
-   "text": "And it can't cheat: change a locked test, and the run fails.",
-   "start": 102.729,
-   "end": 106.718,
-   "src": "voice/v4-more2.mp3"
+   "text": "And it can't cheat: change a locked test,",
+   "start": 94.011,
+   "end": 97.213,
+   "src": "voice/v4-cheat1.mp3"
+  },
+  {
+   "id": "v4-cheat2",
+   "who": "narrator",
+   "text": "and the run fails.",
+   "start": 97.213,
+   "end": 98.79,
+   "src": "voice/v4-cheat2.mp3"
   },
   {
    "id": "v4-proof",
    "who": "narrator",
    "text": "We measured it with coding agents. A suite alone made them stop at green, so Hearsay now shows what your suite doesn't cover. The result: zero defects left behind, and better on the rules nobody told them about.",
-   "start": 106.718,
-   "end": 118.555,
+   "start": 98.79,
+   "end": 110.627,
    "src": "voice/v4-proof.mp3"
   },
   {
    "id": "v4-offer",
    "who": "narrator",
    "text": "And the price? Zero. Hearsay is open source. No keys, no account. Clone it, install it, run it.",
-   "start": 118.555,
-   "end": 125.806,
+   "start": 110.627,
+   "end": 117.878,
    "src": "voice/v4-offer.mp3"
   },
   {
    "id": "v4-tag",
    "who": "narrator",
    "text": "Hearsay. Hear it before your customers do.",
-   "start": 125.806,
-   "end": 128.615,
+   "start": 117.878,
+   "end": 120.687,
    "src": "voice/v4-tag.mp3"
   }
  ]

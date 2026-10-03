@@ -4,7 +4,7 @@
  * experiment's numbers with their limits in the fine print (docs/15).
  */
 import { AGENT_SPEED, CLIPS, CLIP_AT, cue } from './plan';
-import { C, Chip, Icon, Mark, mono, Pop, ramp, Rec, RecLabel, sans, sec, Stamp, Starburst, stick, TermWindow, track, useF } from './kit';
+import { C, Chip, GRAD_TEXT, Icon, Mark, mono, Pop, ramp, Rec, RecLabel, sans, sec, Stamp, Starburst, stick, TermWindow, track, useF } from './kit';
 import { Note } from './Demo';
 
 const W = (scene: string) => (line: string, i: number) => cue(scene, line, i);
@@ -31,7 +31,7 @@ export function More() {
     <div style={{ position: 'absolute', inset: 0 }}>
       {burstOut < 1 ? (
         <div style={{ position: 'absolute', left: 960, top: 500, transform: `translate(-50%,-50%) scale(${burstIn * (1 - burstOut)})` }}>
-          <Starburst size={1300} points={26} inner={0.86} spin={fr * 0.4}>
+          <Starburst size={1300} points={26} inner={0.86} spin={fr * 0.4} fill="grad">
             <div style={{ fontFamily: sans, fontSize: 130, fontWeight: 900, color: C.ink, lineHeight: 0.95, transform: `scale(${fr >= w('more1', 0) ? stick(fr, w('more1', 0)) : 0})` }}>BUT WAIT —</div>
             <div style={{ fontFamily: sans, fontSize: 150, fontWeight: 900, color: C.ink, lineHeight: 0.95, transform: `scale(${fr >= w('more1', 2) ? stick(fr, w('more1', 2)) : 0}) rotate(-3deg)` }}>THERE’S MORE!</div>
           </Starburst>
@@ -67,25 +67,25 @@ export function Cheat() {
     [out, { x: 20, y: 20, w: 2800 }],
     [out + 20, { x: 20, y: 60, w: 3200 }],
   ]);
-  const caught = w('more2', 8);
+  const caught = w('cheat2', 0);
   const shake = fr >= caught ? Math.exp(-(fr - caught) / 7) * Math.sin(fr * 2.3) * 10 : 0;
   const red = ramp(fr, caught, caught + 8);
   return (
     <div style={{ position: 'absolute', inset: 0 }}>
-      <Pop at={w('more2', 0) + 2} x={420} y={40} rot={-2}>
+      <Pop at={w('cheat1', 0) + 2} x={420} y={40} rot={-2}>
         <div style={{ transform: `translateX(${shake}px)` }}>
           <Chip tint={red > 0.5 ? C.red : C.amber} solid style={{ fontFamily: sans, fontWeight: 800, fontSize: 24 }}><Icon name="lock" size={26} color={C.ink} /> suites/kitchen.yaml · locked</Chip>
         </div>
       </Pop>
       <TermWindow title="hearsay — bash — editing a locked test" w={1600} h={860} glow={C.red} style={{ left: 160, top: 70 }}>
         <Rec clip={CLIPS.cheat} t={t} view={view} vw={1600} vh={860}>
-          <Mark at={w('more2', 4)} x={625} y={83} w={1245} h={39} />
+          <Mark at={w('cheat1', 4)} x={625} y={83} w={1245} h={39} />
           <Mark at={out + 8} x={74} y={482} w={3045} h={40} color={C.red} />
           <Mark at={out + 20} x={74} y={839} w={1160} h={32} color={C.red} />
           <Mark at={out + 26} x={74} y={930} w={140} h={30} color={C.red} />
         </Rec>
       </TermWindow>
-      <Note at={w('more2', 4) + 6} x={1380} y={430} rot={2}>the test says <b style={{ color: C.amber }}>15</b> · “fixed” to <b style={{ color: '#FFB4B2' }}>50</b></Note>
+      <Note at={w('cheat1', 4) + 6} x={1380} y={430} rot={2}>the test says <b style={{ color: C.amber }}>15</b> · “fixed” to <b style={{ color: '#FFB4B2' }}>50</b></Note>
       <Note at={out + 10} x={1200} y={760} tint={C.red} rot={-2} width={640}>
         <div style={{ fontFamily: mono, fontSize: 20, color: C.red, marginBottom: 6 }}>suite.integrity · error</div>
         changed since it was locked: this run cannot count as green
@@ -114,14 +114,14 @@ export function Proof() {
     <div style={{ position: 'absolute', inset: 0 }}>
       <Pop at={w('proof', 0)} x={960} y={95}><div style={{ fontFamily: sans, fontSize: 66, fontWeight: 900, color: C.text, whiteSpace: 'nowrap', letterSpacing: -1 }}>We measured it with coding agents.</div></Pop>
       <Pop at={w('proof', 6) - 4} x={500} y={330} rot={-1}>
-        <div style={{ width: 760, padding: '26px 32px', borderRadius: 24, background: 'rgba(16,26,48,0.96)', border: '1.5px solid rgba(255,255,255,0.16)' }}>
+        <div style={{ width: 760, padding: '26px 32px', borderRadius: 24, background: 'rgba(12,15,30,0.62)', border: '1.5px solid rgba(255,255,255,0.16)' }}>
           <div style={{ fontFamily: sans, fontSize: 32, fontWeight: 800, color: C.text, marginBottom: 18 }}>A suite alone: agents stopped at green</div>
           <Bar at={w('proof', 9)} value={0.682} label="unseen cases passed · suite only" text="68 %" tint={C.green} width={690} />
           <Bar at={w('proof', 11)} value={0.829} label="a precise prompt, no Hearsay" text="83 %" tint={C.muted} width={690} />
         </div>
       </Pop>
       <Pop at={w('proof', 15)} x={1400} y={330} rot={1}>
-        <div style={{ width: 760, padding: '26px 32px', borderRadius: 24, background: 'rgba(16,26,48,0.96)', border: `1.5px solid ${C.amber}` }}>
+        <div style={{ width: 760, padding: '26px 32px', borderRadius: 24, background: 'rgba(12,15,30,0.62)', border: `1.5px solid ${C.amber}` }}>
           <div style={{ fontFamily: sans, fontSize: 32, fontWeight: 800, color: C.text, marginBottom: 16 }}>So Hearsay now shows what your suite doesn’t cover</div>
           <div style={{ fontFamily: mono, fontSize: 21, color: C.text, lineHeight: 1.5, padding: '12px 16px', borderRadius: 12, background: 'rgba(255,170,43,0.10)' }}>
             <span style={{ color: C.amber }}>! coverage.values</span> warn<br />orders_stage_cart.amountUsd: no case tries a value outside 0.5–500
@@ -131,7 +131,7 @@ export function Proof() {
       {fr >= zero - 6 ? (
         <div style={{ position: 'absolute', left: 0, right: 0, top: 540, display: 'flex', justifyContent: 'center', alignItems: 'flex-end', gap: 120 }}>
           <div style={{ textAlign: 'center', transform: `scale(${stick(fr, zero - 6)})` }}>
-            <div style={{ fontFamily: sans, fontSize: 190, fontWeight: 900, color: C.amber, lineHeight: 0.9, letterSpacing: -6 }}>0 <span style={{ fontSize: 90, letterSpacing: -2 }}>of 36</span></div>
+            <div style={{ fontFamily: sans, fontSize: 190, fontWeight: 900, lineHeight: 0.9, letterSpacing: -6, ...GRAD_TEXT }}>0 <span style={{ fontSize: 90, letterSpacing: -2 }}>of 36</span></div>
             <div style={{ fontFamily: sans, fontSize: 26, fontWeight: 600, color: C.text, marginTop: 12 }}>agent runs with Hearsay left errors behind*</div>
           </div>
           <div style={{ textAlign: 'center', transform: `scale(${stick(fr, zero + 10)})`, opacity: 0.85 }}>

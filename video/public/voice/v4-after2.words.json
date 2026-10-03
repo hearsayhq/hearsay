@@ -1,0 +1,59 @@
+{
+ "id": "v4-after2",
+ "text": "The misheard fifty is refused, and the add-on says why.",
+ "heard": "The misheard fifty is refused, and the add-on says why.",
+ "duration": 4.579999923706055,
+ "words": [
+  {
+   "word": "The",
+   "start": 0,
+   "end": 0.4000000059604645
+  },
+  {
+   "word": "misheard",
+   "start": 0.4000000059604645,
+   "end": 0.8600000143051147
+  },
+  {
+   "word": "fifty",
+   "start": 0.8600000143051147,
+   "end": 1.399999976158142
+  },
+  {
+   "word": "is",
+   "start": 1.399999976158142,
+   "end": 1.899999976158142
+  },
+  {
+   "word": "refused,",
+   "start": 1.899999976158142,
+   "end": 2.4000000953674316
+  },
+  {
+   "word": "and",
+   "start": 2.9800000190734863,
+   "end": 3
+  },
+  {
+   "word": "the",
+   "start": 3,
+   "end": 3.3399999141693115
+  },
+  {
+   "word": "add-on",
+   "start": 3.3399999141693115,
+   "end": 3.559999942779541,
+   "guessed": true
+  },
+  {
+   "word": "says",
+   "start": 3.559999942779541,
+   "end": 3.9200000762939453
+  },
+  {
+   "word": "why.",
+   "start": 3.9200000762939453,
+   "end": 4.480000019073486
+  }
+ ]
+}
