@@ -26,7 +26,8 @@ specification, or Hearsay's own rule.
 > `hearsay lock`, `hearsay gen-variants` and `hearsay serve` work; coding agents can use Hearsay
 > over MCP with two Agent Skills; the web console plays turns live and a person answers the
 > server's confirmations. Mishearings reach the server through its arguments, so `asr.robust`
-> runs without a model. Waiting on access: Bedrock and Polly/Transcribe recordings.
+> runs without a model. Recorded on AWS and replayed offline: a Bedrock llm run of Kitchen
+> (`suites/cassettes/`) and real mishearings from Polly and Transcribe (`suites/variants/`).
 > See [docs/07](docs/07_IMPLEMENTATION_PLAN.md).
 
 **Does it help a coding agent?** We measured it. Without Hearsay, 11 of 27 agent runs ended with

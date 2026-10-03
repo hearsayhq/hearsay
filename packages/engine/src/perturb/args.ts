@@ -14,6 +14,7 @@ function mapValue(v: unknown, e: Edit): { value: unknown; drop?: boolean; change
     const current = typeof v === 'number' ? v : parseNumber(v as string);
     if (current !== nFrom) return { value: v, changed: false };
     const nTo = parseNumber(e.to);
+    if (nTo === nFrom) return { value: v, changed: false }; // "seven" heard as "7" is still 7
     return nTo === undefined ? { value: undefined, drop: true, changed: true } : { value: typeof v === 'number' ? nTo : String(nTo), changed: true };
   }
   if (typeof v === 'string' && squash(v) === squash(e.from) && v !== e.to) return { value: e.to, changed: true };
