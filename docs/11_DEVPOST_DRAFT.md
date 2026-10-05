@@ -46,6 +46,11 @@ to it, in CI, without a login.
   (`gen-variants`). On Kitchen, Transcribe heard 'start a sauce timer for eight minutes' as
   'Start us off timer for 8 minutes.' The heard texts are committed and replayed, so CI never
   calls AWS.
+- **Limits:** Mishearings come from two sources: a small curated table of
+  known confusions (fifteen ↔ fifty, homophones, split compounds) and real recordings: Polly in
+  four voices over a noisy phone line into Transcribe. Transcribe never confused a number in 240
+  transcriptions; it dropped verbs and swapped nouns instead. Neither is Alexa's own speech
+  recognition.
 
 ## How we built it
 
@@ -100,5 +105,7 @@ and skills — is new in the submission window.
 
 ## Open Source mini challenge
 
-*(Pending R-02 and the owner's OK to post.)* A contribution to AlSayedGamal/mcp-voice-simulator:
-opt-in form elicitation answered as a spoken confirmation that fails closed.
+A contribution to AlSayedGamal/mcp-voice-simulator: opt-in form elicitation answered as a spoken
+confirmation that fails closed. Issue: github.com/AlSayedGamal/mcp-voice-simulator/issues/8;
+pull request: github.com/AlSayedGamal/mcp-voice-simulator/pull/9 (open, not yet reviewed; whether
+an unmerged PR counts is R-02).
