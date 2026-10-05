@@ -1,6 +1,6 @@
 {
  "model": "gpt-4o-mini-tts",
- "lengthSeconds": 132.746,
+ "lengthSeconds": 137.661,
  "lines": [
   {
    "id": "v5-open",
@@ -45,137 +45,137 @@
   {
    "id": "v5-how1",
    "who": "narrator",
-   "text": "The assistant listens, picks a tool, calls your server, and speaks the reply.",
+   "text": "The assistant listens, picks a tool, calls your server, and answers from what it returns.",
    "start": 35.992,
-   "end": 40.245,
+   "end": 40.876,
    "src": "voice/v5-how1.mp3"
   },
   {
    "id": "v5-how2",
    "who": "narrator",
-   "text": "Hearsay plays the assistant's part from your test: the words, the mishearings, and the tool call you expect. Then it checks what your server says back.",
-   "start": 40.245,
-   "end": 48.507,
+   "text": "Hearsay plays the assistant's part from your test: the words, the mishearings, and the tool call you expect, or lets a model pick it from your tool descriptions. Then it checks what your server says back.",
+   "start": 40.876,
+   "end": 52.277,
    "src": "voice/v5-how2.mp3"
   },
   {
    "id": "v5-how3",
    "who": "narrator",
    "text": "No microphone, no API keys, and the same result every time, so it can run on every change.",
-   "start": 48.507,
-   "end": 54.883,
+   "start": 52.277,
+   "end": 58.652,
    "src": "voice/v5-how3.mp3"
   },
   {
    "id": "v5-rules",
    "who": "narrator",
    "text": "Replies are graded by the rules Amazon published for add-ons: half a second per tool call, short replies, no code read aloud, five options at most, and no payment without naming what and how much.",
-   "start": 54.883,
-   "end": 67.831,
+   "start": 58.652,
+   "end": 71.601,
    "src": "voice/v5-rules.mp3"
   },
   {
    "id": "v5-run",
    "who": "narrator",
    "text": "Here's a real run against our demo grocery add-on, built with these flaws on purpose. The customer allowed fifty dollars of groceries today.",
-   "start": 67.831,
-   "end": 75.482,
+   "start": 71.601,
+   "end": 79.251,
    "src": "voice/v5-run.mp3"
   },
   {
    "id": "v5-red",
    "who": "narrator",
    "text": "Fifty dollars of fruit, added without a word. A no that placed the order anyway. Twenty errors: the build fails.",
-   "start": 75.482,
-   "end": 83.195,
+   "start": 79.251,
+   "end": 86.964,
    "src": "voice/v5-red.mp3"
   },
   {
    "id": "v5-fix1",
    "who": "narrator",
-   "text": "The fixed add-on, same tests. It says every amount back:",
-   "start": 83.195,
-   "end": 87.451,
+   "text": "The fixed add-on, same tests. When it adds, it says the amount back:",
+   "start": 86.964,
+   "end": 91.57,
    "src": "voice/v5-fix1.mp3"
   },
   {
    "id": "v5-fix1b",
    "who": "narrator",
-   "text": "And when it hears fifty, that's over the fifty-dollar budget, so it refuses, and says why:",
-   "start": 87.451,
-   "end": 92.506,
+   "text": "And if it hears fifty, the cart would go over the fifty-dollar budget, so it refuses, and says why:",
+   "start": 91.57,
+   "end": 97.694,
    "src": "voice/v5-fix1b.mp3"
   },
   {
    "id": "v5-fix2",
    "who": "narrator",
    "text": "Zero errors.",
-   "start": 92.506,
-   "end": 93.761,
+   "start": 97.694,
+   "end": 98.95,
    "src": "voice/v5-fix2.mp3"
   },
   {
    "id": "v5-ci1",
    "who": "narrator",
-   "text": "Hearsay runs on every code change. On GitHub, this change let fifty dollars of fruit slip past the budget.",
-   "start": 93.761,
-   "end": 99.835,
+   "text": "Hearsay runs on every code change. On GitHub, this change skipped the budget for dollar amounts.",
+   "start": 98.95,
+   "end": 104.749,
    "src": "voice/v5-ci1.mp3"
   },
   {
    "id": "v5-ci2",
    "who": "narrator",
    "text": "Hearsay failed the check.",
-   "start": 99.835,
-   "end": 101.173,
+   "start": 104.749,
+   "end": 106.088,
    "src": "voice/v5-ci2.mp3"
   },
   {
    "id": "v5-ci3",
    "who": "narrator",
    "text": "One fix, and it passes.",
-   "start": 101.173,
-   "end": 103.006,
+   "start": 106.088,
+   "end": 107.92,
    "src": "voice/v5-ci3.mp3"
   },
   {
    "id": "v5-agent",
    "who": "narrator",
    "text": "Hearsay is also an MCP server, with Agent Skills for coding agents like Claude Code. Your agent runs your tests, fixes your add-on, and runs them again until they pass, without changing your tests.",
-   "start": 103.006,
-   "end": 114.794,
+   "start": 107.92,
+   "end": 119.708,
    "src": "voice/v5-agent.mp3"
   },
   {
    "id": "v5-cheat1",
    "who": "narrator",
    "text": "And it can't cheat: your tests are locked.",
-   "start": 114.794,
-   "end": 118.548,
+   "start": 119.708,
+   "end": 123.462,
    "src": "voice/v5-cheat1.mp3"
   },
   {
    "id": "v5-cheat2",
    "who": "narrator",
    "text": "Change one, and the run fails.",
-   "start": 118.548,
-   "end": 121.008,
+   "start": 123.462,
+   "end": 125.923,
    "src": "voice/v5-cheat2.mp3"
   },
   {
    "id": "v5-try",
    "who": "narrator",
    "text": "Hearsay is open source and on npm. No keys, no account: write what your customers say, run one command, and put it in your build.",
-   "start": 121.008,
-   "end": 129.647,
+   "start": 125.923,
+   "end": 134.561,
    "src": "voice/v5-try.mp3"
   },
   {
    "id": "v5-tag",
    "who": "narrator",
    "text": "Hearsay. Hear it before your customers do.",
-   "start": 129.647,
-   "end": 132.746,
+   "start": 134.561,
+   "end": 137.661,
    "src": "voice/v5-tag.mp3"
   }
  ]

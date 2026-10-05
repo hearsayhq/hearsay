@@ -1,5 +1,5 @@
 /**
- * Film v5's clock, the use-case cut: one narrator pitches one concrete use case and never says the
+ * Film v5's clock (v5.2), the use-case cut: one narrator pitches one concrete use case and never says the
  * wake word; the customer and the add-on speak with Amazon Polly, word for word from the real runs.
  * Every narration line is a whole take, placed on what happens on screen. Word timings come from
  * whisper (voice/align.mjs). Scenes are listed with their length; placements are in seconds from
@@ -65,28 +65,32 @@ const S = (line: string, at: number, from?: number, to?: number): Seg => ({ line
 export const SCENES: Scene[] = [
   { name: 'case', seconds: 24.6, segs: [S('open', 0.4), S('case1', 6.4), S('case2', 13.0), S('case3', 18.0)] },
   { name: 'what', seconds: 17.2, segs: [S('what', 0.35)] },
-  { name: 'how', seconds: 20.2, segs: [S('how1', 0.25), S('how2', 4.75), S('how3', 13.35)] },
+  { name: 'how', seconds: 23.8, segs: [S('how1', 0.25), S('how2', 5.25), S('how3', 17.0)] },
   { name: 'rules', seconds: 13.6, segs: [S('rules', 0.3)] },
-  // The flawed run, uncut: the clip starts at 0.15, its output lands at 0.15 + 9.6.
-  { name: 'red', seconds: 19.0, segs: [S('run', 0.4), S('red', 10.0)] },
-  { name: 'after', seconds: 22.3, segs: [S('fix1', 0.35), S('fix1b', 9.95), S('fix2', 20.6)] },
+  // The flawed run from its run command on (the server start already on screen): its output lands
+  // at 9.6 - 3.9. A beat before "Twenty errors" so the findings card can be read.
+  { name: 'red', seconds: 18.1, segs: [S('run', 0.4), S('red', 8.4, 0, 15), S('red', 14.54, 15)] },
+  { name: 'after', seconds: 23.7, segs: [S('fix1', 0.35), S('fix1b', 10.3), S('fix2', 22.1)] },
   { name: 'ci', seconds: 13.4, segs: [S('ci1', 0.3), S('ci2', 7.2), S('ci3', 10.6)] },
   { name: 'agent', seconds: 15.2, segs: [S('agent', 0.3)] },
-  { name: 'cheat', seconds: 10.8, segs: [S('cheat1', 0.3), S('cheat2', 7.8)] },
-  { name: 'offer', seconds: 18.4, segs: [S('try', 0.25), S('tag', 13.0)] },
+  { name: 'cheat', seconds: 8.0, segs: [S('cheat1', 0.3), S('cheat2', 4.6)] },
+  { name: 'offer', seconds: 18.4, segs: [S('try', 0.25), S('tag', 11.6)] },
 ];
 
 /** The customer and the add-on (Amazon Polly, voice/polly-v5.json): scene, start, length, words. */
 export const POLLY = [
   { id: 'p5-customer', scene: 'case', at: 10.9, seconds: 1.73, who: 'customer', text: 'Add fifteen dollars of fruit.' },
   { id: 'p5-flawed', scene: 'case', at: 16.8, seconds: 0.79, who: 'add-on', text: 'Added.' },
-  { id: 'p5-fixed-clean', scene: 'after', at: 4.9, seconds: 4.87, who: 'add-on', text: 'Added fifteen dollars of fruit. Your cart is twenty-two dollars and forty cents.' },
-  { id: 'p5-fixed', scene: 'after', at: 15.15, seconds: 5.26, who: 'add-on', text: 'That would go over the total budget you gave me. You can add less, or give me a bigger budget.' },
+  { id: 'p5-fixed-clean', scene: 'after', at: 5.15, seconds: 4.87, who: 'add-on', text: 'Added fifteen dollars of fruit. Your cart is twenty-two dollars and forty cents.' },
+  { id: 'p5-fixed', scene: 'after', at: 16.6, seconds: 5.26, who: 'add-on', text: 'That would go over the total budget you gave me. You can add less, or give me a bigger budget.' },
 ] as const;
 
-/** Where each clip starts in its scene, and how fast it plays (installs and the agent loop only). */
-export const CLIP_AT = { flawed: 0.15, fixed: 0.1, cheat: 0.1, npx: 0.0, agent: 0.6 } as const;
-export const AGENT_SPEED = 10;
+/**
+ * Where each clip starts in its scene (negative: the clip is already that far in when the scene
+ * starts, so typing that only sets up is on screen already), and how fast the agent loop plays.
+ */
+export const CLIP_AT = { flawed: -3.9, fixed: 0.1, cheat: -3.0, npx: -0.9, agent: 0.6 } as const;
+export const AGENT_SPEED = 11;
 
 const starts: number[] = [];
 let acc = 0;

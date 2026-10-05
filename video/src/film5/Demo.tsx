@@ -1,8 +1,7 @@
 /**
- * The proof, all real: the flawed grocery add-on under Hearsay (uncut, red) with what each finding
- * means in plain words; the fixed build (green) and its real reply, spoken by Amazon Polly; and pull
- * request #27 on github.com, logged out: the change red, the failing step, the failing log line
- * (read with gh, since GitHub shows logs only after a sign-in), and the fix green.
+ * The proof, all real: the flawed grocery add-on under Hearsay (one take, red) with what each finding
+ * means in plain words; the fixed build (green) and its real replies, spoken by Amazon Polly; and pull
+ * request #27 on github.com, logged out: the change red, the failing step, and the fix green.
  */
 import type { ReactNode } from 'react';
 import { Img, staticFile } from 'remotion';
@@ -76,7 +75,7 @@ export function Red() {
   return (
     <Flip deg={flip}>
       <div style={{ position: 'absolute', inset: 0, transform: `scale(${0.82 + 0.18 * enter})`, opacity: Math.min(1, enter * 2) }}>
-        <RecLabel tint={C.red} style={{ left: WIN.x, top: 22 }}>real run · uncut · one take</RecLabel>
+        <RecLabel tint={C.red} style={{ left: WIN.x, top: 22 }}>real run · one take</RecLabel>
         <RecLabel style={{ right: 1920 - WIN.x - WIN.w, top: 22 }}>main @ 9b4acdd · recorded 3 Oct 2026</RecLabel>
         <TermWindow title="hearsay — the demo grocery add-on, flawed on purpose" w={WIN.w} h={WIN.h} glow={C.red} style={{ left: WIN.x, top: WIN.y }}>
           <Rec clip={CLIPS.flawed} t={t} view={view} vw={WIN.w} vh={WIN.h}>
@@ -88,7 +87,7 @@ export function Red() {
         <Findings from={cardFrom} to={cardTo} tint={C.red} title="WHAT HEARSAY FOUND · 3 OF 20 ERRORS" rows={[
           { at: w('red', 0), text: 'Heard fifty. Added fifty. Never said the amount back.' },
           { at: w('red', 8), text: 'The customer said no. The order was placed anyway.' },
-          { at: w('red', 11), text: 'Asked “Are you sure?” without saying what or how much.' },
+          { at: w('red', 8) + 6, text: 'Asked “Are you sure?” without saying what or how much.' },
         ]} />
         <Stamp at={w('red', 17) + 8} x={1200} y={420} text="Build fails" size={110} rot={-6} sub="20 errors" />
       </div>
@@ -176,9 +175,10 @@ export function Ci() {
   const page = fr < toRed ? 'commits' : fr < toGreen ? 'redJob' : 'greenJob';
   const swap = (at: number) => ramp(fr, at - 8, at + 4);
   const enter = Math.min(1, ...[toRed, toGreen].map((a) => (fr >= a - 8 && fr < a + 12 ? Math.abs(1 - 2 * swap(a)) : 1)));
+  // The commits only: the page's header (a demo pull request, closed after its two runs) stays out.
   const commitsView = track(fr, [
-    [w('ci1', 3), { x: 0, y: 0, w: 3200 }],
-    [w('ci1', 7), { x: 300, y: 330, w: 2600 }],
+    [w('ci1', 0), { x: 300, y: 690, w: 2700 }],
+    [w('ci1', 7), { x: 380, y: 690, w: 2480 }],
   ]);
   const jobView: View = { x: 560, y: 720, w: 2100 };
   return (
@@ -200,9 +200,14 @@ export function Ci() {
           </Browser>
         )}
       </div>
+      <Pop at={w('ci1', 3)} x={620} y={640} rot={-1} out={toRed - 16}>
+        <div style={{ fontFamily: mono, fontSize: 22, color: C.text, background: 'rgba(10,13,26,0.88)', border: `1.5px solid ${C.amber}`, borderRadius: 16, padding: '12px 20px', whiteSpace: 'pre', lineHeight: 1.5 }}>
+          <span style={{ fontFamily: sans, fontSize: 16, letterSpacing: 2, color: C.amber }}>IN YOUR REPO · ONE STEP IN THE WORKFLOW</span>{'\n'}- run: npx -y @hearsayhq/cli run suites/*.yaml
+        </div>
+      </Pop>
       <Note at={w('ci1', 8) + 10} x={1440} y={760} rot={-2} width={560} tint={C.red} out={toRed - 16}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: mono, fontSize: 18, color: C.red, marginBottom: 6 }}><Icon name="pr" size={22} color={C.red} /> THE CHANGE · f7725be</div>
-        let fifty dollars of fruit slip past the budget
+        the budget no longer checked dollar amounts
       </Note>
       <Note at={toRed + 18} x={1440} y={760} rot={2} width={540} tint={C.red} out={toGreen - 16}>
         <span style={{ color: C.red }}>✗</span> the Hearsay check failed: fifty taken without the customer hearing it

@@ -1,5 +1,5 @@
 {
-  "about": "Film v5.1, the use-case cut (approved by the owner, 5 Oct): one narrator pitches one concrete use case and never says the wake word; customer and add-on lines are Amazon Polly (video/voice/polly-v5.json), word for word from the Household Orders runs. Numbers from the same runs and from PR #27's CI.",
+  "about": "Film v5.2, the use-case cut (approved by the owner, 5 Oct; v5.2 lines 5 Oct): one narrator pitches one concrete use case and never says the wake word; customer and add-on lines are Amazon Polly (video/voice/polly-v5.json), word for word from the Household Orders runs. Numbers from the same runs and from PR #27's CI.",
   "model": "gpt-4o-mini-tts",
   "tempo": 1.1,
   "lines": [
@@ -48,7 +48,7 @@
       "who": "narrator",
       "voice": "alloy",
       "gapBeforeMs": 0,
-      "text": "The assistant listens, picks a tool, calls your server, and speaks the reply.",
+      "text": "The assistant listens, picks a tool, calls your server, and answers from what it returns.",
       "direction": "Warm, confident presenter of a product keynote, walking through four steps with a light beat between them. Clear and calm."
     },
     {
@@ -56,8 +56,8 @@
       "who": "narrator",
       "voice": "alloy",
       "gapBeforeMs": 0,
-      "text": "Hearsay plays the assistant's part from your test: the words, the mishearings, and the tool call you expect. Then it checks what your server says back.",
-      "direction": "Warm, confident presenter of a product keynote, explaining the clever part simply. Clear and precise, a light beat between the three things it plays."
+      "text": "Hearsay plays the assistant's part from your test: the words, the mishearings, and the tool call you expect, or lets a model pick it from your tool descriptions. Then it checks what your server says back.",
+      "direction": "Warm, confident presenter of a product keynote, explaining the clever part simply. Start speaking at once. Say 'Hearsay' as one ordinary word, quick and light, exactly as in the other sentences that start with it: never split into 'hear' and 'say', no stress or pause on it. Clear and precise, a light beat between the things it plays."
     },
     {
       "id": "v5-how3",
@@ -96,7 +96,7 @@
       "who": "narrator",
       "voice": "alloy",
       "gapBeforeMs": 0,
-      "text": "The fixed add-on, same tests. It says every amount back:",
+      "text": "The fixed add-on, same tests. When it adds, it says the amount back:",
       "direction": "Warm, confident presenter of a product keynote, showing the after shot, handing over to the add-on's voice at the end. Clear, pleased."
     },
     {
@@ -104,7 +104,7 @@
       "who": "narrator",
       "voice": "alloy",
       "gapBeforeMs": 0,
-      "text": "And when it hears fifty, that's over the fifty-dollar budget, so it refuses, and says why:",
+      "text": "And if it hears fifty, the cart would go over the fifty-dollar budget, so it refuses, and says why:",
       "direction": "Warm, confident presenter of a product keynote, explaining the second half clearly, handing over to the add-on's voice at the end. Clear, unhurried."
     },
     {
@@ -120,7 +120,7 @@
       "who": "narrator",
       "voice": "alloy",
       "gapBeforeMs": 0,
-      "text": "Hearsay runs on every code change. On GitHub, this change let fifty dollars of fruit slip past the budget.",
+      "text": "Hearsay runs on every code change. On GitHub, this change skipped the budget for dollar amounts.",
       "direction": "Warm, confident presenter of a product keynote, explaining a real example. Clear and precise."
     },
     {

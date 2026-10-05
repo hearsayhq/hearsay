@@ -42,7 +42,7 @@ export function Offer() {
               </TermWindow>
               <RecLabel tint={C.text} style={{ right: 1920 - WIN.x - WIN.w + 20, top: WIN.y + 64 }}>real run · real time</RecLabel>
               <Note at={caseAt + 14} x={1460} y={330} tint={C.amber} rot={2} width={480} out={outAt - 20}>what a customer says, and what should happen: your test</Note>
-              <Note at={outAt + 14} x={1440} y={790} tint={C.green} rot={-2} width={560}>
+              <Note at={w('try', 20)} x={1440} y={790} tint={C.green} rot={-2} width={560}>
                 <div style={{ fontFamily: mono, fontSize: 18, color: C.green, marginBottom: 8 }}>IN YOUR BUILD, ONE STEP</div>
                 <div style={{ fontFamily: mono, fontSize: 22 }}>- run: npx -y @hearsayhq/cli run suites/*.yaml</div>
               </Note>

@@ -62,7 +62,7 @@ export function Agent() {
   );
 }
 
-export const agentFinePrint = 'Recorded with scripts/agent-loop.sh at main 3cc07c5, 5 Oct 2026, shown at 10× speed: 28 turns, 108 s, $0.75 API-equivalent on a subscription.';
+export const agentFinePrint = `Recorded with scripts/agent-loop.sh at main 3cc07c5, 5 Oct 2026, shown at ${AGENT_SPEED}× speed: 28 turns, 108 s, $0.75 API-equivalent on a subscription.`;
 
 export function Cheat() {
   const fr = useF();
@@ -85,12 +85,12 @@ export function Cheat() {
       </Pop>
       <TermWindow title="hearsay — someone edits a locked test" w={1600} h={860} glow={C.red} style={{ left: 160, top: 70 }}>
         <Rec clip={CLIPS.cheat} t={t} view={view} vw={1600} vh={860}>
-          <Mark at={sec(2.4)} x={625} y={83} w={1245} h={39} />
+          <Mark at={sec(0.3)} x={625} y={83} w={1245} h={39} />
           <Mark at={out + 8} x={74} y={482} w={3045} h={40} color={C.red} />
           <Mark at={out + 20} x={74} y={839} w={1160} h={32} color={C.red} />
         </Rec>
       </TermWindow>
-      <Note at={sec(2.6)} x={1380} y={430} rot={2} out={out - 4}>the test says <b style={{ color: C.amber }}>15</b> · someone “fixes” it to <b style={{ color: '#FFB4B2' }}>50</b></Note>
+      <Note at={sec(0.5)} x={1380} y={430} rot={2} out={out - 4}>the test says <b style={{ color: C.amber }}>15</b> · someone “fixes” it to <b style={{ color: '#FFB4B2' }}>50</b></Note>
       <Note at={out + 10} x={1200} y={760} tint={C.red} rot={-2} width={680}>
         the tests changed since they were locked, so the run fails
       </Note>

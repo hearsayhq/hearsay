@@ -231,7 +231,7 @@ npm ci
 
 | Scene | Commands | What the video shows |
 |---|---|---|
-| A real run (uncut) | `HEARSAY_FIXED=0 npm run server:orders &` then `npm run hearsay -- run suites/household-orders.yaml` | 20 errors · 16 warnings · 8 of 10 runs failed, exit 1 |
+| A real run (one take) | `HEARSAY_FIXED=0 npm run server:orders &` then `npm run hearsay -- run suites/household-orders.yaml` | 20 errors · 16 warnings · 8 of 10 runs failed, exit 1 |
 | Fixed | `kill %1`, `HEARSAY_FIXED=1 npm run server:orders &`, the same run | 0 errors · 9 warnings · 0 of 10 runs failed, exit 0 |
 | On every change | [pull request #27](https://github.com/hearsayhq/hearsay/pull/27): its commits, [the red run](https://github.com/hearsayhq/hearsay/actions/runs/36779993236) and [the green run](https://github.com/hearsayhq/hearsay/actions/runs/36780493038) on github.com; the log line with `gh run view 36779993236 --log-failed` (GitHub shows logs only after a sign-in) | red on `consent.misheard_amount`, green after the fix commit |
 | Locked suite | `sed -i '' 's/minutes: 15, label: pasta/minutes: 50, label: pasta/' suites/kitchen.yaml` (Linux: `sed -i`), then `npm run hearsay -- run suites/kitchen.yaml`; undo with `git checkout suites/kitchen.yaml` | `suite.integrity` error, exit 1 |
