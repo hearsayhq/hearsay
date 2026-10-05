@@ -15,7 +15,7 @@ import { build } from 'tsup';
 
 const REPO = new URL('..', import.meta.url).pathname;
 const OUT = join(REPO, 'build/npm');
-const VERSION = '0.1.0';
+const VERSION = '0.1.1';
 /** npm shows a README outside the repo, so relative links and images point at main on GitHub. */
 const forNpm = (md, dir = '') => {
   const abs = (p, base) => new URL(p, `${base}/${dir}`).href;
