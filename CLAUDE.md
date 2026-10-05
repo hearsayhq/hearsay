@@ -2,7 +2,7 @@
 
 Preflight checks for Alexa+ MCP servers: a crash test for voice add-ons. Unofficial.
 Entry for the Amazon Developer Hackathon, Alexa+ track. **Deadline Fri 23 Oct 2026, 21:00 CEST;
-target Sun 18 Oct.** Repo `hearsayhq/hearsay`, private until submission.
+target Sun 18 Oct.** Repo `hearsayhq/hearsay`, public since 5 Oct 2026.
 
 ## Read first
 
