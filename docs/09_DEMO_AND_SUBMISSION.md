@@ -91,7 +91,8 @@ which video line it serves.
     AlSayedGamal/mcp-voice-simulator adding form elicitation as a spoken confirmation that fails
     closed (issue first; trace export optional). Plan B: an MCP transport for
     sujitnoronha/voicecheck so `tool_called` sees MCP calls. Fields: contribution URL, repo URL,
-    GitHub username, what it does, how it works, why it matters.
+    GitHub username, what it does, how it works, why it matters. Contribution URL:
+    https://github.com/AlSayedGamal/mcp-voice-simulator/pull/9 (issue #8 first, 30 Sep).
 - **Description:** what it does, how it works, the four questions, the catalog, the consent tiers.
   Hearsay itself is an MCP server and an Agent Skill, the same form as Amazon's own developer
   tools, so a coding agent can check the add-on it is building.

@@ -71,8 +71,10 @@ At about five and a half build days a week this lands on Sun 18 Oct; at four and
   checked in the browser). Patch, issue and PR texts in `build/oss/` (local). The issue is
   neutral (the elicitation gap and the proposal, no mention of Hearsay) and is posted after the
   owner has read it; the commit carries the owner's GitHub noreply address. Issue posted on 30 Sep
-  with the owner's OK: AlSayedGamal/mcp-voice-simulator#8. The PR waits for a second OK. R-02 stays
-  open until the owner asks in office hours.
+  with the owner's OK: AlSayedGamal/mcp-voice-simulator#8. No reply by 5 Oct; PR opened that day
+  with the owner's second OK: AlSayedGamal/mcp-voice-simulator#9, from the fork
+  HarzerHeribert/mcp-voice-simulator, on the unchanged upstream `8b31d53`. R-02 stays open until
+  the owner asks in office hours.
 
 ## Evidence (freeze loosened for evidence only, D-024)
 
