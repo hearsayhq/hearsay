@@ -120,5 +120,5 @@ Invitations expire after 7 days: add them on submission day, not before.
 - [ ] Existing-work disclosure with before/after
 - [ ] Product feedback for every tool
 - [ ] Friction log linked
-- [ ] Repo public or reviewers invited (same day)
+- [x] Repo public or reviewers invited (public since 5 Oct 2026)
 - [ ] Not implying Amazon endorsement anywhere ("for Alexa+", "unofficial")

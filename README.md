@@ -1,49 +1,118 @@
-# Hearsay
+<p align="center">
+  <img src="docs/assets/banner.jpg" width="100%" alt="Hearsay: preflight checks for Alexa+ MCP servers. Said: add fifteen dollars. Heard: add fifty dollars. The check consent.misheard_amount fails and the pull request turns red.">
+</p>
 
-**Preflight checks for Alexa+ MCP servers. Never act on hearsay.**
-Unofficial; built for Alexa+ add-on developers; not affiliated with or endorsed by Amazon.
+<p align="center">
+  <a href="https://github.com/hearsayhq/hearsay/actions/workflows/ci.yml"><img alt="ci" src="https://github.com/hearsayhq/hearsay/actions/workflows/ci.yml/badge.svg?branch=main"></a>
+  <a href="https://github.com/hearsayhq/hearsay/actions/workflows/hearsay.yml"><img alt="hearsay / voice" src="https://github.com/hearsayhq/hearsay/actions/workflows/hearsay.yml/badge.svg?branch=main"></a>
+  <img alt="MCP 2025-11-25" src="https://img.shields.io/badge/MCP-2025--11--25-8B6BFF">
+  <img alt="Node 22 or later" src="https://img.shields.io/badge/node-%E2%89%A522-3DDC97">
+  <img alt="No API keys" src="https://img.shields.io/badge/API_keys-none-FFB23F">
+  <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-FF5E8A"></a>
+</p>
 
-In law, hearsay is a second-hand statement that doesn't count as evidence. Hearsay makes sure
-your server never moves money on what the assistant only thinks it heard.
+<p align="center">
+  <a href="#quickstart">Quickstart</a> ·
+  <a href="#how-it-works">How it works</a> ·
+  <a href="#in-ci">In CI</a> ·
+  <a href="#for-coding-agents">For coding agents</a> ·
+  <a href="#does-it-help-a-coding-agent">Measured</a> ·
+  <a href="#demo-run-what-the-video-shows">Demo</a> ·
+  <a href="docs/05_CHECK_CATALOG.md">Check catalog</a>
+</p>
 
-A crash test for voice add-ons: Hearsay plays through what happens when someone talks to your MCP
-server — with mishearings, with waiting, with money — and turns the pull request red where it
-breaks. Every check answers one of four questions, once the precondition holds.
+<p align="center"><sub>Unofficial; built for Alexa+ add-on developers; not affiliated with or endorsed by Amazon.</sub></p>
+
+---
+
+**A crash test for voice add-ons.** An Alexa+ add-on is an MCP server. In a chat window it looks
+fine; out loud it breaks: a number heard wrong, a reply that reads out JSON, a list too long to
+remember, a no that still places the order. Hearsay plays through what happens when someone talks
+to your MCP server — with mishearings, with waiting, with money — and turns the pull request red
+where it breaks. No microphone, no model, no API keys.
+
+> In law, hearsay is a second-hand statement that doesn't count as evidence. Hearsay makes sure
+> your server never moves money on what the assistant only thinks it heard. **Never act on hearsay.**
+
+## What it checks
+
+Every check answers one of four questions, once the precondition holds.
 
 **Precondition: Can it connect?** MCP 2025-11-25 over Streamable HTTP, and the suite is the one
 that was locked.
 
-- **Did it hear me right?** Misheard numbers and words; tool names and enums a model can map speech onto.
-- **Do I have to wait?** Tool round trips under 500 ms; modeled time to first audio.
-- **Can I listen to this?** No JSON, ids or tool names; short replies; at most five options.
-- **Did I agree?** Payments, deletions and cancellations only after a confirmation that states what and how much.
+| | Question | What fails |
+|:-:|---|---|
+| 👂 | **Did it hear me right?** | Misheard numbers and words; tool names and enums a model can map speech onto. |
+| ⏱️ | **Do I have to wait?** | Tool round trips over 500 ms; modeled time to first audio. |
+| 🔊 | **Can I listen to this?** | JSON, ids or tool names read aloud; long replies; more than five options. |
+| ✅ | **Did I agree?** | Payments, deletions and cancellations without a confirmation that states what and how much. |
 
-Every finding cites its source: Amazon's functional requirements for add-ons, the MCP
-specification, or Hearsay's own rule.
+Every finding cites its source: Amazon's functional requirements for add-ons (`amazon-fr`), the MCP
+specification (`mcp-spec`), or Hearsay's own rule (`hearsay`). `hearsay checks` prints the catalog
+with thresholds and sources; [docs/05](docs/05_CHECK_CATALOG.md) explains each check.
 
-> Status: **M6 ship, in progress.** Every check in the catalog is implemented, each with a
-> fixture built to fail it. `hearsay run` (scripted, llm, replay, `--holdout`), `hearsay lint`,
-> `hearsay lock`, `hearsay gen-variants` and `hearsay serve` work; coding agents can use Hearsay
-> over MCP with two Agent Skills; the web console plays turns live and a person answers the
-> server's confirmations. Mishearings reach the server through its arguments, so `asr.robust`
-> runs without a model. Recorded on AWS and replayed offline: a Bedrock llm run of Kitchen
-> (`suites/cassettes/`) and real mishearings from Polly and Transcribe (`suites/variants/`).
-> See [docs/07](docs/07_IMPLEMENTATION_PLAN.md).
+## How it works
 
-**Does it help a coding agent?** We measured it. Without Hearsay, 11 of 27 agent runs ended with
-defects the suite would have caught; with it, 0 of 36. But a suite alone made agents stop at
-green: on unseen cases they did worse than agents given a precise prompt (68–71 % vs 83 %). So
-Hearsay now reports what your suite doesn't cover, and its skill reviews beyond green. Measured
-again: level with the precise prompt on unseen cases (84 % vs 83 %), clearly ahead on rules the
-prompt never mentioned (37/45 vs 28/45), and still zero defects left behind. (Three runs per arm;
-the unseen cases were written by the author of the flaws.) Details:
-[docs/15](docs/15_EXPERIMENT.md).
+```mermaid
+flowchart LR
+  subgraph H["Hearsay plays these, straight from your suite"]
+    direction LR
+    S["What a customer says<br/>clean and misheard"] --> M["The tool call a model<br/>would make"]
+  end
+  M --> Y["Your MCP server"]
+  Y --> R["The reply, as it<br/>would be spoken"]
+  R --> C{"Four questions"}
+  C -- "any error" --> X["exit 1, the PR turns red"]
+```
+
+When someone speaks to an add-on, only one step is your code: the server. Hearsay plays the rest
+from a test case — the words, the mishearings, and the tool call — then checks what your server
+answers. A suite is YAML: what a person says and what should happen.
+
+```yaml
+# suites/household-orders.yaml — milk ($7.40) is staged; fifty more would pass the $50 budget
+- id: misheard-amount
+  say: add fifteen dollars of fruit
+  after: [stage-milk]
+  call: { tool: orders_stage_cart, args: { sku: sku-fruit, amountUsd: 15 } }
+  expect:
+    tool: orders_stage_cart
+  fuzz: [asr.number_confusion, asr.roundtrip]
+  checks: [consent.misheard_amount]
+```
+
+Against the flawed build of the grocery add-on (excerpt; the full run lists every finding by
+question):
+
+```console
+$ HEARSAY_FIXED=0 npm run hearsay -- run suites/household-orders.yaml
+household-orders · 8 cases · 10 runs with variants · scripted · seed 1
+…
+✗ misheard-amount       asr.number_confusion#1  consent.misheard_amount  error  heard "add fifty dollars of fruit": orders_stage_cart took the misheard amount without the person hearing it
+✗ place-order-declined  clean                   consent.decline_holds    error  the person said decline, but mandate_status, orders_review_cart changed
+…
+20 errors · 16 warnings · 0 info · 8 of 10 runs failed
+```
+
+The same suite against the fixed build: 0 errors, exit 0. The misheard fifty is refused, and the
+add-on says why.
+
+> **Status: built for the Alexa+ hackathon, ready to submit.** Every check in the catalog is
+> implemented, each with a fixture built to fail it. `hearsay run` (scripted, llm, replay,
+> `--holdout`), `hearsay lint`, `hearsay lock`, `hearsay gen-variants` and `hearsay serve` work;
+> coding agents can use Hearsay over MCP with two Agent Skills; the web console plays turns live
+> and a person answers the server's confirmations. Mishearings reach the server through its
+> arguments, so `asr.robust` runs without a model. Recorded on AWS and replayed offline: a Bedrock
+> llm run of Kitchen (`suites/cassettes/`) and real mishearings from Polly and Transcribe
+> (`suites/variants/`). See [docs/07](docs/07_IMPLEMENTATION_PLAN.md).
 
 ## Quickstart
 
 From a clone (no API keys; about a minute on a fresh machine):
 
 ```sh
+git clone https://github.com/hearsayhq/hearsay.git && cd hearsay
 npm install
 npm run check
 npm run hearsay -- validate suites/*.yaml
@@ -53,7 +122,7 @@ npm run hearsay -- run suites/smart-home.yaml                    # flawed: red
 HEARSAY_FIXED=1 npm run hearsay -- run suites/smart-home.yaml    # kit applied: green
 ```
 
-Console: `npm run hearsay -- serve` in one terminal, `npm run dev:web` in another, then open
+**Console:** `npm run hearsay -- serve` in one terminal, `npm run dev:web` in another, then open
 http://localhost:5180. Pick a suite, connect (the server starts itself), and type what a customer
 would say. Replies are spoken by the browser; confirmations appear as a dialog you answer. Without
 a model the console plans from the nearest suite case and says so (D-023).
@@ -84,7 +153,9 @@ are added or changed; it only speaks those (cents each), then `hearsay lock`.
 AWS_PROFILE=<yours> npx @hearsayhq/cli gen-variants suites/*.yaml   # Polly + Transcribe Streaming
 ```
 
-In CI (GitHub Actions), on every pull request:
+## In CI
+
+On every pull request (GitHub Actions):
 
 ```yaml
 name: hearsay
@@ -103,6 +174,16 @@ jobs:
         env: { HOLDOUT: '${{ secrets.HEARSAY_HOLDOUT }}' }
         run: printf '%s' "$HOLDOUT" > suites/app.holdout.yaml && npx -y @hearsayhq/cli run suites/app.yaml --holdout
 ```
+
+**As seen in CI.** This repo runs the same check, `hearsay / voice`
+([workflow](.github/workflows/hearsay.yml)), on its own reference add-ons on every pull request.
+In [pull request #27](https://github.com/hearsayhq/hearsay/pull/27), a plausible refactor let
+"fifty dollars of fruit" skip the budget. The check went red; one fix, and it was green:
+
+| Commit | `hearsay / voice` | Household Orders |
+|---|---|---|
+| [`f7725be`](https://github.com/hearsayhq/hearsay/commit/f7725be050d713fdfeddd03eeece57f3c5655c37) Check the budget for counted items only | ❌ [failed, exit 1](https://github.com/hearsayhq/hearsay/actions/runs/36779993236) | `✗ consent.misheard_amount` · 1 error · 1 of 10 runs failed |
+| [`57e680a`](https://github.com/hearsayhq/hearsay/commit/57e680ad0f0bc8e4c209681cd67c60a8be34f880) Check the budget for every amount again | ✅ [passed](https://github.com/hearsayhq/hearsay/actions/runs/36780493038) | 0 errors · 0 of 10 runs failed |
 
 ## For coding agents
 
@@ -123,12 +204,11 @@ mkdir -p .claude/skills && cp -r /path/to/hearsay/skills/{write-hearsay-suite,fi
 { "mcpServers": { "hearsay": { "command": "npx", "args": ["-y", "@hearsayhq/mcp"] } } }
 ```
 
-Tools: `hearsay_run(suitePath, only?)` (`only: "failed"` reruns what failed), `hearsay_lint(url)`
-(findings and the server's tool list), `hearsay_explain(checkId)`. No tool writes suites.
-
-Skills: `write-hearsay-suite` drafts a new suite from the tool list, with expectations a customer
-would have, never what the server happens to do; the owner reviews and locks it.
-`fix-hearsay-findings` changes server code until the suite is green and never touches suites.
+| | |
+|---|---|
+| **Tools** | `hearsay_run(suitePath, only?)` (`only: "failed"` reruns what failed), `hearsay_lint(url)` (findings and the server's tool list), `hearsay_explain(checkId)`. No tool writes suites. |
+| **`write-hearsay-suite`** | Drafts a new suite from the tool list, with expectations a customer would have, never what the server happens to do; the owner reviews and locks it. |
+| **`fix-hearsay-findings`** | Changes server code until the suite is green and never touches suites. |
 
 **Protect your suites.** `npm run hearsay -- lock` hashes them and their recordings into
 `suites/.hearsay-lock`; commit it. A run whose suites or recordings changed since is red
@@ -140,6 +220,16 @@ need review:
 # .github/CODEOWNERS
 /suites/ @your-team
 ```
+
+### Does it help a coding agent?
+
+We measured it. Without Hearsay, 11 of 27 agent runs ended with defects the suite would have
+caught; with it, 0 of 36. But a suite alone made agents stop at green: on unseen cases they did
+worse than agents given a precise prompt (68–71 % vs 83 %). So Hearsay now reports what your suite
+doesn't cover, and its skill reviews beyond green. Measured again: level with the precise prompt
+on unseen cases (84 % vs 83 %), clearly ahead on rules the prompt never mentioned (37/45 vs
+28/45), and still zero defects left behind. (Three runs per arm; the unseen cases were written by
+the author of the flaws.) Details: [docs/15](docs/15_EXPERIMENT.md).
 
 ## Demo: run what the video shows
 
@@ -185,6 +275,8 @@ docs/              spec pack
 
 ## Docs
 
+Built spec first: requirement ids, a decision log and a risk register.
+
 [Thesis](docs/00_PRODUCT_THESIS.md) ·
 [Requirements](docs/01_REQUIREMENTS.md) ·
 [UX](docs/02_UX_SPEC.md) ·
@@ -201,9 +293,11 @@ docs/              spec pack
 [Risks](docs/13_RISK_REGISTER.md) ·
 [Sources](docs/14_SOURCE_REGISTER.md) ·
 [Experiment](docs/15_EXPERIMENT.md) ·
+[Scan](docs/16_SCAN.md) ·
 [Roadmap](docs/ROADMAP.md) ·
 [Friction log](docs/FRICTION_LOG.md)
 
 ## License
 
-MIT
+[MIT](LICENSE). Unofficial; not affiliated with or endorsed by Amazon. Alexa is a trademark of
+Amazon.com, Inc. or its affiliates.
