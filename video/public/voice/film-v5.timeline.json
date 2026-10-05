@@ -1,0 +1,166 @@
+{
+ "model": "gpt-4o-mini-tts",
+ "lengthSeconds": 114.644,
+ "lines": [
+  {
+   "id": "v5-case1",
+   "who": "narrator",
+   "text": "You've built a grocery add-on for Amazon's voice assistant. A customer says:",
+   "start": 0,
+   "end": 4.259,
+   "src": "voice/v5-case1.mp3"
+  },
+  {
+   "id": "v5-case2",
+   "who": "narrator",
+   "text": "Say the assistant hears fifty. Your add-on answers:",
+   "start": 4.259,
+   "end": 7.902,
+   "src": "voice/v5-case2.mp3"
+  },
+  {
+   "id": "v5-case3",
+   "who": "narrator",
+   "text": "Fifty dollars of fruit, and nobody noticed. When you tested it by typing, this never came up.",
+   "start": 7.902,
+   "end": 13.921,
+   "src": "voice/v5-case3.mp3"
+  },
+  {
+   "id": "v5-what",
+   "who": "narrator",
+   "text": "This is Hearsay. An add-on is an MCP server: the part you write. Hearsay plays what customers say against it, as said and misheard, checks every reply, and fails the build before it goes wrong out loud.",
+   "start": 13.921,
+   "end": 26.267,
+   "src": "voice/v5-what.mp3"
+  },
+  {
+   "id": "v5-how1",
+   "who": "narrator",
+   "text": "The assistant listens, picks a tool, calls your server, and speaks the reply.",
+   "start": 26.267,
+   "end": 30.52,
+   "src": "voice/v5-how1.mp3"
+  },
+  {
+   "id": "v5-how2",
+   "who": "narrator",
+   "text": "Hearsay plays the assistant's part from your test: the words, the mishearings, and the tool call you expect. Then it checks what your server says back.",
+   "start": 30.52,
+   "end": 38.782,
+   "src": "voice/v5-how2.mp3"
+  },
+  {
+   "id": "v5-how3",
+   "who": "narrator",
+   "text": "No microphone, no API keys, the same result every time.",
+   "start": 38.782,
+   "end": 42.665,
+   "src": "voice/v5-how3.mp3"
+  },
+  {
+   "id": "v5-rules",
+   "who": "narrator",
+   "text": "Replies are graded by the rules Amazon published for add-ons: half a second per tool call, short replies, no code read aloud, five options at most, and no payment without naming what and how much.",
+   "start": 42.665,
+   "end": 55.614,
+   "src": "voice/v5-rules.mp3"
+  },
+  {
+   "id": "v5-run",
+   "who": "narrator",
+   "text": "Here's a real run against our demo grocery add-on, built with these flaws on purpose. The customer allowed fifty dollars of groceries today.",
+   "start": 55.614,
+   "end": 63.264,
+   "src": "voice/v5-run.mp3"
+  },
+  {
+   "id": "v5-red",
+   "who": "narrator",
+   "text": "Fifty dollars of fruit, added without a word. A no that placed the order anyway. Twenty problems: the build fails.",
+   "start": 63.264,
+   "end": 71.197,
+   "src": "voice/v5-red.mp3"
+  },
+  {
+   "id": "v5-fix1",
+   "who": "narrator",
+   "text": "The fixed add-on, same tests. It checks every amount against that budget, and says why it won't:",
+   "start": 71.197,
+   "end": 76.659,
+   "src": "voice/v5-fix1.mp3"
+  },
+  {
+   "id": "v5-fix2",
+   "who": "narrator",
+   "text": "Zero errors.",
+   "start": 76.659,
+   "end": 77.915,
+   "src": "voice/v5-fix2.mp3"
+  },
+  {
+   "id": "v5-ci1",
+   "who": "narrator",
+   "text": "Hearsay runs on every code change. On GitHub, this change let fifty dollars of fruit slip past the budget.",
+   "start": 77.915,
+   "end": 83.988,
+   "src": "voice/v5-ci1.mp3"
+  },
+  {
+   "id": "v5-ci2",
+   "who": "narrator",
+   "text": "Hearsay failed the check.",
+   "start": 83.988,
+   "end": 85.327,
+   "src": "voice/v5-ci2.mp3"
+  },
+  {
+   "id": "v5-ci3",
+   "who": "narrator",
+   "text": "One fix, and it passes.",
+   "start": 85.327,
+   "end": 87.16,
+   "src": "voice/v5-ci3.mp3"
+  },
+  {
+   "id": "v5-agent",
+   "who": "narrator",
+   "text": "Hearsay is an MCP server itself, with two Agent Skills. Your coding agent uses them to draft tests for you to review, run them, fix your code, and run them again until they pass, without changing your tests.",
+   "start": 87.16,
+   "end": 98.938,
+   "src": "voice/v5-agent.mp3"
+  },
+  {
+   "id": "v5-cheat1",
+   "who": "narrator",
+   "text": "And it can't cheat: your tests are locked.",
+   "start": 98.938,
+   "end": 102.692,
+   "src": "voice/v5-cheat1.mp3"
+  },
+  {
+   "id": "v5-cheat2",
+   "who": "narrator",
+   "text": "Change one, and the run fails.",
+   "start": 102.692,
+   "end": 105.153,
+   "src": "voice/v5-cheat2.mp3"
+  },
+  {
+   "id": "v5-try",
+   "who": "narrator",
+   "text": "Hearsay is open source. No keys, no account. Clone it, and your first run takes a minute.",
+   "start": 105.153,
+   "end": 111.545,
+   "src": "voice/v5-try.mp3"
+  },
+  {
+   "id": "v5-tag",
+   "who": "narrator",
+   "text": "Hearsay. Hear it before your customers do.",
+   "start": 111.545,
+   "end": 114.644,
+   "src": "voice/v5-tag.mp3"
+  }
+ ]
+}

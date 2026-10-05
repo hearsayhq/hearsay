@@ -1,0 +1,198 @@
+{
+ "id": "v5-agent",
+ "text": "Hearsay is an MCP server itself, with two Agent Skills. Your coding agent uses them to draft tests for you to review, run them, fix your code, and run them again until they pass, without changing your tests.",
+ "heard": "Hearsay is an MCP server itself, with two Agent Skills. Your coding agent uses them to draft tests for you to review, run them, fix your code, and run them again until they pass, without changing your tests.",
+ "duration": 11.770000457763672,
+ "words": [
+  {
+   "word": "Hearsay",
+   "start": 0,
+   "end": 0.4000000059604645
+  },
+  {
+   "word": "is",
+   "start": 0.4000000059604645,
+   "end": 0.6600000262260437
+  },
+  {
+   "word": "an",
+   "start": 0.6600000262260437,
+   "end": 0.9399999976158142
+  },
+  {
+   "word": "MCP",
+   "start": 0.9399999976158142,
+   "end": 1.440000057220459
+  },
+  {
+   "word": "server",
+   "start": 1.440000057220459,
+   "end": 1.659999966621399
+  },
+  {
+   "word": "itself,",
+   "start": 1.659999966621399,
+   "end": 2.240000009536743
+  },
+  {
+   "word": "with",
+   "start": 2.5199999809265137,
+   "end": 2.640000104904175
+  },
+  {
+   "word": "two",
+   "start": 2.640000104904175,
+   "end": 2.9200000762939453
+  },
+  {
+   "word": "Agent",
+   "start": 2.9200000762939453,
+   "end": 3.259999990463257
+  },
+  {
+   "word": "Skills.",
+   "start": 3.259999990463257,
+   "end": 3.5799999237060547
+  },
+  {
+   "word": "Your",
+   "start": 4.199999809265137,
+   "end": 4.340000152587891
+  },
+  {
+   "word": "coding",
+   "start": 4.340000152587891,
+   "end": 4.599999904632568
+  },
+  {
+   "word": "agent",
+   "start": 4.599999904632568,
+   "end": 4.920000076293945
+  },
+  {
+   "word": "uses",
+   "start": 4.920000076293945,
+   "end": 5.21999979019165
+  },
+  {
+   "word": "them",
+   "start": 5.21999979019165,
+   "end": 5.380000114440918
+  },
+  {
+   "word": "to",
+   "start": 5.380000114440918,
+   "end": 5.599999904632568
+  },
+  {
+   "word": "draft",
+   "start": 5.599999904632568,
+   "end": 5.880000114440918
+  },
+  {
+   "word": "tests",
+   "start": 5.880000114440918,
+   "end": 6.179999828338623
+  },
+  {
+   "word": "for",
+   "start": 6.179999828338623,
+   "end": 6.360000133514404
+  },
+  {
+   "word": "you",
+   "start": 6.360000133514404,
+   "end": 6.440000057220459
+  },
+  {
+   "word": "to",
+   "start": 6.440000057220459,
+   "end": 6.840000152587891
+  },
+  {
+   "word": "review,",
+   "start": 6.840000152587891,
+   "end": 6.840000152587891
+  },
+  {
+   "word": "run",
+   "start": 7.460000038146973,
+   "end": 7.480000019073486
+  },
+  {
+   "word": "them,",
+   "start": 7.480000019073486,
+   "end": 7.699999809265137
+  },
+  {
+   "word": "fix",
+   "start": 7.920000076293945,
+   "end": 7.920000076293945
+  },
+  {
+   "word": "your",
+   "start": 7.920000076293945,
+   "end": 8.359999656677246
+  },
+  {
+   "word": "code,",
+   "start": 8.359999656677246,
+   "end": 8.359999656677246
+  },
+  {
+   "word": "and",
+   "start": 8.760000228881836,
+   "end": 8.920000076293945
+  },
+  {
+   "word": "run",
+   "start": 8.920000076293945,
+   "end": 9
+  },
+  {
+   "word": "them",
+   "start": 9,
+   "end": 9.180000305175781
+  },
+  {
+   "word": "again",
+   "start": 9.180000305175781,
+   "end": 9.420000076293945
+  },
+  {
+   "word": "until",
+   "start": 9.420000076293945,
+   "end": 9.600000381469727
+  },
+  {
+   "word": "they",
+   "start": 9.600000381469727,
+   "end": 9.800000190734863
+  },
+  {
+   "word": "pass,",
+   "start": 9.800000190734863,
+   "end": 10.180000305175781
+  },
+  {
+   "word": "without",
+   "start": 10.739999771118164,
+   "end": 10.760000228881836
+  },
+  {
+   "word": "changing",
+   "start": 10.760000228881836,
+   "end": 11.039999961853027
+  },
+  {
+   "word": "your",
+   "start": 11.039999961853027,
+   "end": 11.619999885559082
+  },
+  {
+   "word": "tests.",
+   "start": 11.619999885559082,
+   "end": 11.619999885559082
+  }
+ ]
+}

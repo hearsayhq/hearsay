@@ -1,0 +1,124 @@
+{
+ "id": "v5-run",
+ "text": "Here's a real run against our demo grocery add-on, built with these flaws on purpose. The customer allowed fifty dollars of groceries today.",
+ "heard": "Here's a real run against our demo grocery add-on, built with these flaws on purpose. The customer allowed fifty dollars of groceries today.",
+ "duration": 7.650000095367432,
+ "words": [
+  {
+   "word": "Here's",
+   "start": 0,
+   "end": 0.4000000059604645
+  },
+  {
+   "word": "a",
+   "start": 0.4000000059604645,
+   "end": 0.6000000238418579
+  },
+  {
+   "word": "real",
+   "start": 0.6000000238418579,
+   "end": 0.8799999952316284
+  },
+  {
+   "word": "run",
+   "start": 0.8799999952316284,
+   "end": 1.1200000047683716
+  },
+  {
+   "word": "against",
+   "start": 1.1200000047683716,
+   "end": 1.3600000143051147
+  },
+  {
+   "word": "our",
+   "start": 1.3600000143051147,
+   "end": 1.6200000047683716
+  },
+  {
+   "word": "demo",
+   "start": 1.6200000047683716,
+   "end": 1.9199999570846558
+  },
+  {
+   "word": "grocery",
+   "start": 1.9199999570846558,
+   "end": 2.2799999713897705
+  },
+  {
+   "word": "add-on,",
+   "start": 2.2799999713897705,
+   "end": 3.1600000858306885,
+   "guessed": true
+  },
+  {
+   "word": "built",
+   "start": 3.1600000858306885,
+   "end": 3.259999990463257
+  },
+  {
+   "word": "with",
+   "start": 3.259999990463257,
+   "end": 3.5
+  },
+  {
+   "word": "these",
+   "start": 3.5,
+   "end": 3.859999895095825
+  },
+  {
+   "word": "flaws",
+   "start": 3.859999895095825,
+   "end": 4.159999847412109
+  },
+  {
+   "word": "on",
+   "start": 4.159999847412109,
+   "end": 4.400000095367432
+  },
+  {
+   "word": "purpose.",
+   "start": 4.400000095367432,
+   "end": 4.760000228881836
+  },
+  {
+   "word": "The",
+   "start": 5.179999828338623,
+   "end": 5.28000020980835
+  },
+  {
+   "word": "customer",
+   "start": 5.28000020980835,
+   "end": 5.619999885559082
+  },
+  {
+   "word": "allowed",
+   "start": 5.619999885559082,
+   "end": 5.980000019073486
+  },
+  {
+   "word": "fifty",
+   "start": 5.980000019073486,
+   "end": 6.320000171661377
+  },
+  {
+   "word": "dollars",
+   "start": 6.320000171661377,
+   "end": 6.639999866485596
+  },
+  {
+   "word": "of",
+   "start": 6.639999866485596,
+   "end": 6.880000114440918
+  },
+  {
+   "word": "groceries",
+   "start": 6.880000114440918,
+   "end": 7.159999847412109
+  },
+  {
+   "word": "today.",
+   "start": 7.159999847412109,
+   "end": 7.519999980926514
+  }
+ ]
+}

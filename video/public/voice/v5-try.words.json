@@ -1,0 +1,93 @@
+{
+ "id": "v5-try",
+ "text": "Hearsay is open source. No keys, no account. Clone it, and your first run takes a minute.",
+ "heard": "Hearsay is open source. No keys, no account. Clone it, and your first run takes a minute.",
+ "duration": 6.389999866485596,
+ "words": [
+  {
+   "word": "Hearsay",
+   "start": 0,
+   "end": 0.5400000214576721
+  },
+  {
+   "word": "is",
+   "start": 0.5400000214576721,
+   "end": 0.8600000143051147
+  },
+  {
+   "word": "open",
+   "start": 0.8600000143051147,
+   "end": 1.2599999904632568
+  },
+  {
+   "word": "source.",
+   "start": 1.2599999904632568,
+   "end": 1.6200000047683716
+  },
+  {
+   "word": "No",
+   "start": 2.259999990463257,
+   "end": 2.359999895095825
+  },
+  {
+   "word": "keys,",
+   "start": 2.359999895095825,
+   "end": 2.759999990463257
+  },
+  {
+   "word": "no",
+   "start": 3.2200000286102295,
+   "end": 3.4000000953674316
+  },
+  {
+   "word": "account.",
+   "start": 3.4000000953674316,
+   "end": 3.7200000286102295
+  },
+  {
+   "word": "Clone",
+   "start": 4.320000171661377,
+   "end": 4.320000171661377
+  },
+  {
+   "word": "it,",
+   "start": 4.320000171661377,
+   "end": 4.559999942779541
+  },
+  {
+   "word": "and",
+   "start": 4.820000171661377,
+   "end": 4.880000114440918
+  },
+  {
+   "word": "your",
+   "start": 4.880000114440918,
+   "end": 5.039999961853027
+  },
+  {
+   "word": "first",
+   "start": 5.039999961853027,
+   "end": 5.340000152587891
+  },
+  {
+   "word": "run",
+   "start": 5.340000152587891,
+   "end": 5.579999923706055
+  },
+  {
+   "word": "takes",
+   "start": 5.579999923706055,
+   "end": 5.880000114440918
+  },
+  {
+   "word": "a",
+   "start": 5.880000114440918,
+   "end": 6.239999771118164
+  },
+  {
+   "word": "minute.",
+   "start": 6.239999771118164,
+   "end": 6.239999771118164
+  }
+ ]
+}

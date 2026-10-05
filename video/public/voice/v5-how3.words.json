@@ -1,0 +1,58 @@
+{
+ "id": "v5-how3",
+ "text": "No microphone, no API keys, the same result every time.",
+ "heard": "No microphone, no API keys, the same result every time.",
+ "duration": 3.880000114440918,
+ "words": [
+  {
+   "word": "No",
+   "start": 0,
+   "end": 0.30000001192092896
+  },
+  {
+   "word": "microphone,",
+   "start": 0.30000001192092896,
+   "end": 0.800000011920929
+  },
+  {
+   "word": "no",
+   "start": 1.1799999475479126,
+   "end": 1.440000057220459
+  },
+  {
+   "word": "API",
+   "start": 1.440000057220459,
+   "end": 1.6799999475479126
+  },
+  {
+   "word": "keys,",
+   "start": 1.6799999475479126,
+   "end": 2.0799999237060547
+  },
+  {
+   "word": "the",
+   "start": 2.4200000762939453,
+   "end": 2.5999999046325684
+  },
+  {
+   "word": "same",
+   "start": 2.5999999046325684,
+   "end": 2.7799999713897705
+  },
+  {
+   "word": "result",
+   "start": 2.7799999713897705,
+   "end": 3.059999942779541
+  },
+  {
+   "word": "every",
+   "start": 3.059999942779541,
+   "end": 3.5399999618530273
+  },
+  {
+   "word": "time.",
+   "start": 3.5399999618530273,
+   "end": 3.759999990463257
+  }
+ ]
+}

@@ -1,0 +1,28 @@
+{
+ "id": "v5-ci2",
+ "text": "Hearsay failed the check.",
+ "heard": "Hearsay failed the check.",
+ "duration": 1.3300000429153442,
+ "words": [
+  {
+   "word": "Hearsay",
+   "start": 0,
+   "end": 0.47999998927116394
+  },
+  {
+   "word": "failed",
+   "start": 0.47999998927116394,
+   "end": 0.7200000286102295
+  },
+  {
+   "word": "the",
+   "start": 0.7200000286102295,
+   "end": 0.8999999761581421
+  },
+  {
+   "word": "check.",
+   "start": 0.8999999761581421,
+   "end": 1.159999966621399
+  }
+ ]
+}

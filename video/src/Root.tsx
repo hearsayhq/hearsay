@@ -2,6 +2,8 @@ import { Composition } from 'remotion';
 import { Film } from './film/Film';
 import { Film3 } from './film3/Film3';
 import { Film4 } from './film4/Film4';
+import { Film5 } from './film5/Film5';
+import { FILM5_FRAMES } from './film5/plan';
 import { Banner, BANNER } from './readme/Banner';
 import { How, HOW } from './readme/How';
 import { FILM4_FRAMES } from './film4/plan';
@@ -17,6 +19,7 @@ export function Root() {
   return (
     <>
       <Composition id="StyleFrame" component={StyleFrame} durationInFrames={180} fps={FPS} width={W} height={H} />
+      <Composition id="Film5" component={Film5} durationInFrames={FILM5_FRAMES} fps={FPS} width={W} height={H} />
       <Composition id="Film4" component={Film4} durationInFrames={FILM4_FRAMES} fps={FPS} width={W} height={H} />
       <Composition id="Banner" component={Banner} durationInFrames={1} fps={FPS} width={BANNER.width} height={BANNER.height} />
       <Composition id="How" component={How} durationInFrames={1} fps={FPS} width={HOW.width} height={HOW.height} />
