@@ -1,0 +1,73 @@
+{
+ "id": "v5-how1",
+ "text": "The assistant listens, picks a tool, calls your server, and speaks the reply.",
+ "heard": "The assistant listens, picks a tool, calls your server, and speaks the reply.",
+ "duration": 4.25,
+ "words": [
+  {
+   "word": "The",
+   "start": 0,
+   "end": 0.2199999988079071
+  },
+  {
+   "word": "assistant",
+   "start": 0.2199999988079071,
+   "end": 0.5799999833106995
+  },
+  {
+   "word": "listens,",
+   "start": 0.5799999833106995,
+   "end": 1.0399999618530273
+  },
+  {
+   "word": "picks",
+   "start": 1.5399999618530273,
+   "end": 1.5399999618530273
+  },
+  {
+   "word": "a",
+   "start": 1.5399999618530273,
+   "end": 1.9600000381469727
+  },
+  {
+   "word": "tool,",
+   "start": 1.9600000381469727,
+   "end": 1.9600000381469727
+  },
+  {
+   "word": "calls",
+   "start": 2.559999942779541,
+   "end": 2.559999942779541
+  },
+  {
+   "word": "your",
+   "start": 2.559999942779541,
+   "end": 2.7799999713897705
+  },
+  {
+   "word": "server,",
+   "start": 2.7799999713897705,
+   "end": 3.0199999809265137
+  },
+  {
+   "word": "and",
+   "start": 3.380000114440918,
+   "end": 3.680000066757202
+  },
+  {
+   "word": "speaks",
+   "start": 3.680000066757202,
+   "end": 3.680000066757202
+  },
+  {
+   "word": "the",
+   "start": 3.680000066757202,
+   "end": 3.9200000762939453
+  },
+  {
+   "word": "reply.",
+   "start": 3.9200000762939453,
+   "end": 4.099999904632568
+  }
+ ]
+}

@@ -1,0 +1,69 @@
+{
+ "id": "v5-case1",
+ "text": "You've built a grocery add-on for Amazon's voice assistant. A customer says:",
+ "heard": "You've built a grocery add-on for Amazon's voice assistant. A customer says",
+ "duration": 4.25,
+ "words": [
+  {
+   "word": "You've",
+   "start": 0,
+   "end": 0.4399999976158142
+  },
+  {
+   "word": "built",
+   "start": 0.4399999976158142,
+   "end": 0.5199999809265137
+  },
+  {
+   "word": "a",
+   "start": 0.5199999809265137,
+   "end": 0.699999988079071
+  },
+  {
+   "word": "grocery",
+   "start": 0.699999988079071,
+   "end": 1.100000023841858
+  },
+  {
+   "word": "add-on",
+   "start": 1.100000023841858,
+   "end": 1.5199999809265137,
+   "guessed": true
+  },
+  {
+   "word": "for",
+   "start": 1.5199999809265137,
+   "end": 1.7000000476837158
+  },
+  {
+   "word": "Amazon's",
+   "start": 1.7000000476837158,
+   "end": 2.2200000286102295
+  },
+  {
+   "word": "voice",
+   "start": 2.2200000286102295,
+   "end": 2.4200000762939453
+  },
+  {
+   "word": "assistant.",
+   "start": 2.4200000762939453,
+   "end": 2.9000000953674316
+  },
+  {
+   "word": "A",
+   "start": 3.299999952316284,
+   "end": 3.4600000381469727
+  },
+  {
+   "word": "customer",
+   "start": 3.4600000381469727,
+   "end": 3.740000009536743
+  },
+  {
+   "word": "says:",
+   "start": 3.740000009536743,
+   "end": 4.119999885559082
+  }
+ ]
+}

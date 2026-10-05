@@ -2,36 +2,39 @@
 
 ## Video (English, public YouTube or Vimeo, under 3:00)
 
-Film v4, the infomercial cut (approved by the owner, 3 Oct): 2:36, rendered at 3840×2160 and
-60 fps with Remotion (`video/src/film4/`, composition `Film4`). One narrator explains; there are
-no character voices and no B-roll. Voice: OpenAI gpt-4o-mini-tts, voice alloy, every line a
-whole take (`video/voice/film-v4.json`); word timings from whisper (`video/voice/align.mjs`) put
-captions and motion on the spoken word. One camera travels through one world. The real runs are
-4K VHS tapes (`video/tapes/*-4k.tape`) at main `9b4acdd`, plus the recorded agent session.
+Film v5, the use-case cut (approved by the owner, 5 Oct): 2:35, 3840×2160 at 60 fps with
+Remotion (`video/src/film5/`, composition `Film5`). It replaces v4 (the infomercial cut, kept in
+`video/src/film4/`) after two blind reviews of v4: a reviewer given only the video and the judging
+criteria could not tell it was an Alexa+ entry, never heard the product, and found the measured
+results and the jargon unconvincing. v5 pitches one concrete use case, never says the wake word
+("Amazon's voice assistant" in the narration, "Alexa+" large on screen), and lets the customer and
+the add-on speak with Amazon Polly, word for word from the real runs (`video/voice/polly-v5.json`).
+Narration: OpenAI gpt-4o-mini-tts, voice alloy, whole takes only (`video/voice/film-v5.json`); word
+timings from whisper (`video/voice/align.mjs`).
 
-| Time | Picture | Narration |
+| Time | Picture | Narration / sound |
 |---|---|---|
-| 0:00 what it is | A drop of light lands and becomes the HEARSAY wordmark; starburst "NEW for Alexa+ MCP servers"; the real test case `misheard-amount` of `suites/household-orders.yaml`, its clean and misheard variants (`amountUsd: 15` / `50`); stamp "Build fails, exit 1" | This is Hearsay: preflight checks for voice add-ons. You write what your customers say. Hearsay plays it against your server, clean and misheard, and fails the build when it would go wrong out loud. |
-| 0:12 the problem | A chat window ("looks fine") turns into a voice and cracks; four cards: a number heard wrong (fifteen → fifty), a reply that reads out JSON, a list too long to remember, a no that still places the order | In a chat window, add-ons look fine. Out loud, they break: a number heard wrong, a reply that reads out JSON, a list too long to remember, a no that still places the order. |
-| 0:24 how it works | Four steps: speech → text, model picks a tool, your server, reply spoken; "Amazon" under three, "your code" under the server. Hearsay's frame over the first two (said/heard, the tool call `orders_stage_cart { amountUsd: 50 }`) and over the last ("Added." checked). Stamps: no microphone, no model, no API keys; three identical runs; `hearsay / voice` on every pull request | Here's how. When someone speaks, only one step is your code: the server. Hearsay plays the rest, straight from your test case: the words, the mishearings, and the tool call the model would make. Then it checks what your server answers. No microphone. No model. No API keys. The same result every time, so it runs on every pull request. |
-| 0:45 the rules | Five tiles, each with the check that tests it, all sourced `amazon-fr`: ≤ 500 ms (`latency.tool`), < 30 s (`speak.length`), no JSON (`speak.no_structured_dump`), ≤ 5 options (`speak.lists`), what + how much (`consent.states_details`), with the fixed build's real question "Place the order: two cartons of milk, seven dollars and forty cents?" | Every answer is graded by the rules Amazon published for add-ons: half a second per tool, short replies, no JSON, five options at most, and no payment without naming what and how much. |
-| 0:58 a real run | Tape `orders-flawed-4k`, uncut, real time: prompt with branch and SHA, `date`, `HEARSAY_FIXED=0 npm run server:orders &`, the run; the camera moves to `consent.misheard_amount`, `consent.decline_holds`, "20 errors · 16 warnings · 0 info · 8 of 10 runs failed", exit 1; stamps "Exit 1", "Build fails" | Here's a real run, on a grocery add-on. One take, no cuts. · Fifty instead of fifteen, taken without reading it back. A no that placed the order anyway. Twenty errors. Exit one. The build fails. |
-| 1:16 fixed | The window flips to tape `orders-fixed-4k`: `HEARSAY_FIXED=1`, same suite; the fixed build's real reply to the misheard fifty ("That would go over the total budget you gave me. You can add less, or give me a bigger budget."); "0 errors · 9 warnings · 0 info · 0 of 10 runs failed", exit 0; chips BEFORE · 20 errors · exit 1 / AFTER · 0 errors · exit 0 | The fixed build, same tests. · The misheard fifty is refused, and the add-on says why. · Zero errors. |
-| 1:27 in CI | Tape `ci-pr27-4k`: `gh run view` of pull request #27's `hearsay / voice`, red (failed step, "Process completed with exit code 1", run URL), the failing line `consent.misheard_amount`, then green after the fix commit (run URL); notes with the PR title and the one-line fix (57e680a); seal "As seen in CI" | And it guards every pull request. This change let fifty dollars of fruit skip the budget. · Hearsay caught it, and the check went red. · One fix, and it's green. |
-| 1:44 coding agents | Starburst "But wait — there's more!"; the recorded Claude Code session (`scripts/agent-loop.sh`, 10×, labelled): RED · 11 errors → fixes in `src/server.ts` → GREEN, suites untouched | But wait, there's more. Hearsay is also an MCP server. Your coding agent runs it, fixes what it finds, and runs it again, until it's green. |
-| 1:54 locked suite | Tape `cheat-4k`: an expectation in the locked Kitchen suite edited from 15 to 50 → `suite.integrity` error, exit 1; stamp "Nice try" | And it can't cheat: change a locked test, · and the run fails. |
-| 2:03 measured | docs/15: a suite alone stopped agents at green (68 % against 83 % on unseen cases); a real coverage warning; 0 of 36 against 11 of 27 agent runs that ended with errors left; rules the prompt never named 37/45 against 28/45; fine print with the limits | We measured it with coding agents. A suite alone made them stop at green, so Hearsay now shows what your suite doesn't cover. The result: zero defects left behind, and better on the rules nobody told them about. |
-| 2:15 try it | Price tag "$ ???" → "$0"; open source, MIT, no API keys, no account; tape `clone-4k`: fresh clone, install at 2× (labelled), the Kitchen run at real time, "0 errors · 1 warning · 0 info · 0 of 8 runs failed", exit 0; tagline; end card: github.com/hearsayhq/hearsay · `npx @hearsayhq/cli` · "Your coding agent is standing by." · seal "As seen in CI" | And the price? Zero. Hearsay is open source. No keys, no account. Clone it, install it, run it. · Hearsay. Hear it before your customers do. |
+| 0:00 a use case | "Your grocery add-on for Alexa+"; the add-on (groceries, up to $50 a day); speech bubbles; the cart with fruit at $50; "tested by typing: fine" | "You've built a grocery add-on for Amazon's voice assistant. A customer says:" 🔊 Polly, customer: "Add fifteen dollars of fruit." "Say the assistant hears fifty. Your add-on answers:" 🔊 Polly, the flawed build's real reply: "Added." "Fifty dollars of fruit, and nobody noticed. When you tested it by typing, this never came up." |
+| 0:19 what it is | HEARSAY wordmark; "Preflight checks for Alexa+ add-ons"; "An Alexa+ add-on is an MCP server you host · MCP 2025-11-25 · Streamable HTTP · the part you write"; the said and misheard lanes; "checks every reply", "fails the build" | "This is Hearsay. An add-on is an MCP server: the part you write. Hearsay plays what customers say against it, as said and misheard, checks every reply, and fails the build before it goes wrong out loud." |
+| 0:32 how it works | Four steps (speech → text, model picks a tool, your server, reply spoken), "Alexa+" under three, "your code" under the server; Hearsay's frame over the first two and the last; where the mishearings come from; stamps: no microphone, no API keys, same result every time | "The assistant listens, picks a tool, calls your server, and speaks the reply. Hearsay plays the assistant's part from your test: the words, the mishearings, and the tool call you expect. Then it checks what your server says back. No microphone, no API keys, the same result every time." |
+| 0:51 the rules | Five cards: ≤ ½ s per tool call, < 30 s to read a reply aloud, no code read aloud, ≤ 5 options, what + how much before any payment; the fixed build's real question | "Replies are graded by the rules Amazon published for add-ons: half a second per tool call, short replies, no code read aloud, five options at most, and no payment without naming what and how much." |
+| 1:04 a real run | Tape `orders-flawed-4k`, uncut, real time, SHA and date in the prompt; plain captions over the findings ("Heard fifty. Added fifty. Never said the amount back." / "The customer said no. The order was placed anyway." / "Asked 'Are you sure?' without saying what or how much."); stamp "Build fails · 20 problems found" | "Here's a real run against our demo grocery add-on, built with these flaws on purpose. The customer allowed fifty dollars of groceries today. Fifty dollars of fruit, added without a word. A no that placed the order anyway. Twenty problems: the build fails." |
+| 1:24 the fix | Tape `orders-fixed-4k`; the reply card while the reply plays; "Zero errors" | "The fixed add-on, same tests. It checks every amount against that budget, and says why it won't:" 🔊 Polly, the fixed build's real reply: "That would go over the total budget you gave me. You can add less, or give me a bigger budget." "Zero errors." |
+| 1:37 on every change | github.com, logged out, in a browser frame with the real address: pull request #27's commits (the change ✗ 0/2, the fix ✓ 2/2), the failed job with ✗ on the Household Orders step, the failing log line (read with gh from tape `ci-pr27-4k`, since GitHub shows logs only after a sign-in), the green job | "Hearsay runs on every code change. On GitHub, this change let fifty dollars of fruit slip past the budget. Hearsay failed the check. One fix, and it passes." |
+| 1:52 for coding agents | "Hearsay · an MCP server + two Agent Skills" → "your coding agent"; the recorded Claude Code session at main 3cc07c5 (10×, labelled): 17 errors → RED → fixes in the add-on's code → GREEN, tests untouched | "Hearsay is an MCP server itself, with two Agent Skills. Your coding agent uses them to draft tests for you to review, run them, fix your code, and run them again until they pass, without changing your tests." |
+| 2:07 locked tests | Tape `cheat-4k`: a locked test edited from 15 to 50 → the integrity error → stamp "Run fails" | "And it can't cheat: your tests are locked. Change one, and the run fails." |
+| 2:17 try it | Open source · MIT, no API keys, no account; tape `clone-v5` (fresh clone at main 3cc07c5, install at 2×, labelled, the run at real time: 0 errors, exit 0); tagline; end card: "Preflight checks for Alexa+ add-ons", github.com/hearsayhq/hearsay, `npx @hearsayhq/cli` | "Hearsay is open source. No keys, no account. Clone it, and your first run takes a minute. Hearsay. Hear it before your customers do." |
 
-Fine print along the bottom of every scene names the tape, the commit and the limits; the first
-and the last scene say "Unofficial. Not affiliated with or endorsed by Amazon." and "Narration is
-AI-generated." CI is shown with `gh` in a recorded terminal: the Actions run of pull request #27,
-its failing log line and both run URLs, so no browser login is needed.
+Fine print names the tape, page or session and the commit in every scene; the first and the last
+say "Unofficial. Not affiliated with or endorsed by Amazon." and "Narration is AI-generated."
 
-Changes from v3 (owner, 2–3 Oct): no skit and no character voices; the film opens with what
-Hearsay is; the problem is four situations, not a narrated example; whole takes only, so nothing
-is cut inside a sentence; no B-roll; colored gradients and a technical layer (grid, chapter
-labels, progress).
+Changes from v4 (owner, 5 Oct, after the blind reviews): Alexa+ and "an add-on is an MCP server"
+in the first 30 seconds; the customer and the add-on are heard; the budget is introduced before
+the fix relies on it; the measurement scene is dropped (it stays in the README, Devpost and
+docs/15 with its context); no "But wait, there's more" and no price gag; plain words ("problems",
+"passes", "every code change") instead of exit codes, suites and pull requests; the old agent
+session (which still listed four planned checks) and the clone tape (a garbled prompt) recorded
+again.
 
 ### Proof of function (required for the video)
 
@@ -39,8 +42,9 @@ labels, progress).
    screenshots. VHS tapes really run their commands; the tapes live in the repo (`video/tapes/`).
 2. At least one scene is uncut: command → red output → exit 1, with the commit SHA and the date
    visible in the terminal.
-3. CI is shown for real: the GitHub Actions log of the actual pull request run, red (exit code 1)
-   and green after the fix, with the run URL on screen. The pull request stays reachable after
+3. CI is shown for real: pull request #27's pages on github.com as anyone sees them (logged out, the
+   address in view), red on the change and green after the fix, and the failing log line, read with
+   gh because GitHub shows logs only after a sign-in. The pull request stays reachable after
    submission; its link goes into the Devpost description and the README.
 4. Speed-ups only for installs and the agent loop, always labelled ("2×", "4×"). Results are never
    sped up or cut.
@@ -50,14 +54,23 @@ labels, progress).
 7. Before rendering, the numbers in the video (error counts, exit codes) are taken from the actual
    runs, not from the script. If "Twenty errors" no longer holds, the sentence changes, not the run.
 
-Production notes: subtitles from second 0; the narration never says the wake word, "Alexa+" only
-on screen. Music and effects are synthesised by `video/sound/make-sound.mjs` (no samples, nothing
-to license) and duck under the voice; the final mix is −14 LUFS. Rebuild from `video/`:
-`node sound/make-sound.mjs`, then `npx remotion render src/index.ts Film4 out/hearsay-v4-4k.mp4
---scale=2 --crf=14 --x264-preset=slow --jpeg-quality=100 --color-space=bt709`, then
-`ffmpeg -i out/hearsay-v4-4k.mp4 -c:v copy -af "volume=2.8dB,alimiter=limit=0.85:level=disabled"
--c:a aac -b:a 256k out/hearsay-v4-4k-final.mp4`. The tapes go into `public/clips/v4/`
-(see README → Demo).
+Production notes: subtitles from second 0, for every voice; the narration never says the wake
+word, "Alexa+" only on screen. Music (`video/sound/make-bed-v5.ts`) and effects
+(`video/sound/make-sound.mjs`) are synthesised, so there is nothing to license, and duck under every
+voice; the final mix is −14 LUFS. Rebuild from `video/`:
+
+```sh
+node sound/make-sound.mjs && npx tsx sound/make-bed-v5.ts
+node --env-file=.env voice/make-dialogue.mjs voice/film-v5.json && node --env-file=.env voice/align.mjs voice/film-v5.json
+AWS_PROFILE=<yours> node voice/make-polly.mjs voice/polly-v5.json
+node record/ci-github.mjs                                   # github.com pages, logged out
+CLONE_PARENT=<an empty folder named fresh> vhs tapes/clone-v5.tape
+asciinema rec --headless --window-size 140x45 -c "../scripts/agent-loop.sh <workspace>" out/tapes/agent-loop-v5.cast   # one agent run
+npx remotion render src/index.ts Film5 out/hearsay-v5-4k.mp4 --scale=2 --crf=14 --x264-preset=slow --jpeg-quality=100 --color-space=bt709
+```
+
+The agent cast has the home folder replaced by `~/hearsay` before `agg` turns it into
+`public/clips/v5/agent-loop.mp4`; the v4 tapes go into `public/clips/v4/` (see README → Demo).
 
 ## Clips per gate
 

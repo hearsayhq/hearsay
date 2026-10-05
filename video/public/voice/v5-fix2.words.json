@@ -1,0 +1,18 @@
+{
+ "id": "v5-fix2",
+ "text": "Zero errors.",
+ "heard": "Zero errors.",
+ "duration": 1.25,
+ "words": [
+  {
+   "word": "Zero",
+   "start": 0,
+   "end": 0.5799999833106995
+  },
+  {
+   "word": "errors.",
+   "start": 0.5799999833106995,
+   "end": 1.0800000429153442
+  }
+ ]
+}

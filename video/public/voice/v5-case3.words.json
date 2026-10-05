@@ -1,0 +1,93 @@
+{
+ "id": "v5-case3",
+ "text": "Fifty dollars of fruit, and nobody noticed. When you tested it by typing, this never came up.",
+ "heard": "Fifty dollars of fruit, and nobody noticed. When you tested it by typing, this never came up.",
+ "duration": 6.010000228881836,
+ "words": [
+  {
+   "word": "Fifty",
+   "start": 0,
+   "end": 0.46000000834465027
+  },
+  {
+   "word": "dollars",
+   "start": 0.46000000834465027,
+   "end": 0.7599999904632568
+  },
+  {
+   "word": "of",
+   "start": 0.7599999904632568,
+   "end": 1.0199999809265137
+  },
+  {
+   "word": "fruit,",
+   "start": 1.0199999809265137,
+   "end": 1.2400000095367432
+  },
+  {
+   "word": "and",
+   "start": 1.7799999713897705,
+   "end": 1.9199999570846558
+  },
+  {
+   "word": "nobody",
+   "start": 1.9199999570846558,
+   "end": 2.240000009536743
+  },
+  {
+   "word": "noticed.",
+   "start": 2.240000009536743,
+   "end": 2.680000066757202
+  },
+  {
+   "word": "When",
+   "start": 3.259999990463257,
+   "end": 3.319999933242798
+  },
+  {
+   "word": "you",
+   "start": 3.319999933242798,
+   "end": 3.5199999809265137
+  },
+  {
+   "word": "tested",
+   "start": 3.5199999809265137,
+   "end": 3.759999990463257
+  },
+  {
+   "word": "it",
+   "start": 3.759999990463257,
+   "end": 3.9200000762939453
+  },
+  {
+   "word": "by",
+   "start": 3.9200000762939453,
+   "end": 4.139999866485596
+  },
+  {
+   "word": "typing,",
+   "start": 4.139999866485596,
+   "end": 4.420000076293945
+  },
+  {
+   "word": "this",
+   "start": 4.980000019073486,
+   "end": 5.199999809265137
+  },
+  {
+   "word": "never",
+   "start": 5.199999809265137,
+   "end": 5.460000038146973
+  },
+  {
+   "word": "came",
+   "start": 5.460000038146973,
+   "end": 5.699999809265137
+  },
+  {
+   "word": "up.",
+   "start": 5.699999809265137,
+   "end": 5.880000114440918
+  }
+ ]
+}
