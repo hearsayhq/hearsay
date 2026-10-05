@@ -16,6 +16,15 @@ import { build } from 'tsup';
 const REPO = new URL('..', import.meta.url).pathname;
 const OUT = join(REPO, 'build/npm');
 const VERSION = '0.1.0';
+/** npm shows a README outside the repo, so relative links and images point at main on GitHub. */
+const forNpm = (md, dir = '') => {
+  const abs = (p, base) => new URL(p, `${base}/${dir}`).href;
+  const local = (p) => !/^([a-z]+:|#)/i.test(p);
+  return md
+    .replace(/(src=")([^"]+)"/g, (m, a, p) => (local(p) ? `${a}${abs(p, 'https://raw.githubusercontent.com/hearsayhq/hearsay/main')}"` : m))
+    .replace(/(href=")([^"]+)"/g, (m, a, p) => (local(p) ? `${a}${abs(p, 'https://github.com/hearsayhq/hearsay/blob/main')}"` : m))
+    .replace(/\]\(([^)\s]+)\)/g, (m, p) => (local(p) ? `](${abs(p, 'https://github.com/hearsayhq/hearsay/blob/main')})` : m));
+};
 const manifest = (p) => JSON.parse(readFileSync(join(REPO, 'packages', p, 'package.json'), 'utf8'));
 const thirdParty = (...pkgs) => Object.fromEntries(pkgs.flatMap((p) => Object.entries(manifest(p).dependencies ?? {})).filter(([n]) => !n.startsWith('@hearsayhq/')).sort());
 const common = { version: VERSION, type: 'module', license: 'MIT', engines: { node: '>=22' }, repository: { type: 'git', url: 'git+https://github.com/hearsayhq/hearsay.git' }, homepage: 'https://github.com/hearsayhq/hearsay#readme', publishConfig: { access: 'public' } };
@@ -59,7 +68,7 @@ for (const p of packages) {
   p.after?.(dir);
   writeFileSync(join(dir, 'package.json'), JSON.stringify({ ...p.json, ...common, dependencies: p.deps }, null, 2) + '\n');
   cpSync(join(REPO, 'LICENSE'), join(dir, 'LICENSE'));
-  cpSync(join(REPO, p.readme), join(dir, 'README.md'));
+  writeFileSync(join(dir, 'README.md'), forNpm(readFileSync(join(REPO, p.readme), 'utf8'), p.readme.includes('/') ? p.readme.replace(/[^/]+$/, '') : ''));
   const file = execFileSync('npm', ['pack', '--silent', '--pack-destination', OUT], { cwd: dir, encoding: 'utf8' }).trim().split('\n').at(-1);
   console.log(`${p.json.name}@${VERSION}  →  build/npm/${file}`);
 }

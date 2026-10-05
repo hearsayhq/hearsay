@@ -5,6 +5,7 @@
 <p align="center">
   <a href="https://github.com/hearsayhq/hearsay/actions/workflows/ci.yml"><img alt="ci" src="https://github.com/hearsayhq/hearsay/actions/workflows/ci.yml/badge.svg?branch=main"></a>
   <a href="https://github.com/hearsayhq/hearsay/actions/workflows/hearsay.yml"><img alt="hearsay / voice" src="https://github.com/hearsayhq/hearsay/actions/workflows/hearsay.yml/badge.svg?branch=main"></a>
+  <a href="https://www.npmjs.com/package/@hearsayhq/cli"><img alt="npm" src="https://img.shields.io/npm/v/@hearsayhq/cli?label=npm&color=FF5E5B"></a>
   <img alt="MCP 2025-11-25" src="https://img.shields.io/badge/MCP-2025--11--25-8B6BFF">
   <img alt="Node 22 or later" src="https://img.shields.io/badge/node-%E2%89%A522-3DDC97">
   <img alt="No API keys" src="https://img.shields.io/badge/API_keys-none-FFB23F">
@@ -121,8 +122,8 @@ a model the console plans from the nearest suite case and says so (D-023).
 
 ## In your project
 
-Hearsay is packaged as `@hearsayhq/cli`, `@hearsayhq/mcp` and `@hearsayhq/kit` (not on npm yet;
-`npm run pack` builds the packages into `build/npm/`). The unscoped npm name `hearsay` belongs to
+Hearsay is on npm as `@hearsayhq/cli`, `@hearsayhq/mcp` and `@hearsayhq/kit` (from a clone,
+`npm run pack` builds the same packages into `build/npm/`). The unscoped npm name `hearsay` belongs to
 an unrelated library.
 
 ```sh
@@ -185,7 +186,7 @@ fix what it finds, and rerun, without anyone in the loop.
 **Claude Code**
 
 ```sh
-claude mcp add hearsay -- npx -y @hearsayhq/mcp          # once published
+claude mcp add hearsay -- npx -y @hearsayhq/mcp
 claude mcp add hearsay -- npx tsx /path/to/hearsay/packages/mcp/src/index.ts   # from a clone
 mkdir -p .claude/skills && cp -r /path/to/hearsay/skills/{write-hearsay-suite,fix-hearsay-findings} .claude/skills/
 ```
