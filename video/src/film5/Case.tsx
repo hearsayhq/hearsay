@@ -53,13 +53,17 @@ export function Case() {
   const hears = w('case2', 3);
   const noticed = w('case3', 4);
   const typed = w('case3', 7);
-  const title = stick(fr, -6, { damping: 15, stiffness: 140 });
+  const example = w('open', 16) - 4;
+  const title = fr >= example ? stick(fr, example, { damping: 15, stiffness: 140 }) : 0;
   return (
     <div style={{ position: 'absolute', inset: 0 }}>
-      <div style={{ position: 'absolute', left: 120, top: 70, transform: `translateY(${(1 - title) * -40}px)`, opacity: Math.min(1, title * 2) }}>
-        <div style={{ fontFamily: mono, fontSize: 22, letterSpacing: 4, color: C.muted }}>A USE CASE</div>
-        <div style={{ fontFamily: sans, fontSize: 64, fontWeight: 900, color: C.text, letterSpacing: -1, marginTop: 6 }}>Your grocery add-on for <span style={GRAD_TEXT}>Alexa+</span></div>
-      </div>
+      <Opening out={example} />
+      {fr >= example ? (
+        <div style={{ position: 'absolute', left: 120, top: 70, transform: `translateY(${(1 - title) * -40}px)`, opacity: Math.min(1, title * 2) }}>
+          <Chip tint={C.amber} solid style={{ fontFamily: sans, fontWeight: 900, fontSize: 24, letterSpacing: 3 }}>AN EXAMPLE</Chip>
+          <div style={{ fontFamily: sans, fontSize: 64, fontWeight: 900, color: C.text, letterSpacing: -1, marginTop: 12 }}>A grocery add-on for <span style={GRAD_TEXT}>Alexa+</span></div>
+        </div>
+      ) : null}
       <Pop at={w('case1', 3)} x={1540} y={300}>
         <div style={{ width: 380, padding: '26px 28px', borderRadius: 26, background: 'rgba(142,162,255,0.12)', border: `2px solid ${C.blue}`, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
           <Icon name="server" size={60} color={C.blue} />
@@ -96,16 +100,45 @@ export function Case() {
 
 const LETTERS = 'HEARSAY'.split('');
 
+/** The first sentence: what Hearsay is, before the example. */
+function Opening({ out }: { out: number }) {
+  const fr = useF();
+  const w = W('case');
+  const hit = w('open', 2) - 3;
+  const gone = ramp(fr, out - 6, out + 10);
+  if (gone >= 1) return null;
+  return (
+    <div style={{ position: 'absolute', inset: 0, opacity: 1 - gone, transform: `scale(${1 - 0.15 * gone})` }}>
+      <div style={{ position: 'absolute', left: 960, top: 400, transform: 'translate(-50%,-50%)' }}>
+        <div style={{ position: 'relative', display: 'flex' }}>
+          {LETTERS.map((ch, i) => {
+            const at = hit + i * 2;
+            if (fr < at) return <span key={i} style={{ fontFamily: sans, fontSize: 230, fontWeight: 900, letterSpacing: -6, opacity: 0 }}>{ch}</span>;
+            const { k, sx, sy } = squash(fr, at, 2.2);
+            return <span key={i} style={{ display: 'inline-block', fontFamily: sans, fontSize: 230, fontWeight: 900, letterSpacing: -6, color: C.text, transform: `translateY(${(1 - k) * -200}px) scale(${sx},${sy})`, transformOrigin: 'bottom' }}>{ch}</span>;
+          })}
+        </div>
+        {fr >= hit ? <div style={{ position: 'absolute', left: '50%', bottom: -14, height: 18, borderRadius: 9, background: GRAD, width: `${100 * stick(fr, hit, { damping: 18 })}%`, transform: 'translateX(-50%)', boxShadow: '0 0 60px rgba(255,94,138,0.55)' }} /> : null}
+      </div>
+      {fr >= hit + 8 ? <div style={{ position: 'absolute', left: 0, right: 0, top: 590, textAlign: 'center', opacity: ramp(fr, hit + 8, hit + 20), fontFamily: sans, fontSize: 60, fontWeight: 800, color: C.text }}>Preflight checks for <span style={GRAD_TEXT}>Alexa+ add-ons</span></div> : null}
+      <Pop at={w('open', 4)} x={960} y={720}><Chip tint={C.amber} style={{ fontFamily: sans, fontWeight: 800, fontSize: 28, padding: '10px 24px' }}>a crash test, so they don’t go wrong out loud</Chip></Pop>
+    </div>
+  );
+}
+
 export function What() {
   const fr = useF();
   const w = W('what');
-  const hit = w('what', 2) - 3;
+  // Hearsay was introduced in the opening: here the wordmark is already standing.
+  const hit = -80;
   const mcp = w('what', 7) - 4;
-  const plays = w('what', 14) - 4;
-  const said = w('what', 21) - 2;
-  const mis = w('what', 23) - 2;
-  const checks = w('what', 24) - 2;
-  const fails = w('what', 28) - 2;
+  const tools = w('what', 9) - 2;
+  const yours = w('what', 22) - 2;
+  const plays = w('what', 28) - 4;
+  const said = w('what', 35) - 2;
+  const mis = w('what', 37) - 2;
+  const checks = w('what', 38) - 2;
+  const fails = w('what', 42) - 2;
   const up = stick(fr, mcp - 10, { damping: 16, stiffness: 140 });
   const markY = interpolate(up, [0, 1], [380, 170]);
   const markS = interpolate(up, [0, 1], [1, 0.5]);
@@ -132,16 +165,17 @@ export function What() {
           <Icon name="server" size={56} color={C.blue} />
           <div>
             <div style={{ fontFamily: sans, fontSize: 40, fontWeight: 800, color: C.text, whiteSpace: 'nowrap' }}>An Alexa+ add-on is an MCP server you host</div>
+            <div style={{ fontFamily: sans, fontSize: 28, fontWeight: 600, color: C.muted, marginTop: 6, whiteSpace: 'nowrap', opacity: ramp(fr, tools, tools + 10) }}>a small web service that gives the assistant tools, like “add to cart”</div>
             <div style={{ display: 'flex', gap: 12, marginTop: 10 }}>
               <Chip tint={C.blue} style={{ fontSize: 20 }}>MCP 2025-11-25</Chip>
               <Chip tint={C.blue} style={{ fontSize: 20 }}>Streamable HTTP</Chip>
-              <Chip tint={C.blue} solid style={{ fontFamily: sans, fontWeight: 800, fontSize: 20 }}>the part you write</Chip>
+              {fr >= yours ? <Chip tint={C.blue} solid style={{ fontFamily: sans, fontWeight: 800, fontSize: 20 }}>the part you write</Chip> : null}
             </div>
           </div>
         </div>
       </Pop>
       {fr >= plays ? (
-        <div style={{ position: 'absolute', left: 230, top: 640, display: 'flex', flexDirection: 'column', gap: 18 }}>
+        <div style={{ position: 'absolute', left: 230, top: 680, display: 'flex', flexDirection: 'column', gap: 18 }}>
           {[
             { at: said, label: 'as said', tint: C.green, text: <>“add <b>fifteen</b> dollars of fruit”</> },
             { at: mis, label: 'misheard', tint: C.red, text: <>“add <b style={{ color: '#FFB4B2' }}>fifty</b> dollars of fruit”</> },
@@ -154,8 +188,8 @@ export function What() {
           ) : null)}
         </div>
       ) : null}
-      <Pop at={checks} x={1540} y={670}><Chip tint={C.amber} style={{ fontFamily: sans, fontWeight: 800, fontSize: 28, padding: '10px 22px' }}>checks every reply</Chip></Pop>
-      <Pop at={fails} x={1540} y={760} rot={-3}><Chip tint={C.red} solid style={{ fontFamily: sans, fontWeight: 800, fontSize: 28, padding: '10px 22px' }}>✗ fails the build</Chip></Pop>
+      <Pop at={checks} x={1540} y={705}><Chip tint={C.amber} style={{ fontFamily: sans, fontWeight: 800, fontSize: 28, padding: '10px 22px' }}>checks every reply</Chip></Pop>
+      <Pop at={fails} x={1540} y={795} rot={-3}><Chip tint={C.red} solid style={{ fontFamily: sans, fontWeight: 800, fontSize: 28, padding: '10px 22px' }}>✗ fails the build</Chip></Pop>
     </div>
   );
 }

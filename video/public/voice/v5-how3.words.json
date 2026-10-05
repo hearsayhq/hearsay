@@ -1,8 +1,8 @@
 {
  "id": "v5-how3",
- "text": "No microphone, no API keys, the same result every time.",
- "heard": "No microphone, no API keys, the same result every time.",
- "duration": 3.880000114440918,
+ "text": "No microphone, no API keys, and the same result every time, so it can run on every change.",
+ "heard": "No microphone, no API keys, and the same result every time, so it can run on every change.",
+ "duration": 6.369999885559082,
  "words": [
   {
    "word": "No",
@@ -12,47 +12,87 @@
   {
    "word": "microphone,",
    "start": 0.30000001192092896,
-   "end": 0.800000011920929
+   "end": 0.8199999928474426
   },
   {
    "word": "no",
-   "start": 1.1799999475479126,
+   "start": 1.2000000476837158,
    "end": 1.440000057220459
   },
   {
    "word": "API",
    "start": 1.440000057220459,
-   "end": 1.6799999475479126
+   "end": 1.7000000476837158
   },
   {
    "word": "keys,",
-   "start": 1.6799999475479126,
-   "end": 2.0799999237060547
+   "start": 1.7000000476837158,
+   "end": 2.140000104904175
+  },
+  {
+   "word": "and",
+   "start": 2.440000057220459,
+   "end": 2.5399999618530273
   },
   {
    "word": "the",
-   "start": 2.4200000762939453,
-   "end": 2.5999999046325684
+   "start": 2.5399999618530273,
+   "end": 2.7200000286102295
   },
   {
    "word": "same",
-   "start": 2.5999999046325684,
-   "end": 2.7799999713897705
+   "start": 2.7200000286102295,
+   "end": 2.9600000381469727
   },
   {
    "word": "result",
-   "start": 2.7799999713897705,
-   "end": 3.059999942779541
+   "start": 2.9600000381469727,
+   "end": 3.299999952316284
   },
   {
    "word": "every",
-   "start": 3.059999942779541,
-   "end": 3.5399999618530273
+   "start": 3.299999952316284,
+   "end": 3.880000114440918
   },
   {
-   "word": "time.",
-   "start": 3.5399999618530273,
-   "end": 3.759999990463257
+   "word": "time,",
+   "start": 3.880000114440918,
+   "end": 4.179999828338623
+  },
+  {
+   "word": "so",
+   "start": 4.579999923706055,
+   "end": 4.659999847412109
+  },
+  {
+   "word": "it",
+   "start": 4.659999847412109,
+   "end": 4.760000228881836
+  },
+  {
+   "word": "can",
+   "start": 4.760000228881836,
+   "end": 4.960000038146973
+  },
+  {
+   "word": "run",
+   "start": 4.960000038146973,
+   "end": 5.179999828338623
+  },
+  {
+   "word": "on",
+   "start": 5.179999828338623,
+   "end": 5.559999942779541
+  },
+  {
+   "word": "every",
+   "start": 5.559999942779541,
+   "end": 5.900000095367432
+  },
+  {
+   "word": "change.",
+   "start": 5.900000095367432,
+   "end": 6.239999771118164
   }
  ]
 }

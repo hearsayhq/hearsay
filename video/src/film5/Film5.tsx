@@ -39,7 +39,7 @@ const SPOTS: Array<[number, number, number]> = [[-780, -430, 1050], [800, 340, 1
 const DIM = new Set(['red', 'after', 'ci', 'agent', 'cheat']);
 
 const CHAPTER: Record<string, string> = {
-  case: '01 · A USE CASE', what: '02 · WHAT IT IS', how: '03 · HOW IT WORKS', rules: '04 · THE RULES', red: '05 · A REAL RUN',
+  case: '01 · AN EXAMPLE', what: '02 · WHAT IT IS', how: '03 · HOW IT WORKS', rules: '04 · THE RULES', red: '05 · A REAL RUN',
   after: '05 · A REAL RUN', ci: '06 · ON EVERY CHANGE', agent: '07 · FOR CODING AGENTS', cheat: '07 · FOR CODING AGENTS', offer: '08 · TRY IT',
 };
 
@@ -49,11 +49,11 @@ const FINE: Record<string, string> = {
   how: 'By default Hearsay replays the words, the mishearings and the tool call from your test: no microphone, no model, no network. Neither the table nor the recordings are Alexa’s own speech recognition.',
   rules: 'From Amazon’s published functional requirements for Alexa+ add-ons. Hearsay checks them early; it doesn’t certify anything.',
   red: 'Real run, one take, real time: video/tapes/orders-flawed-4k.tape at main 9b4acdd. Reproduce it: README → Demo.',
-  after: 'Real run, real time: video/tapes/orders-fixed-4k.tape, same commit, same tests. The reply is quoted from that run and spoken by Amazon Polly.',
+  after: 'Real run, real time: video/tapes/orders-fixed-4k.tape, same tests. Both replies are the fixed add-on’s, word for word from its run of these tests, spoken by Amazon Polly.',
   ci: 'Pull request #27, a demo change: runs 36779993236 (red) and 36780493038 (green). Pages from github.com, logged out; the log line read with gh: video/tapes/ci-pr27-4k.tape.',
   agent: agentFinePrint,
   cheat: 'Real run, real time: video/tapes/cheat-4k.tape.',
-  offer: 'Real run, one take: video/tapes/clone-v5.tape at main 3cc07c5, 5 Oct 2026. Clone and install at 2×, the run at real time. Unofficial; not affiliated with or endorsed by Amazon. Narration is AI-generated.',
+  offer: 'Real run, one take, real time: video/tapes/npx-v5.tape, @hearsayhq/cli 0.1.2 from npm in a project folder; the kitchen demo add-on runs on localhost:4101. Unofficial; not affiliated with or endorsed by Amazon. Narration is AI-generated.',
 };
 
 const PRE = Math.ceil(TRAVEL / 2) + 6;
@@ -122,8 +122,9 @@ function Hud() {
     <>
       <AbsoluteFill style={{ backgroundImage: GRAIN, backgroundPosition: `${n}px ${(n * 3) % 240}px`, opacity: 0.07, mixBlendMode: 'overlay', pointerEvents: 'none' }} />
       {[mark(34, 34), mark(1886, 34), mark(34, 1046), mark(1886, 1046)]}
-      <div style={{ position: 'absolute', left: 0, right: 0, top: 16, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 7 }}>
-        <div style={{ fontFamily: mono, fontSize: 14, letterSpacing: 3, color: 'rgba(235,240,255,0.55)' }}>{CHAPTER[s.name]}</div>
+      <div style={{ position: 'absolute', left: 0, right: 0, top: 12, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+        <div style={{ fontFamily: sans, fontSize: 17, fontWeight: 800, color: '#0b0d18', background: GRAD, borderRadius: 999, padding: '4px 14px', opacity: 0.92 }}>Hearsay · preflight checks for Alexa+ add-ons</div>
+        <div style={{ fontFamily: mono, fontSize: 13, letterSpacing: 3, color: 'rgba(235,240,255,0.55)' }}>{CHAPTER[s.name]}</div>
         <div style={{ width: 150, height: 2, borderRadius: 1, background: 'rgba(255,255,255,0.12)' }}><div style={{ width: `${(100 * frame) / FILM5_FRAMES}%`, height: '100%', borderRadius: 1, background: GRAD }} /></div>
       </div>
     </>

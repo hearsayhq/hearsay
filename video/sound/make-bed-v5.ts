@@ -10,7 +10,7 @@ import { f, FILM5_SECONDS, sceneStart, word } from '../src/film5/plan';
 const OUT = 'public/sound';
 mkdirSync(OUT, { recursive: true });
 const sec = (frame: number) => frame / 60;
-const HIT = { hearsay: sec(word('what', 2)), tag: sec(word('tag', 0)), end: FILM5_SECONDS };
+const HIT = { hearsay: sec(word('what', 0)), tag: sec(word('tag', 0)), end: FILM5_SECONDS };
 const S = (name: string) => sceneStart(name);
 const BEAT = 60 / 104;
 const BAR = BEAT * 4;

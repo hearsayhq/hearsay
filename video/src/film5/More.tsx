@@ -37,15 +37,15 @@ export function Agent() {
     [at(100), { x: 0, y: 2484 - vh, w: 3420 }],
   ]);
   const win = stick(fr, start - 6, { damping: 15, stiffness: 140 });
-  const link = ramp(fr, w('agent', 10) - 4, w('agent', 12) + 10);
+  const link = ramp(fr, w('agent', 10) - 4, w('agent', 15) + 10);
   return (
     <div style={{ position: 'absolute', inset: 0 }}>
-      <Box at={w('agent', 0)} x={470} tint={C.amber} icon="server" title="Hearsay · an MCP server" sub="+ two Agent Skills: write tests, fix findings" />
-      <Box at={w('agent', 10)} x={1440} tint={C.blue} icon="agent" title="your coding agent" sub="here: a fresh Claude Code session" />
+      <Box at={w('agent', 0)} x={470} tint={C.amber} icon="server" title="Hearsay · also an MCP server" sub="+ Agent Skills for coding agents (not Alexa skills)" />
+      <Box at={w('agent', 10)} x={1440} tint={C.blue} icon="agent" title="your coding agent" sub="here: Claude Code, a fresh session" />
       {link > 0 ? <div style={{ position: 'absolute', left: 860, top: 117, width: 210 * link, height: 6, borderRadius: 3, background: `linear-gradient(90deg, ${C.amber}, ${C.blue})`, boxShadow: '0 0 20px rgba(255,170,43,0.6)' }} /> : null}
       {fr >= start - 6 ? (
         <div style={{ position: 'absolute', inset: 0, transform: `translateY(${(1 - win) * 700}px)`, opacity: Math.min(1, win * 2) }}>
-          <TermWindow title="claude — fixing the flawed smart-home add-on with Hearsay, no shell" w={WIN.w} h={WIN.h} style={{ left: WIN.x, top: WIN.y }}>
+          <TermWindow title="claude — fixing another demo add-on (smart home) with Hearsay, no shell" w={WIN.w} h={WIN.h} style={{ left: WIN.x, top: WIN.y }}>
             <Rec clip={CLIPS.agent} t={t} view={view} vw={WIN.w} vh={WIN.h}>
               <Mark at={at(7.6)} x={24} y={64} w={1250} h={44} color={C.red} />
               <Mark at={at(CLIPS.agent.red)} x={120} y={572} w={1380} h={44} color={C.red} />
@@ -78,9 +78,9 @@ export function Cheat() {
   const red = ramp(fr, caught, caught + 8);
   return (
     <div style={{ position: 'absolute', inset: 0 }}>
-      <Pop at={w('cheat1', 4)} x={420} y={40} rot={-2}>
+      <Pop at={w('cheat1', 4)} x={430} y={40} rot={-2}>
         <div style={{ transform: `translateX(${shake}px)` }}>
-          <Chip tint={red > 0.5 ? C.red : C.amber} solid style={{ fontFamily: sans, fontWeight: 800, fontSize: 24 }}><Icon name="lock" size={26} color={C.ink} /> the kitchen add-on’s tests · locked</Chip>
+          <Chip tint={red > 0.5 ? C.red : C.amber} solid style={{ fontFamily: sans, fontWeight: 800, fontSize: 21 }}><Icon name="lock" size={24} color={C.ink} /> 3rd demo add-on: kitchen timers · tests locked</Chip>
         </div>
       </Pop>
       <TermWindow title="hearsay — someone edits a locked test" w={1600} h={860} glow={C.red} style={{ left: 160, top: 70 }}>

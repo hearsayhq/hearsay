@@ -1,0 +1,89 @@
+{
+ "id": "v5-fix1b",
+ "text": "And when it hears fifty, that's over the fifty-dollar budget, so it refuses, and says why:",
+ "heard": "And when it hears fifty, that's over the fifty-dollar budget, so it refuses, and says why.",
+ "duration": 5.050000190734863,
+ "words": [
+  {
+   "word": "And",
+   "start": 0,
+   "end": 0.2199999988079071
+  },
+  {
+   "word": "when",
+   "start": 0.2199999988079071,
+   "end": 0.3400000035762787
+  },
+  {
+   "word": "it",
+   "start": 0.3400000035762787,
+   "end": 0.5
+  },
+  {
+   "word": "hears",
+   "start": 0.5,
+   "end": 0.7200000286102295
+  },
+  {
+   "word": "fifty,",
+   "start": 0.7200000286102295,
+   "end": 1.100000023841858
+  },
+  {
+   "word": "that's",
+   "start": 1.4800000190734863,
+   "end": 1.7400000095367432
+  },
+  {
+   "word": "over",
+   "start": 1.7400000095367432,
+   "end": 1.940000057220459
+  },
+  {
+   "word": "the",
+   "start": 1.940000057220459,
+   "end": 2.119999885559082
+  },
+  {
+   "word": "fifty-dollar",
+   "start": 2.119999885559082,
+   "end": 2.5799999237060547,
+   "guessed": true
+  },
+  {
+   "word": "budget,",
+   "start": 2.5799999237060547,
+   "end": 2.880000114440918
+  },
+  {
+   "word": "so",
+   "start": 3.2200000286102295,
+   "end": 3.259999990463257
+  },
+  {
+   "word": "it",
+   "start": 3.259999990463257,
+   "end": 3.4600000381469727
+  },
+  {
+   "word": "refuses,",
+   "start": 3.4600000381469727,
+   "end": 3.799999952316284
+  },
+  {
+   "word": "and",
+   "start": 4.199999809265137,
+   "end": 4.400000095367432
+  },
+  {
+   "word": "says",
+   "start": 4.400000095367432,
+   "end": 4.559999942779541
+  },
+  {
+   "word": "why:",
+   "start": 4.559999942779541,
+   "end": 4.880000114440918
+  }
+ ]
+}
