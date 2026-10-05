@@ -4,15 +4,16 @@
  * uses.
  */
 import { Audio, Sequence, staticFile } from 'remotion';
-import { AGENT_SPEED, CLIPS, CLIP_AT, f, FILM5_FRAMES, INSTALL_SPEED, PIECES, POLLY, SCENES, sceneStart, word } from './plan';
+import { AGENT_SPEED, CLIPS, CLIP_AT, f, FILM5_FRAMES, PIECES, POLLY, SCENES, sceneStart, word } from './plan';
 
 const S = (name: string) => f(sceneStart(name));
 const cues: Array<[string, number, number]> = [];
 const at = (name: string, frame: number, volume: number) => cues.push([name, frame, volume]);
 
-// The two big moments: "Hearsay" lands, and the tagline.
-at('riser', word('what', 2) - f(1.5), 0.1);
-at('boom', word('what', 2) - 3, 0.26);
+// The big moments: "Hearsay" lands at the start and again in scene two, and the tagline.
+at('boom', word('open', 2) - 3, 0.26);
+at('riser', word('what', 0) - f(1.5), 0.08);
+at('boom', word('what', 0) - 3, 0.18);
 at('boom', word('tag', 0) - 4, 0.24);
 // The camera travelling between scenes (the flip to the fixed build is quieter).
 for (const s of SCENES.slice(1)) at('whoosh', S(s.name) - 22, s.name === 'after' ? 0.06 : 0.09);
@@ -29,8 +30,7 @@ for (const [frame, fail] of [
 at('chime', word('fix2', 0) + 4, 0.12);
 at('chime', word('ci3', 0) + 6, 0.12);
 at('chime', agentGreen + 6, 0.1);
-const fast = CLIPS.clone.installed / INSTALL_SPEED;
-at('chime', S('offer') + f(CLIP_AT.clone + fast + (CLIPS.clone.output - CLIPS.clone.installed)) + 10, 0.1);
+at('chime', S('offer') + f(CLIP_AT.npx + CLIPS.npx.output) + 10, 0.1);
 // Rule cards landing.
 for (const i of [10, 16, 18, 22, 27]) at('pop', word('rules', i) + 2, 0.06);
 

@@ -28,6 +28,32 @@ export function Note({ at, x, y, tint = C.amber, rot = -2, width, children, out 
   );
 }
 
+/** A dark veil over a recording, so a card on top can be read. */
+function Veil({ from, to }: { from: number; to: number }) {
+  const fr = useF();
+  const o = Math.min(ramp(fr, from, from + 16), 1 - ramp(fr, to, to + 16)) * 0.78;
+  return o > 0 ? <div style={{ position: 'absolute', left: WIN.x, top: WIN.y, width: WIN.w, height: WIN.h + 44, borderRadius: 18, background: `rgba(5,7,14,${o})` }} /> : null;
+}
+
+/** What a run found, in plain words: one card, rows added as they are said, held until it goes. */
+function Findings({ rows, from, to, title, tint }: { rows: Array<{ at: number; text: string }>; from: number; to: number; title: string; tint: string }) {
+  const fr = useF();
+  if (fr < from || fr > to + 16) return null;
+  const k = stick(fr, from, { damping: 16, stiffness: 140 });
+  const o = 1 - ramp(fr, to, to + 14);
+  return (
+    <div style={{ position: 'absolute', left: 960, top: 470, transform: `translate(-50%,-50%) scale(${0.9 + 0.1 * k})`, opacity: Math.min(1, k * 2) * o, width: 1180, padding: '30px 40px', borderRadius: 26, background: 'rgba(10,13,26,0.94)', border: `2px solid ${tint}`, boxShadow: `0 40px 100px rgba(0,0,0,0.6), 0 0 60px ${tint}33` }}>
+      <div style={{ fontFamily: mono, fontSize: 20, letterSpacing: 3, color: tint, marginBottom: 18 }}>{title}</div>
+      {rows.map((r) => fr >= r.at ? (
+        <div key={r.text} style={{ display: 'flex', gap: 18, alignItems: 'baseline', marginBottom: 14, opacity: ramp(fr, r.at, r.at + 10), transform: `translateX(${(1 - stick(fr, r.at)) * -30}px)` }}>
+          <span style={{ fontFamily: sans, fontSize: 36, fontWeight: 900, color: tint }}>✗</span>
+          <span style={{ fontFamily: sans, fontSize: 38, fontWeight: 700, color: C.text, lineHeight: 1.25 }}>{r.text}</span>
+        </div>
+      ) : null)}
+    </div>
+  );
+}
+
 export function Red() {
   const fr = useF();
   const w = W('red');
@@ -35,28 +61,16 @@ export function Red() {
   const t = fr / 60 - CLIP_AT.flawed;
   const out = sec(CLIP_AT.flawed + CLIPS.flawed.output);
   const h = (vw: number) => (vw * WIN.h) / WIN.w;
-  const keys: Array<[number, View]> = [
-    [sec(0.9), { x: 0, y: 0, w: 3840 }],
-    [sec(1.8), { x: 20, y: 20, w: 1900 }],
-    [sec(3.0), { x: 20, y: 20, w: 1900 }],
-    [sec(3.7), { x: 520, y: 20, w: 1900 }],
-    [sec(4.6), { x: 520, y: 20, w: 1900 }],
-    [sec(5.3), { x: 20, y: 20, w: 1900 }],
-    [out, { x: 20, y: 20, w: 1900 }],
-    [out + 22, { x: 0, y: 96, w: 3840 }],
-    [w('red', 0) + 4, { x: 0, y: 96, w: 3840 }],
-    [w('red', 0) + 34, { x: 900, y: 1470 - h(1900) / 2, w: 1900 }],
-    [w('red', 4), { x: 900, y: 1470 - h(1900) / 2, w: 1900 }],
-    [w('red', 7) + 10, { x: 1760, y: 1470 - h(1900) / 2, w: 1900 }],
-    [w('red', 8) - 10, { x: 1760, y: 1470 - h(1900) / 2, w: 1900 }],
-    [w('red', 8) + 22, { x: 900, y: 2160 - h(1900), w: 1900 }],
-    [w('red', 12), { x: 900, y: 2160 - h(1900), w: 1900 }],
-    [w('red', 15) - 14, { x: 1300, y: 2160 - h(1900), w: 1900 }],
-    [w('red', 15) + 10, { x: 0, y: 2160 - h(1500), w: 1500 }],
-    [w('red', 17) + 20, { x: 0, y: 2160 - h(1500), w: 1500 }],
-    [w('red', 17) + 50, { x: 0, y: 96, w: 3840 }],
-  ];
-  const view = track(fr, keys);
+  const cardFrom = w('red', 0) - 8;
+  const cardTo = w('red', 15) - 6;
+  // Calm camera: the prompt while it is typed, the whole output when it lands, the totals at the end.
+  const view = track(fr, [
+    [sec(0.6), { x: 0, y: 0, w: 2600 }],
+    [out - 10, { x: 0, y: 0, w: 2600 }],
+    [out + 30, { x: 0, y: 0, w: 3840 }],
+    [cardTo, { x: 0, y: 0, w: 3840 }],
+    [cardTo + 50, { x: 0, y: 2160 - h(2400), w: 2400 }],
+  ]);
   const flip = ramp(fr, D - 14, D, 0, 90, (x) => x * x);
   const enter = stick(fr, -10, { damping: 16, stiffness: 150 });
   return (
@@ -66,27 +80,34 @@ export function Red() {
         <RecLabel style={{ right: 1920 - WIN.x - WIN.w, top: 22 }}>main @ 9b4acdd · recorded 3 Oct 2026</RecLabel>
         <TermWindow title="hearsay — the demo grocery add-on, flawed on purpose" w={WIN.w} h={WIN.h} glow={C.red} style={{ left: WIN.x, top: WIN.y }}>
           <Rec clip={CLIPS.flawed} t={t} view={view} vw={WIN.w} vh={WIN.h}>
-            <Mark at={sec(3.7)} x={1984} y={149} w={343} h={30} color={C.red} out={out - 10} />
-            <Mark at={w('red', 0) + 30} x={985} y={1455} w={2790} h={32} />
-            <Mark at={w('red', 8) + 16} x={985} y={1807} w={2120} h={32} color={C.red} />
-            <Mark at={w('red', 15)} x={70} y={1949} w={1040} h={26} color={C.red} />
+            <Mark at={cardTo + 50} x={70} y={1949} w={1040} h={26} color={C.red} />
           </Rec>
         </TermWindow>
-        <Note at={sec(3.75)} x={1300} y={680} tint={C.red} rot={2} out={out - 12}>the demo add-on, with these flaws on purpose</Note>
-        <Note at={w('red', 0) + 34} x={1380} y={830} rot={-2} width={640} out={w('red', 8) + 8}>
-          <div style={{ fontFamily: mono, fontSize: 18, color: C.amber, marginBottom: 6 }}>WHAT THIS LINE MEANS</div>
-          Heard fifty. Added fifty. Never said the amount back.
-        </Note>
-        <Note at={w('red', 8) + 20} x={1380} y={330} tint={C.red} rot={2} width={640} out={w('red', 15) - 4}>
-          <div style={{ fontFamily: mono, fontSize: 18, color: C.red, marginBottom: 6 }}>WHAT THIS LINE MEANS</div>
-          The customer said no. The order was placed anyway.
-        </Note>
-        <Note at={w('red', 12)} x={1380} y={560} tint={C.red} rot={-1.5} width={640} out={w('red', 15) - 4}>
-          And it asked “Are you sure?” without saying what or how much.
-        </Note>
-        <Stamp at={w('red', 17) + 8} x={900} y={420} text="Build fails" size={120} rot={-6} sub="20 problems found" />
+        <Note at={sec(3.0)} x={1320} y={700} tint={C.red} rot={2} out={out - 6}>our demo add-on, with these flaws on purpose</Note>
+        <Veil from={cardFrom} to={cardTo} />
+        <Findings from={cardFrom} to={cardTo} tint={C.red} title="WHAT HEARSAY FOUND · 3 OF 20 ERRORS" rows={[
+          { at: w('red', 0), text: 'Heard fifty. Added fifty. Never said the amount back.' },
+          { at: w('red', 8), text: 'The customer said no. The order was placed anyway.' },
+          { at: w('red', 11), text: 'Asked “Are you sure?” without saying what or how much.' },
+        ]} />
+        <Stamp at={w('red', 17) + 8} x={1200} y={420} text="Build fails" size={110} rot={-6} sub="20 errors" />
       </div>
     </Flip>
+  );
+}
+
+/** A reply the add-on speaks: what was heard, the words, its bars while it plays. */
+function Reply({ id, heard, from, to }: { id: string; heard: string; from: number; to: number }) {
+  const p = POLLY.find((q) => q.id === id)!;
+  const at = pollyAt(id);
+  return (
+    <Note at={from} x={1250} y={560} tint={C.green} rot={-1.5} width={820} out={to}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, fontFamily: mono, fontSize: 18, color: C.amber, marginBottom: 10 }}>
+        HEARD “{heard}” · THE ADD-ON SAYS <Waves from={at} len={Math.round(p.seconds * 60)} color={C.green} size={0.7} />
+      </div>
+      “{p.text}”
+      <div style={{ fontFamily: mono, fontSize: 16, color: C.green, marginTop: 10 }}>THE FIXED ADD-ON’S REAL REPLY · VOICE: AMAZON POLLY</div>
+    </Note>
   );
 }
 
@@ -95,42 +116,28 @@ export function After() {
   const w = W('after');
   const t = fr / 60 - CLIP_AT.fixed;
   const out = sec(CLIP_AT.fixed + CLIPS.fixed.output);
-  const reply = pollyAt('p5-fixed');
-  const replyLen = Math.round(POLLY.find((p) => p.id === 'p5-fixed')!.seconds * 60);
   const zero = w('fix2', 0);
   const h = (vw: number) => (vw * WIN.h) / WIN.w;
   const view = track(fr, [
-    [0, { x: 20, y: 20, w: 1900 }],
-    [sec(1.4), { x: 20, y: 20, w: 1900 }],
-    [sec(2.1), { x: 500, y: 20, w: 1900 }],
-    [sec(3.4), { x: 500, y: 20, w: 1900 }],
-    [sec(4.0), { x: 20, y: 20, w: 1900 }],
-    [out, { x: 20, y: 20, w: 1900 }],
-    [out + 18, { x: 0, y: 200, w: 2700 }],
-    [zero + 4, { x: 0, y: 200, w: 2700 }],
-    [zero + 30, { x: 0, y: 960 - h(1800) / 2, w: 1800 }],
+    [sec(0.4), { x: 0, y: 0, w: 2600 }],
+    [zero - 10, { x: 0, y: 0, w: 2600 }],
+    [zero + 30, { x: 0, y: 960 - h(2400) / 2, w: 2400 }],
   ]);
   const flip = fr < 0 ? -90 : ramp(fr, 0, 16, -90, 0);
+  const second = w('fix1b', 0) - 6;
   return (
     <Flip deg={flip}>
       <div style={{ position: 'absolute', inset: 0 }}>
-        <Pop at={8} x={520} y={40} rot={-2}><Chip tint={C.red} solid style={{ fontFamily: sans, fontWeight: 800, fontSize: 22 }}>BEFORE · 20 problems</Chip></Pop>
+        <Pop at={8} x={520} y={40} rot={-2}><Chip tint={C.red} solid style={{ fontFamily: sans, fontWeight: 800, fontSize: 22 }}>BEFORE · 20 errors</Chip></Pop>
         <Pop at={zero} x={1400} y={40} rot={2}><Chip tint={C.green} solid style={{ fontFamily: sans, fontWeight: 800, fontSize: 22 }}>AFTER · 0 errors</Chip></Pop>
         <TermWindow title="hearsay — the fixed add-on, same tests" w={WIN.w} h={WIN.h} glow={C.green} style={{ left: WIN.x, top: WIN.y }}>
           <Rec clip={CLIPS.fixed} t={t} view={view} vw={WIN.w} vh={WIN.h}>
-            <Mark at={sec(2.2)} x={1984} y={78} w={330} h={30} color={C.green} out={out - 10} />
-            <Mark at={zero + 4} x={70} y={925} w={1000} h={26} color={C.green} />
+            <Mark at={zero + 30} x={70} y={925} w={1000} h={26} color={C.green} />
           </Rec>
         </TermWindow>
-        <Note at={sec(1.2)} x={1300} y={560} tint={C.green} rot={2} out={reply - 8}>the fixed add-on, same tests</Note>
-        <Note at={reply - 4} x={1280} y={600} tint={C.green} rot={-1.5} width={760} out={zero - 4}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, fontFamily: mono, fontSize: 18, color: C.amber, marginBottom: 10 }}>
-            HEARD “ADD FIFTY DOLLARS OF FRUIT” · THE ADD-ON SAYS <Waves from={reply} len={replyLen} color={C.green} size={0.7} />
-          </div>
-          “That would go over the total budget you gave me. You can add less, or give me a bigger budget.”
-          <div style={{ fontFamily: mono, fontSize: 16, color: C.green, marginTop: 10 }}>THE FIXED ADD-ON’S REAL REPLY · VOICE: AMAZON POLLY</div>
-          <div style={{ fontFamily: sans, fontSize: 22, color: C.muted, marginTop: 10 }}>the flawed add-on said: <span style={{ textDecoration: 'line-through', color: '#FFB4B2' }}>“Added.”</span></div>
-        </Note>
+        <Note at={sec(1.0)} x={1300} y={560} tint={C.green} rot={2} out={pollyAt('p5-fixed-clean') - 14}>the fixed add-on, same tests</Note>
+        <Reply id="p5-fixed-clean" heard="ADD FIFTEEN DOLLARS OF FRUIT" from={pollyAt('p5-fixed-clean') - 6} to={second - 10} />
+        <Reply id="p5-fixed" heard="ADD FIFTY DOLLARS OF FRUIT" from={second} to={zero - 6} />
         <Stamp at={zero + 2} x={1360} y={760} text="Zero errors" color={C.green} size={90} rot={-6} />
       </div>
     </Flip>
@@ -164,25 +171,20 @@ const BW = { x: 160, y: 96, w: 1600, h: 800 };
 export function Ci() {
   const fr = useF();
   const w = W('ci');
-  const toRed = w('ci2', 0) - 12;
-  const toLog = w('ci2', 3) + 20;
-  const toGreen = w('ci3', 0) - 14;
-  const page = fr < toRed ? 'commits' : fr < toLog ? 'redJob' : fr < toGreen ? 'log' : 'greenJob';
+  const toRed = w('ci2', 0) - 16;
+  const toGreen = w('ci3', 0) - 16;
+  const page = fr < toRed ? 'commits' : fr < toGreen ? 'redJob' : 'greenJob';
   const swap = (at: number) => ramp(fr, at - 8, at + 4);
-  const enter = Math.min(1, ...[toRed, toLog, toGreen].map((a) => (fr >= a - 8 && fr < a + 12 ? Math.abs(1 - 2 * swap(a)) : 1)));
+  const enter = Math.min(1, ...[toRed, toGreen].map((a) => (fr >= a - 8 && fr < a + 12 ? Math.abs(1 - 2 * swap(a)) : 1)));
   const commitsView = track(fr, [
-    [w('ci1', 4), { x: 0, y: 0, w: 3200 }],
-    [w('ci1', 8), { x: 300, y: 330, w: 2600 }],
+    [w('ci1', 3), { x: 0, y: 0, w: 3200 }],
+    [w('ci1', 7), { x: 300, y: 330, w: 2600 }],
   ]);
   const jobView: View = { x: 560, y: 720, w: 2100 };
-  const logView = track(fr, [
-    [toLog + 90, { x: 0, y: 1328 - 170, w: 1900 }],
-    [toLog + 160, { x: 1480, y: 1328 - 170, w: 1900 }],
-  ]);
   return (
     <div style={{ position: 'absolute', inset: 0 }}>
-      <RecLabel style={{ left: BW.x, top: 30 }}>github.com · public · logged out · captured 5 Oct 2026</RecLabel>
-      <RecLabel tint={C.blue} style={{ right: 1920 - BW.x - BW.w, top: 30 }}>pull request #27 · a demo change</RecLabel>
+      <RecLabel style={{ left: BW.x, top: 54 }}>github.com · public · logged out · captured 5 Oct 2026</RecLabel>
+      <RecLabel tint={C.blue} style={{ right: 1920 - BW.x - BW.w, top: 54 }}>pull request #27 · a demo change</RecLabel>
       <div style={{ position: 'absolute', inset: 0, opacity: enter }}>
         {page === 'commits' ? (
           <Browser url={PAGES.commits.url} src={PAGES.commits.src} view={commitsView} {...BW}>
@@ -192,14 +194,6 @@ export function Ci() {
           <Browser url={PAGES.redJob.url} src={PAGES.redJob.src} view={jobView} {...BW}>
             <Mark at={toRed + 16} x={770} y={1440} w={1100} h={58} color={C.red} />
           </Browser>
-        ) : page === 'log' ? (
-          <div style={{ position: 'absolute', left: BW.x, top: 300 }}>
-            <TermWindow title="the failing step's log, read with gh (GitHub shows logs only after a sign-in)" w={BW.w} h={300} glow={C.red} style={{ position: 'relative' }}>
-              <Rec clip={CLIPS.ci} t={12} view={logView} vw={BW.w} vh={300}>
-                <Mark at={toLog + 8} x={75} y={1328} w={3250} h={39} color={C.red} />
-              </Rec>
-            </TermWindow>
-          </div>
         ) : (
           <Browser url={PAGES.greenJob.url} src={PAGES.greenJob.src} view={{ x: 560, y: 560, w: 2100 }} {...BW}>
             <Mark at={toGreen + 18} x={770} y={1240} w={1100} h={58} color={C.green} />
@@ -210,11 +204,8 @@ export function Ci() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: mono, fontSize: 18, color: C.red, marginBottom: 6 }}><Icon name="pr" size={22} color={C.red} /> THE CHANGE · f7725be</div>
         let fifty dollars of fruit slip past the budget
       </Note>
-      <Note at={toRed + 18} x={1440} y={760} rot={2} width={520} tint={C.red} out={toLog - 16}>
-        <span style={{ color: C.red }}>✗</span> the Hearsay check failed on the grocery add-on’s tests
-      </Note>
-      <Note at={toLog + 12} x={960} y={720} rot={-1.5} width={900} tint={C.amber} out={toGreen - 16}>
-        heard “add <b style={{ color: '#FFB4B2' }}>fifty</b> dollars of fruit”, and took it without the customer hearing the amount
+      <Note at={toRed + 18} x={1440} y={760} rot={2} width={540} tint={C.red} out={toGreen - 16}>
+        <span style={{ color: C.red }}>✗</span> the Hearsay check failed: fifty taken without the customer hearing it
       </Note>
       <Note at={toGreen + 20} x={1440} y={760} rot={-2} width={520} tint={C.green}>
         <div style={{ fontFamily: mono, fontSize: 18, color: C.green, marginBottom: 6 }}>THE FIX · 57e680a</div>

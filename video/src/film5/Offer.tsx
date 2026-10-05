@@ -1,10 +1,12 @@
 /**
- * Try it: open source, no keys, no account; a fresh clone that installs and runs green in one take
- * (install at 2×, labelled; the run at real time, its result in view), the tagline and the end card.
+ * Try it, the intended way: open source and on npm, no keys, no account. Hearsay from npm in an
+ * add-on's own project, one take (its test, one command, the result), the build step, the tagline
+ * and the end card.
  */
 import { interpolate } from 'remotion';
-import { CLIPS, CLIP_AT, cue, INSTALL_SPEED } from './plan';
-import { C, Chip, GRAD, GRAD_TEXT, Icon, Mark, Pop, ramp, Rec, RecLabel, sans, sec, squash, stick, TermWindow, track, useF } from '../film4/kit';
+import { CLIPS, CLIP_AT, cue } from './plan';
+import { C, Chip, GRAD, GRAD_TEXT, Icon, Mark, mono, Pop, ramp, Rec, RecLabel, sans, sec, squash, stick, TermWindow, useF } from '../film4/kit';
+import { Note } from './Demo';
 
 const W = (scene: string) => (line: string, i: number) => cue(scene, line, i);
 const WIN = { x: 160, y: 150, w: 1600, h: 780 };
@@ -13,16 +15,11 @@ const LETTERS = 'HEARSAY'.split('');
 export function Offer() {
   const fr = useF();
   const w = W('offer');
-  const start = sec(CLIP_AT.clone);
-  const fast = CLIPS.clone.installed / INSTALL_SPEED;
-  const s = fr / 60 - CLIP_AT.clone;
-  const t = s <= fast ? s * INSTALL_SPEED : CLIPS.clone.installed + (s - fast);
-  const outAt = start + sec(fast + (CLIPS.clone.output - CLIPS.clone.installed));
+  const start = sec(CLIP_AT.npx);
+  const t = fr / 60 - CLIP_AT.npx;
+  const caseAt = start + sec(CLIPS.npx.case);
+  const outAt = start + sec(CLIPS.npx.output);
   const tagAt = w('tag', 0);
-  const view = track(fr, [
-    [outAt, { x: 20, y: 20, w: 2900 }],
-    [outAt + 26, { x: 20, y: 800 - (1800 * WIN.h) / WIN.w / 2, w: 1800 }],
-  ]);
   const win = stick(fr, start - 4, { damping: 15, stiffness: 140 });
   const winOut = ramp(fr, tagAt - 10, tagAt + 6, 0, 1, (x) => x * x);
   return (
@@ -31,20 +28,24 @@ export function Offer() {
         <div style={{ position: 'absolute', inset: 0, transform: `scale(${1 - winOut * 0.7})`, opacity: 1 - winOut }}>
           {[
             { at: w('try', 2), text: 'open source · MIT', icon: 'check', x: 420 },
-            { at: w('try', 4), text: 'no API keys', icon: 'key', x: 860 },
-            { at: w('try', 6), text: 'no account', icon: 'user', x: 1220 },
-          ].map((x) => <Pop key={x.text} at={x.at} x={x.x} y={70}><Sticky at={x.at}><Icon name={x.icon} size={26} color={C.green} /> {x.text}</Sticky></Pop>)}
+            { at: w('try', 5), text: 'on npm', icon: 'file', x: 780 },
+            { at: w('try', 7), text: 'no keys, no account', icon: 'key', x: 1180 },
+          ].map((x) => <Pop key={x.text} at={x.at} x={x.x} y={100}><Sticky at={x.at}><Icon name={x.icon} size={26} color={C.green} /> {x.text}</Sticky></Pop>)}
           {fr >= start - 4 ? (
             <div style={{ position: 'absolute', inset: 0, transform: `translateY(${(1 - win) * 800}px)`, opacity: Math.min(1, win * 2) }}>
-              <TermWindow title="a fresh clone — one take" w={WIN.w} h={WIN.h} glow={C.green} style={{ left: WIN.x, top: WIN.y }}>
-                <Rec clip={CLIPS.clone} t={t} view={view} vw={WIN.w} vh={WIN.h}>
-                  <Mark at={start + sec(fast) - 4} x={72} y={290} w={533} h={44} color={C.blue} />
-                  <Mark at={outAt + 10} x={72} y={746} w={1135} h={44} color={C.green} />
-                  <Mark at={outAt + 18} x={72} y={830} w={132} h={44} color={C.green} />
+              <TermWindow title="your add-on’s project · Hearsay from npm · one take" w={WIN.w} h={WIN.h} glow={C.green} style={{ left: WIN.x, top: WIN.y }}>
+                <Rec clip={CLIPS.npx} t={t} view={{ x: 0, y: 0, w: 2700 }} vw={WIN.w} vh={WIN.h}>
+                  <Mark at={caseAt + 10} x={150} y={170} w={1100} h={46} color={C.amber} />
+                  <Mark at={outAt - 30} x={60} y={400} w={1560} h={50} color={C.blue} />
+                  <Mark at={outAt + 10} x={60} y={682} w={1300} h={50} color={C.green} />
                 </Rec>
               </TermWindow>
-              <RecLabel tint={s <= fast ? C.amber : C.text} style={{ right: 1920 - WIN.x - WIN.w + 20, top: WIN.y + 64 }}>{s <= fast ? `clone + install · ${INSTALL_SPEED}× speed` : 'the run · real time'}</RecLabel>
-              <Pop at={outAt + 22} x={1380} y={760} rot={-2}><Chip tint={C.green} solid style={{ fontFamily: sans, fontWeight: 800, fontSize: 26, padding: '10px 22px' }}>first run: 0 errors</Chip></Pop>
+              <RecLabel tint={C.text} style={{ right: 1920 - WIN.x - WIN.w + 20, top: WIN.y + 64 }}>real run · real time</RecLabel>
+              <Note at={caseAt + 14} x={1460} y={330} tint={C.amber} rot={2} width={480} out={outAt - 20}>what a customer says, and what should happen: your test</Note>
+              <Note at={outAt + 14} x={1440} y={790} tint={C.green} rot={-2} width={560}>
+                <div style={{ fontFamily: mono, fontSize: 18, color: C.green, marginBottom: 8 }}>IN YOUR BUILD, ONE STEP</div>
+                <div style={{ fontFamily: mono, fontSize: 22 }}>- run: npx -y @hearsayhq/cli run suites/*.yaml</div>
+              </Note>
             </div>
           ) : null}
         </div>
@@ -99,7 +100,7 @@ function Tagline({ at }: { at: number }) {
             <Chip tint={C.text} style={{ fontSize: 32, padding: '12px 26px' }}>github.com/hearsayhq/hearsay</Chip>
             <Chip tint={C.amber} style={{ fontSize: 32, padding: '12px 26px' }}>npx @hearsayhq/cli</Chip>
           </div>
-          <div style={{ fontFamily: sans, fontSize: 28, fontWeight: 600, color: C.muted, opacity: ramp(fr, card + 30, card + 44) }}>Open source · MIT · no keys, no account</div>
+          <div style={{ fontFamily: sans, fontSize: 28, fontWeight: 600, color: C.muted, opacity: ramp(fr, card + 30, card + 44) }}>for coding agents: npx @hearsayhq/mcp · open source · MIT</div>
         </div>
       ) : null}
     </div>

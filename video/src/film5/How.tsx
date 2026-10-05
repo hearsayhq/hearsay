@@ -105,7 +105,7 @@ export function How() {
         ) : undefined}
       </Station>
       {[0, 1, 3].map((i) => (
-        <Pop key={i} at={one + 4 + i * 2} x={STATIONS[i]!.x} y={Y + 175} out={i === 3 ? checks - 6 : plays - 6}><Chip tint={C.muted} style={{ fontFamily: sans, fontSize: 22 }}>Alexa+</Chip></Pop>
+        <Pop key={i} at={one + 4 + i * 2} x={STATIONS[i]!.x} y={Y + 200}><Chip tint={C.muted} style={{ fontFamily: sans, fontSize: 22 }}>Alexa+</Chip></Pop>
       ))}
       <Pop at={one + 10} x={1180} y={Y + 195}><Chip tint={C.blue} solid style={{ fontFamily: sans, fontWeight: 800, fontSize: 24 }}>your code</Chip></Pop>
       <Sleeve at={plays} x0={70} x1={890} label="Hearsay plays this" />
@@ -126,6 +126,7 @@ export function How() {
       <Stamp at={w('how3', 1) - 4} x={400} y={770} text="No microphone" color={C.amber} size={42} rot={-6} />
       <Stamp at={w('how3', 4) - 6} x={850} y={770} text="No API keys" color={C.amber} size={42} rot={4} />
       <Stamp at={w('how3', 7) - 6} x={1400} y={770} text="Same result every time" color={C.amber} size={38} rot={-4} />
+      <Pop at={w('how3', 14) - 4} x={960} y={880}><Chip tint={C.amber} solid style={{ fontFamily: sans, fontWeight: 800, fontSize: 26, padding: '10px 22px' }}>so it runs on every change</Chip></Pop>
     </div>
   );
 }

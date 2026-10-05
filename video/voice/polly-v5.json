@@ -1,8 +1,25 @@
 {
   "about": "Film v5: the customer and the add-on, spoken by Amazon Polly (generative). Text word for word from suites/household-orders.yaml (the customer) and from the flawed and fixed Household Orders servers' real replies (the add-on).",
   "lines": [
-    { "id": "p5-customer", "voice": "Matthew", "text": "Add fifteen dollars of fruit." },
-    { "id": "p5-flawed", "voice": "Ruth", "text": "Added." },
-    { "id": "p5-fixed", "voice": "Ruth", "text": "That would go over the total budget you gave me. You can add less, or give me a bigger budget." }
+    {
+      "id": "p5-customer",
+      "voice": "Matthew",
+      "text": "Add fifteen dollars of fruit."
+    },
+    {
+      "id": "p5-flawed",
+      "voice": "Ruth",
+      "text": "Added."
+    },
+    {
+      "id": "p5-fixed-clean",
+      "voice": "Ruth",
+      "text": "Added fifteen dollars of fruit. Your cart is twenty-two dollars and forty cents."
+    },
+    {
+      "id": "p5-fixed",
+      "voice": "Ruth",
+      "text": "That would go over the total budget you gave me. You can add less, or give me a bigger budget."
+    }
   ]
 }
