@@ -54,24 +54,16 @@ with thresholds and sources; [docs/05](docs/05_CHECK_CATALOG.md) explains each c
 
 ## How it works
 
-```mermaid
-flowchart LR
-  subgraph H["Hearsay plays these, straight from your suite"]
-    direction LR
-    S["What a customer says<br/>clean and misheard"] --> M["The tool call a model<br/>would make"]
-  end
-  M --> Y["Your MCP server"]
-  Y --> R["The reply, as it<br/>would be spoken"]
-  R --> C{"Four questions"}
-  C -- "any error" --> X["exit 1, the PR turns red"]
-```
+<p align="center">
+  <img src="docs/assets/how-it-works.jpg" width="100%" alt="How it works: Hearsay plays speech to text (said fifteen dollars, heard fifty dollars) and the tool call a model would make (orders_stage_cart with amountUsd 50) from your test case; your MCP server, your code, runs unchanged; Hearsay checks the spoken reply (Added.) and consent.misheard_amount fails. Every reply is graded by four questions; any error exits 1. No microphone, no model, no API keys.">
+</p>
 
 When someone speaks to an add-on, only one step is your code: the server. Hearsay plays the rest
 from a test case — the words, the mishearings, and the tool call — then checks what your server
 answers. A suite is YAML: what a person says and what should happen.
 
 ```yaml
-# suites/household-orders.yaml — milk ($7.40) is staged; fifty more would pass the $50 budget
+# suites/household-orders.yaml: milk ($7.40) is staged, the budget is $50
 - id: misheard-amount
   say: add fifteen dollars of fruit
   after: [stage-milk]
@@ -82,15 +74,15 @@ answers. A suite is YAML: what a person says and what should happen.
   checks: [consent.misheard_amount]
 ```
 
-Against the flawed build of the grocery add-on (excerpt; the full run lists every finding by
-question):
+Against the flawed build of the grocery add-on, two of its 20 errors:
+
+| Case | Variant | Check | Finding |
+|---|---|---|---|
+| `misheard-amount` | `asr.number_confusion#1` | ❌ `consent.misheard_amount` | heard "add fifty dollars of fruit": orders_stage_cart took the misheard amount without the person hearing it |
+| `place-order-declined` | `clean` | ❌ `consent.decline_holds` | the person said decline, but mandate_status, orders_review_cart changed |
 
 ```console
 $ HEARSAY_FIXED=0 npm run hearsay -- run suites/household-orders.yaml
-household-orders · 8 cases · 10 runs with variants · scripted · seed 1
-…
-✗ misheard-amount       asr.number_confusion#1  consent.misheard_amount  error  heard "add fifty dollars of fruit": orders_stage_cart took the misheard amount without the person hearing it
-✗ place-order-declined  clean                   consent.decline_holds    error  the person said decline, but mandate_status, orders_review_cart changed
 …
 20 errors · 16 warnings · 0 info · 8 of 10 runs failed
 ```

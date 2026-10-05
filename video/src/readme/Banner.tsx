@@ -14,6 +14,23 @@ const LIGHT: Array<[number, number, number, string]> = [
   [1350, 820, 760, '255,94,138'],
 ];
 
+/** Film v4's light: three slow spots of the brand colours, a fine grid, a vignette. */
+export const Backdrop = () => (
+  <>
+    {LIGHT.map(([x, y, r, rgb]) => (
+      <div key={rgb} style={{ position: 'absolute', left: x - r, top: y - r, width: r * 2, height: r * 2, borderRadius: '50%', mixBlendMode: 'screen', background: `radial-gradient(circle, rgba(${rgb},0.55) 0%, rgba(${rgb},0.19) 38%, transparent 68%)` }} />
+    ))}
+    <AbsoluteFill style={{
+      backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.22) 1.6px, transparent 2px), linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px)',
+      backgroundSize: '400px 400px, 80px 80px, 80px 80px',
+      backgroundPosition: '-200px -200px, 0 0, 0 0',
+      WebkitMaskImage: 'radial-gradient(ellipse at center, black 30%, transparent 85%)',
+      maskImage: 'radial-gradient(ellipse at center, black 30%, transparent 85%)',
+    }} />
+    <AbsoluteFill style={{ background: 'radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.45))' }} />
+  </>
+);
+
 const Row = ({ label, children, tint }: { label: string; children: string; tint: string }) => (
   <div style={{ display: 'flex', alignItems: 'baseline', gap: 28 }}>
     <div style={{ width: 120, fontFamily: mono, fontSize: 30, color: C.muted, textTransform: 'uppercase', letterSpacing: 3 }}>{label}</div>
@@ -24,17 +41,7 @@ const Row = ({ label, children, tint }: { label: string; children: string; tint:
 export function Banner() {
   return (
     <AbsoluteFill style={{ background: '#05060C', overflow: 'hidden' }}>
-      {LIGHT.map(([x, y, r, rgb]) => (
-        <div key={rgb} style={{ position: 'absolute', left: x - r, top: y - r, width: r * 2, height: r * 2, borderRadius: '50%', mixBlendMode: 'screen', background: `radial-gradient(circle, rgba(${rgb},0.55) 0%, rgba(${rgb},0.19) 38%, transparent 68%)` }} />
-      ))}
-      <AbsoluteFill style={{
-        backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.22) 1.6px, transparent 2px), linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px)',
-        backgroundSize: '400px 400px, 80px 80px, 80px 80px',
-        backgroundPosition: '-200px -200px, 0 0, 0 0',
-        WebkitMaskImage: 'radial-gradient(ellipse at center, black 30%, transparent 85%)',
-        maskImage: 'radial-gradient(ellipse at center, black 30%, transparent 85%)',
-      }} />
-      <AbsoluteFill style={{ background: 'radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.45))' }} />
+      <Backdrop />
 
       <div style={{ position: 'absolute', left: 170, top: 170 }}>
         <div style={{ position: 'relative', display: 'inline-block' }}>
