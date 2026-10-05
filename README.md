@@ -91,15 +91,6 @@ $ HEARSAY_FIXED=0 npm run hearsay -- run suites/household-orders.yaml
 The same suite against the fixed build: 0 errors, exit 0. The misheard fifty is refused, and the
 add-on says why.
 
-> **Status: built for the Alexa+ hackathon, ready to submit.** Every check in the catalog is
-> implemented, each with a fixture built to fail it. `hearsay run` (scripted, llm, replay,
-> `--holdout`), `hearsay lint`, `hearsay lock`, `hearsay gen-variants` and `hearsay serve` work;
-> coding agents can use Hearsay over MCP with two Agent Skills; the web console plays turns live
-> and a person answers the server's confirmations. Mishearings reach the server through its
-> arguments, so `asr.robust` runs without a model. Recorded on AWS and replayed offline: a Bedrock
-> llm run of Kitchen (`suites/cassettes/`) and real mishearings from Polly and Transcribe
-> (`suites/variants/`). See [docs/07](docs/07_IMPLEMENTATION_PLAN.md).
-
 ## Quickstart
 
 From a clone (no API keys; about a minute on a fresh machine):
