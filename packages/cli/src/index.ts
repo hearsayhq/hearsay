@@ -10,7 +10,7 @@
  *   serve                      engine API + live traces for the console         (M5)
  */
 import { parseArgs } from 'node:util';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { readdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
@@ -36,6 +36,11 @@ async function warnStale(file: string, suite: Awaited<ReturnType<typeof loadSuit
 }
 
 async function main(): Promise<number> {
+  if (cmd === '--version' || cmd === '-V') {
+    // src/index.ts in the workspace, dist/index.js in the published package: both one level down.
+    console.log(JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version);
+    return 0;
+  }
   if (!cmd || cmd === 'help' || cmd === '--help' || cmd === '-h' || args.includes('--help') || args.includes('-h')) {
     const lines = HELP[cmd ?? ''] ? [HELP[cmd!]!] : Object.values(HELP);
     console.log(lines.map((l) => `hearsay ${l}`).join('\n'));

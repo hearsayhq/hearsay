@@ -1,0 +1,50 @@
+name: release
+
+# Publishes @hearsayhq/cli, /mcp and /kit through npm trusted publishing (OIDC) when a v* tag is
+# pushed: no npm token, provenance added by npm (public repo only). The packages are linked to this
+# file by name (`npm trust github <package> --repo hearsayhq/hearsay --file release.yml
+# --allow-publish`); renaming it breaks publishing. Version 0.1.0 was published by the owner,
+# since npm can only trust a workflow for a package that exists (docs/07 M7).
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          registry-url: https://registry.npmjs.org
+      # Trusted publishing needs npm 11.5.1 or later; Node 22 ships npm 10. No dependency cache in
+      # a job that publishes.
+      - run: npm install -g npm@^11.5.1
+      - run: npm ci
+      - run: npm run check
+      - run: npm run pack
+      - name: Publish what npm does not have yet
+        # No NODE_AUTH_TOKEN on purpose: npm authenticates through OIDC.
+        run: |
+          for tgz in build/npm/*.tgz; do
+            read -r name version < <(tar -xzOf "$tgz" package/package.json | node -e 'const p = JSON.parse(require("fs").readFileSync(0, "utf8")); console.log(p.name, p.version)')
+            if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+              echo "::error::$name is $version in scripts/pack.mjs, the tag is $GITHUB_REF_NAME"; exit 1
+            fi
+            if npm view "$name@$version" version >/dev/null 2>&1; then
+              echo "$name@$version is already on npm"; continue
+            fi
+            npm publish "$tgz" --access public
+          done
