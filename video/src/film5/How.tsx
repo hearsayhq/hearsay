@@ -14,7 +14,7 @@ const STATIONS = [
   { x: 260, label: 'Speech → text', icon: 'mic' },
   { x: 700, label: 'Model picks a tool', icon: 'model' },
   { x: 1180, label: 'Your server', icon: 'server' },
-  { x: 1650, label: 'Reply spoken', icon: 'speaker' },
+  { x: 1650, label: 'Answer spoken', icon: 'speaker' },
 ] as const;
 const Y = 430;
 
@@ -59,9 +59,9 @@ function Sleeve({ at, x0, x1, label }: { at: number; x0: number; x1: number; lab
 export function How() {
   const fr = useF();
   const w = W('how');
-  const one = w('how1', 12);
+  const one = w('how1', 14);
   const plays = w('how2', 0);
-  const checks = w('how2', 20);
+  const checks = w('how2', 30);
   const dimAmazon = ramp(fr, one, one + 12) * (1 - ramp(fr, plays, plays + 14));
   const dim4 = ramp(fr, one, one + 12) * (1 - ramp(fr, checks, checks + 14));
   const serverGlow = ramp(fr, one, one + 12) * (1 - 0.5 * ramp(fr, plays, plays + 20));
@@ -70,7 +70,8 @@ export function How() {
   const mis = w('how2', 11);
   const tool = w('how2', 14);
   const drop = ramp(fr, w('how2', 15), w('how2', 17) + 4, 0, 1);
-  const reply = ramp(fr, w('how2', 21), w('how2', 25), 0, 1);
+  const reply = ramp(fr, w('how2', 31), w('how2', 35), 0, 1);
+  const called = w('how2', 17) + 4;
   const voice = ramp(fr, w('how1', 1) - 6, w('how1', 2) + 30);
   return (
     <div style={{ position: 'absolute', inset: 0 }}>
@@ -93,7 +94,15 @@ export function How() {
           </div>
         ) : undefined}
       </Station>
-      <Station i={2} at={w('how1', 6) - 4} dim={0} glow={serverGlow + bump(w('how1', 8)) * 0.6 + (drop >= 1 ? bump(w('how2', 17) + 4) : 0)} />
+      <Station i={2} at={w('how1', 6) - 4} dim={0} glow={serverGlow + bump(w('how1', 8)) * 0.6 + (drop >= 1 ? bump(called) : 0)}>
+        {fr >= called ? (
+          <div style={{ fontFamily: mono, fontSize: 22, color: C.text, lineHeight: 1.5, textAlign: 'left', whiteSpace: 'pre' }}>
+            <div style={{ fontSize: 16, letterSpacing: 2, color: C.blue, marginBottom: 8 }}>MCP · YOUR SERVER</div>
+            <span style={{ color: C.amber }}>→</span> tools/call<br />{'  '}orders_stage_cart<br />
+            <span style={{ opacity: ramp(fr, called + 14, called + 24) }}><span style={{ color: C.blue }}>←</span> “Added.”</span>
+          </div>
+        ) : undefined}
+      </Station>
       <Station i={3} at={w('how1', 10) - 4} dim={dim4} glow={0}>
         {fr >= checks + 6 ? (
           <div style={{ textAlign: 'left', fontFamily: sans, fontSize: 24, fontWeight: 600, color: C.text, lineHeight: 1.6 }}>
@@ -121,6 +130,12 @@ export function How() {
         <div style={{ maxWidth: 560, fontFamily: sans, fontSize: 24, fontWeight: 600, color: C.text, padding: '12px 18px', borderRadius: 16, background: 'rgba(10,13,26,0.78)', border: `1.5px solid ${C.amber}` }}>
           <div style={{ fontFamily: mono, fontSize: 16, color: C.amber, letterSpacing: 2, marginBottom: 6 }}>THE MISHEARINGS</div>
           a table of known confusions, plus real recordings: Polly → phone line → Transcribe
+        </div>
+      </Pop>
+      <Pop at={w('how2', 19) - 4} x={930} y={765} rot={1} out={w('how3', 0) - 6}>
+        <div style={{ maxWidth: 580, fontFamily: sans, fontSize: 24, fontWeight: 600, color: C.text, padding: '12px 18px', borderRadius: 16, background: 'rgba(10,13,26,0.78)', border: `1.5px solid ${C.amber}` }}>
+          <div style={{ fontFamily: mono, fontSize: 16, color: C.amber, letterSpacing: 2, marginBottom: 6 }}>OR A MODEL PICKS THE TOOL</div>
+          from your tool descriptions (Bedrock); recorded once, then replayed without keys
         </div>
       </Pop>
       <Stamp at={w('how3', 1) - 4} x={400} y={770} text="No microphone" color={C.amber} size={42} rot={-6} />

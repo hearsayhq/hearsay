@@ -46,13 +46,13 @@ const CHAPTER: Record<string, string> = {
 const FINE: Record<string, string> = {
   case: 'Unofficial. Not affiliated with or endorsed by Amazon. Narration is AI-generated; the customer and the add-on speak with Amazon Polly. “Added.” is the flawed demo build’s real reply.',
   what: 'Amazon’s add-on requirements: an MCP server on spec 2025-11-25 or later, over Streamable HTTP. Hearsay is unofficial and certifies nothing.',
-  how: 'By default Hearsay replays the words, the mishearings and the tool call from your test: no microphone, no model, no network. Neither the table nor the recordings are Alexa’s own speech recognition.',
+  how: 'By default Hearsay replays the words, the mishearings and the tool call from your test: no microphone, no model, no network. With --orchestrator llm a model (Amazon Bedrock) picks the tool; the run is recorded once and replayed. Neither the table nor the recordings are Alexa’s own speech recognition.',
   rules: 'From Amazon’s published functional requirements for Alexa+ add-ons. Hearsay checks them early; it doesn’t certify anything.',
-  red: 'Real run, one take, real time: video/tapes/orders-flawed-4k.tape at main 9b4acdd. Reproduce it: README → Demo.',
+  red: 'Real run, one take, real time from the run command on: video/tapes/orders-flawed-4k.tape at main 9b4acdd. Reproduce it: README → Demo.',
   after: 'Real run, real time: video/tapes/orders-fixed-4k.tape, same tests. Both replies are the fixed add-on’s, word for word from its run of these tests, spoken by Amazon Polly.',
-  ci: 'Pull request #27, a demo change: runs 36779993236 (red) and 36780493038 (green). Pages from github.com, logged out; the log line read with gh: video/tapes/ci-pr27-4k.tape.',
+  ci: 'Pull request #27, a demo change: runs 36779993236 (red) and 36780493038 (green). Pages from github.com, logged out. The pull request was closed after its two runs.',
   agent: agentFinePrint,
-  cheat: 'Real run, real time: video/tapes/cheat-4k.tape.',
+  cheat: 'Real run, real time from the end of the edit on: video/tapes/cheat-4k.tape.',
   offer: 'Real run, one take, real time: video/tapes/npx-v5.tape, @hearsayhq/cli 0.1.2 from npm in a project folder; the kitchen demo add-on runs on localhost:4101. Unofficial; not affiliated with or endorsed by Amazon. Narration is AI-generated.',
 };
 
@@ -163,12 +163,12 @@ export function Film5() {
       <FinePrint />
       {PIECES.map((p, i) => (
         <Sequence key={i} from={f(p.audioAt)} durationInFrames={f(p.trimTo - p.trimFrom) + 2} name={`voice ${p.line}`}>
-          <Audio src={staticFile(`voice/v5-${p.line}.mp3`)} volume={(fr) => Math.min(1, (fr + 1) / 3, (f(p.trimTo - p.trimFrom) - fr) / 4)} />
+          <Audio src={staticFile(`voice-ds/v5-${p.line}.wav`)} trimBefore={f(p.trimFrom)} volume={(fr) => Math.min(1, (fr + 1) / 3, (f(p.trimTo - p.trimFrom) - fr) / 4)} />
         </Sequence>
       ))}
       {POLLY.map((p) => (
         <Sequence key={p.id} from={f(sceneStart(p.scene) + p.at)} durationInFrames={f(p.seconds) + 6} name={`polly ${p.id}`}>
-          <Audio src={staticFile(`voice/${p.id}.mp3`)} volume={0.95} />
+          <Audio src={staticFile(`voice-ds/${p.id}.wav`)} volume={0.95} />
         </Sequence>
       ))}
       <Sound />

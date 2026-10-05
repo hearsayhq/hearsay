@@ -1,59 +1,74 @@
 {
  "id": "v5-fix1",
- "text": "The fixed add-on, same tests. It says every amount back:",
- "heard": "The fixed add-on, same tests. It says every amount back.",
- "duration": 4.25,
+ "text": "The fixed add-on, same tests. When it adds, it says the amount back:",
+ "heard": "The fixed add-on, same tests. When it adds, it says the amount back.",
+ "duration": 4.599999904632568,
  "words": [
   {
    "word": "The",
    "start": 0,
-   "end": 0.30000001192092896
+   "end": 0.2800000011920929
   },
   {
    "word": "fixed",
-   "start": 0.30000001192092896,
-   "end": 0.5799999833106995
+   "start": 0.2800000011920929,
+   "end": 0.5400000214576721
   },
   {
    "word": "add-on,",
-   "start": 0.5799999833106995,
+   "start": 0.5400000214576721,
    "end": 1.399999976158142,
    "guessed": true
   },
   {
    "word": "same",
    "start": 1.399999976158142,
-   "end": 1.7999999523162842
+   "end": 1.5399999618530273
   },
   {
    "word": "tests.",
-   "start": 1.7999999523162842,
-   "end": 2.259999990463257
+   "start": 1.5399999618530273,
+   "end": 1.9600000381469727
   },
   {
-   "word": "It",
-   "start": 2.5,
-   "end": 2.9600000381469727
+   "word": "When",
+   "start": 2.5799999237060547,
+   "end": 2.640000104904175
+  },
+  {
+   "word": "it",
+   "start": 2.640000104904175,
+   "end": 2.7799999713897705
+  },
+  {
+   "word": "adds,",
+   "start": 2.7799999713897705,
+   "end": 3.0999999046325684
+  },
+  {
+   "word": "it",
+   "start": 3.4200000762939453,
+   "end": 3.559999942779541
   },
   {
    "word": "says",
-   "start": 2.9600000381469727,
-   "end": 3.1600000858306885
+   "start": 3.559999942779541,
+   "end": 3.7799999713897705
   },
   {
-   "word": "every",
-   "start": 3.1600000858306885,
-   "end": 3.5399999618530273
+   "word": "the",
+   "start": 3.7799999713897705,
+   "end": 4.039999961853027
   },
   {
    "word": "amount",
-   "start": 3.5399999618530273,
-   "end": 3.759999990463257
+   "start": 4.039999961853027,
+   "end": 4.159999847412109
   },
   {
    "word": "back:",
-   "start": 3.759999990463257,
-   "end": 4.119999885559082
+   "start": 4.159999847412109,
+   "end": 4.5
   }
  ]
 }
