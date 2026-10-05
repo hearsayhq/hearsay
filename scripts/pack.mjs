@@ -3,7 +3,8 @@
  * Build the publishable packages into build/npm (FR-060, docs/04 §Distribution): tsup bundles
  * the workspace code (engine, mandate, kit) into each package; third-party dependencies stay
  * external with the versions the workspace uses. The CLI ships the built console. Nothing is
- * published: `npm publish build/npm/<file>.tgz --access public` is the owner's step.
+ * published here: the owner published 0.1.0, later versions go out through
+ * .github/workflows/release.yml when the tag v<VERSION> is pushed (docs/07 M7).
  *
  *   node scripts/pack.mjs
  */

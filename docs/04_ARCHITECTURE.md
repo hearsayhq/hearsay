@@ -122,8 +122,11 @@ the workspace's versions:
 | `@hearsayhq/mcp` | binary `hearsay-mcp`; the Agent Skills in `skills/` |
 | `@hearsayhq/kit` | the kit as a library, with type declarations |
 
-The workspace itself runs from `src` (tsx) and never needs a build. Publishing
-(`npm publish build/npm/<file>.tgz --access public`) is the owner's step.
+The workspace itself runs from `src` (tsx) and never needs a build. The owner publishes 0.1.0
+from their own terminal (`npm publish build/npm/<file>.tgz --access public`); later versions go out
+through `.github/workflows/release.yml` on a `v*` tag, by npm trusted publishing (OIDC) with
+provenance and no token. The version is `VERSION` in `scripts/pack.mjs`; the workflow stops if the
+tag differs.
 
 ## Model providers and budget
 
@@ -155,7 +158,7 @@ No hosting and no VM are needed. Judges run the repo locally (hackathon FAQ).
 | `gen-variants <suite...> [--all]` | variants written (new or changed sentences only) | provider error | usage / no AWS credentials |
 | `serve [--port 4100]` | runs until stopped | — | usage |
 
-`--help` after any command prints its usage. `validate` and `lock` name cases whose recorded
+`--help` after any command prints its usage; `hearsay --version` prints the package version. `validate` and `lock` name cases whose recorded
 mishearings belong to an earlier sentence (runs skip them).
 
 `hearsay-mcp` (`npm run mcp`): stdio by default, `--http --port 4199` for Streamable HTTP, `--cwd` for the project root.
