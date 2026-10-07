@@ -166,7 +166,7 @@ export function Film5() {
       <FinePrint />
       {PIECES.map((p, i) => (
         <Sequence key={i} from={f(p.audioAt)} durationInFrames={f(p.trimTo - p.trimFrom) + 2} name={`voice ${p.line}`}>
-          <Audio src={staticFile(`voice-ds/v5-${p.line}.wav`)} trimBefore={f(p.trimFrom)} volume={(fr) => Math.min(1, (fr + 1) / 3, (f(p.trimTo - p.trimFrom) - fr) / 4)} />
+          <Audio src={staticFile(`voice-ds/v5-${p.line}.wav`)} trimBefore={f(p.trimFrom)} volume={(fr) => Math.min(1, p.trimFrom > 0 ? (fr + 1) / 3 : 1, (f(p.trimTo - p.trimFrom) - fr) / 4)} />
         </Sequence>
       ))}
       {POLLY.map((p) => (

@@ -30,7 +30,7 @@ slowly, no card enters while the camera moves.
 | 1:20 not just ours | "NOT JUST OURS · 111 Alexa+ add-ons from this hackathon · public repos, built and run in containers: no network, no keys, no tests written for them"; one dot per add-on by its worst finding (19 red, 87 amber, 5 green); "106 of 111 had something to fix · 19 fail a run · 17 would read JSON or ids aloud"; servers per question (97, 57, 18, 3); "A green run with every submission: less to review by hand" (docs/16, the add-ons that name this hackathon) | "Hearsay checked a hundred and eleven other add-ons from this hackathon: all but five had something to fix." |
 | 1:28 a real run | Tape `orders-flawed-4k`, one take, real time from the run command on (the date and the flawed server's start already on screen), SHA in the prompt; when the output lands, the terminal dims under one card, "What Hearsay found · 3 of 20 errors", each row tagged "Amazon's rule": "Heard fifty. Added fifty. Never said the amount back." / "The customer said no. The order was placed anyway." / "Asked 'Are you sure?' without saying what or how much."; then the totals line and "Build fails · 20 errors · 9 different checks" | "Here's a real run against our demo grocery add-on, built with these flaws on purpose. The customer allowed fifty dollars of groceries today. Fifty dollars of fruit, added without a word. A no that placed the order anyway. Twenty errors: the build fails." |
 | 1:46 the fix | Tape `orders-fixed-4k`; two reply cards while the replies play; "Zero errors · the build passes · warnings never fail it" | "The fixed add-on, same tests. When it adds, it says the amount back:" 🔊 Polly, the fixed build's real reply to fifteen: "Added fifteen dollars of fruit. Your cart is twenty-two dollars and forty cents." "And if it hears fifty, the cart would go over the fifty-dollar budget, so it refuses, and says why:" 🔊 its real reply to fifty: "That would go over the total budget you gave me. You can add less, or give me a bigger budget." "Zero errors." |
-| 2:09 on every change | github.com, logged out, in a browser frame with the real address: pull request #27's commits (the change ✗ 0/2, the fix ✓ 2/2; the header of the closed demo pull request cropped out), "in your repo · one step in the workflow: `- run: npx -y @hearsayhq/cli run suites/*.yaml`", the failed job with ✗ on the Household Orders step, the green job | "On GitHub, this change skipped the budget for dollar amounts. Hearsay failed the check. One fix, and it passes." |
+| 2:10 on every change | github.com, logged out, in a browser frame with the real address: pull request #27's commits (the change ✗ 0/2, the fix ✓ 2/2; the header of the closed demo pull request cropped out), "in your repo · one step in the workflow: `- run: npx -y @hearsayhq/cli run suites/*.yaml`", the failed job with ✗ on the Household Orders step, the green job | "On GitHub, this change skipped the budget for dollar amounts. Hearsay failed the check. One fix, and it passes." |
 | 2:20 for coding agents | "Hearsay · also an MCP server + Agent Skills · a developer tool, not an add-on" → "your coding agent · here: Claude Code"; the recorded session on another demo add-on (smart home) at main 3cc07c5 (14×, labelled): 17 errors → RED → fixes in the add-on's code → GREEN, tests untouched | "Hearsay is also an MCP server for coding agents like Claude Code. Your agent fixes your add-on until the tests pass, without changing them." |
 | 2:32 locked tests | Tape `cheat-4k` on a third demo add-on (kitchen timers), from the end of the edit on: a locked test edited from 15 to 50 ("an agent, or anyone, 'fixes' it") → the integrity error ("the tests changed since hearsay lock") → stamp "Run fails" | "And it can't cheat: your tests are locked. Change one, and the run fails." |
 | 2:40 try it | Open source · MIT, on npm, no keys, no account; tape `npx-v5`: an add-on's project folder, its test, `npx -y @hearsayhq/cli run suites/kitchen.yaml` from npm, 0 errors (real time); the build step; tagline; end card: "Preflight checks for Alexa+ add-ons", github.com/hearsayhq/hearsay, `npx @hearsayhq/cli`, for coding agents `npx @hearsayhq/mcp` | "Hearsay is open source and on npm. No keys, no account: write what your customers say, run one command, and put it in your build. Hearsay. Hear it before your customers do." |
@@ -68,8 +68,12 @@ again.
 Production notes: subtitles from second 0, for every voice; the narration never says the wake
 word, "Alexa+" only on screen. Music (`video/sound/make-bed-v5.ts`) and effects
 (`video/sound/make-sound.mjs`) are synthesised, so there is nothing to license, and duck under every
-voice; every voice passes a de-esser (above 4.5 kHz, 3:1 from −24 dBFS: `video/voice/deess.mjs`); the
-final mix is −14 LUFS. Rebuild from `video/`:
+voice; every voice passes a de-esser (above 4.5 kHz, 3:1 from −24 dBFS: `video/voice/deess.mjs`); every
+effect starts with a 1–4 ms attack and the hi-hats end with a short release (a sound that starts on
+a full-level sample clicks); no effect overlaps a spoken "Hearsay" except the three booms that mark
+it, and those fade within a second; the bed follows the cut, so it is rebuilt whenever the timing
+changes; the final mix is −14 LUFS. The upload is one 4K file: YouTube's encode of a 4K upload keeps
+small text sharp at 1080p too. Rebuild from `video/`:
 
 ```sh
 node sound/make-sound.mjs && npx tsx sound/make-bed-v5.ts
@@ -81,7 +85,7 @@ node record/ci-github.mjs                                   # github.com pages, 
 HEARSAY_DIR=<a clone> ADDON_DIR=<a folder named kitchen-addon with suites/kitchen.yaml and suites/variants/kitchen.json> vhs tapes/npx-v5.tape
 asciinema rec --headless --window-size 140x45 -c "../scripts/agent-loop.sh <workspace>" out/tapes/agent-loop-v5.cast   # one agent run
 node render-film5.mjs hearsay-v53 --preview                  # a fast 1080p to listen to first
-node render-film5.mjs hearsay-v53                            # de-essed voices, the mix at −14 LUFS, 4K, 1080p and 720p
+node render-film5.mjs hearsay-v53                            # the bed rebuilt for the cut, de-essed voices, the mix at −14 LUFS, one 4K file
 ```
 
 The agent cast has the home folder replaced by `~/hearsay` before `agg` turns it into

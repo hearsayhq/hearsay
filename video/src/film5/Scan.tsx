@@ -80,5 +80,5 @@ const W = (line: string, i: number) => cue('scan', line, i);
 
 /** The scene: the dots come in with the line, take their colour on "all but five". */
 export function Scan() {
-  return <ScanBeat from={W('scan', 0) - 10} colour={W('scan', 11) - 4} total={W('scan', 11)} review={W('scan', 16) - 4} />;
+  return <ScanBeat from={W('scan', 0) - 10} colour={W('scan', 11) - 4} total={W('scan', 11)} review={W('scan', 11) + 40} />;
 }

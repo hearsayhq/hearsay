@@ -1,6 +1,6 @@
 {
  "model": "gpt-4o-mini-tts",
- "lengthSeconds": 137.727,
+ "lengthSeconds": 138.012,
  "lines": [
   {
    "id": "v5-open",
@@ -79,111 +79,111 @@
    "who": "narrator",
    "text": "Hearsay checked a hundred and eleven other add-ons from this hackathon: all but five had something to fix.",
    "start": 70.987,
-   "end": 76.659,
+   "end": 76.944,
    "src": "voice/v5-scan.mp3"
   },
   {
    "id": "v5-run",
    "who": "narrator",
    "text": "Here's a real run against our demo grocery add-on, built with these flaws on purpose. The customer allowed fifty dollars of groceries today.",
-   "start": 76.659,
-   "end": 84.31,
+   "start": 76.944,
+   "end": 84.594,
    "src": "voice/v5-run.mp3"
   },
   {
    "id": "v5-red",
    "who": "narrator",
    "text": "Fifty dollars of fruit, added without a word. A no that placed the order anyway. Twenty errors: the build fails.",
-   "start": 84.31,
-   "end": 92.023,
+   "start": 84.594,
+   "end": 92.307,
    "src": "voice/v5-red.mp3"
   },
   {
    "id": "v5-fix1",
    "who": "narrator",
    "text": "The fixed add-on, same tests. When it adds, it says the amount back:",
-   "start": 92.023,
-   "end": 96.628,
+   "start": 92.307,
+   "end": 96.913,
    "src": "voice/v5-fix1.mp3"
   },
   {
    "id": "v5-fix1b",
    "who": "narrator",
    "text": "And if it hears fifty, the cart would go over the fifty-dollar budget, so it refuses, and says why:",
-   "start": 96.628,
-   "end": 102.752,
+   "start": 96.913,
+   "end": 103.037,
    "src": "voice/v5-fix1b.mp3"
   },
   {
    "id": "v5-fix2",
    "who": "narrator",
    "text": "Zero errors.",
-   "start": 102.752,
-   "end": 104.008,
+   "start": 103.037,
+   "end": 104.293,
    "src": "voice/v5-fix2.mp3"
   },
   {
    "id": "v5-ci1",
    "who": "narrator",
    "text": "On GitHub, this change skipped the budget for dollar amounts.",
-   "start": 104.008,
-   "end": 107.499,
+   "start": 104.293,
+   "end": 107.784,
    "src": "voice/v5-ci1.mp3"
   },
   {
    "id": "v5-ci2",
    "who": "narrator",
    "text": "Hearsay failed the check.",
-   "start": 107.499,
-   "end": 108.838,
+   "start": 107.784,
+   "end": 109.123,
    "src": "voice/v5-ci2.mp3"
   },
   {
    "id": "v5-ci3",
    "who": "narrator",
    "text": "One fix, and it passes.",
-   "start": 108.838,
-   "end": 110.671,
+   "start": 109.123,
+   "end": 110.955,
    "src": "voice/v5-ci3.mp3"
   },
   {
    "id": "v5-agent",
    "who": "narrator",
    "text": "Hearsay is also an MCP server for coding agents like Claude Code. Your agent fixes your add-on until the tests pass, without changing them.",
-   "start": 110.671,
-   "end": 119.775,
+   "start": 110.955,
+   "end": 120.06,
    "src": "voice/v5-agent.mp3"
   },
   {
    "id": "v5-cheat1",
    "who": "narrator",
    "text": "And it can't cheat: your tests are locked.",
-   "start": 119.775,
-   "end": 123.529,
+   "start": 120.06,
+   "end": 123.814,
    "src": "voice/v5-cheat1.mp3"
   },
   {
    "id": "v5-cheat2",
    "who": "narrator",
    "text": "Change one, and the run fails.",
-   "start": 123.529,
-   "end": 125.989,
+   "start": 123.814,
+   "end": 126.274,
    "src": "voice/v5-cheat2.mp3"
   },
   {
    "id": "v5-try",
    "who": "narrator",
    "text": "Hearsay is open source and on npm. No keys, no account: write what your customers say, run one command, and put it in your build.",
-   "start": 125.989,
-   "end": 134.628,
+   "start": 126.274,
+   "end": 134.913,
    "src": "voice/v5-try.mp3"
   },
   {
    "id": "v5-tag",
    "who": "narrator",
    "text": "Hearsay. Hear it before your customers do.",
-   "start": 134.628,
-   "end": 137.727,
+   "start": 134.913,
+   "end": 138.012,
    "src": "voice/v5-tag.mp3"
   }
  ]

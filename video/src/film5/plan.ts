@@ -68,26 +68,26 @@ const S = (line: string, at: number, from?: number, to?: number): Seg => ({ line
 
 export const SCENES: Scene[] = [
   { name: 'case', seconds: 24.6, segs: [S('open', 0.4), S('case1', 6.4), S('case2', 13.0), S('case3', 18.0)] },
-  { name: 'what', seconds: 17.2, segs: [S('what', 0.35)] },
+  { name: 'what', seconds: 17.3, segs: [S('what', 0.45)] },
   { name: 'how', seconds: 21.4, segs: [S('how1', 0.25), S('how2', 5.25), S('how3', 14.3)] },
   { name: 'rules', seconds: 16.3, segs: [S('rules', 0.3)] },
-  { name: 'scan', seconds: 8.0, segs: [S('scan', 0.3)] },
+  { name: 'scan', seconds: 7.9, segs: [S('scan', 0.45)] },
   // The flawed run from its run command on (the server start already on screen): its output lands
   // at 9.6 - 3.9. A beat before "Twenty errors" so the findings card can be read.
   { name: 'red', seconds: 18.1, segs: [S('run', 0.4), S('red', 8.4, 0, 15), S('red', 14.54, 15)] },
-  { name: 'after', seconds: 23.7, segs: [S('fix1', 0.35), S('fix1b', 10.3), S('fix2', 22.1)] },
-  { name: 'ci', seconds: 11.0, segs: [S('ci1', 0.3), S('ci2', 4.8), S('ci3', 8.2)] },
-  { name: 'agent', seconds: 11.6, segs: [S('agent', 0.3)] },
+  { name: 'after', seconds: 24.2, segs: [S('fix1', 0.35), S('fix1b', 10.55), S('fix2', 22.6)] },
+  { name: 'ci', seconds: 10.65, segs: [S('ci1', 0.3), S('ci2', 4.8), S('ci3', 7.85)] },
+  { name: 'agent', seconds: 11.6, segs: [S('agent', 0.8)] },
   { name: 'cheat', seconds: 8.0, segs: [S('cheat1', 0.3), S('cheat2', 4.6)] },
-  { name: 'offer', seconds: 18.4, segs: [S('try', 0.25), S('tag', 11.6)] },
+  { name: 'offer', seconds: 18.4, segs: [S('try', 0.45), S('tag', 11.6)] },
 ];
 
 /** The customer and the add-on (Amazon Polly, voice/polly-v5.json): scene, start, length, words. */
 export const POLLY = [
   { id: 'p5-customer', scene: 'case', at: 10.9, seconds: 1.73, who: 'customer', text: 'Add fifteen dollars of fruit.' },
   { id: 'p5-flawed', scene: 'case', at: 16.8, seconds: 0.79, who: 'add-on', text: 'Added.' },
-  { id: 'p5-fixed-clean', scene: 'after', at: 5.15, seconds: 4.87, who: 'add-on', text: 'Added fifteen dollars of fruit. Your cart is twenty-two dollars and forty cents.' },
-  { id: 'p5-fixed', scene: 'after', at: 16.6, seconds: 5.26, who: 'add-on', text: 'That would go over the total budget you gave me. You can add less, or give me a bigger budget.' },
+  { id: 'p5-fixed-clean', scene: 'after', at: 5.3, seconds: 4.87, who: 'add-on', text: 'Added fifteen dollars of fruit. Your cart is twenty-two dollars and forty cents.' },
+  { id: 'p5-fixed', scene: 'after', at: 16.95, seconds: 5.26, who: 'add-on', text: 'That would go over the total budget you gave me. You can add less, or give me a bigger budget.' },
 ] as const;
 
 /**

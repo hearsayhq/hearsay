@@ -1,6 +1,7 @@
-// Renders Film5 for upload (docs/09) in one go: the voices de-essed, the mix measured and set to
-// -14 LUFS, the 4K master, and 1080p and 720p copies. --preview renders a fast 1080p for a listen
-// first. Stops before the long render if the film would reach 3:00.
+// Renders Film5 for upload (docs/09) in one go: the music bed rebuilt for the current cut, the voices
+// de-essed, the mix measured and set to -14 LUFS, and one file, the 4K master for YouTube (a 4K
+// upload gets YouTube's better encode, which keeps small text sharp at 1080p too). --preview
+// renders a fast 1080p for a listen first. Stops before the long render if the film would reach 3:00.
 //   node render-film5.mjs hearsay-v53 [--preview]     (from video/, writes out/<name>-*.mp4)
 import { execFileSync, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -20,6 +21,8 @@ function loudness(file) {
 const ffmpeg = (args) => run('ffmpeg', ['-v', 'error', '-y', ...args]);
 const remotion = (out, args) => run('npx', ['remotion', 'render', 'src/index.ts', 'Film5', out, '--log=error', ...args]);
 
+// The bed is built from the cut in plan.ts: rebuild it whenever the timing changed.
+run('npx', ['tsx', 'sound/make-bed-v5.ts']);
 spawnSync('node', ['voice/deess.mjs', 'voice/film-v5.json', 'voice/polly-v5.json'], { stdio: ['ignore', 'ignore', 'inherit'] });
 run('npx', ['tsc', '--noEmit']);
 
@@ -35,9 +38,5 @@ const raw = preview ? `out/${name}-preview-raw.mp4` : `out/${name}-4k.mp4`;
 const master = preview ? `out/${name}-preview.mp4` : `out/${name}-4k-final.mp4`;
 remotion(raw, preview ? ['--crf=20', '--x264-preset=veryfast'] : ['--scale=2', '--crf=14', '--x264-preset=slow', '--jpeg-quality=100', '--color-space=bt709']);
 ffmpeg(['-i', raw, '-c:v', 'copy', '-af', `volume=${gain}dB,alimiter=limit=0.85:level=disabled`, '-c:a', 'aac', '-b:a', '320k', '-movflags', '+faststart', master]);
-if (!preview) {
-  ffmpeg(['-i', master, '-vf', 'scale=1920:1080:flags=lanczos', '-c:v', 'libx264', '-crf', '18', '-preset', 'slow', '-c:a', 'copy', '-movflags', '+faststart', `out/${name}-1080p.mp4`]);
-  ffmpeg(['-i', master, '-vf', 'scale=1280:720:flags=lanczos', '-c:v', 'libx264', '-crf', '22', '-preset', 'medium', '-c:a', 'aac', '-b:a', '160k', '-movflags', '+faststart', `out/${name}-720p.mp4`]);
-}
 const { lufs, peak } = loudness(master);
 console.log(`${master}: ${seconds(master).toFixed(1)} s, ${lufs} LUFS, true peak ${peak} dBFS`);

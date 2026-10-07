@@ -81,7 +81,8 @@
       "voice": "alloy",
       "gapBeforeMs": 0,
       "text": "Hearsay checked a hundred and eleven other add-ons from this hackathon: all but five had something to fix.",
-      "direction": "Warm, confident presenter of a product keynote, stating a striking fact plainly. Start speaking at once. Say 'Hearsay' as one ordinary word, quick and light, never split into 'hear' and 'say'. A short beat after 'this hackathon', then firm and calm on 'all but five had something to fix'. Never salesy, never shocked."
+      "direction": "Warm, confident presenter of a product keynote, stating a striking fact plainly. Start speaking at once. Say 'Hearsay' as one ordinary word, quick and light, never split into 'hear' and 'say'. A short beat after 'this hackathon', then firm and calm on 'all but five had something to fix'. Never salesy, never shocked.",
+      "tempo": 1.045
     },
     {
       "id": "v5-run",
