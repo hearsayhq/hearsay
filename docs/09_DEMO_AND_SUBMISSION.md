@@ -108,7 +108,7 @@ which video line it serves.
 - **Mini challenges:** enter both; only one can be won.
   - *AWS Builder:* Bedrock Converse powers the llm orchestrator; Polly and Transcribe power
     `gen-variants`. Describe both in the feedback answer.
-  - *Open Source* (definition pending clarification, R-02): a contribution to an existing public
+  - *Open Source* (the rules: pull requests do not need to be merged; R-02 resolved): a contribution to an existing public
     repository, made in the window: a PR to
     AlSayedGamal/mcp-voice-simulator adding form elicitation as a spoken confirmation that fails
     closed (issue first; trace export optional). Plan B: an MCP transport for
