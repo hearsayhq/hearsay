@@ -118,7 +118,9 @@ export function clap(len = 0.35) {
 
 export function hat(len = 0.05, open = false) {
   const n = Math.round((open ? 0.22 : len) * SR); const out = new Float32Array(n); const hp = new Biquad('highpass', 7500, 0.8);
-  for (let i = 0; i < n; i++) { const t = i / SR; out[i] = hp.run(noise()) * Math.exp(-t / (open ? 0.09 : 0.018)); }
+  // A 1.5 ms attack and a 4 ms release: no hit starts or stops on a full-level sample (heard as a click).
+  const dur = n / SR;
+  for (let i = 0; i < n; i++) { const t = i / SR; out[i] = hp.run(noise()) * Math.min(1, t / 0.0015, (dur - t) / 0.004) * Math.exp(-t / (open ? 0.09 : 0.018)); }
   return out;
 }
 

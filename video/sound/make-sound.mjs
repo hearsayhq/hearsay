@@ -100,6 +100,7 @@ writeWav(`${OUT}/v4-bed.wav`, mix, -1);
 console.log(`v4-bed.wav ${len.toFixed(1)} s, ${(60 / BEAT).toFixed(2)} BPM`);
 
 // ---- Effects ----
+// Every effect starts with a short attack (1–4 ms): a sound that starts on a full-level sample clicks.
 function fx(name, seconds, fn, wet = 0) {
   const tr = new Track(seconds);
   fn(tr);
@@ -110,7 +111,7 @@ function fx(name, seconds, fn, wet = 0) {
 
 fx('boom', 3.0, (tr) => {
   const n = Math.round(2.6 * SR); const a = new Float32Array(n); let ph = 0; const lp = new Biquad('lowpass', 900, 0.7);
-  for (let i = 0; i < n; i++) { const t = i / SR; ph += (34 + 60 * Math.exp(-t / 0.12)) / SR; a[i] = Math.sin(2 * Math.PI * ph) * Math.exp(-t / 0.9) + lp.run(noise()) * 0.35 * Math.exp(-t / 0.25); }
+  for (let i = 0; i < n; i++) { const t = i / SR; ph += (34 + 60 * Math.exp(-t / 0.12)) / SR; a[i] = (Math.sin(2 * Math.PI * ph) * Math.exp(-t / 0.9) + lp.run(noise()) * 0.35 * Math.exp(-t / 0.25)) * Math.min(1, t / 0.003); }
   tr.add(0, a, 1);
 }, 0.5);
 
@@ -129,13 +130,13 @@ fx('whoosh', 0.75, (tr) => {
 
 fx('stamp', 0.6, (tr) => {
   const n = Math.round(0.4 * SR); const a = new Float32Array(n); let ph = 0; const lp = new Biquad('lowpass', 2200, 0.8); const bp = new Biquad('bandpass', 3200, 2);
-  for (let i = 0; i < n; i++) { const t = i / SR; ph += (52 + 70 * Math.exp(-t / 0.03)) / SR; a[i] = Math.sin(2 * Math.PI * ph) * Math.exp(-t / 0.13) * 0.9 + lp.run(noise()) * Math.exp(-t / 0.035) * 0.8 + bp.run(noise()) * Math.exp(-t / 0.012) * 0.6; }
+  for (let i = 0; i < n; i++) { const t = i / SR; ph += (52 + 70 * Math.exp(-t / 0.03)) / SR; a[i] = (Math.sin(2 * Math.PI * ph) * Math.exp(-t / 0.13) * 0.9 + lp.run(noise()) * Math.exp(-t / 0.035) * 0.8 + bp.run(noise()) * Math.exp(-t / 0.012) * 0.6) * Math.min(1, t / 0.001); }
   tr.add(0, a, 1);
 }, 0.2);
 
 fx('pop', 0.2, (tr) => {
   const n = Math.round(0.14 * SR); const a = new Float32Array(n); let ph = 0;
-  for (let i = 0; i < n; i++) { const t = i / SR; ph += (320 + 700 * Math.exp(-t / 0.018)) / SR; a[i] = Math.sin(2 * Math.PI * ph) * Math.exp(-t / 0.045); }
+  for (let i = 0; i < n; i++) { const t = i / SR; ph += (320 + 700 * Math.exp(-t / 0.018)) / SR; a[i] = Math.sin(2 * Math.PI * ph) * Math.exp(-t / 0.045) * Math.min(1, t / 0.003, (0.14 - t) / 0.01); }
   tr.add(0, a, 0.9);
 });
 
@@ -147,7 +148,7 @@ fx('buzz', 0.7, (tr) => {
 
 const bell = (f, len, gain) => {
   const n = Math.round(len * SR); const a = new Float32Array(n); let pc = 0, pm = 0;
-  for (let i = 0; i < n; i++) { const t = i / SR; pm += (f * 3.5) / SR; pc += f / SR; a[i] = Math.sin(2 * Math.PI * pc + 2.2 * Math.exp(-t / 0.25) * Math.sin(2 * Math.PI * pm)) * Math.exp(-t / 0.5) * gain; }
+  for (let i = 0; i < n; i++) { const t = i / SR; pm += (f * 3.5) / SR; pc += f / SR; a[i] = Math.sin(2 * Math.PI * pc + 2.2 * Math.exp(-t / 0.25) * Math.sin(2 * Math.PI * pm)) * Math.exp(-t / 0.5) * gain * Math.min(1, t / 0.004); }
   return a;
 };
 fx('chime', 1.6, (tr) => { tr.add(0, bell(midi(88), 1.3, 0.6), 1, -0.2); tr.add(0.09, bell(midi(95), 1.3, 0.6), 1, 0.2); }, 0.35);

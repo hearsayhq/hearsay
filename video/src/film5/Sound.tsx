@@ -7,16 +7,17 @@ import { Audio, Sequence, staticFile } from 'remotion';
 import { AGENT_SPEED, CLIPS, CLIP_AT, f, FILM5_FRAMES, PIECES, POLLY, SCENES, sceneStart, word } from './plan';
 
 const S = (name: string) => f(sceneStart(name));
-const cues: Array<[string, number, number]> = [];
-const at = (name: string, frame: number, volume: number) => cues.push([name, frame, volume]);
+const cues: Array<[string, number, number, number?]> = [];
+const at = (name: string, frame: number, volume: number, fadeFrames?: number) => cues.push([name, frame, volume, fadeFrames]);
 
-// The big moments: "Hearsay" lands at the start and again in scene two, and the tagline.
-at('boom', word('open', 2) - 3, 0.26);
-at('riser', word('what', 0) - f(1.5), 0.08);
-at('boom', word('what', 0) - 3, 0.18);
-at('boom', word('tag', 0) - 4, 0.24);
-// The camera travelling between scenes (the flip to the fixed build is quieter).
-for (const s of SCENES.slice(1)) at('whoosh', S(s.name) - 22, s.name === 'after' ? 0.06 : 0.09);
+// The big moments: "Hearsay" lands at the start and again in scene two, and the tagline. Each boom
+// fades within a second, so it marks the word and is gone before the sentence goes on.
+at('boom', word('open', 2) - 3, 0.26, 54);
+at('boom', word('what', 0) - 3, 0.16, 54);
+at('boom', word('tag', 0) - 4, 0.24, 54);
+// The camera travelling between scenes (the flip to the fixed build is quieter). The whoosh peaks
+// as the camera starts and is silent by the cut, before a scene's first word.
+for (const s of SCENES.slice(1)) at('whoosh', S(s.name) - 34, s.name === 'after' ? 0.06 : 0.09);
 // Stamps, with a soft buzz when something fails.
 const agentGreen = S('agent') + f(CLIP_AT.agent) + Math.round((CLIPS.agent.green / AGENT_SPEED) * 60);
 for (const [frame, fail] of [
@@ -52,9 +53,9 @@ export function Sound() {
   return (
     <>
       <Audio src={staticFile('sound/v5-bed.wav')} volume={(fr) => 0.22 - 0.12 * (DUCK[Math.min(DUCK.length - 1, fr)] ?? 0)} />
-      {cues.map(([name, frame, volume], i) => (
+      {cues.map(([name, frame, volume, fade], i) => (
         <Sequence key={i} from={Math.max(0, frame)} durationInFrames={f(3.2)} name={`sfx ${name}`}>
-          <Audio src={staticFile(`sound/${name}.wav`)} volume={volume} />
+          <Audio src={staticFile(`sound/${name}.wav`)} volume={fade ? (fr) => volume * Math.max(0, Math.min(1, 1 - (fr - 8) / fade)) : volume} />
         </Sequence>
       ))}
     </>
