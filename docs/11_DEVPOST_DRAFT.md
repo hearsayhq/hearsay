@@ -7,6 +7,28 @@ Draft for M7; the owner edits and submits. Facts only from the repo; numbers as 
 **Hearsay** — Preflight checks for Alexa+ MCP servers. Never act on hearsay.
 Unofficial; built for Alexa+ add-on developers; not affiliated with or endorsed by Amazon.
 
+## In 30 seconds
+
+- **Who it's for:** developers of Alexa+ add-ons, the coding agents that build them, and whoever
+  reviews an add-on before it goes live. An Alexa+ add-on is an MCP server.
+- **The problem:** an add-on that works in a chat window breaks out loud: "fifteen" heard as
+  "fifty", JSON read aloud, an order placed on a yes nobody said.
+- **What Hearsay does:** plays what customers say, clean and misheard, against the add-on, grades
+  every reply by Amazon's published requirements for add-ons, and fails the pull request. No
+  microphone, no model, no API keys.
+- **Why it matters:** we ran Hearsay on 111 other Alexa+ add-ons from this hackathon, public repos
+  built and run in containers, with no tests written for them: 106 had something to fix, and 19
+  had errors that fail a run. Of the 25 whose replies could be heard, 17 would read JSON, tool
+  names or ids aloud, which Amazon's requirements rule out (docs/16; aggregates only, no names).
+  If every add-on arrived with a green run, review could start where the checks end: Amazon's
+  published requirements, checked before a person looks.
+- **Alexa+ track technology:** three self-hosted MCP servers on spec 2025-11-25 over Streamable
+  HTTP (`servers/`), and the simulated Alexa+ experience the FAQ describes: Hearsay's console, a
+  web page whose engine is an MCP client that sends `initialize`, `tools/list` and `tools/call`
+  over Streamable HTTP to the add-on (`packages/web`, `packages/engine`). Hearsay is also an MCP
+  server itself (`@hearsayhq/mcp`) with two Agent Skills (`skills/`), for coding agents.
+- **Try it:** `npx @hearsayhq/cli run <suite>`, or clone and run three commands (below).
+
 ## What it does
 
 An Alexa+ add-on is an MCP server. In a chat client it may work fine; spoken, it breaks in
@@ -51,6 +73,25 @@ to it, in CI, without a login.
   four voices over a noisy phone line into Transcribe. Transcribe never confused a number in 240
   transcriptions; it dropped verbs and swapped nouns instead. Neither is Alexa's own speech
   recognition.
+
+## Try it
+
+No keys, no account; about a minute from a fresh clone.
+
+```sh
+git clone https://github.com/hearsayhq/hearsay.git && cd hearsay && npm ci
+HEARSAY_FIXED=0 npm run hearsay -- run suites/household-orders.yaml   # flawed add-on: 20 errors, exit 1
+npm run hearsay -- run suites/household-orders.yaml                   # fixed add-on: 0 errors, exit 0
+```
+
+The README lists the commands behind every scene of the video.
+
+## Built with
+
+Model Context Protocol (spec 2025-11-25, Streamable HTTP) · MCP TypeScript SDK · Agent Skills ·
+Alexa+ add-on functional requirements · Amazon Bedrock (Amazon Nova 2 Lite) · Amazon Polly ·
+Amazon Transcribe · TypeScript · Node.js · zod · Hono · React · Vite · Vitest · GitHub Actions ·
+npm (trusted publishing) · Claude Code · Remotion · VHS
 
 ## How we built it
 
@@ -107,5 +148,6 @@ and skills — is new in the submission window.
 
 A contribution to AlSayedGamal/mcp-voice-simulator: opt-in form elicitation answered as a spoken
 confirmation that fails closed. Issue: github.com/AlSayedGamal/mcp-voice-simulator/issues/8;
-pull request: github.com/AlSayedGamal/mcp-voice-simulator/pull/9 (open, not yet reviewed; whether
-an unmerged PR counts is R-02).
+pull request: github.com/AlSayedGamal/mcp-voice-simulator/pull/9 (open, not yet reviewed; the
+rules say pull requests do not need to be merged). Fork:
+github.com/HarzerHeribert/mcp-voice-simulator.
