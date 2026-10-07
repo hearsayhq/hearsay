@@ -1,5 +1,5 @@
 {
-  "about": "Film v5.2, the use-case cut (approved by the owner, 5 Oct; v5.2 lines 5 Oct): one narrator pitches one concrete use case and never says the wake word; customer and add-on lines are Amazon Polly (video/voice/polly-v5.json), word for word from the Household Orders runs. Numbers from the same runs and from PR #27's CI.",
+  "about": "Film v5.3, the use-case cut (approved by the owner, 5 Oct; v5.2 lines 5 Oct, v5.3 lines 7 Oct): one narrator pitches one concrete use case and never says the wake word; customer and add-on lines are Amazon Polly (video/voice/polly-v5.json), word for word from the Household Orders runs. Numbers from the same runs and from PR #27's CI.",
   "model": "gpt-4o-mini-tts",
   "tempo": 1.1,
   "lines": [
@@ -56,7 +56,7 @@
       "who": "narrator",
       "voice": "alloy",
       "gapBeforeMs": 0,
-      "text": "Hearsay plays the assistant's part from your test: the words, the mishearings, and the tool call you expect, or lets a model pick it from your tool descriptions. Then it checks what your server says back.",
+      "text": "Hearsay plays the assistant's part from your test: the words, the mishearings, and the tool call you expect. Then it checks what your server says back.",
       "direction": "Warm, confident presenter of a product keynote, explaining the clever part simply. Start speaking at once. Say 'Hearsay' as one ordinary word, quick and light, exactly as in the other sentences that start with it: never split into 'hear' and 'say', no stress or pause on it. Clear and precise, a light beat between the things it plays."
     },
     {
@@ -64,16 +64,24 @@
       "who": "narrator",
       "voice": "alloy",
       "gapBeforeMs": 0,
-      "text": "No microphone, no API keys, and the same result every time, so it can run on every change.",
-      "direction": "Warm, confident presenter of a product keynote, three short benefits with a beat between them. Calm, assured. Never salesy."
+      "text": "No API keys, and the same result every time, so it can run on every change.",
+      "direction": "Warm, confident presenter of a product keynote, two short benefits with a beat between them, then the payoff. Calm, assured. Never salesy."
     },
     {
       "id": "v5-rules",
       "who": "narrator",
       "voice": "alloy",
       "gapBeforeMs": 0,
-      "text": "Replies are graded by the rules Amazon published for add-ons: half a second per tool call, short replies, no code read aloud, five options at most, and no payment without naming what and how much.",
-      "direction": "Warm, confident presenter of a product keynote, running through a short checklist, a light beat between the items. Clear and precise."
+      "text": "Replies are graded by the rules Amazon published for add-ons: half a second per tool call, short replies, no code read aloud, five options at most, and no payment without naming what and how much. Plus Hearsay's own checks, for budgets and consent.",
+      "direction": "Warm, confident presenter of a product keynote, running through a short checklist, a light beat between the items, then a short pause and a plain, lighter last sentence. Clear and precise."
+    },
+    {
+      "id": "v5-scan",
+      "who": "narrator",
+      "voice": "alloy",
+      "gapBeforeMs": 0,
+      "text": "Hearsay checked a hundred and eleven other add-ons from this hackathon: all but five had something to fix.",
+      "direction": "Warm, confident presenter of a product keynote, stating a striking fact plainly. Start speaking at once. Say 'Hearsay' as one ordinary word, quick and light, never split into 'hear' and 'say'. A short beat after 'this hackathon', then firm and calm on 'all but five had something to fix'. Never salesy, never shocked."
     },
     {
       "id": "v5-run",
@@ -120,7 +128,7 @@
       "who": "narrator",
       "voice": "alloy",
       "gapBeforeMs": 0,
-      "text": "Hearsay runs on every code change. On GitHub, this change skipped the budget for dollar amounts.",
+      "text": "On GitHub, this change skipped the budget for dollar amounts.",
       "direction": "Warm, confident presenter of a product keynote, explaining a real example. Clear and precise."
     },
     {
@@ -144,7 +152,7 @@
       "who": "narrator",
       "voice": "alloy",
       "gapBeforeMs": 0,
-      "text": "Hearsay is also an MCP server, with Agent Skills for coding agents like Claude Code. Your agent runs your tests, fixes your add-on, and runs them again until they pass, without changing your tests.",
+      "text": "Hearsay is also an MCP server for coding agents like Claude Code. Your agent fixes your add-on until the tests pass, without changing them.",
       "direction": "Warm, confident presenter of a product keynote, presenting a second way to use the product as a real feature, not a bonus. Clear and precise."
     },
     {

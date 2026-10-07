@@ -1,89 +1,58 @@
 {
  "id": "v5-ci1",
- "text": "Hearsay runs on every code change. On GitHub, this change skipped the budget for dollar amounts.",
- "heard": "Here say runs on every code change. On GitHub, this change skipped the budget for dollar amounts.",
- "duration": 5.789999961853027,
+ "text": "On GitHub, this change skipped the budget for dollar amounts.",
+ "heard": "On GitHub, this change skipped the budget for dollar amounts.",
+ "duration": 3.490000009536743,
  "words": [
   {
-   "word": "Hearsay",
-   "start": 0,
-   "end": 0.47999998927116394,
-   "guessed": true
-  },
-  {
-   "word": "runs",
-   "start": 0.47999998927116394,
-   "end": 0.8600000143051147
-  },
-  {
-   "word": "on",
-   "start": 0.8600000143051147,
-   "end": 1.1200000047683716
-  },
-  {
-   "word": "every",
-   "start": 1.1200000047683716,
-   "end": 1.5
-  },
-  {
-   "word": "code",
-   "start": 1.5,
-   "end": 1.7799999713897705
-  },
-  {
-   "word": "change.",
-   "start": 1.7799999713897705,
-   "end": 2.1600000858306885
-  },
-  {
    "word": "On",
-   "start": 2.5399999618530273,
-   "end": 2.700000047683716
+   "start": 0,
+   "end": 0.3400000035762787
   },
   {
    "word": "GitHub,",
-   "start": 2.700000047683716,
-   "end": 3.059999942779541
+   "start": 0.3400000035762787,
+   "end": 0.7799999713897705
   },
   {
    "word": "this",
-   "start": 3.4000000953674316,
-   "end": 3.559999942779541
+   "start": 1.2200000286102295,
+   "end": 1.3799999952316284
   },
   {
    "word": "change",
-   "start": 3.559999942779541,
-   "end": 3.880000114440918
+   "start": 1.3799999952316284,
+   "end": 1.7799999713897705
   },
   {
    "word": "skipped",
-   "start": 3.880000114440918,
-   "end": 4.179999828338623
+   "start": 1.7799999713897705,
+   "end": 2.059999942779541
   },
   {
    "word": "the",
-   "start": 4.179999828338623,
-   "end": 4.420000076293945
+   "start": 2.059999942779541,
+   "end": 2.319999933242798
   },
   {
    "word": "budget",
-   "start": 4.420000076293945,
-   "end": 4.639999866485596
+   "start": 2.319999933242798,
+   "end": 2.440000057220459
   },
   {
    "word": "for",
-   "start": 4.639999866485596,
-   "end": 5.019999980926514
+   "start": 2.440000057220459,
+   "end": 2.700000047683716
   },
   {
    "word": "dollar",
-   "start": 5.019999980926514,
-   "end": 5.28000020980835
+   "start": 2.700000047683716,
+   "end": 2.9800000190734863
   },
   {
    "word": "amounts.",
-   "start": 5.28000020980835,
-   "end": 5.539999961853027
+   "start": 2.9800000190734863,
+   "end": 3.299999952316284
   }
  ]
 }

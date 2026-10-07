@@ -1,5 +1,5 @@
 /**
- * Film v5's clock (v5.2), the use-case cut: one narrator pitches one concrete use case and never says the
+ * Film v5's clock (v5.3), the use-case cut: one narrator pitches one concrete use case and never says the
  * wake word; the customer and the add-on speak with Amazon Polly, word for word from the real runs.
  * Every narration line is a whole take, placed on what happens on screen. Word timings come from
  * whisper (voice/align.mjs). Scenes are listed with their length; placements are in seconds from
@@ -15,6 +15,7 @@ import how1 from '../../public/voice/v5-how1.words.json';
 import how2 from '../../public/voice/v5-how2.words.json';
 import how3 from '../../public/voice/v5-how3.words.json';
 import rules from '../../public/voice/v5-rules.words.json';
+import scan from '../../public/voice/v5-scan.words.json';
 import run from '../../public/voice/v5-run.words.json';
 import red from '../../public/voice/v5-red.words.json';
 import fix1 from '../../public/voice/v5-fix1.words.json';
@@ -31,13 +32,13 @@ import tag from '../../public/voice/v5-tag.words.json';
 
 type Take = { id: string; duration: number; words: Array<{ word: string; start: number; end: number }> };
 const TAKES: Record<string, Take> = Object.fromEntries(
-  [open, case1, case2, case3, what, how1, how2, how3, rules, run, red, fix1, fix1b, fix2, ci1, ci2, ci3, agent, cheat1, cheat2, tryIt, tag].map((t) => [t.id.replace('v5-', ''), t as Take]),
+  [open, case1, case2, case3, what, how1, how2, how3, rules, scan, run, red, fix1, fix1b, fix2, ci1, ci2, ci3, agent, cheat1, cheat2, tryIt, tag].map((t) => [t.id.replace('v5-', ''), t as Take]),
 );
 
 /**
  * The real recordings. v4's tapes for the grocery runs, the CI log line and the locked suite
- * (public/clips/v4, main 9b4acdd); v5's agent session (main 3cc07c5) and Hearsay from npm in an
- * add-on's own project (public/clips/v5); GitHub's own pages for pull request #27, logged out
+ * (public/clips/v4, main 9b4acdd); v5's agent session (main 3cc07c5), Hearsay from npm in an
+ * add-on's own project and the console run (public/clips/v5); GitHub's own pages for pull request #27, logged out
  * (record/ci-github.mjs).
  */
 export const CLIPS = {
@@ -47,6 +48,9 @@ export const CLIPS = {
   cheat: { src: 'clips/v4/cheat.mp4', w: 3840, h: 2160, seconds: 10.88, output: 7.3 },
   npx: { src: 'clips/v5/npx.mp4', w: 3840, h: 2160, seconds: 14.08, case: 2.8, output: 10.1 },
   agent: { src: 'clips/v5/agent-loop.mp4', w: 3420, h: 2484, seconds: 120.9, red: 21.0, green: 98.2, after: 117.78, untouched: 117.91 },
+  // Hearsay's console (a web page whose engine is the MCP client) on the flawed grocery build,
+  // record/console-v5.mjs, 7 Oct: connect, run the suite, open the runs, back to the verdict.
+  console: { src: 'clips/v5/console.mp4', w: 3840, h: 2160, seconds: 10.54, connected: 1.13, run: 2.66, result: 4.5, runs: 4.79, top: 7.24 },
 } as const;
 
 /** GitHub's pages, captured at 2× (3200×1800), with the URL each came from. */
@@ -65,14 +69,15 @@ const S = (line: string, at: number, from?: number, to?: number): Seg => ({ line
 export const SCENES: Scene[] = [
   { name: 'case', seconds: 24.6, segs: [S('open', 0.4), S('case1', 6.4), S('case2', 13.0), S('case3', 18.0)] },
   { name: 'what', seconds: 17.2, segs: [S('what', 0.35)] },
-  { name: 'how', seconds: 23.8, segs: [S('how1', 0.25), S('how2', 5.25), S('how3', 17.0)] },
-  { name: 'rules', seconds: 13.6, segs: [S('rules', 0.3)] },
+  { name: 'how', seconds: 21.4, segs: [S('how1', 0.25), S('how2', 5.25), S('how3', 14.3)] },
+  { name: 'rules', seconds: 16.3, segs: [S('rules', 0.3)] },
+  { name: 'scan', seconds: 8.0, segs: [S('scan', 0.3)] },
   // The flawed run from its run command on (the server start already on screen): its output lands
   // at 9.6 - 3.9. A beat before "Twenty errors" so the findings card can be read.
   { name: 'red', seconds: 18.1, segs: [S('run', 0.4), S('red', 8.4, 0, 15), S('red', 14.54, 15)] },
   { name: 'after', seconds: 23.7, segs: [S('fix1', 0.35), S('fix1b', 10.3), S('fix2', 22.1)] },
-  { name: 'ci', seconds: 13.4, segs: [S('ci1', 0.3), S('ci2', 7.2), S('ci3', 10.6)] },
-  { name: 'agent', seconds: 15.2, segs: [S('agent', 0.3)] },
+  { name: 'ci', seconds: 11.0, segs: [S('ci1', 0.3), S('ci2', 4.8), S('ci3', 8.2)] },
+  { name: 'agent', seconds: 11.6, segs: [S('agent', 0.3)] },
   { name: 'cheat', seconds: 8.0, segs: [S('cheat1', 0.3), S('cheat2', 4.6)] },
   { name: 'offer', seconds: 18.4, segs: [S('try', 0.25), S('tag', 11.6)] },
 ];
@@ -90,7 +95,7 @@ export const POLLY = [
  * starts, so typing that only sets up is on screen already), and how fast the agent loop plays.
  */
 export const CLIP_AT = { flawed: -3.9, fixed: 0.1, cheat: -3.0, npx: -0.9, agent: 0.6 } as const;
-export const AGENT_SPEED = 11;
+export const AGENT_SPEED = 14;
 
 const starts: number[] = [];
 let acc = 0;

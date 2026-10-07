@@ -10,12 +10,13 @@ export const ANCHOR: Record<string, [number, number]> = {
   what: [2400, 0],
   how: [2400, 1500],
   rules: [4800, 1500],
-  red: [4800, 3000],
-  after: [4800, 3000], // flips in place
-  ci: [7200, 3000],
-  agent: [7200, 4500],
-  cheat: [9600, 4500],
-  offer: [9600, 6000],
+  scan: [4800, 3000],
+  red: [7200, 3000],
+  after: [7200, 3000], // flips in place
+  ci: [7200, 4500],
+  agent: [9600, 4500],
+  cheat: [9600, 6000],
+  offer: [12000, 6000],
 };
 
 /** Frames the camera takes to travel, centred on the cut. */
