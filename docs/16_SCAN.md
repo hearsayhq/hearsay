@@ -74,6 +74,11 @@ Listed only (no calls): 9; of these, 0 tried to reach the network at start (bloc
   without a working Streamable HTTP endpoint (stdio, SSE, or none yet), 8 that need a sign-in or
   a token minted at runtime, 4 that need real services to start, and 1 for risk (it imports
   unpinned code at startup). The other 96 were scanned.
+- Hackathon entries: 118 of the 127 add-on servers name this hackathon in their README or
+  description (Devpost, "hackathon", its name); the other 9 are Alexa+ add-ons from the same
+  weeks that don't say. Counted over the 111 of these 118 that started: 106 have something to
+  fix, 19 an error that fails a run, and 17 of the 25 that could be called would read JSON, tool
+  names or ids aloud. The film and the Devpost text use these numbers.
 - The first run that day (30 Sep) is not used. In list mode it called read-only tools through
   the `lint.destructive_annotated` probe, which the owner had approved for `tools/list` only
   (R-17). The harness was fixed (`callTools: false`, one bearer or none, Host as a local client
