@@ -34,6 +34,11 @@ function section(title: string, rs: Row[]): string[] {
   if (Object.keys(stops).length) out.push(`Did not get through: ${Object.entries(stops).map(([s, n]) => `${n} ${STOPPED[s] ?? `stopped at ${s}`}`).join('; ')}.`, '');
   const tools = ok.map((r) => r.tools ?? 0);
   const allTools = tools.reduce((a, b) => a + b, 0);
+  // The headline numbers (film, Devpost): servers with something to fix, and with an error a run fails on.
+  const all = (r: Row) => [...(r.findings ?? []), ...(r.calls ?? []).flatMap((c) => c.findings ?? [])];
+  const withError = ok.filter((r) => all(r).some((f) => f.severity === 'error')).length;
+  const toFix = ok.filter((r) => all(r).some((f) => f.severity !== 'info')).length;
+  out.push(`Servers with something to fix (an error or a warning): ${toFix} of ${ok.length}; with an error, which fails a run: ${withError} of ${ok.length}.`, '');
   out.push(`Tools per server: median ${median(tools)}. Tools with side-effect annotations: ${pct(ok.reduce((a, r) => a + (r.annotated ?? 0), 0), allTools)}; marked read-only: ${pct(ok.reduce((a, r) => a + (r.readOnly ?? 0), 0), allTools)}.`, '');
   out.push('| Question | Servers with an error | Servers with a warning |', '|---|---|---|');
   for (const q of QUESTION_ORDER) {
