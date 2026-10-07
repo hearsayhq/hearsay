@@ -20,7 +20,7 @@ for (const s of SCENES.slice(1)) at('whoosh', S(s.name) - 22, s.name === 'after'
 // Stamps, with a soft buzz when something fails.
 const agentGreen = S('agent') + f(CLIP_AT.agent) + Math.round((CLIPS.agent.green / AGENT_SPEED) * 60);
 for (const [frame, fail] of [
-  [word('how3', 1) - 4, false], [word('how3', 4) - 6, false], [word('how3', 7) - 6, false],
+  [word('how3', 0) - 6, false], [word('how3', 5) - 6, false],
   [word('red', 17) + 8, true], [word('fix2', 0) + 2, false], [agentGreen + 4, false], [word('cheat2', 4) + 4, true],
 ] as Array<[number, boolean]>) {
   at('stamp', frame, 0.16);
@@ -31,6 +31,8 @@ at('chime', word('fix2', 0) + 4, 0.12);
 at('chime', word('ci3', 0) + 6, 0.12);
 at('chime', agentGreen + 6, 0.1);
 at('chime', S('offer') + f(CLIP_AT.npx + CLIPS.npx.output) + 10, 0.1);
+// The scan's dots take their colour.
+at('pop', word('scan', 11) - 4, 0.08);
 // Rule cards landing.
 for (const i of [10, 16, 18, 22, 27]) at('pop', word('rules', i) + 2, 0.06);
 

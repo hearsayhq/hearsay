@@ -34,19 +34,21 @@ function Veil({ from, to }: { from: number; to: number }) {
   return o > 0 ? <div style={{ position: 'absolute', left: WIN.x, top: WIN.y, width: WIN.w, height: WIN.h + 44, borderRadius: 18, background: `rgba(5,7,14,${o})` }} /> : null;
 }
 
-/** What a run found, in plain words: one card, rows added as they are said, held until it goes. */
-function Findings({ rows, from, to, title, tint }: { rows: Array<{ at: number; text: string }>; from: number; to: number; title: string; tint: string }) {
+/** What a run found, in plain words: one card, rows added as they are said, held until it goes. Each
+ * row names whose rule it is (the check's source in the catalog). */
+function Findings({ rows, from, to, title, tint }: { rows: Array<{ at: number; text: string; src: string }>; from: number; to: number; title: string; tint: string }) {
   const fr = useF();
   if (fr < from || fr > to + 16) return null;
   const k = stick(fr, from, { damping: 16, stiffness: 140 });
   const o = 1 - ramp(fr, to, to + 14);
   return (
-    <div style={{ position: 'absolute', left: 960, top: 470, transform: `translate(-50%,-50%) scale(${0.9 + 0.1 * k})`, opacity: Math.min(1, k * 2) * o, width: 1180, padding: '30px 40px', borderRadius: 26, background: 'rgba(10,13,26,0.94)', border: `2px solid ${tint}`, boxShadow: `0 40px 100px rgba(0,0,0,0.6), 0 0 60px ${tint}33` }}>
+    <div style={{ position: 'absolute', left: 960, top: 470, transform: `translate(-50%,-50%) scale(${0.9 + 0.1 * k})`, opacity: Math.min(1, k * 2) * o, width: 1320, padding: '30px 40px', borderRadius: 26, background: 'rgba(10,13,26,0.94)', border: `2px solid ${tint}`, boxShadow: `0 40px 100px rgba(0,0,0,0.6), 0 0 60px ${tint}33` }}>
       <div style={{ fontFamily: mono, fontSize: 20, letterSpacing: 3, color: tint, marginBottom: 18 }}>{title}</div>
       {rows.map((r) => fr >= r.at ? (
         <div key={r.text} style={{ display: 'flex', gap: 18, alignItems: 'baseline', marginBottom: 14, opacity: ramp(fr, r.at, r.at + 10), transform: `translateX(${(1 - stick(fr, r.at)) * -30}px)` }}>
           <span style={{ fontFamily: sans, fontSize: 36, fontWeight: 900, color: tint }}>✗</span>
-          <span style={{ fontFamily: sans, fontSize: 38, fontWeight: 700, color: C.text, lineHeight: 1.25 }}>{r.text}</span>
+          <span style={{ flex: 1, fontFamily: sans, fontSize: 38, fontWeight: 700, color: C.text, lineHeight: 1.25 }}>{r.text}</span>
+          <Chip tint={C.amber} style={{ fontSize: 17, padding: '5px 12px', alignSelf: 'center' }}>{r.src}</Chip>
         </div>
       ) : null)}
     </div>
@@ -85,11 +87,11 @@ export function Red() {
         <Note at={sec(3.0)} x={1320} y={700} tint={C.red} rot={2} out={out - 6}>our demo add-on, with these flaws on purpose</Note>
         <Veil from={cardFrom} to={cardTo} />
         <Findings from={cardFrom} to={cardTo} tint={C.red} title="WHAT HEARSAY FOUND · 3 OF 20 ERRORS" rows={[
-          { at: w('red', 0), text: 'Heard fifty. Added fifty. Never said the amount back.' },
-          { at: w('red', 8), text: 'The customer said no. The order was placed anyway.' },
-          { at: w('red', 8) + 6, text: 'Asked “Are you sure?” without saying what or how much.' },
+          { at: w('red', 0), text: 'Heard fifty. Added fifty. Never said the amount back.', src: 'AMAZON’S RULE' },
+          { at: w('red', 8), text: 'The customer said no. The order was placed anyway.', src: 'AMAZON’S RULE' },
+          { at: w('red', 8) + 6, text: 'Asked “Are you sure?” without saying what or how much.', src: 'AMAZON’S RULE' },
         ]} />
-        <Stamp at={w('red', 17) + 8} x={1200} y={420} text="Build fails" size={110} rot={-6} sub="20 errors" />
+        <Stamp at={w('red', 17) + 8} x={1200} y={420} text="Build fails" size={110} rot={-6} sub="20 errors · 9 different checks" />
       </div>
     </Flip>
   );
@@ -137,7 +139,7 @@ export function After() {
         <Note at={sec(1.0)} x={1300} y={560} tint={C.green} rot={2} out={pollyAt('p5-fixed-clean') - 14}>the fixed add-on, same tests</Note>
         <Reply id="p5-fixed-clean" heard="ADD FIFTEEN DOLLARS OF FRUIT" from={pollyAt('p5-fixed-clean') - 6} to={second - 10} />
         <Reply id="p5-fixed" heard="ADD FIFTY DOLLARS OF FRUIT" from={second} to={zero - 6} />
-        <Stamp at={zero + 2} x={1360} y={760} text="Zero errors" color={C.green} size={90} rot={-6} />
+        <Stamp at={zero + 2} x={1360} y={760} text="Zero errors" color={C.green} size={90} rot={-6} sub="the build passes · warnings never fail it" />
       </div>
     </Flip>
   );
@@ -178,7 +180,7 @@ export function Ci() {
   // The commits only: the page's header (a demo pull request, closed after its two runs) stays out.
   const commitsView = track(fr, [
     [w('ci1', 0), { x: 300, y: 690, w: 2700 }],
-    [w('ci1', 7), { x: 380, y: 690, w: 2480 }],
+    [w('ci1', 4), { x: 380, y: 690, w: 2480 }],
   ]);
   const jobView: View = { x: 560, y: 720, w: 2100 };
   return (
@@ -188,7 +190,7 @@ export function Ci() {
       <div style={{ position: 'absolute', inset: 0, opacity: enter }}>
         {page === 'commits' ? (
           <Browser url={PAGES.commits.url} src={PAGES.commits.src} view={commitsView} {...BW}>
-            <Mark at={w('ci1', 8) + 6} x={467} y={800} w={2346} h={130} color={C.red} />
+            <Mark at={w('ci1', 2) + 6} x={467} y={800} w={2346} h={130} color={C.red} />
           </Browser>
         ) : page === 'redJob' ? (
           <Browser url={PAGES.redJob.url} src={PAGES.redJob.src} view={jobView} {...BW}>
@@ -200,12 +202,12 @@ export function Ci() {
           </Browser>
         )}
       </div>
-      <Pop at={w('ci1', 3)} x={620} y={640} rot={-1} out={toRed - 16}>
+      <Pop at={w('ci1', 0) + 6} x={620} y={640} rot={-1} out={toRed - 16}>
         <div style={{ fontFamily: mono, fontSize: 22, color: C.text, background: 'rgba(10,13,26,0.88)', border: `1.5px solid ${C.amber}`, borderRadius: 16, padding: '12px 20px', whiteSpace: 'pre', lineHeight: 1.5 }}>
           <span style={{ fontFamily: sans, fontSize: 16, letterSpacing: 2, color: C.amber }}>IN YOUR REPO · ONE STEP IN THE WORKFLOW</span>{'\n'}- run: npx -y @hearsayhq/cli run suites/*.yaml
         </div>
       </Pop>
-      <Note at={w('ci1', 8) + 10} x={1440} y={760} rot={-2} width={560} tint={C.red} out={toRed - 16}>
+      <Note at={w('ci1', 2) + 10} x={1440} y={760} rot={-2} width={560} tint={C.red} out={toRed - 16}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: mono, fontSize: 18, color: C.red, marginBottom: 6 }}><Icon name="pr" size={22} color={C.red} /> THE CHANGE · f7725be</div>
         the budget no longer checked dollar amounts
       </Note>

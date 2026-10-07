@@ -37,11 +37,11 @@ export function Agent() {
     [at(100), { x: 0, y: 2484 - vh, w: 3420 }],
   ]);
   const win = stick(fr, start - 6, { damping: 15, stiffness: 140 });
-  const link = ramp(fr, w('agent', 10) - 4, w('agent', 15) + 10);
+  const link = ramp(fr, w('agent', 7) - 4, w('agent', 11) + 10);
   return (
     <div style={{ position: 'absolute', inset: 0 }}>
-      <Box at={w('agent', 0)} x={470} tint={C.amber} icon="server" title="Hearsay · also an MCP server" sub="+ Agent Skills for coding agents (not Alexa skills)" />
-      <Box at={w('agent', 10)} x={1440} tint={C.blue} icon="agent" title="your coding agent" sub="here: Claude Code, a fresh session" />
+      <Box at={w('agent', 0)} x={470} tint={C.amber} icon="server" title="Hearsay · also an MCP server" sub="+ Agent Skills · a developer tool, not an add-on" />
+      <Box at={w('agent', 7)} x={1440} tint={C.blue} icon="agent" title="your coding agent" sub="here: Claude Code, a fresh session" />
       {link > 0 ? <div style={{ position: 'absolute', left: 860, top: 117, width: 210 * link, height: 6, borderRadius: 3, background: `linear-gradient(90deg, ${C.amber}, ${C.blue})`, boxShadow: '0 0 20px rgba(255,170,43,0.6)' }} /> : null}
       {fr >= start - 6 ? (
         <div style={{ position: 'absolute', inset: 0, transform: `translateY(${(1 - win) * 700}px)`, opacity: Math.min(1, win * 2) }}>
@@ -83,16 +83,16 @@ export function Cheat() {
           <Chip tint={red > 0.5 ? C.red : C.amber} solid style={{ fontFamily: sans, fontWeight: 800, fontSize: 21 }}><Icon name="lock" size={24} color={C.ink} /> 3rd demo add-on: kitchen timers · tests locked</Chip>
         </div>
       </Pop>
-      <TermWindow title="hearsay — someone edits a locked test" w={1600} h={860} glow={C.red} style={{ left: 160, top: 70 }}>
+      <TermWindow title="hearsay — a locked test, edited" w={1600} h={860} glow={C.red} style={{ left: 160, top: 70 }}>
         <Rec clip={CLIPS.cheat} t={t} view={view} vw={1600} vh={860}>
           <Mark at={sec(0.3)} x={625} y={83} w={1245} h={39} />
           <Mark at={out + 8} x={74} y={482} w={3045} h={40} color={C.red} />
           <Mark at={out + 20} x={74} y={839} w={1160} h={32} color={C.red} />
         </Rec>
       </TermWindow>
-      <Note at={sec(0.5)} x={1380} y={430} rot={2} out={out - 4}>the test says <b style={{ color: C.amber }}>15</b> · someone “fixes” it to <b style={{ color: '#FFB4B2' }}>50</b></Note>
+      <Note at={sec(0.5)} x={1380} y={430} rot={2} out={out - 4}>the test says <b style={{ color: C.amber }}>15</b> · an agent, or anyone, “fixes” it to <b style={{ color: '#FFB4B2' }}>50</b></Note>
       <Note at={out + 10} x={1200} y={760} tint={C.red} rot={-2} width={680}>
-        the tests changed since they were locked, so the run fails
+        the tests changed since <span style={{ fontFamily: mono, fontSize: 26 }}>hearsay lock</span>, so the run fails
       </Note>
       <Stamp at={w('cheat2', 4) + 4} x={1440} y={330} text="Run fails" size={96} rot={8} />
     </div>

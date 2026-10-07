@@ -11,6 +11,7 @@ import type { Cam } from './world';
 import { C, GooDefs, GRAD, mono, sans, SceneClock } from '../film4/kit';
 import { Case, What } from './Case';
 import { How, Rules } from './How';
+import { Scan } from './Scan';
 import { After, Ci, Red } from './Demo';
 import { agentFinePrint, Agent, Cheat } from './More';
 import { Offer } from './Offer';
@@ -18,7 +19,7 @@ import { Captions } from './Captions';
 import { Sound } from './Sound';
 
 const VIEWS: Record<string, () => ReactNode> = {
-  case: Case, what: What, how: How, rules: Rules, red: Red, after: After, ci: Ci, agent: Agent, cheat: Cheat, offer: Offer,
+  case: Case, what: What, how: How, rules: Rules, scan: Scan, red: Red, after: After, ci: Ci, agent: Agent, cheat: Cheat, offer: Offer,
 };
 
 /** Three soft lights per scene, OpenAI-style mesh gradients: r,g,b of each. */
@@ -27,6 +28,7 @@ const PALETTE: Record<string, [string, string, string]> = {
   what: ['255,178,63', '255,94,138', '139,107,255'],
   how: ['59,130,246', '139,92,246', '6,182,212'],
   rules: ['255,178,63', '139,107,255', '59,130,246'],
+  scan: ['255,94,138', '255,178,63', '139,107,255'],
   red: ['229,72,77', '124,58,237', '30,64,175'],
   after: ['34,197,94', '20,184,166', '59,130,246'],
   ci: ['59,130,246', '20,184,166', '139,92,246'],
@@ -39,15 +41,16 @@ const SPOTS: Array<[number, number, number]> = [[-780, -430, 1050], [800, 340, 1
 const DIM = new Set(['red', 'after', 'ci', 'agent', 'cheat']);
 
 const CHAPTER: Record<string, string> = {
-  case: '01 · AN EXAMPLE', what: '02 · WHAT IT IS', how: '03 · HOW IT WORKS', rules: '04 · THE RULES', red: '05 · A REAL RUN',
+  case: '01 · AN EXAMPLE', what: '02 · WHAT IT IS', how: '03 · HOW IT WORKS', rules: '04 · THE RULES', scan: '04 · THE RULES', red: '05 · A REAL RUN',
   after: '05 · A REAL RUN', ci: '06 · ON EVERY CHANGE', agent: '07 · FOR CODING AGENTS', cheat: '07 · FOR CODING AGENTS', offer: '08 · TRY IT',
 };
 
 const FINE: Record<string, string> = {
   case: 'Unofficial. Not affiliated with or endorsed by Amazon. Narration is AI-generated; the customer and the add-on speak with Amazon Polly. “Added.” is the flawed demo build’s real reply.',
-  what: 'Amazon’s add-on requirements: an MCP server on spec 2025-11-25 or later, over Streamable HTTP. Hearsay is unofficial and certifies nothing.',
-  how: 'By default Hearsay replays the words, the mishearings and the tool call from your test: no microphone, no model, no network. With --orchestrator llm a model (Amazon Bedrock) picks the tool; the run is recorded once and replayed. Neither the table nor the recordings are Alexa’s own speech recognition.',
-  rules: 'From Amazon’s published functional requirements for Alexa+ add-ons. Hearsay checks them early; it doesn’t certify anything.',
+  what: 'Amazon’s add-on requirements: an MCP server on spec 2025-11-25 or later, over Streamable HTTP. The console: real run, real time, record/console-v5.mjs on the flawed demo build. Hearsay is unofficial and certifies nothing.',
+  how: 'By default Hearsay replays the words, the mishearings and the tool call from your test: no microphone, no model, no network. With --orchestrator llm a model (Amazon Bedrock) picks the tool; the run is recorded once and replayed. Recordings: Amazon Polly through a phone-quality channel into Amazon Transcribe, not Alexa’s own speech recognition.',
+  rules: 'From Amazon’s published functional requirements for Alexa+ add-ons; Hearsay’s own checks are marked as its own in every finding. Hearsay checks early; it doesn’t certify anything.',
+  scan: 'docs/16, aggregates only, no names: public repos that name this hackathon, pinned to a commit, built and run by the owner in containers with no network and no credentials. No tests were written for them, so only the declared tools and read-only replies were checked.',
   red: 'Real run, one take, real time from the run command on: video/tapes/orders-flawed-4k.tape at main 9b4acdd. Reproduce it: README → Demo.',
   after: 'Real run, real time: video/tapes/orders-fixed-4k.tape, same tests. Both replies are the fixed add-on’s, word for word from its run of these tests, spoken by Amazon Polly.',
   ci: 'Pull request #27, a demo change: runs 36779993236 (red) and 36780493038 (green). Pages from github.com, logged out. The pull request was closed after its two runs.',
