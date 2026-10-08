@@ -14,7 +14,10 @@ export class FakeHomeModel implements ModelProvider {
     if (result && result.type === 'tool_result') return { content: [{ type: 'text', text: result.text }], stopReason: 'end_turn' };
     const said = last.content.map((c) => (c.type === 'text' ? c.text : '')).join(' ').toLowerCase();
     const room = said.match(/whole house/) ? 'all' : (said.match(/living ?room|bed ?room|kitchen|office/)?.[0] ?? '').replace(' ', '_').replace('bed_room', 'bedroom');
-    const pct = said.match(/(\w+) percent/)?.[1];
+    // The word before "percent", without a regex that backtracks on long input (CodeQL js/polynomial-redos).
+    const ws = said.split(/\s+/);
+    const pi = ws.indexOf('percent');
+    const pct = pi > 0 ? ws[pi - 1] : undefined;
     const words: Record<string, number> = { thirty: 30, thirteen: 13, fifteen: 15, fifty: 50 };
     const input: Record<string, unknown> = { room: room || 'unknown' };
     if (pct) input.brightness = words[pct] ?? Number(pct);
