@@ -1,5 +1,6 @@
 /**
- * The README's "How it works": film v4's diagram as one still. Only the server is your code;
+ * The README's "How it works": film v4's diagram as one still.
+ * Replaced in docs/assets by film v6's look (src/readme6, 8 Oct); kept for v4's film. Only the server is your code;
  * Hearsay plays the steps around it from the test case and checks the reply.
  *   npx remotion still src/index.ts How ../docs/assets/how-it-works.jpg --image-format=jpeg --jpeg-quality=90
  */

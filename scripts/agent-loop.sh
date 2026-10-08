@@ -3,9 +3,13 @@
 # Builds a workspace holding only the flawed Smart Home add-on, its locked suite and the
 # fix-hearsay-findings skill; runs a fresh headless Claude Code session with the Hearsay
 # MCP server; then checks independently: green, and nothing under suites/ changed.
+# With --ui the same session runs in Claude Code's own interface, for a screen recording (film
+# v6): it starts with the same prompt and tools; exit it (/exit) when it is done, and the checks
+# follow.
 #
-#   scripts/agent-loop.sh [workspace-dir]       needs `claude` on PATH; costs one agent run
+#   scripts/agent-loop.sh [--ui] [workspace-dir]       needs `claude` on PATH; costs one agent run
 set -euo pipefail
+UI=; if [[ "${1:-}" == --ui ]]; then UI=1; shift; fi
 export GIT_PAGER=cat PAGER=cat
 REPO=$(cd "$(dirname "$0")/.." && pwd)
 W=${1:-$(mktemp -d)/smart-home-addon}
@@ -44,12 +48,18 @@ git init -q && git add -A && git -c user.name=hearsay -c user.email=hearsay@loca
 echo '$ hearsay run suites/smart-home.yaml          # before'
 hearsay run suites/smart-home.yaml | grep -E 'errors ·' || true
 echo
-echo '$ claude -p "Make it pass its Hearsay suite …"   # fresh session: Hearsay MCP + fix-hearsay-findings, no shell'
-claude -p "This repository is the MCP server of an Alexa+ add-on (src/). Make it pass its Hearsay suite, suites/smart-home.yaml. Use the fix-hearsay-findings skill and the hearsay tools." \
-  --mcp-config "$W/mcp.json" --strict-mcp-config --setting-sources project \
-  --allowedTools mcp__hearsay__hearsay_run mcp__hearsay__hearsay_lint mcp__hearsay__hearsay_explain Read Edit Write Glob Grep Skill \
-  --disallowedTools Bash --permission-mode acceptEdits --max-budget-usd 5 \
-  --output-format stream-json --verbose | tee "$W/../agent-run.jsonl" | node "$REPO/scripts/agent-loop-pretty.mjs"
+PROMPT="This repository is the MCP server of an Alexa+ add-on (src/). Make it pass its Hearsay suite, suites/smart-home.yaml. Use the fix-hearsay-findings skill and the hearsay tools."
+TOOLS=(--mcp-config "$W/mcp.json" --strict-mcp-config --setting-sources project
+  --allowedTools mcp__hearsay__hearsay_run mcp__hearsay__hearsay_lint mcp__hearsay__hearsay_explain Read Edit Write Glob Grep Skill
+  --disallowedTools Bash --permission-mode acceptEdits)
+if [[ -n "$UI" ]]; then
+  echo '$ claude "Make it pass its Hearsay suite …"   # fresh session: Hearsay MCP + fix-hearsay-findings, no shell'
+  claude "$PROMPT" "${TOOLS[@]}" || true
+else
+  echo '$ claude -p "Make it pass its Hearsay suite …"   # fresh session: Hearsay MCP + fix-hearsay-findings, no shell'
+  claude -p "$PROMPT" "${TOOLS[@]}" --max-budget-usd 5 \
+    --output-format stream-json --verbose | tee "$W/../agent-run.jsonl" | node "$REPO/scripts/agent-loop-pretty.mjs"
+fi
 echo
 echo '$ hearsay run suites/smart-home.yaml          # after'
 hearsay run suites/smart-home.yaml | grep -E 'errors ·|✓' ; code=${PIPESTATUS[0]}
