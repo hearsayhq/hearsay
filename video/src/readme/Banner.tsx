@@ -1,5 +1,6 @@
 /**
  * The README banner: film v4's wordmark, gradient and light, as one still.
+ * Replaced in docs/assets by film v6's look (src/readme6, 8 Oct); kept for v4's film.
  *   npx remotion still src/index.ts Banner ../docs/assets/banner.jpg --image-format=jpeg --jpeg-quality=90
  * An illustration of the idea (said, heard, the check that fails), not product output.
  */

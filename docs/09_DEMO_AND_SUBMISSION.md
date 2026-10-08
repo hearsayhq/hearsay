@@ -2,6 +2,38 @@
 
 ## Video (English, public YouTube or Vimeo, under 3:00)
 
+Film v6, the motion-design cut (owner, 8 Oct): the same story, narration, Polly lines, cut and
+length as v5.3 (2:58; `video/src/film5/plan.ts` stays the clock), redrawn as motion design in
+`video/src/film6/` (composition `Film6`). The owner asked for less of an AI look, one clean style
+throughout and transitions that transform; the reference was developer-tool launch films on
+whatships.com (one statement per frame, hard cuts, real UI floating in perspective, a signature
+system carried through).
+
+- **Look:** printed paper and ink for the idea, a night bench for the real runs, one signal orange
+  for the voice and what was heard, red and green only as verdicts (full-frame for "build fails"
+  and "zero errors"). Inter Tight, Instrument Serif italic for spoken words, Geist Mono for machine
+  text; film grain; no gradients or glow. The crash-test target is Hearsay's mark.
+- **Every page:** a chapter header; the fine print; a transcript band that shows who speaks
+  (narrator, customer, add-on with Amazon Polly), the words as they are said and the voice itself
+  (`video/sound/envelope-v6.ts` measures the de-essed takes per frame).
+- **Cuts:** every cut is hard; a shape carries across it. The circle round "$15" floods orange and
+  shrinks into the target; the four steps become the four stations; the camera dives through the
+  "0"; the five option squares become the night page and the 111 squares; one red square opens into
+  the flawed run; "build fails" floods red and recedes into "before · 20 errors"; "zero errors"
+  shrinks into the pull request; windows become the next window; the last window folds into the mark.
+- **For coding agents:** the session is now Claude Code's own interface, not the headless log:
+  `scripts/agent-loop.sh --ui`, screen-recorded by the owner on 8 Oct (Opus 5.5, 2 min 29 s of work,
+  shown at 19×, labelled); the after run and `git diff --stat` end it: only `src/` changed, suites/
+  and the lock untouched.
+- **Sound:** v5's bed; effects from `video/sound/make-sound.mjs` and `make-sound-v6.mjs` (tick, key,
+  glitch, swish, thud, blip, scan, print, lock) on the frames the picture moves on.
+- **Render:** `COMP=Film6 node video/render-film5.mjs hearsay-v6 --preview`, then `--1440` for
+  the upload (2560×1440: YouTube's better encode starts at 1440p, at a third of the 4K render time).
+- **README:** the banner and the how-it-works image are redrawn in the same look
+  (`video/src/readme6/`, compositions `Banner6`, `How6`), same content.
+
+The cut, narration and voices below are v5.3's, which v6 keeps; the picture column describes v5.3.
+
 Film v5.3, the use-case cut (approved by the owner, 5 Oct; v5.3 lines 7 Oct): 2:58, 3840×2160 at 60 fps with
 Remotion (`video/src/film5/`, composition `Film5`). It replaces v4 (the infomercial cut, kept in
 `video/src/film4/`) after blind reviews: a reviewer given only the video and the judging criteria
@@ -86,7 +118,13 @@ HEARSAY_DIR=<a clone> ADDON_DIR=<a folder named kitchen-addon with suites/kitche
 asciinema rec --headless --window-size 140x45 -c "../scripts/agent-loop.sh <workspace>" out/tapes/agent-loop-v5.cast   # one agent run
 node render-film5.mjs hearsay-v53 --preview                  # a fast 1080p to listen to first
 node render-film5.mjs hearsay-v53                            # the bed rebuilt for the cut, de-essed voices, the mix at −14 LUFS, one 4K file
+../scripts/agent-loop.sh --ui ~/hearsay-demo/smart-home-addon   # v6: the session in Claude Code's own interface; screen-record it
+COMP=Film6 node render-film5.mjs hearsay-v6 --preview        # v6: also its effects and voice envelope
+COMP=Film6 node render-film5.mjs hearsay-v6 --1440           # v6: the upload, 2560×1440
 ```
+
+v6's agent clip is the screen recording cropped to the terminal and trimmed from the "before" run
+to the end of `git diff --stat` (`public/clips/v6/agent-ui.mp4`, 1752×1148, 60 fps).
 
 The agent cast has the home folder replaced by `~/hearsay` before `agg` turns it into
 `public/clips/v5/agent-loop.mp4`; the v4 tapes go into `public/clips/v4/` (see README → Demo).

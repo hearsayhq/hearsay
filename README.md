@@ -219,8 +219,9 @@ the author of the flaws.) Details: [docs/15](docs/15_EXPERIMENT.md).
 
 Every product scene in the video is a real run or a real page
 ([docs/09](docs/09_DEMO_AND_SUBMISSION.md) §Proof of function): the grocery runs, the CI log line and
-the locked test were recorded from a fresh clone at `9b4acdd`; the coding-agent session at
-`3cc07c5`; the last scene uses `@hearsayhq/cli` 0.1.2 from npm. Runs are scripted with seed 1, so the counts are the same on
+the locked test were recorded from a fresh clone at `9b4acdd`; the coding-agent session in Claude
+Code's own interface at `5236ff1` (8 Oct, screen-recorded); the last scene uses `@hearsayhq/cli`
+0.1.2 from npm. Runs are scripted with seed 1, so the counts are the same on
 every machine, with no API keys.
 
 ```sh
@@ -235,13 +236,14 @@ npm ci
 | Fixed | `kill %1`, `HEARSAY_FIXED=1 npm run server:orders &`, the same run | 0 errors · 9 warnings · 0 of 10 runs failed, exit 0 |
 | On every change | [pull request #27](https://github.com/hearsayhq/hearsay/pull/27): its commits, [the red run](https://github.com/hearsayhq/hearsay/actions/runs/36779993236) and [the green run](https://github.com/hearsayhq/hearsay/actions/runs/36780493038) on github.com; the log line with `gh run view 36779993236 --log-failed` (GitHub shows logs only after a sign-in) | red on `consent.misheard_amount`, green after the fix commit |
 | Locked suite | `sed -i '' 's/minutes: 15, label: pasta/minutes: 50, label: pasta/' suites/kitchen.yaml` (Linux: `sed -i`), then `npm run hearsay -- run suites/kitchen.yaml`; undo with `git checkout suites/kitchen.yaml` | `suite.integrity` error, exit 1 |
-| Coding agent | `git checkout 3cc07c5`, then `scripts/agent-loop.sh` (needs `claude` on PATH; one agent run on your account) | Smart Home RED · 17 errors → GREEN, only `src/server.ts` changed, suites untouched |
+| Coding agent | on `main`, `scripts/agent-loop.sh --ui` (Claude Code's own interface: it starts with the task; type `/exit` when it is done) or `scripts/agent-loop.sh` (headless). Needs `claude` on PATH; one agent run on your account | Smart Home 17 errors → 0 errors, only `src/` changed, `suites/` and the lock untouched |
 | Try it, from npm | with the Kitchen server running (`npm run server:kitchen`), in a folder holding `suites/kitchen.yaml` and `suites/variants/kitchen.json`: `npx -y @hearsayhq/cli run suites/kitchen.yaml` | 0 errors · 1 warning · 0 of 11 runs failed |
 
 The recordings themselves: `HEARSAY_DIR=<the clone> vhs video/tapes/orders-flawed-4k.tape` (and
 `orders-fixed-4k`, `ci-pr27-4k`, `cheat-4k`), `vhs video/tapes/npx-v5.tape` (setup in the tape),
 the GitHub pages with `node video/record/ci-github.mjs`; the film is a
-Remotion project in `video/` (render steps in docs/09). The measured results are in
+Remotion project in `video/`: `COMP=Film6 node video/render-film5.mjs hearsay-v6 --1440` renders
+the submitted cut (render steps in docs/09). The measured results are in
 [docs/15](docs/15_EXPERIMENT.md); `node scripts/experiment.mjs --dry-run` judges the untouched
 flawed servers for free.
 
